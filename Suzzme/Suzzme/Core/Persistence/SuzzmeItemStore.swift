@@ -20,10 +20,12 @@ final class SuzzmeItemStore {
 
     @discardableResult
     func save(_ items: [SuzzmeItem]) throws -> Int {
-        let existing = try fingerprints()
-        let newItems = items.filter { !existing.contains(SuzzmeItemFingerprint.make(for: $0)) }
+        var existing = try fingerprints()
+        let newItems = items.filter { existing.insert(SuzzmeItemFingerprint.make(for: $0)).inserted }
         newItems.forEach { context.insert(StoredSuzzmeItem(item: $0)) }
-        if !newItems.isEmpty { try context.save() }
+        if !newItems.isEmpty {
+            do { try context.save() } catch { context.rollback(); throw error }
+        }
         return newItems.count
     }
 }

@@ -8,13 +8,13 @@ import FoundationModels
 @available(iOS 26.0, macOS 26.0, *)
 actor AppleIntelligenceService: SuzzmeIntelligenceService {
     private let model = SystemLanguageModel.default
-    private let session = LanguageModelSession(
+    private var session: LanguageModelSession { LanguageModelSession(
         instructions: """
         You analyze personal information. Extract only facts supported by the input.
         Return only useful events, tasks, deadlines, reminders, or information.
         Never invent a person, date, place, deadline, or commitment. Use a missing date phrase when no date is explicitly supported.
         """
-    )
+    ) }
     private var generationIsInProgress = false
 
     func capability() async -> IntelligenceCapability {

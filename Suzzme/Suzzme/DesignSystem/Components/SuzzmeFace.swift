@@ -6,6 +6,7 @@ struct SuzzmeFace: View {
     var state: SuzzmeAssistantState = .idle
     var color: Color = SuzzmeTheme.accent
     var lineWidth: CGFloat = 4
+    var animation: SuzzmePresenceAnimation = .gentle
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.scenePhase) private var scenePhase
@@ -14,12 +15,13 @@ struct SuzzmeFace: View {
     var body: some View {
         SuzzmeFaceShape(state: state)
             .stroke(color, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round, lineJoin: .round))
-            .scaleEffect(activePhase ? 1.025 : 1)
-            .opacity(state == .idle ? 0.92 : 1)
-            .task(id: "\(state.rawValue)-\(reduceMotion)-\(scenePhase == .active)") {
+            .scaleEffect(activePhase && animation != .flow ? (state == .speaking ? 1.015 : 1.025) : 1)
+            .offset(y: activePhase && animation == .flow ? -1.5 : 0)
+            .opacity(state == .idle ? 0.92 : activePhase && animation == .pulse ? 0.86 : 1)
+            .task(id: "\(state.rawValue)-\(animation.rawValue)-\(reduceMotion)-\(scenePhase == .active)") {
                 activePhase = false
-                guard state != .idle, !reduceMotion, scenePhase == .active else { return }
-                withAnimation(.easeInOut(duration: 2.1).repeatForever(autoreverses: true)) {
+                guard ![.idle, .awaitingConfirmation, .success, .error].contains(state), !reduceMotion, scenePhase == .active, animation.duration > 0 else { return }
+                withAnimation(.easeInOut(duration: animation.duration).repeatForever(autoreverses: true)) {
                     activePhase = true
                 }
             }

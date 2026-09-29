@@ -54,6 +54,7 @@ struct SuzzmeBrainLabView: View {
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.borderedProminent)
+                    .suzzmeProminentContrast()
             .disabled(isUnderstanding || text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
 
             if let result {
@@ -67,6 +68,7 @@ struct SuzzmeBrainLabView: View {
                 } else {
                     Button("Save to Suzzme") { save(result) }
                         .buttonStyle(.borderedProminent)
+                    .suzzmeProminentContrast()
                 }
             }
 

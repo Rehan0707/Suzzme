@@ -4,55 +4,122 @@ import SwiftUI
 struct AskSuzzmeView: View {
     @Environment(AppEnvironment.self) private var environment
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.colorScheme) private var colorScheme
     @State private var text = ""
     @State private var result: SuzzmeUnderstandingResult?
     @State private var response: SuzzmeCoreResponse?
     @State private var isUnderstanding = false
     @State private var message: String?
-    @State private var showsVoiceNotice = false
+    @State private var readAnswerAloud = false
+    @FocusState private var inputFocused: Bool
+
+    init(initialText: String = "") {
+        _text = State(initialValue: initialText)
+    }
 
     var body: some View {
         NavigationStack {
             SuzzmePage {
-                HStack(spacing: 14) {
-                    SuzzmeMark().frame(width: 48, height: 48)
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("Ask Suzzme").font(.title2.weight(.semibold))
-                        Text("Share something you want help keeping track of.").foregroundStyle(.secondary)
+                VStack(spacing: SuzzmeTheme.Spacing.medium) {
+                    SuzzmeFace(state: environment.presenceState, color: environment.invocation.presenceTheme.colors(for: colorScheme).face, lineWidth: 4, animation: environment.invocation.presenceAnimation)
+                        .frame(width: 96, height: 96)
+                        .accessibilityHidden(true)
+                    VStack(spacing: 4) {
+                        Text(environment.presenceState == .idle ? "What’s on your mind?" : SuzzmeAssistantPresentation.make(for: environment.presenceState).title).font(.title2.weight(.semibold))
+                        if environment.presenceState == .idle {
+                            Text("Type or speak naturally.").foregroundStyle(SuzzmeTheme.textSecondary)
+                        }
                     }
                 }
+                .frame(maxWidth: .infinity)
+                .multilineTextAlignment(.center)
 
+                if !environment.voice.isListening && ![.listening, .transcribing, .speaking].contains(environment.presenceState) {
                 TextEditor(text: $text)
+                    .scrollContentBackground(.hidden)
                     .frame(minHeight: 150)
-                    .padding(12)
-                    .background(SuzzmeTheme.surface, in: RoundedRectangle(cornerRadius: SuzzmeTheme.cornerRadius))
+                    .padding(SuzzmeTheme.Spacing.small)
+                    .background(SuzzmeTheme.controlFill, in: RoundedRectangle(cornerRadius: SuzzmeTheme.Radius.control, style: .continuous))
+                    .focused($inputFocused)
                     .accessibilityLabel("Information for Suzzme to understand")
+                    .accessibilityHint("Type a question or follow-up")
+                }
 
-                HStack {
+                SuzzmeActionControls {
                     Button {
                         if environment.voice.isListening { environment.voice.stop() }
                         else { Task { await environment.startVoiceSession() } }
                     } label: {
-                        Label(environment.voice.isListening ? "Stop" : "Voice", systemImage: environment.voice.isListening ? "stop.fill" : "mic")
+                        Label(environment.voice.isListening ? "Finish speaking" : environment.presenceState == .speaking ? "Interrupt and talk" : "Voice", systemImage: environment.voice.isListening ? "checkmark" : "mic")
                     }
                     .buttonStyle(.bordered)
-                    .accessibilityLabel(environment.voice.isListening ? "Stop listening" : "Start voice conversation")
-                    .accessibilityHint("Speak naturally, then stop when you are done")
+                    .accessibilityLabel(environment.voice.isListening ? "Finish speaking and send" : environment.presenceState == .speaking ? "Interrupt the answer and start listening" : "Start voice conversation")
+                    .accessibilityHint(environment.voice.isListening ? "Sends the words you have spoken to Suzzme" : "Speak naturally, then finish when you are done")
+
+                    if environment.voice.isListening || environment.presenceState == .speaking {
+                        Button(environment.voice.isListening ? "Cancel recording" : "Cancel conversation", role: .cancel) {
+                            response = nil
+                            result = nil
+                            Task { await environment.cancelVoiceSession() }
+                        }
+                        .buttonStyle(.bordered)
+                    }
 
                     Button {
+                        inputFocused = false
                         Task { await understand() }
                     } label: {
-                        Label(isUnderstanding ? "Understanding…" : "Understand", systemImage: "sparkles")
+                        Label(isUnderstanding ? "Understanding…" : "Send", systemImage: "arrow.up.circle.fill")
                     }
                     .buttonStyle(.borderedProminent)
-                    .disabled(isUnderstanding || text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                    .suzzmeProminentContrast()
+                    .disabled(isUnderstanding || environment.voice.isListening || environment.presenceState == .speaking || text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                }
+
+                if !environment.voice.isListening && environment.presenceState != .speaking {
+                    Toggle("Read this conversation’s answers aloud", isOn: $readAnswerAloud)
+                        .disabled(!environment.voice.speaksResponses)
+                    if !environment.voice.speaksResponses {
+                        Text("Enable spoken responses in Voice settings to hear answers.")
+                            .font(.caption).foregroundStyle(SuzzmeTheme.textSecondary)
+                    }
                 }
 
                 if let response {
                     SuzzmeCard(highlighted: response.route == .onDeviceIntelligence) {
                         Text(response.text).font(.body)
-                        Text("Using \(response.contextCount) local context item(s)").font(.caption).foregroundStyle(.secondary)
+                        if response.contextCount > 0 {
+                            Label("Checked your local context", systemImage: "checkmark.shield")
+                                .font(.caption).foregroundStyle(SuzzmeTheme.textSecondary)
+                        }
                     }
+                }
+
+                if let action = response?.action, action.status == .awaitingConfirmation {
+                    SuzzmeCard(highlighted: true) {
+                        SuzzmeConfirmationSummary(
+                            title: action.title,
+                            destructive: [.deleteReminder, .deleteCalendarEvent, .forgetMemory].contains(action.type)
+                        )
+                        SuzzmeActionControls {
+                            Button("Cancel", role: .cancel) {
+                                text = "cancel"
+                                Task { await understand(confirmationActionID: action.id, submittedText: "cancel") }
+                            }
+                            if !dynamicTypeSize.isAccessibilitySize { Spacer() }
+                            Button(action.type.confirmationLabel, role: [.deleteReminder, .deleteCalendarEvent, .forgetMemory].contains(action.type) ? .destructive : nil) {
+                                text = "confirm"
+                                Task { await understand(confirmationActionID: action.id, submittedText: "confirm") }
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .tint([.deleteReminder, .deleteCalendarEvent, .forgetMemory].contains(action.type) ? .red : SuzzmeTheme.accent)
+                    .suzzmeProminentContrast()
+                        }
+                    }
+                    .accessibilityElement(children: .contain)
+                    .disabled(isUnderstanding)
+                    .accessibilityLabel("Action confirmation: \(action.title)")
                 }
 
                 if let result, !result.items.isEmpty {
@@ -60,12 +127,11 @@ struct AskSuzzmeView: View {
                     ForEach(result.items) { item in
                         SuzzmeCard(highlighted: item.priority == .important || item.priority == .urgent) {
                             SuzzmeItemRow(item: item)
-                            Text("Confidence \(item.confidence.formatted(.percent.precision(.fractionLength(0))))")
-                                .font(.caption).foregroundStyle(.secondary)
                         }
                     }
                     Button("Save to Suzzme") { save(result) }
                         .buttonStyle(.borderedProminent)
+                    .suzzmeProminentContrast()
                 }
 
                 if environment.voice.isListening || !environment.voice.partialTranscript.isEmpty {
@@ -86,42 +152,46 @@ struct AskSuzzmeView: View {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Done") { dismiss() }
                 }
+#if os(iOS)
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("Dismiss Keyboard") { inputFocused = false }
+                }
+#endif
             }
         }
-        .task(id: environment.voice.finalTranscript) {
-            guard let transcript = environment.voice.finalTranscript, let sessionID = environment.voice.finalizedSessionID else { return }
-            text = transcript
-            await understandVoice(transcript, sessionID: sessionID)
+        .onAppear {
+            if environment.presenceState == .awaitingConfirmation || environment.presenceState == .speaking {
+                response = environment.lastVoiceResponse
+                result = environment.lastUnderstandingResult
+            }
         }
-        .onDisappear { Task { await environment.cancelVoiceSession() } }
+        .onChange(of: environment.voice.finalizedSessionID) { _, _ in
+            text = environment.voice.finalTranscript ?? text
+        }
+        .onChange(of: environment.lastVoiceResponseRevision) { _, _ in
+            response = environment.lastVoiceResponse
+            result = environment.lastUnderstandingResult
+        }
+        .onDisappear {
+            let requestID = environment.currentInteractionID
+            Task { await environment.dismissInteraction(requestID) }
+        }
     }
 
-    private func understand(speakResponse: Bool = false) async {
+
+    private func understand(speakResponse: Bool = false, confirmationActionID: UUID? = nil, submittedText: String? = nil) async {
+        guard !isUnderstanding else { return }
         isUnderstanding = true
         message = nil
         defer { isUnderstanding = false }
         do {
-            response = try await environment.askSuzzme(text, speakResponse: speakResponse)
+            response = try await environment.askSuzzme(submittedText ?? text, speakResponse: speakResponse || readAnswerAloud, confirmationActionID: confirmationActionID)
             result = environment.lastUnderstandingResult
-            if result?.items.isEmpty == true { message = "Suzzme did not find a new item to save." }
         } catch is CancellationError {
             message = "Understanding was cancelled."
         } catch {
-            message = error.localizedDescription
-        }
-    }
-
-    private func understandVoice(_ transcript: String, sessionID: UUID) async {
-        isUnderstanding = true
-        message = nil
-        defer { isUnderstanding = false }
-        do {
-            response = try await environment.submitVoiceTranscript(transcript, sessionID: sessionID)
-            result = environment.lastUnderstandingResult
-        } catch is CancellationError {
-            // A newer typed or voice request owns the assistant now.
-        } catch {
-            message = error.localizedDescription
+            message = "Suzzme couldn’t understand that request. Nothing was changed."
         }
     }
 
@@ -130,7 +200,27 @@ struct AskSuzzmeView: View {
             let count = try environment.saveUnderstandingResult(result)
             message = count == 1 ? "Saved to Suzzme." : "Nothing new was saved."
         } catch {
-            message = error.localizedDescription
+            message = "That item couldn’t be saved. Please try again."
+        }
+    }
+}
+
+extension SuzzmeActionType {
+    var confirmationLabel: String {
+        switch self {
+        case .createReminder: "Create Reminder"
+        case .updateReminder: "Update Reminder"
+        case .completeReminder: "Complete Reminder"
+        case .deleteReminder: "Delete Reminder"
+        case .createCalendarEvent: "Create Event"
+        case .updateCalendarEvent: "Update Event"
+        case .deleteCalendarEvent: "Delete Event"
+        case .forgetMemory: "Forget Memory"
+        case .openApp: "Open App"
+        case .openFile: "Open File"
+        case .draftMessage: "Prepare Draft"
+        case .sendMessage: "Send Message"
+        case .runShortcut: "Run Shortcut"
         }
     }
 }

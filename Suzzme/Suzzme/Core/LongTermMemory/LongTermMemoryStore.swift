@@ -63,6 +63,7 @@ actor LongTermMemoryStore {
         try Task.checkCancellation()
         guard authorizedRequestID == requestID else { throw LongTermMemoryError.unauthorizedCommit }
         guard isEnabled() else { throw LongTermMemoryError.disabled }
+        do {
         switch mutation {
         case let .remember(type, name, detail):
             return .memory(try remember(type: type, name: name, detail: detail))
@@ -80,18 +81,19 @@ actor LongTermMemoryStore {
         case let .bulkForgetProject(id):
             return .bulkForgotten(try forgetProjectScope(id: id))
         }
+        } catch { modelContext.rollback(); throw error }
     }
 
     func memories(limit: Int = 500, now: Date = .now) throws -> [SuzzmeMemoryRecord] {
-        guard isEnabled() else { return [] }
+        guard isEnabled(), limit > 0 else { return [] }
         var descriptor = FetchDescriptor<StoredSuzzmeMemory>(sortBy: [SortDescriptor(\.updatedAt, order: .reverse)])
-        descriptor.fetchLimit = min(limit, maximumActiveMemories)
-        return try modelContext.fetch(descriptor).map(Self.record).filter { $0.isActive(at: now) }
+        descriptor.fetchLimit = max(0, min(limit, maximumActiveMemories))
+        return try modelContext.fetch(descriptor).filter(Self.validRecord).map(Self.record).filter { $0.isActive(at: now) }
     }
 
     func allMemories(now: Date = .now) throws -> [SuzzmeMemoryRecord] {
         guard isEnabled() else { return [] }
-        return try modelContext.fetch(FetchDescriptor<StoredSuzzmeMemory>()).map(Self.record).filter { $0.isActive(at: now) }
+        return try modelContext.fetch(FetchDescriptor<StoredSuzzmeMemory>()).filter(Self.validRecord).map(Self.record).filter { $0.isActive(at: now) }
     }
 
     private func model(type: SuzzmeMemoryType, name: String, now: Date = .now) throws -> StoredSuzzmeMemory? {
@@ -114,6 +116,9 @@ actor LongTermMemoryStore {
         expiresAt: Date? = nil,
         now: Date = .now
     ) throws -> StoredSuzzmeMemory {
+        guard !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+              name.count <= 512, detail.count <= 4096,
+              PrivacyEngine().classify(name + " " + detail).policy != .neverProcess else { throw LongTermMemoryError.invalidContent }
         if let existing = try model(type: type, name: name, now: now) {
             existing.detail = detail
             existing.updatedAt = now
@@ -121,6 +126,7 @@ actor LongTermMemoryStore {
             if let semanticSlot { existing.semanticSlotRaw = semanticSlot.rawValue }
             return existing
         }
+        guard try modelContext.fetchCount(FetchDescriptor<StoredSuzzmeMemory>()) < maximumActiveMemories else { throw LongTermMemoryError.limitExceeded }
         let memory = StoredSuzzmeMemory(
             type: type,
             name: name,
@@ -138,7 +144,7 @@ actor LongTermMemoryStore {
 
     func remember(type: SuzzmeMemoryType, name: String, detail: String) throws -> SuzzmeMemoryRecord {
         let memory = try upsertUnsaved(type: type, name: name, detail: detail)
-        try modelContext.save()
+        try saveOrRollback()
         return Self.record(memory)
     }
 
@@ -152,7 +158,7 @@ actor LongTermMemoryStore {
         }
         let detail = slot == .meetingTimePreference ? "Meeting time preference" : "Your preference"
         let memory = try upsertUnsaved(type: .preference, name: name, detail: detail, semanticSlot: slot, now: now)
-        try modelContext.save()
+        try saveOrRollback()
         return Self.record(memory)
     }
 
@@ -173,7 +179,7 @@ actor LongTermMemoryStore {
             expiresAt: nextMonday,
             now: now
         )
-        try modelContext.save()
+        try saveOrRollback()
         return Self.record(memory)
     }
 
@@ -191,7 +197,7 @@ actor LongTermMemoryStore {
         }
         prior.forEach(modelContext.delete)
         let memory = try upsertUnsaved(type: .project, name: name, detail: "Your main project", semanticSlot: .mainProject)
-        try modelContext.save()
+        try saveOrRollback()
         return Self.record(memory)
     }
 
@@ -229,7 +235,7 @@ actor LongTermMemoryStore {
         if !edges.contains(where: { $0.sourceID == personModel.id && $0.targetID == projectModel.id && $0.typeRaw == SuzzmeMemoryRelation.involvedIn.rawValue }) {
             modelContext.insert(StoredSuzzmeMemoryRelationship(sourceID: personModel.id, targetID: projectModel.id, type: .involvedIn, confidence: 0.95, provenance: .userExplicit))
         }
-        try modelContext.save()
+        try saveOrRollback()
         return (Self.record(personModel), Self.record(projectModel))
     }
 
@@ -240,7 +246,7 @@ actor LongTermMemoryStore {
         }
         guard !edges.isEmpty else { return false }
         edges.forEach(modelContext.delete)
-        try modelContext.save()
+        try saveOrRollback()
         return true
     }
 
@@ -254,7 +260,7 @@ actor LongTermMemoryStore {
         let edges = try modelContext.fetch(FetchDescriptor<StoredSuzzmeMemoryRelationship>()).filter { $0.sourceID == targetID || $0.targetID == targetID }
         edges.forEach(modelContext.delete)
         modelContext.delete(target)
-        try modelContext.save()
+        try saveOrRollback()
         return 1
     }
 
@@ -263,13 +269,26 @@ actor LongTermMemoryStore {
         let edges = try modelContext.fetch(FetchDescriptor<StoredSuzzmeMemoryRelationship>())
         edges.filter { $0.sourceID == id || $0.targetID == id }.forEach(modelContext.delete)
         modelContext.delete(memory)
-        try modelContext.save()
+        try saveOrRollback()
     }
 
     func clear() throws {
         try modelContext.delete(model: StoredSuzzmeMemoryRelationship.self)
         try modelContext.delete(model: StoredSuzzmeMemory.self)
-        try modelContext.save()
+        try saveOrRollback()
+    }
+
+    private static func validRecord(_ memory: StoredSuzzmeMemory) -> Bool {
+        SuzzmeMemoryType(rawValue: memory.typeRaw) != nil
+            && SuzzmeMemoryProvenance(rawValue: memory.provenanceRaw) != nil
+            && SuzzmeMemoryRetention(rawValue: memory.retentionRaw) != nil
+            && memory.confidence.isFinite && (0...1).contains(memory.confidence)
+            && !memory.name.isEmpty && memory.name.count <= 512 && memory.detail.count <= 4096
+            && PrivacyEngine().classify(memory.name + " " + memory.detail).policy != .neverProcess
+    }
+
+    private func saveOrRollback() throws {
+        do { try modelContext.save() } catch { modelContext.rollback(); throw error }
     }
 
     private static func record(_ memory: StoredSuzzmeMemory) -> SuzzmeMemoryRecord {
@@ -288,7 +307,7 @@ actor LongTermMemoryStore {
 }
 
 enum LongTermMemoryError: LocalizedError, Sendable {
-    case invalidRelationship, ambiguousPerson, missingEntity, unauthorizedCommit, disabled
+    case invalidRelationship, ambiguousPerson, missingEntity, unauthorizedCommit, disabled, limitExceeded, invalidContent
 
     var errorDescription: String? {
         switch self {
@@ -297,6 +316,8 @@ enum LongTermMemoryError: LocalizedError, Sendable {
         case .missingEntity: "That memory is no longer available."
         case .unauthorizedCommit: "That request is no longer allowed to change Suzzme Memory."
         case .disabled: "Personal memory is turned off."
+        case .invalidContent: "That information cannot be stored as a personal memory."
+        case .limitExceeded: "Personal Memory is full. Review or remove a memory before adding another."
         }
     }
 }

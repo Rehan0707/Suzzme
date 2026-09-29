@@ -1,0 +1,3 @@
+interface:
+  display_name: "Suzzme UI Validation"
+  short_description: "Validate Suzzme UI across iPhone and Mac"

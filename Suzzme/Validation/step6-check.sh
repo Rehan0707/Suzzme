@@ -5,6 +5,9 @@ output=$(mktemp -d)
 trap 'rm -rf "$output"' EXIT
 xcrun swiftc -swift-version 6 -parse-as-library -framework SwiftData \
   Suzzme/Core/Models/SuzzmeItem.swift \
+  Suzzme/Core/Context/SuzzmeContextItem.swift \
+  Suzzme/Core/Context/SuzzmeContextQuery.swift \
+  Suzzme/Core/Privacy/PrivacyEngine.swift \
   Suzzme/Core/Persistence/StoredSuzzmeItem.swift \
   Suzzme/Core/LongTermMemory/LongTermMemoryModels.swift \
   Suzzme/Core/LongTermMemory/LongTermMemoryStore.swift \

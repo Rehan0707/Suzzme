@@ -14,18 +14,29 @@ extension SuzzmeAssistantState {
 
 struct SuzzmeHalo: View {
     var state: SuzzmeAssistantState = .idle
+    var presenceTheme: SuzzmePresenceTheme
+    var animation: SuzzmePresenceAnimation = .gentle
+    @Environment(\.colorScheme) private var colorScheme
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
+    @Environment(\.colorSchemeContrast) private var colorSchemeContrast
     @Environment(\.scenePhase) private var scenePhase
     @State private var expanded = false
 
+    init(state: SuzzmeAssistantState = .idle, theme: SuzzmePresenceTheme = .suzzmePurple, animation: SuzzmePresenceAnimation = .gentle) {
+        self.state = state
+        self.presenceTheme = theme
+        self.animation = animation
+    }
+
     var body: some View {
+        let colors = presenceTheme.colors(for: colorScheme)
         ZStack {
             if !reduceTransparency {
                 Capsule()
                     .fill(
                         LinearGradient(
-                            colors: [SuzzmeTheme.lavender.opacity(0.58), SuzzmeTheme.lilac.opacity(0.36)],
+                            colors: [colors.primary.opacity(colorSchemeContrast == .increased ? 0.78 : 0.58), colors.secondary.opacity(colorSchemeContrast == .increased ? 0.56 : 0.36)],
                             startPoint: .leading,
                             endPoint: .trailing
                         )
@@ -36,12 +47,12 @@ struct SuzzmeHalo: View {
             Capsule()
                 .fill(
                     LinearGradient(
-                        colors: [SuzzmeTheme.lavender, SuzzmeTheme.lilac, SuzzmeTheme.lavender],
+                        colors: [colors.primary, colors.secondary, colors.highlight],
                         startPoint: .leading,
                         endPoint: .trailing
                     )
                 )
-                .frame(width: 96, height: 6)
+                .frame(width: 96, height: colorSchemeContrast == .increased ? 8 : 6)
                 .scaleEffect(x: expanded ? 1.06 : 1)
         }
         .frame(height: 44)
@@ -49,10 +60,10 @@ struct SuzzmeHalo: View {
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Suzzme presence")
         .accessibilityValue(state.rawValue.capitalized)
-        .task(id: "\(reduceMotion)-\(state.rawValue)-\(scenePhase == .active)") {
+        .task(id: "\(reduceMotion)-\(state.rawValue)-\(animation.rawValue)-\(scenePhase == .active)") {
             expanded = false
-            guard !reduceMotion, scenePhase == .active else { return }
-            withAnimation(.easeInOut(duration: state.haloDuration).repeatForever(autoreverses: true)) {
+            guard !reduceMotion, scenePhase == .active, state != .idle, animation.duration > 0 else { return }
+            withAnimation(.easeInOut(duration: max(state.haloDuration, animation.duration)).repeatForever(autoreverses: true)) {
                 expanded = true
             }
         }

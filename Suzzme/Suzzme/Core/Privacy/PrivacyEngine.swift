@@ -11,8 +11,12 @@ struct SuzzmePrivacyDecision: Sendable, Equatable {
 /// Deterministic, on-device first-pass classifier. Content is never logged.
 struct PrivacyEngine: Sendable {
     func classify(_ content: String) -> SuzzmePrivacyDecision {
-        let value = content.lowercased()
-        if matches(value, terms: ["password", "passcode", "cvv", "security code", "private key", "one-time code", "otp", "verification code", "access token", "bearer ", "api key"]) {
+        let value = content.precomposedStringWithCompatibilityMapping.lowercased()
+            .replacingOccurrences(of: "\u{200B}", with: "")
+            .replacingOccurrences(of: "\u{200C}", with: "")
+            .replacingOccurrences(of: "\u{200D}", with: "")
+            .replacingOccurrences(of: "\u{FEFF}", with: "")
+        if matches(value, terms: ["password", "passcode", "cvv", "security code", "private key", "one-time code", "otp", "verification code", "access token", "bearer ", "api key", "api_key", "apikey", "api-key", "access_token", "refresh_token", "auth_token", "session_token", "client_secret", "sessionid", "session secret", "authentication token", "one time password", "one-time password", "-----begin", "sk-proj-"]) {
             return .init(sensitivity: .restricted, policy: .neverProcess, reason: "Contains authentication or secret data.")
         }
         if matches(value, terms: ["medical", "diagnosis", "bank account", "credit card", "social security", "financial"]) {

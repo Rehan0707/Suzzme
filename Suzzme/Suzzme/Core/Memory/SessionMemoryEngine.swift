@@ -35,8 +35,20 @@ actor SessionMemoryEngine {
     func remember(context: [SuzzmeContextItem], intent: SuzzmeContextIntent? = nil, now: Date = .now) {
         purgeExpired(now: now)
         let safeNewItems = context.filter { !$0.isExpired && $0.sensitivity != .restricted }
-        for item in safeNewItems where !contextItems.contains(where: { $0.id == item.id }) {
-            contextItems.append(item)
+        for item in safeNewItems {
+            // Native source identifiers are the authority for a live object.
+            // Replace an older snapshot so a moved event or completed reminder
+            // cannot survive beside its current value in the conversation.
+            if let index = contextItems.firstIndex(where: {
+                $0.sourceIdentifier == item.sourceIdentifier
+                    && ($0.metadata["source"] ?? $0.sourceIdentifier) == (item.metadata["source"] ?? item.sourceIdentifier)
+            }) {
+                if item.timestamp >= contextItems[index].timestamp {
+                    contextItems[index] = item
+                }
+            } else if !contextItems.contains(where: { $0.id == item.id }) {
+                contextItems.append(item)
+            }
         }
         contextItems = Array(contextItems.suffix(maximumTurns))
         activeIntent = intent ?? activeIntent

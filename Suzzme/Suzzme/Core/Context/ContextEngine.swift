@@ -1,30 +1,38 @@
 import Foundation
 
+struct SuzzmeContextCollection: Sendable {
+    var items: [SuzzmeContextItem]
+    var unavailableSources: [String]
+}
+
 actor ContextEngine {
     private let privacyEngine: PrivacyEngine
     init(privacyEngine: PrivacyEngine = PrivacyEngine()) { self.privacyEngine = privacyEngine }
 
     func collect(from sources: [any ContextSource], request: SuzzmeContextRequest = .init()) async throws -> [SuzzmeContextItem] {
-        let gathered = await withTaskGroup(of: [SuzzmeContextItem].self, returning: [SuzzmeContextItem].self) { group in
+        try await collectWithHealth(from: sources, request: request).items
+    }
+
+    func collectWithHealth(from sources: [any ContextSource], request: SuzzmeContextRequest = .init()) async throws -> SuzzmeContextCollection {
+        let gathered = await withTaskGroup(of: SuzzmeContextCollection.self) { group in
             for source in sources {
                 group.addTask {
                     do {
                         try Task.checkCancellation()
-                        return try await source.fetchContext(for: request)
-                    } catch is CancellationError {
-                        return []
-                    } catch {
-                        // One unavailable future connector should not hide all local context.
-                        return []
-                    }
+                        return SuzzmeContextCollection(items: try await source.fetchContext(for: request), unavailableSources: [])
+                    } catch { return SuzzmeContextCollection(items: [], unavailableSources: [source.identifier]) }
                 }
             }
-            var result: [SuzzmeContextItem] = []
-            for await items in group { result.append(contentsOf: items) }
+            var result = SuzzmeContextCollection(items: [], unavailableSources: [])
+            for await value in group {
+                result.items.append(contentsOf: value.items)
+                result.unavailableSources.append(contentsOf: value.unavailableSources)
+            }
             return result
         }
         try Task.checkCancellation()
-        return Array(normalize(gathered).filter { !$0.isExpired }.prefix(request.limit))
+        return .init(items: Array(normalize(gathered.items).filter { !$0.isExpired }.prefix(request.limit)),
+                     unavailableSources: Array(Set(gathered.unavailableSources)).sorted())
     }
 
     func normalize(_ items: [SuzzmeContextItem]) -> [SuzzmeContextItem] {
@@ -32,7 +40,7 @@ actor ContextEngine {
         for item in items {
             let content = item.content.trimmingCharacters(in: .whitespacesAndNewlines)
             guard !content.isEmpty else { continue }
-            let decision = privacyEngine.classify(content)
+            let decision = privacyEngine.classify(([content] + item.entities + Array(item.metadata.values)).joined(separator: " "))
             guard decision.policy != .neverProcess else { continue }
             let sensitivity: SuzzmeContextSensitivity = Swift.max(item.sensitivity, decision.sensitivity)
             let normalizedItem = SuzzmeContextItem(

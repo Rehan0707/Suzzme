@@ -8,11 +8,14 @@ struct SuzzmeApp: App {
     init() {
         let container = try? ModelContainer(for: StoredSuzzmeItem.self, StoredSuzzmeMemory.self, StoredSuzzmeMemoryRelationship.self)
         let store = container.map { SuzzmeItemStore(container: $0) }
-        _environment = State(initialValue: AppEnvironment(itemStore: store, memoryStore: container.map { LongTermMemoryStore(modelContainer: $0) }))
+        let informationContainer = try? InformationPersistence.makeContainer()
+        let proactiveStore = ProactiveIntelligenceStore(fileURL: ProactiveIntelligenceStore.defaultURL())
+        _environment = State(initialValue: AppEnvironment(itemStore: store, memoryStore: container.map { LongTermMemoryStore(modelContainer: $0) },
+            informationStore: informationContainer.map { InformationStore(modelContainer: $0) }, proactiveStore: proactiveStore))
     }
     var body: some Scene {
         #if os(macOS)
-        WindowGroup {
+        Window("Suzzme", id: "main") {
             ContentView()
                 .environment(environment)
                 .tint(SuzzmeTheme.accent)
@@ -22,7 +25,7 @@ struct SuzzmeApp: App {
             NavigationStack { SettingsView() }
                 .environment(environment)
                 .tint(SuzzmeTheme.accent)
-                .frame(width: 480, height: 560)
+                .frame(width: 520, height: 680)
         }
         #else
         WindowGroup {

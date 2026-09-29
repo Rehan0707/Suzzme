@@ -3,9 +3,9 @@ import EventKit
 import Contacts
 
 enum SuzzmePermissionState: String, Sendable {
-    case notDetermined, authorized, denied, restricted, unavailable
+    case notDetermined, authorized, writeOnly, denied, restricted, unavailable
     var displayName: String {
-        switch self { case .notDetermined: "Not connected"; case .authorized: "Connected"; case .denied: "Access off"; case .restricted: "Unavailable"; case .unavailable: "Unavailable" }
+        switch self { case .notDetermined: "Not connected"; case .authorized: "Connected"; case .writeOnly: "Full access needed"; case .denied: "Access off"; case .restricted: "Unavailable"; case .unavailable: "Unavailable" }
     }
 }
 
@@ -26,7 +26,7 @@ actor AppleContextPermissions {
     }
 
     func request(_ kind: SuzzmeContextSourceKind) async -> SuzzmePermissionState {
-        guard status(for: kind) == .notDetermined else { return status(for: kind) }
+        guard status(for: kind) == .notDetermined || status(for: kind) == .writeOnly else { return status(for: kind) }
         do {
             switch kind {
             case .calendar:
@@ -41,9 +41,9 @@ actor AppleContextPermissions {
     }
 
     private static func eventStatus(_ status: EKAuthorizationStatus) -> SuzzmePermissionState {
-        switch status { case .notDetermined: .notDetermined; case .fullAccess: .authorized; case .denied: .denied; case .restricted: .restricted; @unknown default: .unavailable }
+        switch status { case .notDetermined: .notDetermined; case .fullAccess: .authorized; case .writeOnly: .writeOnly; case .denied: .denied; case .restricted: .restricted; @unknown default: .unavailable }
     }
     private static func contactStatus(_ status: CNAuthorizationStatus) -> SuzzmePermissionState {
-        switch status { case .notDetermined: .notDetermined; case .authorized: .authorized; case .denied: .denied; case .restricted: .restricted; @unknown default: .unavailable }
+        switch status { case .notDetermined: .notDetermined; case .authorized, .limited: .authorized; case .denied: .denied; case .restricted: .restricted; @unknown default: .unavailable }
     }
 }

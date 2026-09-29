@@ -1,0 +1,21 @@
+{
+  "revision": "01f66b7ef8ae1b818c61de8a61a1aeb49a2ea7de",
+  "writer_sources_sha256": {
+    "Core/Models/SuzzmeItem.swift": "f9db0926987c7203819c686c59f651bc140adc127a7869c2d05341864ce4dea9",
+    "Core/Persistence/StoredSuzzmeItem.swift": "80d85409f59f6d61c57b2fb0c45e75c56280637fb9671057a0275ac856477ac2",
+    "Core/LongTermMemory/LongTermMemoryModels.swift": "8efdc97b0ee4c5162137a50ee50272bb2d6075b83544d0f29af10e102cf53a9e",
+    "Core/LongTermMemory/LongTermMemoryStore.swift": "e462412f01090e499cc70b4a185385619c59e2b4c2cecd20cea143fc1b968b87",
+    "Core/Intelligence/SuzzmeUnderstandingPipeline.swift": "f4d3ecbe9b8e7a75acc1022789d5e40e6c0b897508f917673b4202da76808414",
+    "compiled-helper": "b768830bc4b5cf1ae736448915fc13d4e715b8a2841cd19de37c0b4b82984d5c"
+  },
+  "fixture_sha256": "e3a037dcdfc542e70bc4fff199d8e4de11bd73102ff69cf5c4d3fcf242ed88ec",
+  "fixture_bytes": 102400,
+  "expected_memories": 5,
+  "expected_relationships": 1,
+  "expected_items": 1,
+  "expected_public_memories": [
+    "Historical project",
+    "Fixture colleague"
+  ],
+  "note": "Synthetic fixture content only. The password-labelled string is an intentional privacy rejection fixture, not a credential. UUIDs and semantic dates are deterministic; SQLite/Core Data metadata may vary when regenerated."
+}

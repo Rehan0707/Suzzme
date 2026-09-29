@@ -17,7 +17,7 @@ enum SuzzmeAssistantState: String, Sendable, CaseIterable {
         case .awaitingConfirmation: "Waiting for your confirmation"
         case .acting: "Working on that…"
         case .speaking: "Speaking…"
-        case .success: "Done"
+        case .success: "Ready"
         case .error: "Something needs attention"
         }
     }

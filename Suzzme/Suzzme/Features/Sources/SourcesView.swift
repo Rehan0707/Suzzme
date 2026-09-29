@@ -7,46 +7,77 @@ import AppKit
 
 struct SourcesView: View {
     @Environment(AppEnvironment.self) private var environment
+
     var body: some View {
         SuzzmePage {
-            SuzzmeEmptyState(symbol: "tray.2", title: "Your context, in your control.",
-                             message: "Suzzme only checks a source when you ask a question that needs it. Access stays on your device.")
+            SuzzmeEmptyState(symbol: "tray.2", title: "Sources", message: "Choose what Suzzme may check. Access and recent updates remain under your control.")
+
             ForEach(SuzzmeContextSourceKind.allCases) { kind in
-                SuzzmeCard {
-                    HStack(alignment: .top, spacing: 14) {
-                        Image(systemName: symbol(for: kind)).font(.title3).foregroundStyle(SuzzmeTheme.accent).frame(width: 28)
-                        VStack(alignment: .leading, spacing: 5) {
-                            Text(title(for: kind)).font(.headline)
-                            Text(description(for: kind)).font(.subheadline).foregroundStyle(.secondary)
-                            statusRow(for: kind)
+                VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.medium) {
+                    HStack(alignment: .top, spacing: SuzzmeTheme.Spacing.medium) {
+                        Image(systemName: kind.symbol)
+                            .font(.title3).foregroundStyle(SuzzmeTheme.intelligencePrimary).frame(width: 28)
+                            .accessibilityHidden(true)
+                        VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.xxs) {
+                            Text(kind.title).font(.headline)
+                            Text(description(for: kind)).font(.subheadline).foregroundStyle(SuzzmeTheme.textSecondary)
                         }
                     }
+                    permissionStatus(for: kind)
+                    if let source = InformationSourceID(rawValue: kind.rawValue) {
+                        InformationSourceControls(source: source)
+                    }
                 }
+                .padding(.vertical, SuzzmeTheme.Spacing.xs)
+                if kind != SuzzmeContextSourceKind.allCases.last { Divider() }
             }
-            Text("Suzzme never copies your calendar, reminders, or contacts into a separate account. You can change access in system settings at any time.")
-                .font(.caption).foregroundStyle(.secondary)
+
+            NavigationLink { WatchedLinksView() } label: {
+                Label {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Watched Links")
+                        Text("Specific public pages you ask Suzzme to check").font(.caption).foregroundStyle(SuzzmeTheme.textSecondary)
+                    }
+                } icon: { Image(systemName: "link").foregroundStyle(SuzzmeTheme.intelligencePrimary) }
+            }
+
+            NavigationLink { InformationInspectionView() } label: {
+                Label("Recent information", systemImage: "clock.arrow.circlepath")
+            }
+            if let error = environment.informationError { Text(error).font(.footnote).foregroundStyle(SuzzmeTheme.textSecondary) }
+            Text("Suzzme does not copy these sources into a separate account. You can change access in system settings at any time.")
+                .font(.caption).foregroundStyle(SuzzmeTheme.textSecondary)
         }
-        .task { await environment.refreshSourcePermissions() }
+        .task { await environment.refreshSourcePermissions(); await environment.inspectInformation(); await environment.loadWatchedLinks() }
     }
 
-    @ViewBuilder private func statusRow(for kind: SuzzmeContextSourceKind) -> some View {
+    @ViewBuilder private func permissionStatus(for kind: SuzzmeContextSourceKind) -> some View {
         let status = environment.sourcePermissions[kind] ?? .notDetermined
         HStack {
-            Text(status.displayName).font(.caption.weight(.medium)).foregroundStyle(status == .authorized ? SuzzmeTheme.accent : .secondary)
+            Label(status.displayName, systemImage: status == .authorized ? "checkmark.circle.fill" : "circle.dashed")
+                .font(.caption.weight(.medium))
+                .foregroundStyle(status == .authorized ? SuzzmeTheme.success : SuzzmeTheme.textSecondary)
             Spacer()
-            if status == .notDetermined {
-                Button("Allow access") { Task { await environment.requestSourcePermission(kind) } }
-                    .buttonStyle(.bordered)
-                    .accessibilityLabel("Allow \(title(for: kind)) access")
+            if status == .notDetermined || status == .writeOnly {
+                Button(status == .writeOnly ? "Allow Full Access" : "Allow Access") {
+                    Task { await environment.requestSourcePermission(kind) }
+                }
+                .buttonStyle(.bordered)
+                .accessibilityLabel("Allow \(kind.title) access")
             } else if status == .denied {
-                Button("Open Settings") { openSettings() }.buttonStyle(.bordered)
+                Button("Open Settings", action: openSettings).buttonStyle(.bordered)
             }
         }
     }
 
-    private func title(for kind: SuzzmeContextSourceKind) -> String { switch kind { case .calendar: "Calendar"; case .reminders: "Reminders"; case .contacts: "Contacts" } }
-    private func description(for kind: SuzzmeContextSourceKind) -> String { switch kind { case .calendar: "Used to understand meetings and your schedule."; case .reminders: "Used to find what needs your attention."; case .contacts: "Used only to identify people you ask about." } }
-    private func symbol(for kind: SuzzmeContextSourceKind) -> String { switch kind { case .calendar: "calendar"; case .reminders: "checklist"; case .contacts: "person.crop.circle" } }
+    private func description(for kind: SuzzmeContextSourceKind) -> String {
+        switch kind {
+        case .calendar: "Understand your schedule and make changes you confirm."
+        case .reminders: "Understand tasks and make changes you confirm."
+        case .contacts: "Identify people only when you ask about them."
+        }
+    }
+
     private func openSettings() {
         #if os(iOS)
         if let url = URL(string: UIApplication.openSettingsURLString) { UIApplication.shared.open(url) }

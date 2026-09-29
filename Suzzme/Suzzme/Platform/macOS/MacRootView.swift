@@ -1,4 +1,5 @@
 #if os(macOS)
+import AppKit
 import SwiftUI
 
 struct MacRootView: View {
@@ -6,6 +7,7 @@ struct MacRootView: View {
     @Environment(AppEnvironment.self) private var environment
     @State private var panel = MacAssistantPanelController()
     @State private var shortcutMonitor = MacInvocationShortcutMonitor()
+    @State private var showsAssistant = false
 
     var body: some View {
         NavigationSplitView {
@@ -32,6 +34,7 @@ struct MacRootView: View {
             NavigationStack { DestinationView(destination: router.selection) }
         }
         .frame(minWidth: 620, minHeight: 500)
+        .sheet(isPresented: $showsAssistant) { AskSuzzmeView().frame(minWidth: 420, minHeight: 500) }
         .onAppear {
             updatePanel(for: environment.presenceState)
             installShortcutMonitor()
@@ -43,15 +46,57 @@ struct MacRootView: View {
         .onChange(of: environment.presenceState) { _, state in
             updatePanel(for: state)
         }
+        .onChange(of: environment.proactivePresenceSignal) { _, _ in
+            updatePanel(for: environment.presenceState)
+        }
+        .onChange(of: environment.presentedResponse) { _, _ in updatePanel(for: environment.presenceState) }
+        .onChange(of: environment.presentedAction?.id) { _, _ in updatePanel(for: environment.presenceState) }
+        .onChange(of: environment.invocation.presenceTheme) { _, _ in
+            updatePanel(for: environment.presenceState)
+        }
+        .onChange(of: environment.invocation.presenceAnimation) { _, _ in
+            updatePanel(for: environment.presenceState)
+        }
         .onChange(of: environment.invocation.keyboardShortcut) { _, _ in
             installShortcutMonitor()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: NSApplication.didChangeScreenParametersNotification)) { _ in
+            updatePanel(for: environment.presenceState)
+        }
+        .onReceive(NotificationCenter.default.publisher(for: NSWindow.didBecomeKeyNotification)) { _ in
+            updatePanel(for: environment.presenceState)
+        }
+        .onReceive(NotificationCenter.default.publisher(for: NSWindow.didMoveNotification)) { notification in
+            guard !(notification.object is NSPanel) else { return }
+            updatePanel(for: environment.presenceState)
         }
     }
 
     private func updatePanel(for state: SuzzmeAssistantState) {
-        panel.update(state: state) {
-            Task { await environment.cancelVoiceSession() }
-        }
+        let action = environment.presentedAction
+        let owner = environment.presentedActionOwner
+        panel.update(
+            state: state,
+            theme: environment.invocation.presenceTheme,
+            animation: environment.invocation.presenceAnimation,
+            signal: environment.proactivePresenceSignal,
+            review: action.map { SuzzmePresenceReview(id: $0.id, title: $0.title, confirmationLabel: $0.type.confirmationLabel, isDestructive: [.deleteReminder, .deleteCalendarEvent, .forgetMemory].contains($0.type)) },
+            response: environment.presentedResponse,
+            onConfirmation: { confirmed in
+                guard let action, let owner else { return }
+                Task {
+                    do { try await environment.respondToPresentedAction(id: action.id, owner: owner, confirmed: confirmed) }
+                    catch { /* The central pipeline owns error/state presentation. */ }
+                }
+            },
+            onCancel: { Task { await environment.cancelVoiceSession() } },
+            onInvoke: {
+                showsAssistant = true
+                NSApp.activate()
+                guard state == .idle, environment.proactivePresenceSignal == .none else { return }
+                Task { _ = await environment.invokeSuzzme() }
+            }
+        )
     }
 
     private func installShortcutMonitor() {

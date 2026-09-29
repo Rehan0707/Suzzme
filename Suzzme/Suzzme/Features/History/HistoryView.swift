@@ -24,7 +24,7 @@ struct HistoryView: View {
                     }
                 }
             }
-            Text(environment.activityItems.isEmpty ? "Saved items will appear here after you use the Brain Lab." : "Items are stored locally on this device.")
+            Text(environment.activityItems.isEmpty ? "Saved items will appear here after Suzzme understands something you choose to keep." : "Items are stored locally on this device.")
                 .foregroundStyle(.secondary)
         }
     }

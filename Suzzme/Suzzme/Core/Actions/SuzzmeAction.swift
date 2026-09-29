@@ -2,7 +2,7 @@ import Foundation
 
 enum SuzzmeActionRisk: String, Codable, Sendable { case readOnly, reversible, consequential }
 enum SuzzmeActionStatus: String, Codable, Sendable { case proposed, awaitingConfirmation, cancelled, completed, failed }
-enum SuzzmeActionType: String, Codable, Sendable { case openApp, openFile, createReminder, createCalendarEvent, draftMessage, sendMessage, runShortcut, forgetMemory }
+enum SuzzmeActionType: String, Codable, Sendable { case updateReminder, completeReminder, deleteReminder, updateCalendarEvent, deleteCalendarEvent, openApp, openFile, createReminder, createCalendarEvent, draftMessage, sendMessage, runShortcut, forgetMemory }
 
 struct SuzzmeAction: Identifiable, Codable, Sendable {
     let id: UUID

@@ -5,6 +5,43 @@ enum SuzzmePresentationEmphasis: String, Sendable, Equatable {
     case ambient, active, confirmation, success, error
 }
 
+/// Privacy-safe proactive state shared by in-app and Mac presence. It carries
+/// no transcript, source body, memory detail, or reasoning.
+enum SuzzmeProactivePresenceSignal: String, Codable, Sendable, Equatable, CaseIterable {
+    case none, dailySummaryReady, opportunity, timeCritical
+
+    var title: String {
+        switch self {
+        case .none: "Suzzme"
+        case .dailySummaryReady: "Daily Summary ready"
+        case .opportunity: "Something may be useful"
+        case .timeCritical: "Something needs attention"
+        }
+    }
+    var status: String {
+        switch self {
+        case .none: "Suzzme ready"
+        case .dailySummaryReady: "Open or ask Suzzme to hear it"
+        case .opportunity: "Review a prepared opportunity"
+        case .timeCritical: "Open Suzzme for the private details"
+        }
+    }
+}
+
+enum SuzzmeSystemActivityKind: Sendable, Equatable {
+    case assistantInteraction, dailySummaryReady, opportunityReady, timeCriticalNotice
+    case timeBoundOngoing(end: Date)
+}
+
+/// Live Activities are reserved for a real, persistent, time-bounded activity.
+/// Current Step 11 assistant and notification states intentionally fail this gate.
+enum SuzzmeActivityEligibility {
+    static func isEligible(_ kind: SuzzmeSystemActivityKind, now: Date = .now) -> Bool {
+        guard case let .timeBoundOngoing(end) = kind else { return false }
+        return end > now && end.timeIntervalSince(now) <= 8 * 3_600
+    }
+}
+
 /// A privacy-safe visual interpretation of the single shared assistant state.
 /// It contains presentation copy only: never transcript, memory, or reasoning.
 struct SuzzmeAssistantPresentation: Sendable, Equatable {
@@ -40,7 +77,7 @@ struct SuzzmeAssistantPresentation: Sendable, Equatable {
         case .speaking:
             .init(state: state, title: "Speaking…", systemStatus: "Suzzme speaking", symbol: "speaker.wave.2.fill", emphasis: .active, isVisible: true, canExpand: true, shouldCollapse: false)
         case .success:
-            .init(state: state, title: "Done", systemStatus: "Suzzme completed", symbol: "checkmark", emphasis: .success, isVisible: true, canExpand: false, shouldCollapse: true)
+            .init(state: state, title: "Ready", systemStatus: "Suzzme completed", symbol: "checkmark", emphasis: .success, isVisible: true, canExpand: false, shouldCollapse: true)
         case .error:
             .init(state: state, title: "Something needs attention", systemStatus: "Suzzme needs attention", symbol: "exclamationmark.circle", emphasis: .error, isVisible: true, canExpand: true, shouldCollapse: true)
         }
@@ -69,7 +106,7 @@ enum SuzzmeSystemPresenceState: String, Sendable, Codable, CaseIterable {
     }
 
     var presentation: SuzzmeAssistantPresentation {
-        SuzzmeAssistantPresentation.make(for: switch self {
+        let assistantState: SuzzmeAssistantState = switch self {
         case .inactive: .idle
         case .listening: .listening
         case .transcribing: .transcribing
@@ -82,7 +119,8 @@ enum SuzzmeSystemPresenceState: String, Sendable, Codable, CaseIterable {
         case .speaking: .speaking
         case .complete: .success
         case .error: .error
-        })
+        }
+        return SuzzmeAssistantPresentation.make(for: assistantState)
     }
 }
 
@@ -126,10 +164,20 @@ final class InvocationCoordinator {
     var keyboardShortcut: SuzzmeKeyboardShortcut {
         didSet { defaults.set(keyboardShortcut.rawValue, forKey: SuzzmeKeyboardShortcut.defaultsKey) }
     }
+    var presenceTheme: SuzzmePresenceTheme {
+        didSet { defaults.set(presenceTheme.rawValue, forKey: Self.presenceThemeKey) }
+    }
+    var presenceAnimation: SuzzmePresenceAnimation {
+        didSet { defaults.set(presenceAnimation.rawValue, forKey: Self.presenceAnimationKey) }
+    }
+    nonisolated static let presenceThemeKey = "suzzme.presence.theme"
+    nonisolated static let presenceAnimationKey = "suzzme.presence.animation"
 
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
         self.keyboardShortcut = SuzzmeKeyboardShortcut.stored(in: defaults)
+        self.presenceTheme = defaults.string(forKey: Self.presenceThemeKey).flatMap(SuzzmePresenceTheme.init(rawValue:)) ?? .suzzmePurple
+        self.presenceAnimation = defaults.string(forKey: Self.presenceAnimationKey).flatMap(SuzzmePresenceAnimation.init(rawValue:)) ?? .gentle
     }
 
     var isActive: Bool { activeRequestID != nil }
@@ -152,15 +200,31 @@ final class InvocationCoordinator {
     }
 
     static let pendingVoiceInvocationKey = "suzzme.invocation.pendingVoice"
+    static let pendingDailySummaryKey = "suzzme.invocation.pendingDailySummary"
 
     static func requestSystemVoiceInvocation(defaults: UserDefaults = .standard) {
         defaults.set(true, forKey: pendingVoiceInvocationKey)
+    }
+
+    static func requestSystemDailySummary(defaults: UserDefaults = .standard) {
+        defaults.set(true, forKey: pendingDailySummaryKey)
     }
 
     func consumeSystemVoiceInvocation() -> Bool {
         guard defaults.bool(forKey: Self.pendingVoiceInvocationKey) else { return false }
         defaults.removeObject(forKey: Self.pendingVoiceInvocationKey)
         return true
+    }
+
+    func consumeSystemDailySummary() -> Bool {
+        guard defaults.bool(forKey: Self.pendingDailySummaryKey) else { return false }
+        defaults.removeObject(forKey: Self.pendingDailySummaryKey)
+        return true
+    }
+
+    func reloadStoredPreferences() {
+        presenceTheme = defaults.string(forKey: Self.presenceThemeKey).flatMap(SuzzmePresenceTheme.init(rawValue:)) ?? .suzzmePurple
+        presenceAnimation = defaults.string(forKey: Self.presenceAnimationKey).flatMap(SuzzmePresenceAnimation.init(rawValue:)) ?? .gentle
     }
 }
 
