@@ -28,3 +28,13 @@ xcuserdata/
 
 # Validation reports & test output
 Suzzme/Validation/Reports/
+
+# Local Suzzme website waitlist data
+suzzme web/data/
+
+# Python bytecode
+__pycache__/
+
+# Website preview captures and local verification artifacts
+/suzzme web/output/
+/output/
