@@ -38,3 +38,6 @@ __pycache__/
 # Website preview captures and local verification artifacts
 /suzzme web/output/
 /output/
+
+# Local promotional videos and generation scripts
+/Media/
