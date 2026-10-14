@@ -1,6 +1,6 @@
 # Suzzme web
 
-A responsive product website for Suzzme with a working local early-access waitlist. It uses HTML, CSS, JavaScript and Python’s standard library; no package installation is required.
+A responsive product and demo website for Suzzme. It uses HTML, CSS, JavaScript, a progressively enhanced Three.js hero, and Python’s standard library; no package installation is required.
 
 ## Preview
 
@@ -10,18 +10,20 @@ From this folder:
 python3 server.py
 ```
 
-Open http://127.0.0.1:4173. The waitlist saves signups to `data/waitlist.sqlite3`, which is ignored by Git. Keep a backup of that database if you want to retain signups. The site can still be served as static files, but the signup form needs the `/api/waitlist` endpoint to work.
+Open http://127.0.0.1:4173. The product site itself is static and can be deployed to any static host.
 
 ## Files
 
-- `dist/index.html`: product story, illustrative device previews, features, privacy, FAQs, and signup dialog.
+- `dist/index.html`: product story, interactive product film, capabilities, privacy, build guide, contributors, and FAQs.
+- `dist/site.css`: the current responsive visual system and product-demo styling.
+- `dist/site.js`: the Three.js hero, interactive film, Presence states, and navigation behavior.
 - `dist/styles.css`: app-preview layout and base design tokens.
 - `dist/refinement.css`: editorial typography, frosted navigation, responsive feature panels and accessibility preferences.
 - `dist/experience.css`: lavender colour grading, hero and preview motion, and reduced-motion support.
 - `dist/ux.css`: mobile navigation, readable phone preview, responsive refinements, atmospheric hero, and switchable product story.
 - `dist/suzzme-app-icon.png`: the exact supplied Suzzme iOS app icon, used for the website brand and favicon.
 - `dist/fonts/`: bundled Inter fonts and license.
-- `dist/app.js`: synchronized Mac and iPhone preview modes, reading progress, and waitlist submission.
+- `dist/app.js`: retained legacy experience script; the current site uses `site.js`.
 - `server.py`: serves the site and saves email, chosen device, and join time in SQLite.
 
 ## Product and design grounding
@@ -65,3 +67,5 @@ October 2026 UX update: visitors can explore Today, Ask, Memory, and Actions acr
 LineLens reference: https://linelens.in/ — its spacious hero and switchable product demonstration informed the Suzzme hero and four-part preview. Suzzme uses its own visual identity, content, and product examples.
 
 The current design includes a dedicated iPhone section and an interactive MacBook presence showcase. Mac presence PNGs in `dist/native-presence/` are rendered from the actual SwiftUI component using `scripts/NativePresenceRender.swift`; the iPhone and other app previews are illustrative HTML. `dist/redesign.css` contains the latest visual refinements.
+
+October 2026 rebuild: the site was rebuilt iPhone-first around the Suzzme Face mascot. The brand system follows the app icon (violet to white with dark strokes); plum (#744575) is used only inside app screens, where it is the real accent. Sections: iPhone hero with a looping voice question, scroll-driven flow diagram (sources → understanding → outcomes), sticky iPhone request lifecycle, a day on iPhone, the Mac Presence demo below the notch, Face states, privacy, build, FAQs and the waitlist dialog (posts to `/api/waitlist`). Everything is in `dist/index.html`, `dist/site.css` and `dist/site.js`, with an inline SVG icon sprite and no third-party scripts. All motion respects Reduce Motion, and the autoplaying demos pause when off-screen and have a Pause control. The previous version is in git history; the older stylesheets and `app.js` are no longer loaded. `assets/suzzme-icon-64.png`, `assets/suzzme-icon-180.png` and `assets/suzzme-context-field-v2.jpg` are resized copies of the original images.

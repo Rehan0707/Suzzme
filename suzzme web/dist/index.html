@@ -1,82 +1,577 @@
 <!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Meet Suzzme, a calm, local-first personal AI assistant for iPhone, iPad and Mac. Understand your day, remember what matters, and stay in control.">
-<meta name="theme-color" content="#faf7fc"><title>Suzzme — Intelligence for your everyday.</title>
-<link rel="icon" type="image/png" href="suzzme-app-icon.png">
-<link rel="preload" href="fonts/Inter-400.ttf" as="font" type="font/ttf" crossorigin><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="refinement.css"><link rel="stylesheet" href="experience.css"><link rel="stylesheet" href="ux.css"><link rel="stylesheet" href="redesign.css?v=14"><script src="app.js?v=12" defer></script>
-</head>
-<body>
-<svg class="svg-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><symbol id="face" viewBox="0 0 100 100"><path d="M14 43L29 28L44 43M56 43L71 28L86 43M34 62L50 77L66 62" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></symbol></defs></svg>
-<a class="skip-link" href="#main">Skip to content</a>
-<div class="scroll-progress" aria-hidden="true"></div><header class="header"><a class="brand" href="#" aria-label="Suzzme home"><img src="suzzme-app-icon.png" alt="" width="38" height="38"><span>suzzme</span></a><nav aria-label="Main navigation"><a href="#experience">Experience</a><a href="#made-for-you">Features</a><a href="#iphone">iPhone</a><a href="#privacy">Privacy</a><a href="#faq">FAQ</a></nav><button class="nav-cta waitlist-trigger" type="button">Join waitlist <span>↗</span></button></header>
-<main id="main">
-<section class="hero landscape-hero">
-<div class="hero-copy"><div class="hero-signature"><img src="suzzme-app-icon.png" alt="" width="48" height="48"><span>Your everyday companion.</span><span class="launch-status">Waitlist open</span></div>
-<h1>A little intelligence.<br>For <em>your everyday.</em></h1>
-<p class="hero-description">A personal AI companion built around your life.<br>Understand your day, remember what matters,<br>and take the next step with a little help.</p>
-<div class="hero-actions"><button class="button primary waitlist-trigger" type="button">Join the waitlist <span>↗</span></button><a class="hero-demo-link" href="#experience"><span class="play-icon" aria-hidden="true">▷</span> Explore Suzzme</a></div><p class="hero-availability">Made for iPhone, iPad & Mac <span>·</span> Currently in development</p>
-</div><a class="hero-scroll" href="#experience" aria-label="Explore Suzzme"><span>Meet a lighter day</span>↓</a>
-</section>
-<div class="announcement-strip"><span>WAITLIST OPEN</span><span class="strip-star">✳</span><span>YOUR DAY, UNDERSTOOD</span><span class="strip-star">✳</span><span>MEMORY THAT MATTERS</span><span class="strip-star">✳</span><span>ALWAYS YOUR CALL</span><span class="strip-star">✳</span><span>LOCAL-FIRST BY DESIGN</span></div>
-<section class="experience-section" id="experience"><div class="experience-heading"><div class="section-label">A companion. Not another thing to manage.</div><h2>Make room for <em>what matters.</em></h2><p>One familiar face. A little help throughout your day.</p></div>
-<div class="product-stage browser-demo showing-notch" id="demo"><div class="browser-tabs"><button class="native-demo-tab" type="button" aria-pressed="true">Mac notch</button><div class="browser-dots" aria-hidden="true"><i></i><i></i><i></i></div><div class="experience-switcher" role="group" aria-label="Explore Suzzme features"><button data-mode="today" class="active" aria-pressed="true">Demo</button><button data-mode="ask" aria-pressed="false">Conversation</button><button data-mode="memory" aria-pressed="false">Memory</button><button data-mode="action" aria-pressed="false">Actions</button></div>
-</div><div class="browser-address"><span aria-hidden="true">‹ &nbsp; › &nbsp; ↻</span><span class="address-field">⌑ &nbsp; suzzme / interactive preview</span><button id="demo-play" type="button" aria-pressed="false">▷ Play demo</button></div>
-<div class="native-showcase"><div class="notch-showcase-heading"><div><span>SUZZME ON MAC</span><h3>A little closer. A lot more helpful.</h3></div><button class="notch-detail-toggle" type="button" aria-pressed="false">⌕ View notch close-up</button></div><div class="macbook-device"><div class="native-desktop"><div class="native-menubar"><span>Suzzme &nbsp; File &nbsp; Edit</span><span>Wi-Fi &nbsp; 9:41</span></div><img class="native-presence-image" src="native-presence/Dark-listening.png" alt="Actual Suzzme SwiftUI listening surface attached beneath a Mac notch"><div class="native-desktop-caption">A familiar face. Right where you need it.<small>Actual SwiftUI component · rendered preview</small></div></div><div class="macbook-base" aria-hidden="true"><div class="macbook-trackpad-lip"></div></div></div><div class="native-state-controls" role="group" aria-label="Explore actual Mac presence states"><button data-native-state="listening" aria-pressed="true">Listening</button><button data-native-state="reasoning" aria-pressed="false">Thinking</button><button data-native-state="awaitingConfirmation" aria-pressed="false">Confirmation</button><button data-native-state="speaking" aria-pressed="false">Speaking</button><button data-native-state="success" aria-pressed="false">Ready</button></div><p class="native-state-description" aria-live="polite">Listening… A compact surface below the physical notch.</p></div><div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
-<div class="floating-note"><span class="note-icon">✓</span><div>A little less to keep in your head.<small>A little more space for you.</small></div></div>
-<div class="mac-window" aria-label="Illustrative Suzzme Mac preview">
-<aside class="app-sidebar"><div class="traffic-lights"><i></i><i></i><i></i></div><div class="sidebar-brand"><svg><use href="#face"/></svg>Suzzme</div><div class="side-item selected">⌂ <span>Home</span></div><div class="side-item">◌ <span>Memory</span></div><div class="side-item">▤ <span>Sources</span></div><div class="sidebar-bottom"><span>⚙</span> Settings</div></aside>
-<div class="app-main"><div class="app-toolbar"><span>Home</span><span>◧</span></div><div class="app-content"><div class="app-heading"><h2>Good morning, Alex.</h2><p>Here’s what matters today.</p></div><div class="assistant-intro"><svg><use href="#face"/></svg><h3>Anything on your mind?</h3><p>A little room to think, together.</p></div><div class="demo-tabs" role="group" aria-label="Choose an illustrative preview"><button class="active" data-mode="today" aria-pressed="true">Your day</button><button data-mode="ask" aria-pressed="false">Ask Suzzme</button><button data-mode="memory" aria-pressed="false">Memory</button><button data-mode="action" aria-pressed="false">Actions</button></div><div id="demo-content" class="demo-content" aria-live="polite"></div><div class="app-input"><span>Type to Suzzme</span><span>↑</span></div></div></div>
-</div>
-<div class="phone" aria-label="Illustrative Suzzme iPhone preview"><div class="phone-status"><b>9:41</b><span>▮▮▮ ▰</span></div><div class="phone-heading">Good morning, Alex.<small>Here’s what matters today.</small></div><svg class="phone-face"><use href="#face"/></svg><h3>Anything on your mind?</h3><p>A little room to think, together.</p><div class="phone-talk">Talk to Suzzme <span>≋</span></div><div class="phone-type">Type to Suzzme</div><div class="phone-card" aria-live="polite"><small>YOUR DAILY SUMMARY</small><strong>Room for what matters.</strong><p>Your first meeting is at 10. There’s time to take it slow.</p><span>Open Daily Summary ↗</span></div><div class="phone-nav"><span>⌂<small>Home</small></span><span>◌<small>Memory</small></span><span>▤<small>Sources</small></span></div><div class="home-indicator"></div></div>
-<div class="preview-picker" role="group" aria-label="Explore Suzzme on iPhone"><button class="active" type="button" data-mode="today" aria-pressed="true">Today</button><button type="button" data-mode="ask" aria-pressed="false">Ask</button><button type="button" data-mode="memory" aria-pressed="false">Memory</button><button type="button" data-mode="action" aria-pressed="false">Act</button></div><div class="stage-caption"><span>Familiar by design. Personal by nature.</span><span>Illustrative app previews</span></div>
-</div>
-<p class="walkthrough-caption">An illustrative walkthrough. Choose a tab or press play to explore.</p><div class="demo-reassurance"><span>✓ &nbsp; Permission comes first</span><span>◌ &nbsp; Memory you control</span><span>⌘ &nbsp; Native to your devices</span></div><div class="preview-story">
-  <span class="preview-story-index">01 / YOUR DAY</span>
-  <h2>Know what needs you.</h2>
-  <p>Calendar and reminders become a calmer Daily Summary, with source limits made clear.</p>
-</div>
-</section>
-<section class="features section" id="made-for-you"><div class="section-heading"><div><div class="section-label">Small things. A real difference.</div><h2>Life has a lot going on.<br><span>Let’s make space.</span></h2></div><p>For your plans. Your people.<br>And the things worth remembering.</p></div>
-<div class="feature-grid"><article class="feature-card daily"><div class="feature-copy"><span class="feature-number">Your day, understood</span><h3>Start with what matters.</h3><p>A Daily Summary turns your permitted calendar and reminders into a calmer view of the day ahead.</p><ul class="feature-benefits"><li>Calendar and reminders, brought together</li><li>A clear view of what’s coming up</li><li>Only the sources you allow</li></ul></div><div class="summary-preview"><div class="summary-title"><svg><use href="#face"/></svg><span>Your Daily Summary<small>Good morning, Alex.</small></span><span class="sun">☼</span></div><p>You have a little breathing room this morning.</p><div class="schedule"><span>10:00</span><div><b>Design catch-up</b><small>Calendar · 30 minutes</small></div></div><div class="schedule"><span>15:00</span><div><b>Pick up the parcel</b><small>Reminders · Today</small></div></div></div></article>
-<article class="feature-card memory"><div class="feature-copy"><span class="feature-number">Memory with meaning</span><h3>Keep the meaningful bits.</h3><p>Useful preferences, people, and projects. Personal memory you can inspect, correct, or delete.</p><ul class="feature-benefits"><li>Keep useful personal context</li><li>Review and correct what Suzzme remembers</li><li>Remove a memory whenever you choose</li></ul></div><div class="memory-visual"><div class="memory-chip chip-one">◌ <span>People who matter</span></div><div class="memory-chip chip-two">☕ <span>Your morning rituals</span></div><svg><use href="#face"/></svg><div class="memory-chip chip-three">▱ <span>Ideas worth keeping</span></div><div class="memory-chip chip-four">✓ <span>Always yours to edit</span></div></div></article>
-<article class="feature-card conversation"><div class="feature-copy"><span class="feature-number">A conversation, naturally</span><h3>However you like to ask.</h3><p>Speak naturally or type a thought. One companion, with the context of your current conversation.</p><ul class="feature-benefits"><li>Ask by voice or text</li><li>Follow up in the same conversation</li><li>Built around your permitted context</li></ul></div><div class="chat-visual"><div class="user-bubble">What’s coming up today?</div><div class="assistant-bubble"><svg><use href="#face"/></svg><p>Your design catch-up is at 10. You also have a reminder to pick up the parcel this afternoon.</p></div><span class="example-caption">An example conversation</span></div></article>
-<article class="feature-card action"><div class="feature-copy"><span class="feature-number">A helping hand</span><h3>A helping hand. You decide.</h3><p>Create or update supported calendar events and reminders with a clear confirmation before anything changes.</p><ul class="feature-benefits"><li>Review the proposed change</li><li>Confirm before anything happens</li><li>See whether the action succeeded</li></ul></div><div class="confirmation"><span class="confirm-icon">✓</span><h4>One less thing to remember.</h4><p>Remind me to water the plants.</p><div><span>Tomorrow</span><b>9:00 AM</b></div><span class="confirm-example">Review → Confirm → Done</span></div></article></div></section>
-<section class="iphone-section section" id="iphone"><div class="iphone-visual"><div class="phone iphone-showcase-device" aria-label="Illustrative Suzzme iPhone preview"><div class="phone-status"><b>9:41</b><span>▮▮▮ ▰</span></div><div class="phone-heading">Good morning, Alex.<small>Here’s what matters today.</small></div><svg class="phone-face"><use href="#face"/></svg><h3>Anything on your mind?</h3><p>A little room to think, together.</p><div class="phone-talk">Talk to Suzzme <span>≋</span></div><div class="phone-type">Type to Suzzme</div><div class="phone-card iphone-static-card" aria-live="polite"><small>YOUR DAILY SUMMARY</small><strong>Room for what matters.</strong><p>Your first meeting is at 10. There’s time to take it slow.</p><span>Open Daily Summary ↗</span></div><div class="phone-nav"><span>⌂<small>Home</small></span><span>◌<small>Memory</small></span><span>▤<small>Sources</small></span></div><div class="home-indicator"></div></div>
-<span class="iphone-preview-label">Illustrative iPhone app preview</span></div><div class="iphone-copy"><div class="section-label">SUZZME ON IPHONE</div><h2>Your companion.<br><em>Along for the day.</em></h2><p>Start your morning with a Daily Summary, ask a question on the go, or keep a useful detail for later. Suzzme brings the same familiar face to a native iPhone experience.</p><ul class="feature-benefits"><li>Speak naturally or type a thought</li><li>Review your memories and choose your sources</li><li>Confirm calendar and reminder changes before they happen</li></ul><div class="iphone-notes"><span>Designed for iPhone</span><span>Permission-controlled sources</span><span>Local-first</span></div><p class="iphone-availability">Currently in development. Voice and advanced intelligence depend on device, OS, and language support. Cross-device sync is not available in the current build.</p><button class="button primary waitlist-trigger" type="button">Get iPhone updates <span>↗</span></button></div></section><section class="presence section"><div class="presence-art actual-presence-art"><img class="native-presence-image" src="native-presence/Dark-listening.png" alt="Actual rendered Suzzme Mac listening surface"><span class="native-render-caption">Rendered directly from Suzzme’s SwiftUI component</span></div><div class="presence-copy"><div class="section-label">A familiar face. A little closer.</div><h2>Here when<br>you need a moment.</h2><p>Suzzme expands directly below your MacBook’s notch to listen, show a response, or ask for confirmation. Macs without a notch use a top-center surface. Choose a state in the demo to see the actual app component.</p><a class="text-link" href="#demo">Meet that familiar face <span>↗</span></a></div></section>
-<section class="privacy section" id="privacy"><div class="privacy-heading"><svg class="privacy-lock" viewBox="0 0 48 48" aria-hidden="true"><rect x="11" y="21" width="26" height="22" rx="6" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M16 21v-7a8 8 0 0 1 16 0v7M24 30v5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg><div class="section-label">Privacy comes naturally.</div><h2>Your world.<br> <span>Still yours.</span></h2><p>Being helpful shouldn’t mean knowing everything.<br>Suzzme starts with permission, and keeps you in control.</p></div><div class="privacy-points"><article><span>01</span><div><h3>Local-first, from the start.</h3><p>Private context is processed on your device, without a cloud LLM. Apple’s on-device models are used where available.</p></div></article><article><span>02</span><div><h3>Only the sources you choose.</h3><p>Calendar, Reminders, and Contacts are permission-controlled. Public webpages are read only when you explicitly add them to Watched Links.</p></div></article><article><span>03</span><div><h3>Memory you can see and shape.</h3><p>Review, correct, and delete personal memory. Suzzme keeps useful context, not a hidden archive of everything you do.</p></div></article></div></section>
-<section class="early-access-panel section"><div><div class="section-label">Your invitation to a lighter day.</div><h2>Meet Suzzme <em>early.</em></h2><p>Join the waitlist for early-access updates as Suzzme takes shape.</p></div><div class="early-access-details"><h3>A little closer to what’s next.</h3><div class="launch-benefits"><span>01 <b>Development updates</b><small>See what’s taking shape.</small></span><span>02 <b>Early-access news</b><small>Hear when access opens.</small></span><span>03 <b>Built for your devices</b><small>iPhone, iPad and Mac.</small></span></div><button class="button primary waitlist-trigger" type="button">Join the waitlist <span>↗</span></button><p>Your email is used for Suzzme early-access updates.</p></div></section><section class="faq section" id="faq"><div><div class="section-label">Good questions.</div><h2>A little more clarity.</h2></div><div class="faq-list"><details><summary>What is Suzzme?<span>+</span></summary><p>Suzzme is a native, local-first personal AI assistant for iPhone, iPad, and Mac. It brings together permitted daily context, personal memory, conversation, and confirmed actions to help you understand what matters.</p></details><details><summary>Can I download it yet?<span>+</span></summary><p>Suzzme is currently in development. The waitlist is open for early-access updates; a public download and release date have not been announced. This website uses illustrative previews.</p></details><details><summary>Does Suzzme work offline?<span>+</span></summary><p>Local features are designed to work on your device. Advanced intelligence depends on device and OS support, while simpler local functionality remains available. Watched public webpages need an internet connection. Voice also depends on supported devices and languages.</p></details><details><summary>Will my iPhone and Mac sync?<span>+</span></summary><p>Cross-device sync is not available in the current build. Suzzme stores its data locally on each device.</p></details><details><summary>Does it act without asking?<span>+</span></summary><p>No. Calendar and reminder changes need a specific confirmation, and Suzzme checks that the change succeeded before reporting completion. Access to your sources is optional and permission-controlled.</p></details></div></section>
-<section class="closing section" id="availability"><img class="closing-logo" src="suzzme-app-icon.png" alt="" width="84" height="84" loading="lazy"><div class="section-label">A little closer to launch.</div><h2>A lighter day<br> starts with a hello.</h2><p>The waitlist is open. Be among the first to meet Suzzme.</p><div class="availability"><span class="status-dot"></span> In development for iPhone, iPad & Mac</div><button class="button primary waitlist-trigger" type="button">Join the waitlist <span>↗</span></button></section>
-</main><div class="footer-landscape" aria-hidden="true"><span>suzzme</span></div><footer><a class="brand" href="#"><img src="suzzme-app-icon.png" alt="" width="34" height="34" loading="lazy"><span>suzzme</span></a><span>A little more present.</span><div><a href="#privacy">Privacy principles</a><button class="footer-waitlist waitlist-trigger" type="button">Join waitlist</button><small>© <span id="year">2026</span> Suzzme</small></div></footer>
-<dialog class="waitlist-dialog" id="waitlist-dialog" aria-labelledby="waitlist-title" aria-describedby="waitlist-description">
-  <div class="waitlist-dialog-inner">
-    <button class="waitlist-close" type="button" aria-label="Close waitlist">×</button>
-    <img class="waitlist-logo" src="suzzme-app-icon.png" alt="" width="68" height="68">
-    <div class="waitlist-kicker"><span class="status-dot"></span> Waitlist open</div>
-    <h2 id="waitlist-title">Be among the first<br>to meet Suzzme.</h2>
-    <p id="waitlist-description">Sign up for early-access news. We'll reach out when there's something real to share.</p>
-    <form id="waitlist-form" action="/api/waitlist" method="post">
-      <label for="waitlist-email">Email address</label>
-      <input id="waitlist-email" name="email" type="email" autocomplete="email" inputmode="email" placeholder="you@example.com" maxlength="254" required>
-      <label for="waitlist-platform">Which device interests you most? <span class="optional">Optional</span></label>
-      <select id="waitlist-platform" name="platform">
-        <option value="not-sure" selected>Not sure yet</option>
-        <option value="iphone">iPhone</option>
-        <option value="ipad">iPad</option>
-        <option value="mac">Mac</option>
-      </select>
-      <div class="waitlist-trap" aria-hidden="true"><label for="waitlist-website">Website</label><input id="waitlist-website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
-      <button class="button primary waitlist-submit" type="submit">Join the waitlist <span>↗</span></button>
-      <p class="waitlist-disclosure">We’ll use your email only for Suzzme early-access updates.</p>
-      <p id="waitlist-error" class="waitlist-error" role="alert" hidden></p>
-    </form>
-    <div id="waitlist-success" class="waitlist-success" role="status" hidden>
-      <span class="success-mark" aria-hidden="true">✓</span>
-      <h3>You’re on the list.</h3>
-      <p>Thanks for joining. We’ll be in touch when there’s an early-access update.</p>
-      <button type="button" class="waitlist-done">Done</button>
-    </div>
-  </div>
-</dialog>
-</body></html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <meta
+      name="description"
+      content="Suzzme is a privacy-first personal intelligence layer for iPhone and Mac. It explains your day, remembers what matters, and acts safely when you ask."
+    />
+    <meta name="theme-color" content="#f7f5f9" />
+    <title>Suzzme | Your day, understood.</title>
+    <link rel="icon" href="assets/suzzme-icon-64.png" />
+    <link rel="apple-touch-icon" href="assets/suzzme-icon-180.png" />
+    <link rel="stylesheet" href="site.css?v=8" />
+    <script type="module" src="site.js?v=8"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <!-- Icon sprite: one stroke weight, rounded caps, 24pt grid (SF Symbols-like) -->
+    <svg class="defs" aria-hidden="true">
+      <defs>
+        <symbol id="face" viewBox="0 0 100 100">
+          <path d="M14 43 29 28 44 43M56 43 71 28 86 43M34 62 50 77 66 62" fill="none" stroke="currentColor" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" />
+        </symbol>
+        <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.2 4.2L19 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" /></symbol>
+        <symbol id="i-xmark" viewBox="0 0 24 24"><path d="M7 7l10 10M17 7 7 17" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" /></symbol>
+        <symbol id="i-arrow-up" viewBox="0 0 24 24"><path d="M12 19V5.5M6.5 11 12 5.5l5.5 5.5" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" /></symbol>
+        <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9.5 6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" /></symbol>
+        <symbol id="i-mic" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11.5" rx="3" fill="currentColor" stroke="none" /><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3" /></g></symbol>
+        <symbol id="i-keyboard" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="2.5" y="6" width="19" height="12.5" rx="3" /><path d="M6.5 10h.01M10 10h.01M14 10h.01M17.5 10h.01M8 14.5h8" stroke-width="2.2" /></g></symbol>
+        <symbol id="i-signal" viewBox="0 0 24 16"><g fill="currentColor"><rect x="1" y="10" width="4" height="5" rx="1.2" /><rect x="7" y="7" width="4" height="8" rx="1.2" /><rect x="13" y="4" width="4" height="11" rx="1.2" /><rect x="19" y="1" width="4" height="14" rx="1.2" /></g></symbol>
+        <symbol id="i-wifi" viewBox="0 0 22 16"><g fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><path d="M2 6a13 13 0 0 1 18 0M5.4 9.4a8.2 8.2 0 0 1 11.2 0M8.8 12.6a3.4 3.4 0 0 1 4.4 0" /></g></symbol>
+        <symbol id="i-battery" viewBox="0 0 30 15"><rect x="1" y="1" width="24.5" height="13" rx="4" fill="none" stroke="currentColor" stroke-opacity=".4" stroke-width="1.4" /><rect x="3.2" y="3.2" width="17" height="8.6" rx="2" fill="currentColor" /><path d="M27.6 5.5v4" stroke="currentColor" stroke-opacity=".45" stroke-width="1.8" stroke-linecap="round" /></symbol>
+        <symbol id="i-calendar" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><rect x="3" y="4.5" width="18" height="16.5" rx="3.5" /><path d="M3 9.8h18M8 2.8v3.4M16 2.8v3.4" /><path d="M7.5 13.6h.01M12 13.6h.01M16.5 13.6h.01M7.5 17h.01M12 17h.01" stroke-width="2.4" /></g></symbol>
+        <symbol id="i-reminders" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="5.2" cy="6.5" r="1.7" /><circle cx="5.2" cy="12" r="1.7" /><circle cx="5.2" cy="17.5" r="1.7" /><path d="M10 6.5h10M10 12h10M10 17.5h10" /></g></symbol>
+        <symbol id="i-person" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="8.2" r="3.8" /><path d="M4.8 20.2a7.2 7.2 0 0 1 14.4 0" /></g></symbol>
+        <symbol id="i-globe" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3c2.6 2.6 3.8 5.6 3.8 9s-1.2 6.4-3.8 9c-2.6-2.6-3.8-5.6-3.8-9S9.4 5.6 12 3z" /></g></symbol>
+        <symbol id="i-bell" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.6 2H4.4z" /><path d="M10 21h4" /></g></symbol>
+        <symbol id="i-summary" viewBox="0 0 24 24"><path d="M4.5 6h15M4.5 10.5h15M4.5 15h10M4.5 19.5h6" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" /></symbol>
+        <symbol id="i-bubble" viewBox="0 0 24 24"><path d="M6 4.5h12a3 3 0 0 1 3 3v7a3 3 0 0 1-3 3h-6.5L6.5 21v-3.5H6a3 3 0 0 1-3-3v-7a3 3 0 0 1 3-3z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round" /></symbol>
+        <symbol id="i-shield" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 19.5 6v5.6c0 4.5-3.1 8.1-7.5 9.4-4.4-1.3-7.5-4.9-7.5-9.4V6z" /><path d="m8.8 12.2 2.2 2.2 4.3-4.5" /></g></symbol>
+        <symbol id="i-moon" viewBox="0 0 24 24"><path d="M19.5 14.6A7.8 7.8 0 1 1 9.4 4.5a6.3 6.3 0 0 0 10.1 10.1z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round" /></symbol>
+        <symbol id="i-house" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 11 12 4l8.5 7" /><path d="M5.8 9.4V20h12.4V9.4M10 20v-5.2h4V20" /></g></symbol>
+        <symbol id="i-memory" viewBox="0 0 24 24"><path d="M6.5 3.5h11v17l-5.5-4-5.5 4z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round" /></symbol>
+        <symbol id="i-chip" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="6" y="6" width="12" height="12" rx="2.6" /><rect x="9.5" y="9.5" width="5" height="5" rx="1" /><path d="M9.5 2.8v3.2M14.5 2.8v3.2M9.5 18v3.2M14.5 18v3.2M2.8 9.5H6M2.8 14.5H6M18 9.5h3.2M18 14.5h3.2" /></g></symbol>
+        <symbol id="i-eye" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.9"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z" stroke-linejoin="round" /><circle cx="12" cy="12" r="2.8" /></g></symbol>
+        <symbol id="i-info" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="9" /><path d="M12 11v5.5" /><path d="M12 7.6h.01" stroke-width="2.6" /></g></symbol>
+        <symbol id="i-iphone" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="6.5" y="2.5" width="11" height="19" rx="2.8" /><path d="M10.5 5.2h3" /></g></symbol>
+        <symbol id="i-ipad" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="2.5" width="16" height="19" rx="2.6" /><path d="M11 18.8h2" /></g></symbol>
+        <symbol id="i-laptop" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="4.5" y="4.5" width="15" height="11" rx="1.8" /><path d="M2 19h20" /></g></symbol>
+        <symbol id="i-pause" viewBox="0 0 24 24"><path d="M8.5 6v12M15.5 6v12" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" /></symbol>
+        <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" /></symbol>
+        <symbol id="i-terminal" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="4" width="19" height="16" rx="3" /><path d="m7 9.5 3 2.5-3 2.5M12.5 15H17" /></g></symbol>
+      </defs>
+    </svg>
+
+    <header class="site-header" data-header>
+      <a class="brand" href="#top" aria-label="Suzzme home">
+        <img src="assets/suzzme-icon-64.png" alt="" width="30" height="30" /><span>Suzzme</span>
+      </a>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="#flow">How it works</a>
+        <a href="#request">iPhone</a>
+        <a href="#mac">Mac</a>
+        <a href="#privacy">Privacy</a>
+        <a href="#build">Build</a>
+      </nav>
+      <button class="button button-dark nav-cta" type="button" data-waitlist-open>Join the waitlist</button>
+      <button class="nav-menu" type="button" aria-expanded="false" aria-controls="mobile-nav">
+        <span></span><span></span><span class="sr-only">Menu</span>
+      </button>
+      <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile">
+        <a href="#flow">How it works</a>
+        <a href="#request">On iPhone</a>
+        <a href="#mac">On Mac</a>
+        <a href="#privacy">Privacy</a>
+        <a href="#build">Build from source</a>
+        <button class="button button-dark" type="button" data-waitlist-open>Join the waitlist</button>
+      </nav>
+    </header>
+
+    <main id="main">
+      <!-- ============ Hero: iPhone first ============ -->
+      <section class="hero" id="top">
+        <div class="hero-copy">
+          <span class="face face-icon hero-mascot" data-face-state="idle" data-look aria-hidden="true">
+            <svg viewBox="0 0 100 100"><path class="eyes" pathLength="1" d="M14 43 29 28 44 43M56 43 71 28 86 43" /><path class="mouth" pathLength="1" d="M34 62 50 77 66 62" /></svg>
+          </span>
+          <p class="availability"><span></span>In development for iPhone, iPad and Mac</p>
+          <h1 class="hero-title" aria-label="Your day, understood.">
+            <span class="line"><span class="word">Your</span> <span class="word">day,</span></span>
+            <span class="line"><span class="word">understood.</span></span>
+          </h1>
+          <p class="hero-summary">
+            Suzzme lives on your iPhone and turns the context you choose to share into a calm view of what matters. Ask it anything about your day, and it helps you act.
+          </p>
+          <div class="hero-actions">
+            <button class="button button-plum" type="button" data-waitlist-open>Join the waitlist</button>
+            <a class="button button-ghost" href="#flow">See how it works</a>
+          </div>
+        </div>
+
+        <div class="hero-visual">
+
+          <figure class="hero-device">
+            <div class="hold">
+            <div class="iphone" data-hero-phone data-phase="home" aria-hidden="true">
+              <span class="iphone-btn iphone-btn-action"></span><span class="iphone-btn iphone-btn-vol1"></span><span class="iphone-btn iphone-btn-vol2"></span><span class="iphone-btn iphone-btn-power"></span>
+              <div class="iphone-screen">
+                <div class="status"><span class="status-time">9:41</span><span class="island"></span><span class="status-icons"><svg class="i-signal"><use href="#i-signal" /></svg><svg class="i-wifi"><use href="#i-wifi" /></svg><svg class="i-battery"><use href="#i-battery" /></svg></span></div>
+
+                <!-- Home -->
+                <div class="hp-home">
+                  <p class="hp-date">Tuesday, 14 October</p>
+                  <span class="face face-plain hp-face" data-face-state="idle" data-look data-hero-face><svg viewBox="0 0 100 100"><path class="eyes" d="M14 43 29 28 44 43M56 43 71 28 86 43" /><path class="mouth" d="M34 62 50 77 66 62" /></svg></span>
+                  <h2 class="hp-greeting">Good morning.<br />Here’s what matters.</h2>
+                  <ul class="hp-list">
+                    <li style="--d:0"><span class="hp-ico" style="--c:#744575"><svg><use href="#i-calendar" /></svg></span><span><b>Design catch-up</b><em>10:00 with Maya</em></span></li>
+                    <li style="--d:1"><span class="hp-ico" style="--c:#b0743a"><svg><use href="#i-reminders" /></svg></span><span><b>Send the deck</b><em>Due by 5 pm</em></span></li>
+                    <li style="--d:2"><span class="hp-ico" style="--c:#2f7d64"><svg><use href="#i-globe" /></svg></span><span><b>Parcel arriving</b><em>Between 1 and 3 pm</em></span></li>
+                  </ul>
+                  <div class="hp-actions">
+                    <span class="hp-talk" data-hero-talk><svg><use href="#i-mic" /></svg>Talk to Suzzme</span>
+                    <span class="hp-type"><svg><use href="#i-keyboard" /></svg>Type to Suzzme</span>
+                  </div>
+                </div>
+
+                <!-- Voice sheet -->
+                <div class="hp-sheet">
+                  <div class="hp-grabber"></div>
+                  <div class="hp-sheet-head">
+                    <span class="face face-dark" data-face-state="listening" data-hero-sheet-face><svg viewBox="0 0 100 100"><path class="eyes" d="M14 43 29 28 44 43M56 43 71 28 86 43" /><path class="mouth" d="M34 62 50 77 66 62" /></svg></span>
+                    <span><b data-hero-state>Listening…</b><small data-hero-detail>Suzzme is listening</small></span>
+                    <span class="wave"><i></i><i></i><i></i><i></i><i></i></span>
+                  </div>
+                  <p class="hp-question" data-hero-question></p>
+                  <div class="hp-answer">
+                    <p>Your design catch-up is at <b>10:00</b>, so you have about 90 minutes for focused work first. The parcel arrives after lunch, and the deck is due by 5.</p>
+                    <div class="hp-sources"><span><svg><use href="#i-calendar" /></svg>Calendar</span><span><svg><use href="#i-reminders" /></svg>Reminders</span><span><svg><use href="#i-globe" /></svg>Watched page</span></div>
+                  </div>
+                  <div class="hp-composer"><span>Ask a follow-up</span><b><svg><use href="#i-arrow-up" /></svg></b></div>
+                </div>
+
+                <div class="tabbar"><span class="is-on"><svg><use href="#i-house" /></svg>Home</span><span><svg><use href="#i-summary" /></svg>Summary</span><span><svg><use href="#i-memory" /></svg>Memory</span></div>
+                <div class="home-indicator"></div>
+              </div>
+            </div>
+            </div>
+            <figcaption class="demo-control">
+              <button class="demo-toggle" type="button" data-hero-toggle aria-pressed="false">
+                <svg class="ico-pause"><use href="#i-pause" /></svg><svg class="ico-play"><use href="#i-play" /></svg><span data-toggle-label>Pause</span>
+              </button>
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <!-- ============ Flow: sources → understanding → outcomes ============ -->
+      <section class="flow" id="flow" data-flow>
+        <div class="flow-sticky">
+          <div class="flow-copy">
+            <h2>From scattered context to a clear next step.</h2>
+            <ol class="flow-stages">
+              <li data-flow-stage="0">
+                <b>Only what you permit</b>
+                <p>Calendar, Reminders, Contacts and public pages you choose to watch. Nothing is read behind your back.</p>
+              </li>
+              <li data-flow-stage="1">
+                <b>Understood in context</b>
+                <p>Events, deadlines and changes are connected with today and with memory you can inspect, then ranked by what matters now.</p>
+              </li>
+              <li data-flow-stage="2">
+                <b>Then something useful happens</b>
+                <p>Suzzme reminds, summarizes, answers or acts. When nothing needs you, it stays quiet.</p>
+              </li>
+            </ol>
+          </div>
+          <div class="flow-diagram" aria-hidden="true">
+            <svg viewBox="0 0 660 560" data-flow-svg>
+              <defs>
+                <radialGradient id="core-glow">
+                  <stop offset="0" stop-color="#b88ac7" stop-opacity=".55" />
+                  <stop offset="1" stop-color="#b88ac7" stop-opacity="0" />
+                </radialGradient>
+                <linearGradient id="icon-tile" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0" stop-color="#7434a6" />
+                  <stop offset=".55" stop-color="#b48ad0" />
+                  <stop offset="1" stop-color="#f6f0f9" />
+                </linearGradient>
+              </defs>
+              <g class="beams beams-in">
+                <path class="beam-track" d="M146 88 C 240 88, 230 280, 330 280" />
+                <path class="beam-track" d="M146 210 C 240 210, 240 280, 330 280" />
+                <path class="beam-track" d="M146 350 C 240 350, 240 280, 330 280" />
+                <path class="beam-track" d="M146 472 C 240 472, 230 280, 330 280" />
+                <path class="beam" pathLength="1" d="M146 88 C 240 88, 230 280, 330 280" />
+                <path class="beam" pathLength="1" d="M146 210 C 240 210, 240 280, 330 280" />
+                <path class="beam" pathLength="1" d="M146 350 C 240 350, 240 280, 330 280" />
+                <path class="beam" pathLength="1" d="M146 472 C 240 472, 230 280, 330 280" />
+              </g>
+              <g class="beams beams-out">
+                <path class="beam-track" d="M330 280 C 430 280, 420 76, 514 76" />
+                <path class="beam-track" d="M330 280 C 430 280, 420 178, 514 178" />
+                <path class="beam-track" d="M330 280 C 430 280, 430 280, 514 280" />
+                <path class="beam-track" d="M330 280 C 430 280, 420 382, 514 382" />
+                <path class="beam-track beam-quiet" d="M330 280 C 430 280, 420 484, 514 484" />
+                <path class="beam" pathLength="1" d="M330 280 C 430 280, 420 76, 514 76" />
+                <path class="beam" pathLength="1" d="M330 280 C 430 280, 420 178, 514 178" />
+                <path class="beam" pathLength="1" d="M330 280 C 430 280, 430 280, 514 280" />
+                <path class="beam" pathLength="1" d="M330 280 C 430 280, 420 382, 514 382" />
+                <path class="beam beam-quiet" pathLength="1" d="M330 280 C 430 280, 420 484, 514 484" />
+              </g>
+              <g class="pulses" data-flow-pulses></g>
+
+              <g class="nodes nodes-in">
+                <g transform="translate(2 66)"><rect width="144" height="44" rx="22" /><use href="#i-calendar" x="14" y="12" width="20" height="20" /><text x="42" y="27">Calendar</text></g>
+                <g transform="translate(2 188)"><rect width="144" height="44" rx="22" /><use href="#i-reminders" x="14" y="12" width="20" height="20" /><text x="42" y="27">Reminders</text></g>
+                <g transform="translate(2 328)"><rect width="144" height="44" rx="22" /><use href="#i-person" x="14" y="12" width="20" height="20" /><text x="42" y="27">Contacts</text></g>
+                <g transform="translate(2 450)"><rect width="144" height="44" rx="22" /><use href="#i-globe" x="14" y="12" width="20" height="20" /><text x="42" y="27">Watched pages</text></g>
+              </g>
+
+              <g class="core">
+                <circle cx="330" cy="280" r="130" fill="url(#core-glow)" class="core-glow" />
+                <circle cx="330" cy="280" r="74" class="core-ring" pathLength="1" />
+                <rect x="284" y="234" width="92" height="92" rx="24" fill="url(#icon-tile)" class="core-tile" />
+                <use href="#face" x="294" y="244" width="72" height="72" class="core-face" />
+                <text x="330" y="384" class="core-label">Today + memory</text>
+              </g>
+
+              <g class="nodes nodes-out">
+                <g transform="translate(514 54)"><rect width="144" height="44" rx="22" /><use href="#i-bell" x="14" y="12" width="20" height="20" /><text x="42" y="27">Remind</text></g>
+                <g transform="translate(514 156)"><rect width="144" height="44" rx="22" /><use href="#i-summary" x="14" y="12" width="20" height="20" /><text x="42" y="27">Summarize</text></g>
+                <g transform="translate(514 258)"><rect width="144" height="44" rx="22" /><use href="#i-bubble" x="14" y="12" width="20" height="20" /><text x="42" y="27">Answer</text></g>
+                <g transform="translate(514 360)"><rect width="144" height="44" rx="22" /><use href="#i-shield" x="14" y="12" width="20" height="20" /><text x="42" y="27">Act safely</text></g>
+                <g transform="translate(514 462)" class="node-quiet"><rect width="144" height="44" rx="22" /><use href="#i-moon" x="14" y="12" width="20" height="20" /><text x="42" y="27">Stay quiet</text></g>
+              </g>
+            </svg>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ Request lifecycle on iPhone ============ -->
+      <section class="request" id="request" data-request>
+        <header class="section-head">
+          <h2>One request, followed all the way through.</h2>
+          <p>On iPhone, your words, the context they touch and the decision they need stay together, from the first word to a verified result.</p>
+        </header>
+        <div class="request-layout">
+          <ol class="request-steps">
+            <li class="request-step" data-step="ask">
+              <span class="step-num">1</span>
+              <h3>Ask the way you would ask a person.</h3>
+              <p>Talk or type. Both start the same request session, and speaking never gets more authority than typing.</p>
+            </li>
+            <li class="request-step" data-step="understand">
+              <span class="step-num">2</span>
+              <h3>Find the exact thing you meant.</h3>
+              <p>Suzzme grounds the request in Calendar context you permitted and resolves one specific event and time.</p>
+            </li>
+            <li class="request-step" data-step="confirm">
+              <span class="step-num">3</span>
+              <h3>See the change before it happens.</h3>
+              <p>The action and its target stay on screen. Nothing changes until you confirm.</p>
+            </li>
+            <li class="request-step" data-step="verify">
+              <span class="step-num">4</span>
+              <h3>Done means checked.</h3>
+              <p>Deterministic Swift performs the change, reads Calendar again, and only then tells you it’s finished.</p>
+            </li>
+          </ol>
+          <div class="request-device" aria-hidden="true">
+            <div class="iphone" data-request-phone data-step="ask">
+              <span class="iphone-btn iphone-btn-action"></span><span class="iphone-btn iphone-btn-vol1"></span><span class="iphone-btn iphone-btn-vol2"></span><span class="iphone-btn iphone-btn-power"></span>
+              <div class="iphone-screen">
+                <div class="status"><span class="status-time">9:41</span><span class="island"></span><span class="status-icons"><svg class="i-signal"><use href="#i-signal" /></svg><svg class="i-wifi"><use href="#i-wifi" /></svg><svg class="i-battery"><use href="#i-battery" /></svg></span></div>
+                <div class="app-nav"><span>Cancel</span><b>Ask Suzzme</b><span></span></div>
+                <div class="req-presence">
+                  <span class="face face-dark" data-face-state="listening"><svg viewBox="0 0 100 100"><path class="eyes" d="M14 43 29 28 44 43M56 43 71 28 86 43" /><path class="mouth" d="M34 62 50 77 66 62" /></svg></span>
+                  <span><b data-req-state>Listening…</b><small data-req-detail>Suzzme is listening</small></span>
+                  <span class="wave"><i></i><i></i><i></i><i></i><i></i></span>
+                </div>
+                <div class="req-bubble">Move my design catch-up to tomorrow at ten.</div>
+                <div class="req-card req-context">
+                  <small><svg><use href="#i-calendar" /></svg>From your Calendar</small>
+                  <div class="req-event"><i></i><span><b>Design catch-up</b><em>Today, 10:00 – 10:45</em></span></div>
+                  <div class="req-arrow"><svg><use href="#i-arrow-up" /></svg></div>
+                  <div class="req-event req-event-new"><i></i><span><b>Design catch-up</b><em>Tomorrow, 10:00 – 10:45</em></span></div>
+                </div>
+                <div class="req-card req-confirm">
+                  <b>Move ‘Design catch-up’ to tomorrow at 10:00?</b>
+                  <div><span class="pill">Cancel</span><span class="pill pill-plum">Move event</span></div>
+                </div>
+                <div class="req-card req-done">
+                  <span class="done-tick"><svg><use href="#i-check" /></svg></span>
+                  <span><b>Moved and verified.</b><em>Design catch-up is tomorrow at 10:00.</em></span>
+                </div>
+                <div class="composer"><span>Ask a follow-up</span><b><svg><use href="#i-arrow-up" /></svg></b></div>
+                <div class="home-indicator"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ A day on iPhone ============ -->
+      <section class="day" id="day" data-day data-time="morning">
+        <header class="section-head section-head-center">
+          <h2>A day with Suzzme on iPhone.</h2>
+          <p>Helpful at the moments that count, without asking you to live in another dashboard.</p>
+        </header>
+        <div class="day-switch" role="tablist" aria-label="Time of day">
+          <span class="day-indicator" aria-hidden="true"></span>
+          <button role="tab" aria-selected="true" data-time="morning">Morning</button>
+          <button role="tab" aria-selected="false" data-time="midday">Midday</button>
+          <button role="tab" aria-selected="false" data-time="evening">Evening</button>
+        </div>
+        <div class="day-stage">
+          <div class="day-copy" aria-live="polite">
+            <p class="day-kicker" data-day-kicker>8:05 am</p>
+            <h3 data-day-title>Your Daily Summary, ready when you wake.</h3>
+            <p data-day-body>It explains the day in plain language instead of counting notifications, and says clearly when something is missing.</p>
+          </div>
+          <div class="iphone iphone-day" aria-hidden="true">
+            <span class="iphone-btn iphone-btn-action"></span><span class="iphone-btn iphone-btn-vol1"></span><span class="iphone-btn iphone-btn-vol2"></span><span class="iphone-btn iphone-btn-power"></span>
+            <div class="iphone-screen">
+              <div class="status"><span class="status-time" data-day-clock>8:05</span><span class="island"></span><span class="status-icons"><svg class="i-signal"><use href="#i-signal" /></svg><svg class="i-wifi"><use href="#i-wifi" /></svg><svg class="i-battery"><use href="#i-battery" /></svg></span></div>
+              <div class="day-screens">
+                <div class="day-screen" data-screen="morning">
+                  <small class="screen-kicker"><svg><use href="#i-summary" /></svg>Daily Summary</small>
+                  <h4>A calm Tuesday with one busy hour.</h4>
+                  <p class="summary-text">Your design catch-up moved to <b>10:00</b>. You have a clear hour before it. The parcel needs someone home <b>after lunch</b>, and the deck is due by <b>5 pm</b>.</p>
+                  <ul class="today-list">
+                    <li><span class="hp-ico" style="--c:#744575"><svg><use href="#i-calendar" /></svg></span><span><b>Design catch-up</b><em>10:00, moved from yesterday</em></span></li>
+                    <li><span class="hp-ico" style="--c:#b0743a"><svg><use href="#i-reminders" /></svg></span><span><b>Send the deck</b><em>Due by 5 pm</em></span></li>
+                  </ul>
+                  <p class="summary-limit"><svg><use href="#i-info" /></svg>Contacts is off, so birthdays aren’t included.</p>
+                </div>
+                <div class="day-screen" data-screen="midday">
+                  <small class="screen-kicker"><svg><use href="#i-bubble" /></svg>Ask Suzzme</small>
+                  <div class="chat-q">When is the parcel coming, and can I still make the gym?</div>
+                  <div class="chat-a">
+                    <p>The tracking page you watch says <b>between 1 and 3 pm</b>. Your class starts at 6, so both fit.</p>
+                    <span class="source-chip"><svg><use href="#i-globe" /></svg>Watched page, 12:40</span>
+                  </div>
+                  <div class="chat-q chat-q-short">Remind me at 2:45 if it hasn’t come.</div>
+                  <div class="chat-a chat-a-confirm"><b>Add a reminder for 2:45 pm?</b><div><span class="pill">Cancel</span><span class="pill pill-plum">Add reminder</span></div></div>
+                </div>
+                <div class="day-screen" data-screen="evening">
+                  <small class="screen-kicker"><svg><use href="#i-memory" /></svg>Memory</small>
+                  <h4>What Suzzme remembers.</h4>
+                  <ul class="memory-list">
+                    <li><b>Focused mornings</b><em>You prefer quiet time before your first meeting.</em><span>Edit</span></li>
+                    <li><b>Maya Chen</b><em>Design lead. Weekly catch-up on Tuesdays.</em><span>Edit</span></li>
+                    <li class="memory-removing"><b>Old gym schedule</b><em>Replaced by your new class times.</em><span>Delete</span></li>
+                  </ul>
+                  <p class="memory-note">Today’s details stay in Daily Context and fade when the day is over. Only useful, long-lasting things become memory.</p>
+                </div>
+              </div>
+              <div class="tabbar"><span data-tab="morning"><svg><use href="#i-house" /></svg>Home</span><span data-tab="midday"><svg><use href="#i-bubble" /></svg>Ask</span><span data-tab="evening"><svg><use href="#i-memory" /></svg>Memory</span></div>
+              <div class="home-indicator"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ Also on Mac ============ -->
+      <section class="mac-section" id="mac">
+        <header class="section-head section-head-center">
+          <h2>On your Mac, it lives just below the notch.</h2>
+          <p>Presence is an app-owned surface built with public APIs. It grows only when something is happening, then gets out of the way. Macs without a notch get a top-centre panel.</p>
+        </header>
+        <figure class="mac" data-mac>
+          <div class="mac-scaler" data-mac-scaler>
+            <div class="mac-screen" data-demo data-phase="idle">
+              <img class="mac-wallpaper" src="assets/suzzme-context-field-v2.jpg" alt="" />
+              <div class="menubar" aria-hidden="true">
+                <span class="menubar-left"><b>Suzzme</b><span>File</span><span>Edit</span><span>View</span><span>Window</span></span>
+                <span class="menubar-right"><svg class="i-wifi"><use href="#i-wifi" /></svg><svg class="i-battery"><use href="#i-battery" /></svg><span>Tue 9:41</span></span>
+              </div>
+              <div class="notch" aria-hidden="true"></div>
+
+              <div class="presence" data-presence aria-live="polite">
+                <div class="presence-inner">
+                  <div class="presence-head">
+                    <span class="face face-dark" data-face-state="idle"><svg viewBox="0 0 100 100"><path class="eyes" d="M14 43 29 28 44 43M56 43 71 28 86 43" /><path class="mouth" d="M34 62 50 77 66 62" /></svg></span>
+                    <span class="presence-text"><b data-demo-title>Listening…</b><small data-demo-detail>Suzzme is listening</small></span>
+                    <span class="presence-close" aria-hidden="true"><svg><use href="#i-xmark" /></svg></span>
+                  </div>
+                  <p class="presence-transcript" data-demo-transcript></p>
+                  <div class="presence-confirm">
+                    <p>Move ‘Design catch-up’ to tomorrow at 10:00?</p>
+                    <div><span class="pill">Cancel</span><span class="pill pill-plum" data-demo-confirm>Move event</span></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="cal" aria-hidden="true">
+                <div class="cal-bar"><i></i><i></i><i></i><b>Calendar</b></div>
+                <div class="cal-grid">
+                  <div class="cal-times"><span>9</span><span>10</span><span>11</span><span>12</span><span>1</span></div>
+                  <div class="cal-day"><h4>Today <small>Tue 14</small></h4><div class="ev ev-muted" style="--t:0">Inbox zero</div><div class="ev ev-muted" style="--t:2.6">Lunch with Maya</div></div>
+                  <div class="cal-day"><h4>Tomorrow <small>Wed 15</small></h4><div class="ev ev-muted" style="--t:2">Studio review</div></div>
+                  <div class="ev ev-target" data-demo-event><b>Design catch-up</b><small>10:00 – 10:45</small><svg><use href="#i-check" /></svg></div>
+                </div>
+              </div>
+
+              <div class="cursor" aria-hidden="true"></div>
+            </div>
+          </div>
+          <figcaption class="demo-bar">
+            <ol class="demo-steps" aria-label="Demo progress">
+              <li data-step="listen">Listen</li>
+              <li data-step="check">Check context</li>
+              <li data-step="confirm">Confirm</li>
+              <li data-step="act">Act</li>
+              <li data-step="verify">Verify</li>
+            </ol>
+            <button class="demo-toggle" type="button" data-demo-toggle aria-pressed="false">
+              <svg class="ico-pause"><use href="#i-pause" /></svg><svg class="ico-play"><use href="#i-play" /></svg><span data-toggle-label>Pause</span>
+            </button>
+          </figcaption>
+        </figure>
+      </section>
+
+      <!-- ============ The mascot: Face states ============ -->
+      <section class="states" id="states" data-states>
+        <div class="states-face" aria-hidden="true">
+          <div class="states-halo"></div>
+          <span class="face face-icon face-xl" data-face-state="listening" data-look data-states-face>
+            <svg viewBox="0 0 100 100"><path class="eyes" d="M14 43 29 28 44 43M56 43 71 28 86 43" /><path class="mouth" d="M34 62 50 77 66 62" /></svg>
+          </span>
+        </div>
+        <div class="states-copy">
+          <h2>Three strokes that tell you what’s happening.</h2>
+          <p>The Suzzme Face changes with each state, quietly. Every expression comes with words too, so you never have to guess.</p>
+          <div class="states-list" role="radiogroup" aria-label="Assistant states">
+            <button role="radio" aria-checked="true" data-state="listening">Listening</button>
+            <button role="radio" aria-checked="false" data-state="transcribing">Transcribing</button>
+            <button role="radio" aria-checked="false" data-state="understanding">Understanding</button>
+            <button role="radio" aria-checked="false" data-state="gatheringContext">Checking context</button>
+            <button role="radio" aria-checked="false" data-state="reasoning">Reasoning</button>
+            <button role="radio" aria-checked="false" data-state="awaitingConfirmation">Awaiting confirmation</button>
+            <button role="radio" aria-checked="false" data-state="acting">Acting</button>
+            <button role="radio" aria-checked="false" data-state="speaking">Speaking</button>
+            <button role="radio" aria-checked="false" data-state="success">Done</button>
+            <button role="radio" aria-checked="false" data-state="error">Something went wrong</button>
+          </div>
+          <p class="states-caption" aria-live="polite" data-states-caption>Listening. Suzzme is hearing your request.</p>
+        </div>
+      </section>
+
+      <!-- ============ Privacy ============ -->
+      <section class="privacy" id="privacy">
+        <header class="section-head">
+          <h2>Privacy isn’t a setting. It’s how Suzzme behaves.</h2>
+        </header>
+        <div class="privacy-grid">
+          <div class="principles">
+            <article>
+              <span class="principle-ico"><svg><use href="#i-chip" /></svg></span>
+              <div><h3>On-device first</h3><p>Apple Foundation Models run locally where available. Personal context isn’t a prompt to hand away.</p></div>
+            </article>
+            <article>
+              <span class="principle-ico"><svg><use href="#i-eye" /></svg></span>
+              <div><h3>Memory you can inspect</h3><p>See what Suzzme remembers and where it came from. Correct it or delete it whenever you like.</p></div>
+            </article>
+            <article>
+              <span class="principle-ico"><svg><use href="#i-info" /></svg></span>
+              <div><h3>Honest when things are missing</h3><p>When a source or advanced model is unavailable, Suzzme says so plainly instead of filling the gap.</p></div>
+            </article>
+          </div>
+          <div class="never">
+            <h3>Things Suzzme will never do</h3>
+            <ul data-never>
+              <li>Read your Messages or WhatsApp</li>
+              <li>Scrape your notifications</li>
+              <li>Open another app’s private database</li>
+              <li>Use private Apple APIs</li>
+              <li>Draw a fake Dynamic Island</li>
+              <li>Say “done” before checking it’s done</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ Build from source ============ -->
+      <section class="build" id="build">
+        <div class="build-copy">
+          <span class="principle-ico"><svg><use href="#i-terminal" /></svg></span>
+          <h2>Run it from source today.</h2>
+          <p>Suzzme isn’t publicly distributed yet. The shared SwiftUI target runs on an iPhone simulator or on your Mac.</p>
+          <p class="build-note">Grant only the permissions you choose. Everything else keeps working.</p>
+        </div>
+        <div class="terminal" data-terminal>
+          <div class="terminal-bar"><i></i><i></i><i></i><span>zsh</span></div>
+          <pre><code data-terminal-code></code><span class="caret"></span></pre>
+        </div>
+      </section>
+
+      <!-- ============ FAQ ============ -->
+      <section class="faq" id="faq">
+        <header class="section-head">
+          <h2>Questions, answered plainly.</h2>
+        </header>
+        <div class="faq-list">
+          <details>
+            <summary>What is Suzzme?</summary>
+            <div class="faq-body"><p>A privacy-first personal intelligence layer, built for iPhone first and also available on Mac. It explains your day, keeps useful memory, answers questions and safely performs supported actions.</p></div>
+          </details>
+          <details>
+            <summary>Which sources can it use?</summary>
+            <div class="faq-body"><p>Calendar, Reminders, Contacts and public webpages you explicitly choose to watch. What’s available depends on the current build and the permissions you grant.</p></div>
+          </details>
+          <details>
+            <summary>Can it act without asking?</summary>
+            <div class="faq-body"><p>No. Language models may understand and propose. Deterministic Swift code owns permission, confirmation when required, execution and verification.</p></div>
+          </details>
+          <details>
+            <summary>Does it use the Dynamic Island?</summary>
+            <div class="faq-body"><p>No. On iPhone, Suzzme stays inside its own app and never draws a fake island. On MacBooks with a notch, Presence is an app-owned surface just below the notch, built with public APIs.</p></div>
+          </details>
+          <details>
+            <summary>When can I use it?</summary>
+            <div class="faq-body"><p>Suzzme is in development. You can build it from source now, or join the waitlist to hear when a public build is ready.</p></div>
+          </details>
+          <details>
+            <summary>Who is building Suzzme?</summary>
+            <div class="faq-body"><p>Dhanesh Shetty and Rehan.</p></div>
+          </details>
+        </div>
+      </section>
+
+      <!-- ============ Closing ============ -->
+      <section class="closing">
+        <span class="face face-icon closing-mascot" data-face-state="success" data-look aria-hidden="true"><svg viewBox="0 0 100 100"><path class="eyes" d="M14 43 29 28 44 43M56 43 71 28 86 43" /><path class="mouth" d="M34 62 50 77 66 62" /></svg></span>
+        <h2>Less to keep track of.<br />More of your day back.</h2>
+        <p>Join the waitlist and we’ll let you know when Suzzme is ready for your iPhone.</p>
+        <button class="button button-light" type="button" data-waitlist-open>Join the waitlist</button>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <a class="brand" href="#top"><img src="assets/suzzme-icon-64.png" alt="" width="26" height="26" /><span>Suzzme</span></a>
+      <p>Built by Dhanesh Shetty and Rehan. Product previews are illustrations with example data.</p>
+      <a href="#build">Build from source</a>
+    </footer>
+
+    <dialog class="waitlist" data-waitlist aria-labelledby="waitlist-title">
+      <form class="waitlist-form" data-waitlist-form novalidate>
+        <button class="waitlist-close" type="button" data-waitlist-close aria-label="Close"><svg><use href="#i-xmark" /></svg></button>
+        <img class="waitlist-icon" src="assets/suzzme-icon-180.png" alt="" width="56" height="56" />
+        <h2 id="waitlist-title">Join the waitlist</h2>
+        <p>We’ll email you once when Suzzme is ready. That’s it.</p>
+        <label class="field">
+          <span>Email</span>
+          <input type="email" name="email" autocomplete="email" required placeholder="you@example.com" />
+        </label>
+        <fieldset class="devices">
+          <legend>Which device? <em>Optional</em></legend>
+          <label><input type="radio" name="platform" value="iphone" /><span><svg><use href="#i-iphone" /></svg>iPhone</span></label>
+          <label><input type="radio" name="platform" value="ipad" /><span><svg><use href="#i-ipad" /></svg>iPad</span></label>
+          <label><input type="radio" name="platform" value="mac" /><span><svg><use href="#i-laptop" /></svg>Mac</span></label>
+        </fieldset>
+        <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" />
+        <p class="form-message" role="status" data-waitlist-message></p>
+        <button class="button button-plum button-block" type="submit">Join the waitlist</button>
+      </form>
+      <div class="waitlist-done" data-waitlist-done hidden>
+        <span class="done-tick done-tick-lg"><svg><use href="#i-check" /></svg></span>
+        <h2>You’re on the list.</h2>
+        <p>We’ll email you when there’s a build to try.</p>
+        <button class="button button-dark" type="button" data-waitlist-close>Close</button>
+      </div>
+    </dialog>
+  </body>
+</html>
