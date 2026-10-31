@@ -74,8 +74,8 @@ struct IntegrationsView: View {
             }
             .padding(SuzzmeTheme.Spacing.small)
             .frame(minHeight: SuzzmeTheme.Layout.touchTarget)
-            .suzzmeGlassSurface(cornerRadius: SuzzmeTheme.Radius.control,
-                                tint: SuzzmeTheme.intelligencePrimary.opacity(0.1))
+            .suzzmeGlassControlSurface(cornerRadius: SuzzmeTheme.Radius.control,
+                                       tint: SuzzmeTheme.intelligencePrimary.opacity(0.1))
 
             VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.small) {
                 DisclosureGroup(isExpanded: $showsDataFlow) {
@@ -218,8 +218,7 @@ struct IntegrationsView: View {
               let request = controller.takeBrowserIntegrationSetup() else { return }
         switch request.service {
         case .github:
-            suggestedGitHubRepository = request.repository ?? ""
-            setupSheet = .direct(.github)
+            setupSheet = .composio(.github)
         case .notion:
             setupSheet = .direct(.notion)
         case .linkedin:
@@ -237,7 +236,11 @@ struct IntegrationsView: View {
         let action = action(for: item)
         switch item.availability {
         case .connectable:
-            if item.integrationID == .notion {
+            if item.integrationID == .github {
+                NavigationLink { ComposioIntegrationsView(initialServiceID: "github") } label: {
+                    IntegrationDirectoryCard(item: item, status: "Composio · issue reads", action: "Connect")
+                }.buttonStyle(.plain)
+            } else if item.integrationID == .notion {
                 NavigationLink { NotionIntegrationOptions() } label: {
                     IntegrationDirectoryCard(item: item, status: status, action: action)
                 }.buttonStyle(.plain)
@@ -311,6 +314,7 @@ struct IntegrationsView: View {
             return environment.gmailAccount.isConnected ? "Connected" : environment.gmailAccount.isConfigured ? "Sign-in required" : "Setup required"
         case .connectable:
             guard let service = item.integrationID else { return "Not configured" }
+            if service == .github { return "Composio · issue reads" }
             let accounts = controller.accounts.filter { $0.service == service }
             if let recipe = ProviderReadRecipe.find(service), recipe.googleScope != nil {
                 return environment.gmailAccount.hasGoogleAccess(service) ? "Read access granted" : environment.gmailAccount.isConfigured ? "Sign-in required" : "Setup required"
@@ -330,6 +334,7 @@ struct IntegrationsView: View {
             return "Share an excerpt"
         case .managedGoogle: return environment.gmailAccount.isConfigured ? "Manage" : "Setup"
         case .connectable:
+            if item.integrationID == .github { return "Connect with Composio" }
             guard let service = item.integrationID else { return "Unavailable" }
             if service == .notion { return "Choose access" }
             if let recipe = ProviderReadRecipe.find(service), recipe.googleScope != nil {
@@ -361,8 +366,8 @@ private struct IntegrationDirectoryCard: View {
                     .multilineTextAlignment(.trailing)
                     .lineLimit(2)
                     .padding(.horizontal, 8).padding(.vertical, 5)
-                    .suzzmeGlassSurface(cornerRadius: SuzzmeTheme.Radius.largeSurface,
-                                        tint: SuzzmeTheme.intelligencePrimary.opacity(0.08))
+                    .suzzmeContentSurface(cornerRadius: SuzzmeTheme.Radius.largeSurface,
+                                          tint: SuzzmeTheme.intelligencePrimary.opacity(0.08))
             }
             Text(item.name).font(.headline).foregroundStyle(SuzzmeTheme.textPrimary)
             Text(item.summary).font(.caption).foregroundStyle(SuzzmeTheme.textSecondary)
@@ -379,8 +384,8 @@ private struct IntegrationDirectoryCard: View {
         }
         .padding(SuzzmeTheme.Spacing.medium)
         .frame(maxWidth: .infinity, minHeight: 174, alignment: .topLeading)
-        .suzzmeGlassSurface(cornerRadius: SuzzmeTheme.Radius.card,
-                            tint: SuzzmeTheme.intelligencePrimary.opacity(0.1))
+        .suzzmeContentSurface(cornerRadius: SuzzmeTheme.Radius.card,
+                              tint: SuzzmeTheme.intelligencePrimary.opacity(0.1))
         .overlay {
             RoundedRectangle(cornerRadius: SuzzmeTheme.Radius.card, style: .continuous)
                 .strokeBorder(SuzzmeTheme.separator, lineWidth: SuzzmeTheme.hairline)
@@ -479,8 +484,8 @@ private struct IntegrationDataFlowCard: View {
         }
         .padding(SuzzmeTheme.Spacing.medium)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .suzzmeGlassSurface(cornerRadius: SuzzmeTheme.Radius.card,
-                            tint: SuzzmeTheme.intelligencePrimary.opacity(0.1))
+        .suzzmeContentSurface(cornerRadius: SuzzmeTheme.Radius.card,
+                              tint: SuzzmeTheme.intelligencePrimary.opacity(0.1))
         .overlay {
             RoundedRectangle(cornerRadius: SuzzmeTheme.Radius.card)
                 .stroke(SuzzmeTheme.separator, lineWidth: 1)
@@ -539,8 +544,8 @@ private struct IntegrationServiceRow: View {
         }
         .padding(SuzzmeTheme.Spacing.medium)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .suzzmeGlassSurface(cornerRadius: SuzzmeTheme.Radius.card,
-                            tint: SuzzmeTheme.intelligencePrimary.opacity(0.1))
+        .suzzmeContentSurface(cornerRadius: SuzzmeTheme.Radius.card,
+                              tint: SuzzmeTheme.intelligencePrimary.opacity(0.1))
         .contentShape(RoundedRectangle(cornerRadius: SuzzmeTheme.Radius.card))
         .accessibilityElement(children: .combine)
     }

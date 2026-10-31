@@ -48,8 +48,8 @@ struct MacMenuBarView: View {
                         .disabled(draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                     }
                     .padding(SuzzmeTheme.Spacing.xs)
-                    .suzzmeGlassSurface(cornerRadius: SuzzmeTheme.Radius.control,
-                                        tint: SuzzmeTheme.intelligencePrimary.opacity(0.12))
+                    .suzzmeGlassControlSurface(cornerRadius: SuzzmeTheme.Radius.control,
+                                               tint: SuzzmeTheme.intelligencePrimary.opacity(0.12))
                     Button {
                         Task { await environment.invokeTransientVoice() }
                         onClose()

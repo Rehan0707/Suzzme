@@ -77,7 +77,7 @@ struct MobileCompanionTodayView: View {
                     HStack(spacing: SuzzmeTheme.Spacing.xs) { Text(dayLabel).font(.headline); Image(systemName: "chevron.down").font(.caption) }
                         .padding(.horizontal, SuzzmeTheme.Spacing.medium)
                         .frame(minHeight: SuzzmeTheme.Layout.touchTarget)
-                        .suzzmeGlassSurface(cornerRadius: SuzzmeTheme.Layout.touchTarget / 2)
+                        .suzzmeGlassControlSurface(cornerRadius: SuzzmeTheme.Layout.touchTarget / 2)
                 }.buttonStyle(.plain).accessibilityLabel("Summary date: \(dayLabel)")
             }
         }

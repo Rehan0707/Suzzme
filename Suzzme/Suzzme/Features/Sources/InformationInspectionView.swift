@@ -8,11 +8,12 @@ struct InformationSourceControls: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.small) {
-            Toggle("Recent updates", isOn: Binding(
+            Toggle("Include in Daily Summary", isOn: Binding(
                 get: { health?.enabled ?? false },
                 set: { enabled in Task { await environment.setInformationEnabled(source, enabled: enabled) } }
             ))
-            .accessibilityLabel("\(source.title) recent updates")
+            .accessibilityLabel("Include \(source.title) in Daily Summary")
+            .accessibilityHint("When enabled, Suzzme checks this authorized source during refresh and summary preparation. Turning it off stops new reads and hides its stored updates.")
             .disabled(!canEnable && health?.enabled != true)
 
             Label(health?.state.humanLabel ?? "Updates off", systemImage: health?.state.statusSymbol ?? "pause.circle")
@@ -26,7 +27,7 @@ struct InformationSourceControls: View {
                     .font(.caption).foregroundStyle(SuzzmeTheme.textSecondary)
             }
             if health?.enabled == true {
-                Button("Refresh Updates") { Task { await environment.refreshInformation(force: true, source: source) } }
+                Button("Refresh Source") { Task { await environment.refreshInformation(force: true, source: source) } }
                     .disabled(environment.isRefreshingInformation)
             }
             Text("Turning updates off stops intake and hides stored updates. Source items and Personal Memory are not deleted.")

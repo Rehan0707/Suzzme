@@ -85,6 +85,7 @@ struct BrowserIntegrationRoute: Equatable, Sendable {
 /// action approval. Only a validated service and optional GitHub slug are used.
 struct IntegrationConnectionSuggestion: Equatable, Sendable {
     let repository: String
+    let resourceURL: String
     let hasSavedAccount: Bool
 
     static func make(question: String, accounts: [IntegrationAccount]) -> Self? {
@@ -95,10 +96,12 @@ struct IntegrationConnectionSuggestion: Equatable, Sendable {
         let urls = question.split(whereSeparator: \.isWhitespace).filter { $0.hasPrefix("https://") }
         guard urls.count == 1, let raw = urls.first,
               let resource = IntegrationResourceResolver.resolve(url: String(raw)), resource.serviceID == .github,
+              resource.kind == .githubIssue,
               let owner = resource.attributes.owner, let name = resource.attributes.repository else { return nil }
         if let selected = try? IntegrationAccountResolver.resolve(accounts: accounts, selected: nil),
            IntegrationRepositoryPolicy.permits(repo: owner + "/" + name, account: selected) { return nil }
-        return .init(repository: owner + "/" + name, hasSavedAccount: accounts.contains { $0.service == .github })
+        return .init(repository: owner + "/" + name, resourceURL: resource.canonicalURL.absoluteString,
+                     hasSavedAccount: accounts.contains { $0.service == .github })
     }
 }
 

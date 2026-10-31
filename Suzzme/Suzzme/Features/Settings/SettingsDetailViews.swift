@@ -26,21 +26,24 @@ struct ProfileSettingsView: View {
     var body: some View {
         Form {
             Section {
-                TextField("Name", text: $draftName)
+                TextField("Your name", text: $draftName)
                     .textContentType(.name)
                     .onSubmit(save)
-                Button("Save Name", action: save).disabled(trimmedName.isEmpty)
-            } header: { Text("Your profile") } footer: {
-                Text("Your name is stored on this device and used for Suzzme’s greeting.")
-            }
-            if saved { Section { Label("Saved on this device", systemImage: "checkmark.circle.fill").foregroundStyle(SuzzmeTheme.success) } }
+                if saved && trimmedName == profileName.trimmingCharacters(in: .whitespacesAndNewlines) {
+                    Label("Name saved", systemImage: "checkmark.circle.fill")
+                        .foregroundStyle(SuzzmeTheme.success)
+                }
+                Button("Save Name", action: save)
+                    .disabled(!canSaveName)
+            } header: { Text("On this device") }
             Section {
                 if hasAccount {
-                    LabeledContent("Signed in as", value: accountEmail ?? "Suzzme account")
+                    LabeledContent("Signed in", value: accountEmail ?? "Suzzme account")
+                        .textSelection(.enabled)
                     Button("Sign out") { Task { await signOut() } }.disabled(accountBusy)
-                    Button("Delete account", role: .destructive) { showsDeleteConfirmation = true }
-                        .disabled(accountBusy)
                 } else {
+                    Text("Sign in to share your prepared Daily Summary with your iPhone.")
+                        .foregroundStyle(SuzzmeTheme.textSecondary)
                     Button("Sign in with Google") {
                         Task { await signIn() }
                     }
@@ -61,8 +64,16 @@ struct ProfileSettingsView: View {
                 if let accountError {
                     Text(accountError).foregroundStyle(SuzzmeTheme.destructive)
                 }
-            } header: { Text("Account") } footer: {
-                Text("Your account stores identity details. If you enable iPhone sharing on your Mac, a prepared Daily Summary is shared with this account. Source data and credentials stay on the device that collected them.")
+            } header: { Text("Suzzme account") } footer: {
+                Text("Source data and credentials stay on the device that collected them.")
+            }
+            if hasAccount {
+                Section {
+                    Button("Delete account…", role: .destructive) { showsDeleteConfirmation = true }
+                        .disabled(accountBusy)
+                } header: { Text("Delete account") } footer: {
+                    Text("Permanently removes your account and its shared Suzzme data.")
+                }
             }
         }
         .suzzmeSettingsForm()
@@ -140,6 +151,9 @@ struct ProfileSettingsView: View {
     }
 
     private var trimmedName: String { draftName.trimmingCharacters(in: .whitespacesAndNewlines) }
+    private var canSaveName: Bool {
+        !trimmedName.isEmpty && trimmedName != profileName.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
     private var usesAppleSignIn: Bool {
         Auth.auth().currentUser?.providerData.contains { $0.providerID == "apple.com" } == true
     }

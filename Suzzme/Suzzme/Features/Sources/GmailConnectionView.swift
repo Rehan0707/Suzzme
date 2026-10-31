@@ -74,7 +74,7 @@ struct GmailConnectionView: View {
                 }
 
                 if !account.isConfigured {
-                    Text("Gmail isn’t available in this build. You can still use the sources connected on this device.")
+                    Text(account.configurationIssue ?? "Gmail isn’t available in this build. You can still use the sources connected on this device.")
                         .font(.caption).foregroundStyle(SuzzmeTheme.textSecondary)
                 } else {
                     InformationSourceControls(source: .gmail, canEnable: false)

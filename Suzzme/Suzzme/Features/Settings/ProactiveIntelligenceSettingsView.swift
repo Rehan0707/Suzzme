@@ -13,12 +13,12 @@ struct ProactiveIntelligenceSettingsView: View {
     @State private var pendingSave: Task<Void, Never>?
 
     var body: some View {
-        List {
+        Form {
             Section("Daily Summary") {
                 Toggle("Daily Summary", isOn: $dailyBriefingEnabled)
                 DatePicker("Preferred Time", selection: $selectedTime, displayedComponents: .hourAndMinute)
                     .disabled(!dailyBriefingEnabled)
-                Text("A private daily notification reminds you to open your summary at this local time. Suzzme checks fresh context when you open it. Apple may delay or silence notifications.")
+                Text("Choose when you’d like to be reminded. Open Daily Summary to check for fresh context. Notifications can be delayed or silenced by Apple.")
                     .font(.caption)
                     .foregroundStyle(SuzzmeTheme.textSecondary)
                 if dailyBriefingEnabled && !environment.summaryNotificationsAuthorized {
@@ -30,22 +30,19 @@ struct ProactiveIntelligenceSettingsView: View {
 
             #if os(macOS)
             ScheduledBriefingSettingsSection()
-            Section("Schedule on both devices") {
-                if environment.companionDeliveryPreferences != nil {
-                    Label("Schedule saved to your account", systemImage: "checkmark.circle")
-                }
-                if let error = environment.companionDeliveryError {
-                    Text(error).foregroundStyle(SuzzmeTheme.destructive)
-                }
-                Button("Refresh shared schedule") {
-                    Task { await environment.refreshCompanionSchedule(); load() }
-                }
-                Text("Changes made on iPhone reach this Mac while Suzzme is running. The selected time zone is shared between devices.")
-                    .font(.caption).foregroundStyle(SuzzmeTheme.textSecondary)
-            }
-            Section("iPhone Sharing") {
+            Section("Share with iPhone") {
                 if let email = environment.companionAccountEmail {
-                    LabeledContent("Suzzme account", value: email)
+                    LabeledContent("Account", value: email)
+                        .textSelection(.enabled)
+                    if environment.companionDeliveryPreferences != nil {
+                        Label("Schedule synced", systemImage: "checkmark.circle")
+                    }
+                    if let error = environment.companionDeliveryError {
+                        Text(error).foregroundStyle(SuzzmeTheme.destructive)
+                    }
+                    Button("Refresh shared schedule") {
+                        Task { await environment.refreshCompanionSchedule(); load() }
+                    }
                     Toggle("Share prepared Daily Summary with iPhone", isOn: Binding(
                         get: { environment.sharesSummaryWithIPhone },
                         set: { enabled in Task { await environment.setCompanionSharing(enabled) } }
@@ -55,7 +52,9 @@ struct ProactiveIntelligenceSettingsView: View {
                         Text("Turn on Daily Summary or Time-Sensitive Help before sharing updates with iPhone.")
                             .font(.caption).foregroundStyle(SuzzmeTheme.textSecondary)
                     }
-                    Text("Only the prepared summary, short day items, source names, and check times are shared. Raw emails, messages, source credentials, and Mac permissions stay on this Mac.")
+                    Text("Shares the prepared summary, short day items, source names, and check times. Raw emails, messages, credentials, and Mac permissions stay on this Mac.")
+                        .font(.caption).foregroundStyle(SuzzmeTheme.textSecondary)
+                    Text("Your reminder time and time zone sync while Suzzme is running on this Mac.")
                         .font(.caption).foregroundStyle(SuzzmeTheme.textSecondary)
                     if environment.sharesSummaryWithIPhone {
                         if let publishedAt = environment.lastCompanionPublishAt {
@@ -80,7 +79,7 @@ struct ProactiveIntelligenceSettingsView: View {
                         }
                     }
                 } else {
-                    Text("Sign in to the same Suzzme account on Mac and iPhone to share a prepared Daily Summary.")
+                    Text("Sign in to the same Suzzme account on Mac and iPhone to sync your schedule and share a prepared Daily Summary.")
                         .font(.subheadline).foregroundStyle(SuzzmeTheme.textSecondary)
                     NavigationLink("Open Account") { ProfileSettingsView() }
                 }
@@ -92,23 +91,23 @@ struct ProactiveIntelligenceSettingsView: View {
             MacLaunchAtLoginSettingsSection()
             #endif
 
-            Section("Helpful Moments") {
-                Toggle("Time-Sensitive Help", isOn: $timeCriticalEnabled)
+            Section("Optional assistance") {
+                Toggle("Time-sensitive help", isOn: $timeCriticalEnabled)
                 Text("Allows rare, privacy-preserving alerts when waiting would make useful information less useful.")
                     .font(.caption)
                     .foregroundStyle(SuzzmeTheme.textSecondary)
 
-                Toggle("Prepare Suggestions", isOn: $preparedAssistanceEnabled)
+                Toggle("Prepare suggestions", isOn: $preparedAssistanceEnabled)
                 Text("Suzzme may prepare a suggestion for you to review. It never authorizes or performs an action.")
                     .font(.caption)
                     .foregroundStyle(SuzzmeTheme.textSecondary)
             }
 
-            Section("Data") {
-                Button("Clear Briefings and Suggestions", role: .destructive) {
+            Section("History") {
+                Button("Clear Daily Summary and suggestion history", role: .destructive) {
                     confirmsClear = true
                 }
-                Text("This clears only Daily Summary, opportunity, and delivery history. Memory, Calendar, Reminders, and source information remain unchanged.")
+                Text("This clears Daily Summary, suggestions, and delivery history. Personal Memory, Calendar, Reminders, and source information stay unchanged.")
                     .font(.caption)
                     .foregroundStyle(SuzzmeTheme.textSecondary)
             }
@@ -121,8 +120,8 @@ struct ProactiveIntelligenceSettingsView: View {
                 }
             }
         }
-        .suzzmeReadableList()
-        .navigationTitle("Daily Summary & Suggestions")
+        .suzzmeSettingsForm()
+        .navigationTitle("Daily Summary")
         .confirmationDialog("Reset proactive data and preferences?", isPresented: $confirmsReset, titleVisibility: .visible) {
             Button("Reset Proactive Data", role: .destructive) { Task { await environment.resetProactiveData(); load() } }
             Button("Cancel", role: .cancel) { }

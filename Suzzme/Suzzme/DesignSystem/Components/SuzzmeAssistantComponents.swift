@@ -98,8 +98,8 @@ struct SuzzmeAssistantStatusIndicator: View {
                 isGreeting: isGreeting
             )
             .padding(SuzzmeTheme.Spacing.xs)
-            .suzzmeGlassSurface(cornerRadius: SuzzmeTheme.Radius.control,
-                                tint: signatureTint)
+            .suzzmeContentSurface(cornerRadius: SuzzmeTheme.Radius.control,
+                                  tint: signatureTint)
             .shadow(color: signatureGlow, radius: state.isActiveIntelligence ? 14 : 0)
             .accessibilityHidden(true)
 
@@ -145,8 +145,8 @@ private struct SuzzmeConversationBubbleGlass: ViewModifier {
     let isUserMessage: Bool
     func body(content: Content) -> some View {
         if isUserMessage {
-            content.suzzmeGlassSurface(cornerRadius: SuzzmeTheme.Radius.card,
-                                       tint: SuzzmeTheme.intelligencePrimary.opacity(0.12))
+            content.suzzmeContentSurface(cornerRadius: SuzzmeTheme.Radius.card,
+                                         tint: SuzzmeTheme.intelligencePrimary.opacity(0.12))
         } else {
             content
         }
@@ -224,8 +224,8 @@ struct SuzzmeAssistantComposer: View {
                 .disabled(isProcessing ? onCancel == nil : !isEnabled || normalizedText.isEmpty)
             }
             .padding(SuzzmeTheme.Spacing.small)
-            .suzzmeGlassSurface(cornerRadius: SuzzmeTheme.Radius.card,
-                                tint: SuzzmeTheme.intelligencePrimary.opacity(0.12))
+            .suzzmeGlassControlSurface(cornerRadius: SuzzmeTheme.Radius.card,
+                                       tint: SuzzmeTheme.intelligencePrimary.opacity(0.12))
             .overlay {
                 RoundedRectangle(cornerRadius: SuzzmeTheme.Radius.card, style: .continuous)
                     .strokeBorder(
@@ -333,8 +333,8 @@ struct SuzzmeAssistantNotice: View {
         }
         .padding(SuzzmeTheme.Spacing.medium)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .suzzmeGlassSurface(cornerRadius: SuzzmeTheme.Radius.card,
-                            tint: isWarning ? SuzzmeTheme.warning.opacity(0.12) : SuzzmeTheme.intelligencePrimary.opacity(0.1))
+        .suzzmeContentSurface(cornerRadius: SuzzmeTheme.Radius.card,
+                              tint: isWarning ? SuzzmeTheme.warning.opacity(0.12) : SuzzmeTheme.intelligencePrimary.opacity(0.1))
         .accessibilityElement(children: .contain)
     }
 }

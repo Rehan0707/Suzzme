@@ -42,15 +42,6 @@ struct SettingsView: View {
 
     private var settingsOverview: some View {
         Form {
-            Section {
-                HStack(spacing: SuzzmeTheme.Spacing.medium) {
-                    SuzzmeMark().frame(width: SuzzmeTheme.Spacing.extraLarge, height: SuzzmeTheme.Spacing.extraLarge)
-                    VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.xxs) {
-                        Text("Suzzme").font(.headline)
-                        Text("Make it yours").font(.subheadline).foregroundStyle(SuzzmeTheme.textSecondary)
-                    }
-                }.padding(.vertical, SuzzmeTheme.Spacing.xs)
-            }
             Section("Companion") {
                 NavigationLink { VoiceSettingsView() } label: {
                     SettingsRow(symbol: "speaker.wave.2", title: "Voice", detail: environment.voice.speaksResponses ? voiceName : "Spoken responses off")
@@ -64,22 +55,14 @@ struct SettingsView: View {
                 }
                 #endif
             }
-            Section("Intelligence") {
-                #if os(macOS)
-                NavigationLink { IntegrationsView() } label: {
-                    SettingsRow(symbol: "puzzlepiece.extension", title: "Integrations", detail: "Connected accounts and reviewed capabilities")
-                }
-                NavigationLink { MemoryView() } label: {
-                    SettingsRow(symbol: "square.stack.3d.up", title: "Personal Memory", detail: "Useful details you choose to keep")
-                }
-                #endif
+            Section("Your day") {
                 #if os(iOS)
                 NavigationLink { MobileCompanionSummaryView() } label: {
                     SettingsRow(symbol: "sun.horizon", title: "Daily Summary", detail: "Prepared on your Mac")
                 }
                 #else
                 NavigationLink { ProactiveIntelligenceSettingsView() } label: {
-                    SettingsRow(symbol: "sun.horizon", title: "Daily Summary", detail: summarySchedule)
+                    SettingsRow(symbol: "sun.horizon", title: "Summary schedule", detail: "Daily Summary · \(summarySchedule)")
                 }
                 #endif
             }
@@ -91,10 +74,6 @@ struct SettingsView: View {
                 NavigationLink { MobileMacSourcesView() } label: {
                     SettingsRow(symbol: "tray.2", title: "Mac Sources", detail: "Sources in your latest shared summary")
                 }
-                #else
-                NavigationLink { SourcesView() } label: {
-                    SettingsRow(symbol: "tray.2", title: "Sources", detail: "Access, updates, and connections")
-                }
                 #endif
                 NavigationLink { PrivacyView() } label: {
                     SettingsRow(symbol: "lock.shield", title: "Privacy", detail: "On-device processing and controls")
@@ -105,7 +84,7 @@ struct SettingsView: View {
                 }
                 #else
                 NavigationLink { SummaryNotificationsView() } label: {
-                    SettingsRow(symbol: "bell", title: "Daily reminder", detail: environment.summaryNotificationsAuthorized ? "Allowed" : "Off or unavailable")
+                    SettingsRow(symbol: "bell", title: "Notifications", detail: environment.summaryNotificationsAuthorized ? "Daily reminders allowed" : "Daily reminders off")
                 }
                 #endif
             }
@@ -121,12 +100,6 @@ struct SettingsView: View {
                 NavigationLink { ProfileSettingsView() } label: { SettingsRow(symbol: "person.crop.circle", title: "Profile", detail: "Your name, stored on this device") }
                 NavigationLink { AboutSuzzmeView() } label: { SettingsRow(symbol: "info.circle", title: "About Suzzme", detail: "Version and principles") }
             }
-            #if DEBUG && os(macOS)
-            Section("Developer") {
-                NavigationLink { SuzzmeBrainLabView() } label: { Label("Suzzme Brain Lab", systemImage: "brain") }
-                NavigationLink { PresenceMotionLabView() } label: { Label("Presence Motion Lab", systemImage: "waveform.path") }
-            }
-            #endif
         }
         .suzzmeSettingsForm().navigationTitle("Settings")
     }

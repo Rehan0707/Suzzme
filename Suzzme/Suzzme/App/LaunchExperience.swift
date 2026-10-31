@@ -25,6 +25,7 @@ struct OnboardingView: View {
     @State private var step = 0
     @State private var intelligenceCapability: IntelligenceCapability?
     @State private var showsGmailSetup = false
+    @State private var selectedSummaryTime = Calendar.current.date(bySettingHour: 8, minute: 0, second: 0, of: .now) ?? .now
     private let pages = OnboardingPage.pages
 
     var body: some View {
@@ -59,6 +60,11 @@ struct OnboardingView: View {
             .frame(minWidth: 480, minHeight: 400)
         }
         .onAppear {
+            var calendar = Calendar.current
+            calendar.timeZone = TimeZone(identifier: environment.proactivePreferences.timeZoneIdentifier) ?? .current
+            selectedSummaryTime = calendar.date(bySettingHour: environment.proactivePreferences.briefingHour,
+                                                minute: environment.proactivePreferences.briefingMinute,
+                                                second: 0, of: .now) ?? selectedSummaryTime
             guard profileName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
                   let user = CompanionSummaryStore.currentUser else { return }
             let accountName = user.displayName?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
@@ -171,6 +177,24 @@ struct OnboardingView: View {
                 }
             }
             .frame(maxWidth: SuzzmeTheme.Layout.primaryColumnMinimum, alignment: .leading)
+        case .summaryTime:
+            VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.medium) {
+                DatePicker("Preferred time", selection: $selectedSummaryTime, displayedComponents: .hourAndMinute)
+                    .datePickerStyle(.compact)
+                    .font(.headline)
+                    .accessibilityHint("Choose when Suzzme prepares your Daily Summary each day")
+                    .frame(minHeight: SuzzmeTheme.Layout.touchTarget)
+                #if os(macOS)
+                Text("Suzzme will prepare your summary from sources you’ve enabled. Automatic preparation runs while Suzzme is open and your Mac is awake.")
+                    .font(.subheadline).foregroundStyle(SuzzmeTheme.textSecondary)
+                #else
+                Text("This preferred time is shared with your Suzzme account. Your Mac prepares the summary; automatic preparation must be enabled there.")
+                    .font(.subheadline).foregroundStyle(SuzzmeTheme.textSecondary)
+                #endif
+                Text("You can change this anytime in Settings → Daily Summary.")
+                    .font(.footnote).foregroundStyle(SuzzmeTheme.textSecondary)
+            }
+            .frame(maxWidth: 460, alignment: .leading)
         case .privacy:
             VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.medium) {
                 capability("On-device first", "Your information stays close to you.", "iphone")
@@ -328,15 +352,18 @@ struct OnboardingView: View {
     private var navigationButtons: some View {
         VStack(spacing: SuzzmeTheme.Spacing.xs) {
             Button {
-                if step == pages.count - 1 { onComplete() }
-                else { withAnimation(SuzzmeTheme.Motion.disclosure(reduceMotion: reduceMotion)) { step += 1 } }
+                Task { @MainActor in
+                    if pages[step].kind == .summaryTime { await saveSummarySchedule() }
+                    if step == pages.count - 1 { onComplete() }
+                    else { withAnimation(SuzzmeTheme.Motion.disclosure(reduceMotion: reduceMotion)) { step += 1 } }
+                }
             } label: {
                 Text(step == pages.count - 1 ? "Start using Suzzme" : "Continue")
                     .font(.headline)
                     .foregroundStyle(SuzzmeTheme.textPrimary)
                     .frame(maxWidth: .infinity, minHeight: SuzzmeTheme.Layout.touchTarget)
                     .contentShape(Capsule())
-                    .suzzmeGlassSurface(cornerRadius: SuzzmeTheme.Layout.touchTarget / 2)
+                    .suzzmeGlassControlSurface(cornerRadius: SuzzmeTheme.Layout.touchTarget / 2)
             }
             .buttonStyle(.plain)
             .controlSize(.large)
@@ -348,10 +375,25 @@ struct OnboardingView: View {
             }
         }
     }
+
+    private func saveSummarySchedule() async {
+        var calendar = Calendar.current
+        calendar.timeZone = .current
+        let components = calendar.dateComponents([.hour, .minute], from: selectedSummaryTime)
+        var preferences = environment.proactivePreferences
+        preferences.dailyBriefingEnabled = true
+        preferences.briefingHour = components.hour ?? 8
+        preferences.briefingMinute = components.minute ?? 0
+        preferences.timeZoneIdentifier = TimeZone.current.identifier
+        await environment.updateProactivePreferences(preferences)
+        #if os(macOS)
+        environment.scheduledBriefing.setEnabled(true)
+        #endif
+    }
 }
 
 private struct OnboardingPage {
-    enum Kind { case profile, capabilities, availability, privacy, macCompanion, voice, permissions }
+    enum Kind { case profile, capabilities, availability, privacy, macCompanion, summaryTime, voice, permissions }
     let kind: Kind
     let eyebrow: LocalizedStringResource
     let title: LocalizedStringResource
@@ -363,6 +405,7 @@ private struct OnboardingPage {
         return [
             .init(kind: .profile, eyebrow: "HELLO", title: "Make it personal", message: "A name is enough to begin.", symbol: "person.crop.circle"),
             .init(kind: .macCompanion, eyebrow: "YOUR MAC", title: "Your day comes with you", message: "Your Mac prepares your schedule and what matters today. This iPhone receives and reads the result.", symbol: "desktopcomputer"),
+            .init(kind: .summaryTime, eyebrow: "DAILY SUMMARY", title: "Select a preferred time for summarizing your day", message: "Pick when you’d like Suzzme to prepare your day.", symbol: "sun.horizon"),
             .init(kind: .voice, eyebrow: "VOICE", title: "Listen to your day", message: "Choose when Suzzme may read your shared summaries aloud.", symbol: "speaker.wave.2")
         ]
         #else
@@ -377,6 +420,7 @@ private struct OnboardingPage {
         #else
         result.append(.init(kind: .permissions, eyebrow: "YOUR CHOICE", title: "Connect only what helps", message: "Every source explains why it is useful before requesting access.", symbol: "hand.raised"))
         #endif
+        result.append(.init(kind: .summaryTime, eyebrow: "DAILY SUMMARY", title: "Select a preferred time for summarizing your day", message: "Pick when you’d like Suzzme to prepare your day.", symbol: "sun.horizon"))
         result.append(.init(kind: .voice, eyebrow: "VOICE", title: "Talk naturally", message: "Ask a question, think out loud, or pick up where you left off.", symbol: "mic"))
         return result
         #endif

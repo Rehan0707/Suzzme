@@ -329,8 +329,8 @@ struct HomeView: View {
                 }
             }
             .padding(SuzzmeTheme.Spacing.xs)
-            .suzzmeGlassSurface(cornerRadius: SuzzmeTheme.Radius.largeSurface,
-                                tint: SuzzmeTheme.intelligencePrimary.opacity(0.12))
+            .suzzmeGlassControlSurface(cornerRadius: SuzzmeTheme.Radius.largeSurface,
+                                       tint: SuzzmeTheme.intelligencePrimary.opacity(0.12))
             .overlay {
                 RoundedRectangle(cornerRadius: SuzzmeTheme.Radius.largeSurface)
                     .strokeBorder(contrast == .increased || composerFocused ? SuzzmeTheme.textSecondary : SuzzmeTheme.separator, lineWidth: composerFocused || contrast == .increased ? 2 : SuzzmeTheme.hairline)

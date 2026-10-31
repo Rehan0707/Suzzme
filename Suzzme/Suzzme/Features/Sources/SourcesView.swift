@@ -25,7 +25,7 @@ private struct SourcesListView: View {
                     Text("Context, with your permission")
                         .font(.title2.weight(.semibold))
                         .accessibilityAddTraits(.isHeader)
-                    Text("Choose what Suzzme may check. Review access and recent updates for each source.")
+                    Text("Choose which authorized sources Suzzme can include in your Daily Summary. You can review access and recent updates for each source.")
                         .font(.subheadline)
                         .foregroundStyle(SuzzmeTheme.textSecondary)
                         .fixedSize(horizontal: false, vertical: true)
@@ -566,10 +566,10 @@ private struct MacKnowledgeSourcesView: View {
         }
         .padding(SuzzmeTheme.Spacing.medium)
         .frame(maxWidth: .infinity, minHeight: 112, alignment: .leading)
-        .suzzmeGlassSurface(cornerRadius: SuzzmeTheme.Radius.largeSurface,
-                            tint: included ? SuzzmeTheme.success.opacity(0.12) : SuzzmeTheme.intelligencePrimary.opacity(0.07))
+        .suzzmeContentSurface(cornerRadius: SuzzmeTheme.Radius.largeSurface,
+                              tint: available ? (included ? SuzzmeTheme.success : SuzzmeTheme.controlAccent) : SuzzmeTheme.textSecondary)
         .overlay(RoundedRectangle(cornerRadius: SuzzmeTheme.Radius.largeSurface)
-            .strokeBorder(included ? SuzzmeTheme.success.opacity(0.55) : SuzzmeTheme.separator,
+            .strokeBorder(included ? SuzzmeTheme.success.opacity(0.55) : available ? SuzzmeTheme.controlAccent.opacity(0.24) : SuzzmeTheme.separator,
                           lineWidth: SuzzmeTheme.hairline))
         .contentShape(RoundedRectangle(cornerRadius: SuzzmeTheme.Radius.largeSurface))
         .opacity(available ? 1 : 0.68)

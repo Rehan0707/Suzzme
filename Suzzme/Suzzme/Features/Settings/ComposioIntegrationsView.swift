@@ -83,8 +83,11 @@ struct LinkedInIntegrationOptions: View {
 struct ComposioIntegrationsView: View {
     @Environment(AppEnvironment.self) private var environment
     var initialServiceID: String? = nil
+    var initialResource: String? = nil
+    var initialQuestion: String? = nil
     var body: some View {
-        ComposioConnectionForm(controller: environment.makeComposioWorkspace(), initialServiceID: initialServiceID)
+        ComposioConnectionForm(controller: environment.makeComposioWorkspace(), initialServiceID: initialServiceID,
+                               initialResource: initialResource, initialQuestion: initialQuestion)
     }
 }
 
@@ -121,9 +124,11 @@ private struct ComposioConnectionForm: View {
         }
     }
 
-    init(controller: ComposioWorkspace, initialServiceID: String?) {
+    init(controller: ComposioWorkspace, initialServiceID: String?, initialResource: String?, initialQuestion: String?) {
         _controller = State(initialValue: controller)
         self.initialServiceID = initialServiceID
+        _resource = State(initialValue: initialResource ?? "")
+        _question = State(initialValue: initialQuestion ?? "")
     }
 
     var body: some View {

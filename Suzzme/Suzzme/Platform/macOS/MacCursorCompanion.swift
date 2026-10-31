@@ -377,8 +377,8 @@ private struct MacCursorResponseView: View {
             Spacer(minLength: 0)
         }
         .padding(SuzzmeTheme.Spacing.medium).frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .suzzmeGlassSurface(cornerRadius: SuzzmeTheme.Radius.card,
-                            tint: SuzzmeTheme.intelligencePrimary.opacity(0.12))
+        .suzzmeGlassControlSurface(cornerRadius: SuzzmeTheme.Radius.card,
+                                   tint: SuzzmeTheme.intelligencePrimary.opacity(0.12))
         .accessibilityElement(children: .combine)
     }
 

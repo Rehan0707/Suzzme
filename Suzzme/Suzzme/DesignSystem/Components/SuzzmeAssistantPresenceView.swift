@@ -85,8 +85,8 @@ struct SuzzmeAssistantPresenceView: View {
             }
         }
         .padding(SuzzmeTheme.Spacing.small)
-        .suzzmeGlassSurface(cornerRadius: SuzzmeTheme.Radius.card,
-                            tint: signalColor.opacity(isQuietIdle ? 0.04 : 0.12))
+        .suzzmeContentSurface(cornerRadius: SuzzmeTheme.Radius.card,
+                              tint: signalColor.opacity(isQuietIdle ? 0.04 : 0.12))
         .overlay {
             let shape = RoundedRectangle(cornerRadius: SuzzmeTheme.Radius.card, style: .continuous)
             shape

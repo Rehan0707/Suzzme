@@ -111,7 +111,12 @@ struct AskSuzzmeView: View {
         .modifier(SuzzmeAssistantSheetSizing())
         #endif
         .sheet(isPresented: $showsGitHubConnection) {
-            GitHubConnectionSheet(suggestedRepository: connectionSuggestion?.repository ?? "")
+            NavigationStack {
+                ComposioIntegrationsView(initialServiceID: "github",
+                    initialResource: connectionSuggestion?.resourceURL,
+                    initialQuestion: submittedQuestion)
+                    .environment(environment)
+            }
         }
         .onChange(of: environment.currentInteractionID) { _, newOwner in
             if connectionSuggestionOwner != newOwner { connectionSuggestion = nil }

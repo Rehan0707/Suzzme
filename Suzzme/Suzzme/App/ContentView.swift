@@ -388,7 +388,7 @@ private struct IOSBrowserIntegrationInvitation: View {
     @ViewBuilder private var connectionSetup: some View {
         switch route.service {
         case .github:
-            GitHubConnectionSheet(suggestedRepository: route.repository ?? "").environment(environment)
+            ComposioIntegrationsView(initialServiceID: "github").environment(environment)
         case .notion:
             NotionConnectionSheet().environment(environment)
         case .linkedin:

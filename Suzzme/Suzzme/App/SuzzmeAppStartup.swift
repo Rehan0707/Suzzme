@@ -366,8 +366,8 @@ private struct SuzzmeStartupRecoveryView: View {
                     .multilineTextAlignment(.center).fixedSize(horizontal: false, vertical: true)
             }
             .padding(SuzzmeTheme.Spacing.extraLarge)
-            .suzzmeGlassSurface(cornerRadius: SuzzmeTheme.Radius.hero,
-                                tint: SuzzmeTheme.intelligencePrimary.opacity(0.12))
+            .suzzmeContentSurface(cornerRadius: SuzzmeTheme.Radius.hero,
+                                  tint: SuzzmeTheme.intelligencePrimary.opacity(0.12))
             .frame(maxWidth: SuzzmeTheme.Layout.companionWidth)
             .frame(maxWidth: .infinity)
         }
@@ -388,8 +388,8 @@ private struct SuzzmeStartupNotice: View {
         }
         .padding(SuzzmeTheme.Spacing.small)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .suzzmeGlassSurface(cornerRadius: SuzzmeTheme.Radius.card,
-                            tint: SuzzmeTheme.intelligencePrimary.opacity(0.1))
+        .suzzmeContentSurface(cornerRadius: SuzzmeTheme.Radius.card,
+                              tint: SuzzmeTheme.intelligencePrimary.opacity(0.1))
     }
 
     private var message: some View {

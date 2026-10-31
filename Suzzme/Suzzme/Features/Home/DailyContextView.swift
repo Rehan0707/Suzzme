@@ -136,7 +136,7 @@ struct DailyContextView: View {
             .padding(.horizontal, SuzzmeTheme.Spacing.large)
             .frame(minHeight: SuzzmeTheme.Layout.touchTarget)
             .contentShape(Capsule())
-            .suzzmeGlassSurface(cornerRadius: SuzzmeTheme.Layout.touchTarget / 2)
+            .suzzmeGlassControlSurface(cornerRadius: SuzzmeTheme.Layout.touchTarget / 2)
         }
         .buttonStyle(.plain)
         .frame(maxWidth: .infinity)

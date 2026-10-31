@@ -268,8 +268,8 @@ private struct MacGuidanceMarker: View {
                 }
                     .padding(.horizontal, SuzzmeTheme.Spacing.small)
                     .padding(.vertical, SuzzmeTheme.Spacing.xs)
-                    .suzzmeGlassSurface(cornerRadius: SuzzmeTheme.Radius.largeSurface,
-                                        tint: focusColor.opacity(0.1))
+                    .suzzmeGlassControlSurface(cornerRadius: SuzzmeTheme.Radius.largeSurface,
+                                               tint: focusColor.opacity(0.1))
                     .overlay(Capsule().stroke(focusColor.opacity(contrast == .increased ? 1 : 0.42), lineWidth: SuzzmeTheme.hairline))
                     .offset(y: allowsMotion && !arrived ? SuzzmeTheme.Spacing.xs : 0)
                     .frame(maxWidth: max(1, geometry.size.width - SuzzmeTheme.Spacing.medium),

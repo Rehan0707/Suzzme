@@ -1,5 +1,6 @@
 import Foundation
 import Observation
+import FirebaseCore
 import GoogleSignIn
 #if os(iOS)
 import UIKit
@@ -27,14 +28,29 @@ final class GmailAccountController: GmailAuthorizationProviding, GoogleIntegrati
         configureGoogleSignIn()
     }
 
-    var isConfigured: Bool {
-        guard let clientID, let reversedClientID,
-              clientID.hasSuffix(".apps.googleusercontent.com"),
+    var configurationIssue: String? {
+        guard let clientID, let reversedClientID else {
+            return "Google sign-in is missing its client ID or return URL scheme."
+        }
+        guard clientID.hasSuffix(".apps.googleusercontent.com"),
               !clientID.contains("YOUR_"), !clientID.contains("$("),
-              !reversedClientID.contains("YOUR_"), !reversedClientID.contains("$(") else { return false }
+              !reversedClientID.contains("YOUR_"), !reversedClientID.contains("$(") else {
+            return "Google sign-in contains an incomplete client ID or return URL scheme."
+        }
         let expectedReversedClientID = "com.googleusercontent.apps." + clientID.replacingOccurrences(of: ".apps.googleusercontent.com", with: "")
-        return reversedClientID == expectedReversedClientID
+        guard reversedClientID == expectedReversedClientID else {
+            return "Google sign-in’s return URL scheme does not match its client ID."
+        }
+        guard let firebaseClientID = FirebaseApp.app()?.options.clientID else {
+            return "Firebase is unavailable, so Google sign-in cannot be configured."
+        }
+        guard firebaseClientID == clientID else {
+            return "Google sign-in and Firebase use different client IDs. Update the Suzzme target configuration so they match."
+        }
+        return nil
     }
+
+    var isConfigured: Bool { configurationIssue == nil }
 
     var isConnected: Bool { emailAddress != nil && hasMetadataAccess }
 
@@ -270,7 +286,7 @@ final class GmailAccountController: GmailAuthorizationProviding, GoogleIntegrati
 
     private func beginConnect() {
         guard isConfigured else {
-            errorMessage = "Gmail sign-in is not configured for this build. Add the platform OAuth client ID and reversed client ID in the Suzzme target build settings."
+            errorMessage = configurationIssue ?? "Gmail sign-in is not configured for this build."
             return
         }
         guard !isConnecting else { return }

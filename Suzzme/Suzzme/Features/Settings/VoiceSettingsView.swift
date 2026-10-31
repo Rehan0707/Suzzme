@@ -34,7 +34,7 @@ struct VoiceSettingsView: View {
                 ))
                 if voice.isPreparingSpeech { Label("Preparing voice…", systemImage: "waveform") }
                 if let message = voice.message { Text(message).foregroundStyle(SuzzmeTheme.textSecondary) }
-            } header: { Text("Voice") } footer: {
+            } header: { Text("Spoken responses") } footer: {
                 #if os(iOS)
                 Text("Reads the summary prepared on your Mac. Apple Voice plays it on this iPhone; Suzzme Voice uses the configured speech service.")
                     .fixedSize(horizontal: false, vertical: true)
@@ -44,39 +44,42 @@ struct VoiceSettingsView: View {
                 #endif
             }
             if !SuzzmeCloudVoice.isConfigured {
-                Section { Text("Cloud voice needs its server gateway and provider credentials before it can be used.") }
+                Section("Cloud voice unavailable") {
+                    Text("Cloud voice needs its server gateway and provider credentials before it can be used.")
+                }
             }
-            if voice.speechEngine != .cloud {
             #if canImport(SuzzmeSpeechKit) && os(macOS)
-            Section {
-                if voice.naturalVoiceAssets.isDownloading {
-                    ProgressView(value: voice.naturalVoiceAssets.progress) {
-                        Text("Downloading Natural Voice")
+            if voice.speechEngine != .cloud {
+                Section {
+                    if voice.naturalVoiceAssets.isDownloading {
+                        ProgressView(value: voice.naturalVoiceAssets.progress) {
+                            Text("Downloading Natural Voice")
+                        }
+                        Text("\(Int(voice.naturalVoiceAssets.progress * 100))% · Completed files are kept if you pause.")
+                            .font(.caption).foregroundStyle(SuzzmeTheme.textSecondary)
+                        Button("Pause Download") { voice.naturalVoiceAssets.cancelDownload() }
+                    } else if voice.naturalVoiceAssets.isReady {
+                        Label("Natural Voice is ready", systemImage: "checkmark.circle")
+                    } else {
+                        Button("Download Natural Voice · 295 MB", systemImage: "arrow.down.circle") {
+                            voice.naturalVoiceAssets.download { voice.speechEngine = .natural }
+                        }
                     }
-                    Text("\(Int(voice.naturalVoiceAssets.progress * 100))% · Completed files are kept if you pause.")
-                        .font(.caption).foregroundStyle(SuzzmeTheme.textSecondary)
-                    Button("Pause Download") { voice.naturalVoiceAssets.cancelDownload() }
-                } else if voice.naturalVoiceAssets.isReady {
-                    Label("Natural Voice is ready", systemImage: "checkmark.circle")
-                } else {
-                    Button("Download Natural Voice · 295 MB", systemImage: "arrow.down.circle") {
-                        voice.naturalVoiceAssets.download { voice.speechEngine = .natural }
+                    if let message = voice.naturalVoiceAssets.message {
+                        Text(message).foregroundStyle(SuzzmeTheme.textSecondary)
                     }
+                    if voice.isPreparingSpeech {
+                        Label("Preparing voice on this device…", systemImage: "waveform")
+                            .accessibilityIdentifier("suzzme-voice-preparing")
+                    }
+                    if let message = voice.message { Text(message).foregroundStyle(SuzzmeTheme.textSecondary) }
+                } header: { Text("Natural Voice") } footer: {
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("A more conversational English voice, generated entirely on your device. The one-time download fetches public voice files. Your words and recordings are never uploaded. Apple Voice handles other languages, confirmations, or an unavailable Natural Voice.")
+                        Text("PocketTTS by Kyutai · CoreML conversion by Fluid Inference. Model assets: CC BY 4.0.")
+                        Link("Voice credits and license", destination: URL(string: "https://huggingface.co/FluidInference/pocket-tts-coreml")!)
+                    }.fixedSize(horizontal: false, vertical: true)
                 }
-                if let message = voice.naturalVoiceAssets.message {
-                    Text(message).foregroundStyle(SuzzmeTheme.textSecondary)
-                }
-                if voice.isPreparingSpeech {
-                    Label("Preparing voice on this device…", systemImage: "waveform")
-                        .accessibilityIdentifier("suzzme-voice-preparing")
-                }
-                if let message = voice.message { Text(message).foregroundStyle(SuzzmeTheme.textSecondary) }
-            } header: { Text("Natural Voice") } footer: {
-                VStack(alignment: .leading, spacing: 6) {
-                    Text("A more conversational English voice, generated entirely on your device. The one-time download fetches public voice files. Your words and recordings are never uploaded. Apple Voice handles other languages, confirmations, or an unavailable Natural Voice.")
-                    Text("PocketTTS by Kyutai · CoreML conversion by Fluid Inference. Model assets: CC BY 4.0.")
-                    Link("Voice credits and license", destination: URL(string: "https://huggingface.co/FluidInference/pocket-tts-coreml")!)
-                }.fixedSize(horizontal: false, vertical: true)
             }
             #endif
             Section {
@@ -85,16 +88,7 @@ struct VoiceSettingsView: View {
                 } label: {
                     LabeledContent("Apple Voice", value: selectedName)
                 }
-                Button(voice.isPreviewing ? "Stop Preview" : "Preview Voice", systemImage: voice.isPreviewing ? "stop.circle" : "play.circle") {
-                    if voice.isPreviewing { voice.stopPreview() }
-                    else { voice.previewSelectedVoice() }
-                }
-                .disabled(!voice.canStartSpeech)
-                .frame(minHeight: 44)
-                Toggle("Speak Suzzme’s responses", isOn: Binding(
-                    get: { voice.speaksResponses }, set: { voice.speaksResponses = $0 }
-                ))
-            } header: { Text("Suzzme Voice") } footer: {
+            } header: { Text("Apple Voice") } footer: {
                 Text(voice.voiceSelectionDescription).fixedSize(horizontal: false, vertical: true)
             }
             Section {
@@ -146,22 +140,13 @@ struct VoiceSettingsView: View {
                     Button("Open Privacy Settings", action: openPrivacySettings)
                         .frame(minHeight: SuzzmeTheme.Layout.touchTarget)
                     if settingsCouldNotOpen {
-                        Text("Open system Privacy settings and allow Microphone and Speech Recognition for Suzzme.")
+                        Text("Open System Settings and allow Suzzme to use the required voice permissions.")
                             .foregroundStyle(SuzzmeTheme.textSecondary)
                     }
                 }
             } header: { Text("Permissions") } footer: {
-                Text("Suzzme requests access when you start a conversation. Speech is processed on this device.")
+                Text("Suzzme asks for access when you start a voice conversation.")
             }
-            #endif
-            }
-            #if os(macOS)
-            Section {
-                LabeledContent("Microphone", value: voice.microphonePermission.displayName)
-                if voice.microphonePermission == .denied {
-                    Button("Open Privacy Settings", action: openPrivacySettings)
-                }
-            } header: { Text("Permissions") }
             #endif
             #if os(iOS)
             Section {

@@ -35,10 +35,7 @@ struct MacRootView: View {
                         row(.sources)
                         row(.history)
                     }
-                    VStack(spacing: SuzzmeTheme.Spacing.xxs) {
-                        row(.backgroundTasks)
-                        row(.settings)
-                    }
+                    row(.settings)
                 }
                 .padding(.horizontal, SuzzmeTheme.Spacing.xs)
                 .padding(.vertical, SuzzmeTheme.Spacing.medium)

@@ -2,7 +2,7 @@ import SwiftUI
 
 /// One restrained glass layer for focus surfaces. Older systems get native
 /// material; Reduce Transparency gets an opaque, high-contrast fallback.
-struct SuzzmeGlassSurface: ViewModifier {
+struct SuzzmeGlassControlSurface: ViewModifier {
     let cornerRadius: CGFloat
     var tint: Color? = nil
 
@@ -35,8 +35,40 @@ struct SuzzmeGlassSurface: ViewModifier {
 }
 
 extension View {
-    func suzzmeGlassSurface(cornerRadius: CGFloat = SuzzmeTheme.Radius.largeSurface,
-                            tint: Color? = nil) -> some View {
-        modifier(SuzzmeGlassSurface(cornerRadius: cornerRadius, tint: tint))
+    func suzzmeGlassControlSurface(cornerRadius: CGFloat = SuzzmeTheme.Radius.largeSurface,
+                                   tint: Color? = nil) -> some View {
+        modifier(SuzzmeGlassControlSurface(cornerRadius: cornerRadius, tint: tint))
+    }
+
+    /// Opaque content-layer surface. Liquid Glass is reserved for controls and
+    /// navigation; cards and information stay on a quiet, readable plane.
+    func suzzmeContentSurface(cornerRadius: CGFloat = SuzzmeTheme.Radius.card,
+                              tint: Color? = nil) -> some View {
+        modifier(SuzzmeContentSurface(cornerRadius: cornerRadius, tint: tint))
+    }
+}
+
+private struct SuzzmeContentSurface: ViewModifier {
+    let cornerRadius: CGFloat
+    var tint: Color? = nil
+
+    @Environment(\.colorSchemeContrast) private var contrast
+
+    private var shape: RoundedRectangle {
+        RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+    }
+
+    func body(content: Content) -> some View {
+        content
+            .background(SuzzmeTheme.backgroundSecondary, in: shape)
+            .overlay {
+                if let tint {
+                    shape.fill(tint.opacity(0.06)).allowsHitTesting(false)
+                }
+            }
+            .overlay(shape.strokeBorder(
+                contrast == .increased ? SuzzmeTheme.textSecondary : SuzzmeTheme.separator,
+                lineWidth: contrast == .increased ? 2 : SuzzmeTheme.hairline
+            ))
     }
 }
