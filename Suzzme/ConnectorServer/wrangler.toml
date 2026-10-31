@@ -1,0 +1,30 @@
+name = "suzzme-connector"
+account_id = "0a617c025002cefb3f713194b6fd7a34"
+main = "worker.mjs"
+compatibility_date = "2026-10-29"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+SUZZME_CONNECTOR_URL = "https://suzzme-connector.suzzmeai.workers.dev"
+# Remains setup-required until reviewed provider auth configs and callback exist.
+SUZZME_AUTH_CONFIGS = '{"slack":"ac_ZFadHeq1Ix9k"}'
+SUZZME_USER_ID = "suzzme-owner"
+SUZZME_CALLBACK_VERIFIER_CONFIGURED = "yes"
+
+[[durable_objects.bindings]]
+name = "SUZZME_CONNECTOR"
+class_name = "SuzzmeConnector"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["SuzzmeConnector"]
+
+[[secrets_store_secrets]]
+binding = "COMPOSIO_API_KEY"
+store_id = "755a7871548d47cb9913c8e86440cbf5"
+secret_name = "COMPOSIO_API_KEY"
+
+# SUZZME_DEVICE_TOKEN must be supplied as a separate Worker secret.
+# No request/body logging, cron jobs, paid model calls or automatic top-ups.
+[observability]
+enabled = false

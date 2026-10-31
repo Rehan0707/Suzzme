@@ -1,0 +1,24 @@
+PASS canceled background invalidation preserves a new information cycle
+PASS information persistence agrees with foreground ownership
+PASS explicit default invalidation retires the cycle even from a canceled task
+PASS information persistence agrees with explicit invalidation
+PASS canceled background engine cleanup preserves the newer running refresh
+PASS explicit engine cancellation invalidates its running refresh
+PASS canceled background cleanup preserves a new watched-link refresh
+PASS watched-link state remains consistent after canceled background cleanup
+PASS explicit watched cleanup invalidates a refresh from a canceled task
+PASS watched-link state remains consistent after explicit cleanup
+PASS canceled background cleanup preserves a new Daily Summary generation
+PASS explicit Daily Summary cancellation invalidates a generation from a canceled task
+PASS engine canceled background cleanup preserves newer Daily Summary preparation
+PASS engine explicit cancellation retires newer Daily Summary preparation
+PASS Core canceled background cleanup preserves newer Daily Summary preparation
+PASS Core explicit cancellation retires newer Daily Summary preparation
+PASS canceled environment background cleanup starts neither intake cleanup
+PASS environment forwards the background intake cancellation option
+PASS cancellation during information await prevents later watched-link cleanup
+PASS environment forwards the default intake cancellation option
+PASS explicit cleanup still reaches watched links after its task is canceled
+PASS canceled environment background cleanup never reaches Core
+PASS environment preserves opt-in forwarding and unconditional explicit proactive cancellation
+Background cleanup checks: 23 passed / 0 failed

@@ -4,11 +4,13 @@ cd "${0:A:h}/.."
 output=$(mktemp -d)
 trap 'rm -rf "$output"' EXIT
 
-xcrun swiftc -swift-version 6 -parse-as-library -framework SwiftData -framework SwiftUI -framework EventKit -framework AVFoundation -framework Speech -framework Contacts \
+xcrun swiftc -disable-sandbox -swift-version 6 -enable-upcoming-feature NonisolatedNonsendingByDefault -module-cache-path "$output/cache" -parse-as-library -framework SwiftData -framework SwiftUI -framework EventKit -framework AVFoundation -framework Speech -framework Contacts \
   Suzzme/Core/Models/SuzzmeItem.swift \
   Suzzme/Core/Models/SuzzmeAssistantState.swift \
   Suzzme/Core/Context/SuzzmeContextItem.swift \
   Suzzme/Core/Context/SuzzmeContextQuery.swift \
+  Suzzme/Core/Context/ScreenContext.swift \
+  Suzzme/Core/Context/ScreenContextPolicy.swift \
   Suzzme/Core/Context/ContextEngine.swift \
   Suzzme/Core/Connectors/AppleContextSources.swift \
   Suzzme/Core/Connectors/AppleContextPermissions.swift \
@@ -17,6 +19,7 @@ xcrun swiftc -swift-version 6 -parse-as-library -framework SwiftData -framework 
   Suzzme/Core/LongTermMemory/LongTermMemoryModels.swift \
   Suzzme/Core/LongTermMemory/LongTermMemoryStore.swift \
   Suzzme/Core/Information/InformationModels.swift \
+  Suzzme/Core/Information/GmailMessageMetadata.swift \
   Suzzme/Core/Information/InformationStore.swift \
   Suzzme/Core/Information/InformationEngine.swift \
   Suzzme/Core/Information/WatchedLinks/WatchedLinkModels.swift \
@@ -34,10 +37,14 @@ xcrun swiftc -swift-version 6 -parse-as-library -framework SwiftData -framework 
   Suzzme/Core/Actions/EventKitCapabilities.swift \
   Suzzme/Core/Actions/ActionMutation.swift \
   Suzzme/Core/Actions/SettingsCapability.swift \
+  Suzzme/DesignSystem/Components/SuzzmeMascotArtwork.swift \
   Suzzme/DesignSystem/Theme/SuzzmeTheme.swift \
   Suzzme/Core/Invocation/SuzzmePresenceTheme.swift \
   Suzzme/Core/Invocation/AssistantPresentation.swift \
   Suzzme/Core/Voice/VoiceTranscriptFinalizer.swift \
+  Suzzme/Core/Voice/SuzzmeAssemblyAITranscription.swift \
+  Suzzme/Core/Voice/SuzzmePCM16AudioConverter.swift \
+  Validation/VoiceTestCloudStub.swift \
   Suzzme/Core/Voice/VoiceSessionController.swift \
   Validation/Step11Checks.swift -o "$output/Step11Checks"
 
@@ -49,7 +56,7 @@ print -r -- "$result"
 [[ "$test_status" == "0" ]]
 passed=$(print -r -- "$result" | awk -F': ' '/^Step 11 behavioral checks passed:/ { print $2 }')
 failed=$(print -r -- "$result" | awk -F': ' '/^Step 11 behavioral checks failed:/ { print $2 }')
-[[ "$passed" == "220" ]]
+[[ "$passed" == "244" ]]
 [[ "$failed" == "0" ]]
 
 # Supplemental architecture/security audit. Runtime behavior above remains the acceptance proof.
@@ -65,5 +72,5 @@ if rg -n 'EKEventStore|memoryStore\.commit|LongTermMemoryStore' Suzzme/Core/Info
   print 'FAIL: Step 11 observation crossed a mutation boundary'
   exit 1
 fi
-print 'Step 11 production behavioral checks passed: 220'
+print 'Step 11 production behavioral checks passed: 244'
 print 'Step 11 production behavioral checks failed: 0'

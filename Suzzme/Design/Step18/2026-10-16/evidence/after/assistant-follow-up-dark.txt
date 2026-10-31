@@ -1,0 +1,38 @@
+Window: "", App: Suzzme.
+0 sheet Secondary Actions: Raise
+	1 container
+		2 text Value: Ask Suzzme, Secondary Actions: Cancel
+		3 text field (settable) Description: Question for Suzzme, Placeholder: Ask Suzzme or follow up, ID: suzzme-assistant-input, Secondary Actions: Cancel
+		4 button (disabled) Description: Send question, ID: suzzme-assistant-submit, Secondary Actions: Cancel
+		5 button Description: Start voice conversation, Secondary Actions: Cancel
+		6 switch Read answers aloud, Help: Speak Suzzme’s answers to typed questions, Value: off, Secondary Actions: Cancel
+		7 scroll area Secondary Actions: Scroll Up, Scroll Down, Cancel
+			8 list Secondary Actions: AXScrollToTop, AXScrollToBottom
+				9 text Suzzme status: Ready when you are Apple Intelligence is ready on this device.
+				10 unknown Description: You said: What can you do?, ID: suzzme-turn-E7BDD2D5-97EB-4E0A-8CCB-ED94BDFC6202-user
+				11 unknown ID: suzzme-turn-E7BDD2D5-97EB-4E0A-8CCB-ED94BDFC6202-assistant, Description: Suzzme answered: I can help you understand your day, summarize authorized calendar events and reminders, and answer follow-up questions. You can type or talk to me. I can also propose supported changes to your calendar and reminders, which need your confirmation. Choose what I may access in Sources.
+				12 text Answered without generative AI Using authorized context
+				13 button Share
+				14 button Read aloud
+				15 unknown Description: You said: Explain photosynthesis in one sentence, ID: suzzme-turn-887232B1-9C01-4AD5-9F99-9B8914EBD048-user
+				16 unknown Description: Suzzme answered: Plants use sunlight, water, and carbon dioxide to make food and release oxygen., ID: suzzme-turn-887232B1-9C01-4AD5-9F99-9B8914EBD048-assistant
+				17 text Generated on this device Using authorized context
+				18 button Share
+				19 button Read aloud
+			20 scroll bar (settable, float) 0.9099099099099099
+				21 value indicator (settable, float) 0.9099099099099099
+				22 increment arrow button
+				23 decrement arrow button
+				24 increment page button
+				25 decrement page button
+		26 button Done
+		27 button Manage sources
+28 menu bar
+	29 Suzzme
+	30 Edit
+	31 View
+	32 Companion
+	33 Window
+	34 Help
+
+The focused UI element is 0 sheet Secondary Actions: Raise

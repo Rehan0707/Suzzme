@@ -17,9 +17,20 @@ struct BriefingView: View {
                     .buttonStyle(.borderedProminent)
                     .suzzmeProminentContrast()
             } else if environment.isPreparingBriefing {
-                ProgressView("Checking what changed…")
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, SuzzmeTheme.Spacing.hero)
+                HStack(spacing: SuzzmeTheme.Spacing.medium) {
+                    SuzzmeMascot(
+                        state: environment.presenceState,
+                        size: SuzzmeTheme.Layout.touchTarget,
+                        animation: environment.invocation.presenceAnimation,
+                        audioLevel: environment.voice.isListening ? environment.voice.audioLevel : 0,
+                        speechProgress: environment.voice.isSpeaking ? environment.voice.speechProgress : 0
+                    )
+                    .accessibilityHidden(true)
+                    Text("Checking what changed…")
+                        .font(.subheadline.weight(.medium))
+                }
+                .padding(.vertical, SuzzmeTheme.Spacing.large)
+                .accessibilityElement(children: .combine)
             } else if let briefing = environment.proactiveSnapshot?.briefing {
                 briefingContent(briefing)
             } else if let error = environment.proactiveError {
@@ -43,6 +54,15 @@ struct BriefingView: View {
         }
         .task { await environment.loadProactiveState() }
         .refreshable { await environment.prepareProactiveBriefing(showActivity: true) }
+        #if os(macOS)
+        .toolbar {
+            ToolbarItem(placement: .automatic) {
+                NavigationLink { BackgroundTasksView() } label: {
+                    Label("Background Tasks", systemImage: "clock.arrow.circlepath")
+                }
+            }
+        }
+        #endif
     }
 
     private var emptyTitle: String {
@@ -53,17 +73,16 @@ struct BriefingView: View {
     private var emptyMessage: String {
         if let limitation = environment.proactiveSnapshot?.dailyContext?.sourceLimitations.first { return limitation }
         return environment.proactiveSnapshot?.dailyContext == nil
-            ? "Ask Suzzme to check your permitted sources when you are ready."
+            ? "Ask Suzzme to check the sources you’ve allowed when you’re ready."
             : "Suzzme checked the information currently available on this device."
     }
 
     private var header: some View {
         VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.small) {
-            SuzzmeStateLabel(title: "Your daily perspective", symbol: "text.alignleft")
-            Text("What matters, without the noise.")
-                .font(.largeTitle.weight(.bold))
+            Text("Your Daily Summary")
+                .font(.largeTitle.weight(.semibold))
                 .accessibilityAddTraits(.isHeader)
-            Text("A few useful thoughts before the day gets loud.")
+            Text("What matters today, from the information you share.")
                 .font(.body)
                 .foregroundStyle(SuzzmeTheme.textSecondary)
         }
@@ -79,29 +98,59 @@ struct BriefingView: View {
                 Button("Refresh Daily Summary") { Task { await environment.prepareProactiveBriefing(showActivity: true) } }
             }
         } else {
-            SuzzmeCard(highlighted: true) {
+            SuzzmeCard {
                 Text(briefing.createdAt, format: .dateTime.weekday(.wide).month().day().hour().minute())
-                    .font(.caption)
+                    .font(.subheadline)
                     .foregroundStyle(SuzzmeTheme.textSecondary)
                 Text(briefing.narration)
-                    .font(.title3)
+                    .font(.body)
+                    .lineSpacing(SuzzmeTheme.Spacing.xs)
                     .fixedSize(horizontal: false, vertical: true)
-                Button {
-                    Task { await environment.speakCurrentBriefing() }
-                } label: {
-                    Label("Listen to Daily Summary", systemImage: "speaker.wave.2.fill")
-                }
-                .buttonStyle(.borderedProminent)
+                    .frame(maxWidth: SuzzmeTheme.Layout.companionWidth, alignment: .leading)
+                    .textSelection(.enabled)
+                SuzzmeActionControls {
+                    Button {
+                        Task { await environment.speakCurrentBriefing() }
+                    } label: {
+                        Label("Listen", systemImage: "speaker.wave.2.fill")
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(SuzzmeTheme.intelligencePrimary)
                     .suzzmeProminentContrast()
-                .accessibilityHint("Rechecks current context before speaking")
-                Button {
-                    Task { _ = await environment.invokeSuzzme() }
-                } label: {
-                    Label("Ask about your day", systemImage: "mic")
+                    .accessibilityLabel("Listen to Daily Summary")
+                    .accessibilityHint("Rechecks current context before speaking")
+                    .disabled(!environment.voice.speaksResponses || !environment.voice.canStartSpeech)
+                    Button {
+                        Task { _ = await environment.invokeSuzzme() }
+                    } label: {
+                        Label("Ask about your day", systemImage: "mic")
+                    }
+                    .buttonStyle(.bordered)
                 }
-                .buttonStyle(.bordered)
-                Text("You can interrupt the summary with a question.")
-                    .font(.subheadline).foregroundStyle(SuzzmeTheme.textSecondary)
+                if !environment.voice.speaksResponses {
+                    Text("Spoken responses are off. Turn them on in Voice Settings to listen.")
+                        .font(.subheadline).foregroundStyle(SuzzmeTheme.textSecondary)
+                    NavigationLink("Open Voice Settings") { VoiceSettingsView() }
+                } else if !environment.voice.canStartSpeech {
+                    Text("Finish the current voice interaction before listening to your summary.")
+                        .font(.subheadline).foregroundStyle(SuzzmeTheme.textSecondary)
+                } else {
+                    Text("You can interrupt the summary with a question.")
+                        .font(.subheadline).foregroundStyle(SuzzmeTheme.textSecondary)
+                }
+            }
+
+            if !briefing.sourceEvidence.isEmpty {
+                VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.small) {
+                    SuzzmeSectionHeader(title: "Sources in this summary")
+                    Text(briefing.sourceEvidence.map(sourceName).joined(separator: " · "))
+                        .font(.subheadline)
+                        .foregroundStyle(SuzzmeTheme.textSecondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                    NavigationLink("Manage Knowledge Sources") { SourcesView() }
+                        .buttonStyle(.bordered)
+                }
+                .accessibilityElement(children: .contain)
             }
 
             ForEach(briefing.sections) { section in
@@ -109,12 +158,13 @@ struct BriefingView: View {
                     SuzzmeSectionHeader(title: section.kind.title)
                     ForEach(section.items) { item in
                         BriefingItemView(item: item)
+                        if item.id != section.items.last?.id { Divider() }
                     }
                 }
             }
 
             if let limitation = briefing.healthLimitations.first {
-                SuzzmeCard {
+                VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.small) {
                     SuzzmeStateLabel(title: "Daily Summary may be incomplete", symbol: "exclamationmark.triangle")
                     Text(limitation)
                         .font(.subheadline)
@@ -124,11 +174,23 @@ struct BriefingView: View {
         }
     }
 
+    private func sourceName(_ source: String) -> String {
+        switch source {
+        case "calendar": "Calendar"
+        case "reminders": "Reminders"
+        case "gmail": "Gmail"
+        case "messages": "Shared messages"
+        case "connectedApps": "Connected apps"
+        case "watchedWeb": "Watched Links"
+        default: "Other allowed source"
+        }
+    }
+
     private func opportunitySection(_ opportunities: [SuzzmeOpportunity]) -> some View {
         VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.small) {
             SuzzmeSectionHeader(title: "Suzzme can help")
             ForEach(opportunities) { opportunity in
-                SuzzmeCard {
+                VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.small) {
                     SuzzmeStateLabel(title: "Suggested", symbol: "lightbulb")
                     Text(opportunity.summary).font(.headline)
                     Text(opportunity.reason)
@@ -141,13 +203,14 @@ struct BriefingView: View {
                                 AskSuzzmeView(initialText: proposal.suggestedRequest)
                             }
                             .buttonStyle(.borderedProminent)
-                    .suzzmeProminentContrast()
+                            .suzzmeProminentContrast()
                         }
                         Button("Not Useful") {
                             Task { await environment.dismissOpportunity(opportunity) }
                         }
                         .buttonStyle(.bordered)
                     }
+                    Divider()
                 }
                 .accessibilityElement(children: .contain)
             }
@@ -160,22 +223,24 @@ private struct BriefingItemView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.xs) {
-            HStack(alignment: .firstTextBaseline) {
+            HStack(alignment: .top, spacing: SuzzmeTheme.Spacing.small) {
                 Image(systemName: symbol)
-                    .foregroundStyle(SuzzmeTheme.intelligencePrimary)
+                    .foregroundStyle(SuzzmeTheme.textSecondary)
                     .accessibilityHidden(true)
-                Text(item.summary).font(.headline)
-                Spacer(minLength: SuzzmeTheme.Spacing.small)
-                if let time = item.effectiveTime {
-                    Text(time, format: .dateTime.hour().minute())
-                        .font(.caption)
+                VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.xxs) {
+                    if let time = item.effectiveTime {
+                        Text(ProactiveDatePresentation.label(time, isAllDay: item.isAllDay == true))
+                            .font(.subheadline.weight(.medium))
+                    }
+                    Text(item.summary).font(.headline)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Text(item.whyRelevant)
+                        .font(.subheadline)
                         .foregroundStyle(SuzzmeTheme.textSecondary)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
-            Text(item.whyRelevant)
-                .font(.subheadline)
-                .foregroundStyle(SuzzmeTheme.textSecondary)
-                .fixedSize(horizontal: false, vertical: true)
         }
         .padding(.vertical, SuzzmeTheme.Spacing.xs)
         .accessibilityElement(children: .combine)

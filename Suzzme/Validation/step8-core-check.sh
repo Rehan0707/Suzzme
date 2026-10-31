@@ -24,10 +24,13 @@ xcrun swiftc -swift-version 6 -parse-as-library -framework SwiftData -framework 
   Suzzme/Core/Actions/EventKitCapabilities.swift \
     Suzzme/Core/Actions/ActionExecutionCoordinator.swift \
     Suzzme/Core/Actions/SettingsCapability.swift \
+    Suzzme/DesignSystem/Components/SuzzmeMascotArtwork.swift \
     Suzzme/DesignSystem/Theme/SuzzmeTheme.swift \
     Suzzme/Core/Invocation/SuzzmePresenceTheme.swift \
     Suzzme/Core/Invocation/AssistantPresentation.swift \
     Suzzme/Core/Intelligence/IntelligenceCapability.swift \
+  Suzzme/Core/Context/ScreenContext.swift \
+  Suzzme/Core/Context/ScreenContextPolicy.swift \
     Suzzme/Core/Intelligence/IntelligenceService.swift \
     Suzzme/Core/Intelligence/BasicIntelligenceService.swift \
     Suzzme/Core/Intelligence/SuzzmeUnderstandingPipeline.swift \

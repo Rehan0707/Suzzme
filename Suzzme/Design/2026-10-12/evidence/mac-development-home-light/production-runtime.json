@@ -1,0 +1,26 @@
+{
+  "accessibilityTrusted" : false,
+  "appPath" : "\/tmp\/SuzzmeNativePlatformMacAcceptanceBuild\/Build\/Products\/Debug\/Suzzme.app",
+  "appSandboxEntitled" : true,
+  "bundleIdentifier" : "dev.suzzme.NativeAcceptance",
+  "driverCompleted" : false,
+  "entryPointReplaced" : false,
+  "environmentInjected" : false,
+  "error" : "The application “Suzzme” could not be launched because a miscellaneous error occurred.",
+  "errorCode" : 256,
+  "errorDomain" : "NSCocoaErrorDomain",
+  "executableSHA256" : "3d5d523a79960beadc4929f8db3ac4da73c9692872c91fa21056474c1fe6a11a",
+  "launchArgumentDefaults" : [
+    "-suzzme.appearance",
+    "light",
+    "-hasCompletedWelcome",
+    "YES"
+  ],
+  "screenCaptureAuthorized" : true,
+  "underlyingError" : {
+    "code" : 5,
+    "domain" : "RBSRequestErrorDomain",
+    "message" : "The operation couldn’t be completed. Launch failed."
+  },
+  "wasAlreadyRunning" : false
+}

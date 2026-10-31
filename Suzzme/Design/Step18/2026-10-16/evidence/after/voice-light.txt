@@ -1,0 +1,58 @@
+Window: "Voice", App: Suzzme.
+0 standard window Voice, ID: main, Secondary Actions: Raise
+	1 split group main, SidebarNavigationSplitView
+		2 scroll area
+			3 list Sidebar
+				4 row (selectable)
+				5 row (selectable) Suzzme, Your personal companion
+				6 row (selectable) Your day
+				7 row (selectable) Home
+				8 row (selectable) Today
+				9 row (selectable) Daily Summary
+				10 row (selectable) Your information
+				11 row (selectable) Personal Memory
+				12 row (selectable) Sources
+				13 row (selectable) History
+				14 row (selectable)
+				15 row (selected) Settings
+		16 splitter (disabled, settable, float) 232
+		17 scroll area Secondary Actions: Cancel
+			18 heading Suzzme Voice
+			19 container
+				20 button Suzzme Voice, Karen
+				21 button Preview Voice
+				22 switch Speak Suzzme’s responses, Value: on
+			23 text Selected: Karen · en-AU · Default
+			24 heading Pace
+			25 container
+				26 text Speaking pace, Value: Natural
+					27 text Natural
+				28 button Slow
+				29 slider (settable, float) Description: Speaking pace, Value: 0.5, Details: Natural
+				30 button Fast
+			31 text Natural uses Apple’s default pace and pitch. Previews and spoken answers use the same settings.
+			32 switch (disabled) Match the response language, Value: on
+			33 text Automatic keeps your regional voice for your language. Other languages use an appropriate installed Apple voice. An explicit voice choice stays selected.
+			34 heading Permissions
+			35 container
+				36 text Microphone, Value: Allowed Allowed
+			37 text Suzzme requests access when you start a conversation. Speech is processed on this device.
+			38 heading Haptics
+			39 switch Trackpad feedback, Value: on
+			40 text Brief feedback marks confirmations and completion on supported trackpads. Every state is also shown on screen.
+	41 toolbar
+		42 button Description: Hide Sidebar, Secondary Actions: Increment, Decrement, Delete, Cancel
+		43 button Description: Back, ID: chevron.backward, Secondary Actions: Increment, Decrement, Delete, Cancel, Move previous, Remove from toolbar
+	44 close button
+	45 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	46 minimize button
+	47 text Voice
+48 menu bar
+	49 Suzzme
+	50 Edit
+	51 View
+	52 Companion
+	53 Window
+	54 Help
+
+The focused UI element is 0 standard window Voice, ID: main, Secondary Actions: Raise

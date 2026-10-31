@@ -1,0 +1,67 @@
+Window: "Sources", App: Suzzme.
+0 standard window Sources, ID: main, Secondary Actions: Raise
+	1 split group main, SidebarNavigationSplitView
+		2 scroll area Secondary Actions: Scroll Up, Scroll Down
+			3 list Sidebar
+				4 row (selectable)
+				5 row (selectable) Suzzme, Your personal companion
+				6 row (selectable) Your day
+				7 row (selectable) Home
+				8 row (selectable) Today
+				9 row (selectable) Daily Summary
+				10 row (selectable) Your information
+				11 row (selectable) Personal Memory
+				12 row (selected) Sources
+				13 row (selectable) History
+				14 row (selectable)
+				15 row (selectable) Settings
+			16 scroll bar (settable, float) 0
+				17 value indicator (settable, float) 0
+				18 increment arrow button
+				19 decrement arrow button
+				20 increment page button
+				21 decrement page button
+		22 splitter (disabled, settable, float) 232
+		23 scroll area Secondary Actions: Scroll Up, Scroll Down
+			24 list Secondary Actions: Cancel
+				25 row (selectable)
+				26 row (selectable) Description: Context, with your permission, Value: Choose what Suzzme may check. Review access and recent updates for each source.
+				27 row (selectable) On this device
+				28 row (selectable) Calendar, Access allowed, Your schedule and what is coming next, Checked successfully, Last checked 16 Oct 2026 at 11:31 PM
+				29 row (selectable) Reminders, Access allowed, Unfinished work and upcoming commitments, Checked successfully, Last checked 16 Oct 2026 at 11:31 PM
+				30 row (selectable) Contacts, Access allowed, The people you ask Suzzme about
+				31 row (selectable) Connected accounts and shared text
+				32 row (selectable) Gmail, Unavailable in this build, Recent inbox headers · Uses Google services, Recent updates off
+				33 row (selectable) Shared messages, Manual sharing, Messages and other apps · Only text you share, Recent updates off
+				34 row (selectable) App integrations
+				35 row (selectable) Integrations, Review capabilities, GitHub account reads and supported service connections
+				36 row (selectable) Description: Connected apps recent updates, Value: Updates off
+Turning updates off stops intake and hides stored updates. Source items and Personal Memory are not deleted.
+					37 checkbox (disabled) Description: Connected apps recent updates, Value: 0
+				38 row (selectable) Pages
+				39 row (selectable) Watched Links, No pages added, Checking paused for network safety, Recent updates off
+				40 row (selectable) Your controls
+				41 row (selectable) Recent information, Review and clear saved source updates
+				42 row (selectable) Access and recent updates are separate. Turning updates off stops intake; it does not change source items or Personal Memory.
+			43 scroll bar (settable, float) 0
+				44 value indicator (settable, float) 0
+				45 increment arrow button
+				46 decrement arrow button
+				47 increment page button
+				48 decrement page button
+	49 toolbar
+		50 button Description: Hide Sidebar, Secondary Actions: Increment, Decrement, Delete, Cancel
+		51 button Description: Ask Suzzme, Help: Ask Suzzme (⌘K), ID: suzzme-ask-open, Secondary Actions: Increment, Decrement, Delete, Cancel, Move previous, Remove from toolbar
+	52 close button
+	53 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	54 minimize button
+	55 text Sources
+56 menu bar
+	57 Suzzme
+	58 Edit
+	59 View
+	60 Companion
+	61 Window
+	62 Help
+
+The focused UI element is 0 standard window Sources, ID: main, Secondary Actions: Raise

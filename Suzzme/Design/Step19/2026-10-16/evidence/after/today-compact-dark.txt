@@ -1,0 +1,71 @@
+Window: "Today", App: Suzzme.
+0 standard window Today, ID: main, Secondary Actions: Raise
+	1 split group main, SidebarNavigationSplitView
+		2 scroll area Secondary Actions: Scroll Up, Scroll Down
+			3 list Sidebar
+				4 row (selectable)
+				5 row (selectable) Suzzme, Your personal companion
+				6 row (selectable) Your day
+				7 row (selectable) Home
+				8 row (selected) Today
+				9 row (selectable) Daily Summary
+				10 row (selectable) Your information
+				11 row (selectable) Personal Memory
+				12 row (selectable) Sources
+				13 row (selectable) History
+				14 row (selectable)
+				15 row (selectable) Settings
+			16 scroll bar (settable, float) 0
+				17 value indicator (settable, float) 0
+				18 increment arrow button
+				19 decrement arrow button
+				20 increment page button
+				21 decrement page button
+		22 splitter (disabled, settable, float) 232
+		23 scroll area Secondary Actions: Scroll Up, Scroll Down, Cancel
+			24 container
+				25 heading Good evening
+				26 text Friday, 16 Oct A little space for your day.
+				27 button Talk to Suzzme
+				28 button Type to Suzzme
+			29 heading Up next
+			30 container
+				31 text 17 Oct 2026 · All day Calendar First Day of Durga Puja Festivities
+				32 button Ask about this
+			33 container
+				34 text 18 Oct 2026 · All day Calendar Maha Saptami
+				35 button Ask about this
+			36 container
+				37 text 19 Oct 2026 · All day Calendar Maha Ashtami
+				38 button Ask about this
+			39 heading Unfinished
+			40 container
+				41 text 10 Sep 2026 at 12:00 AM Reminders ‎WhatsApp Audio ‪Vaibhav‬
+				42 button Ask about this
+			43 text Checked 11:31 PM
+			44 button Daily Summary
+			45 text Good evening. By 10 Sep 2026 at 12:00 AM, ‎WhatsApp Audio ‪Vaibhav‬ On 17 Oct 2026, First Day of Durga Puja Festivities is an all-day event. On 18 Oct 2026, Maha Saptami is an all-day event. On 19 Oct 2026, Maha Ashtami is an all-day event. On 20 Oct 2026, Dussehra is an all-day event.
+			46 button Listen to your summary
+			47 button Activity
+			48 scroll bar (settable, float) 0
+				49 value indicator (settable, float) 0
+				50 increment arrow button
+				51 decrement arrow button
+				52 increment page button
+				53 decrement page button
+	54 toolbar
+		55 button Description: Hide Sidebar, Secondary Actions: Increment, Decrement, Delete, Cancel
+		56 button Description: Ask Suzzme, Help: Ask Suzzme (⌘K), ID: suzzme-ask-open, Secondary Actions: Increment, Decrement, Delete, Cancel, Move previous, Remove from toolbar
+	57 close button
+	58 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	59 minimize button
+	60 text Today
+61 menu bar
+	62 Suzzme
+	63 Edit
+	64 View
+	65 Companion
+	66 Window
+	67 Help
+
+The focused UI element is 0 standard window Today, ID: main, Secondary Actions: Raise

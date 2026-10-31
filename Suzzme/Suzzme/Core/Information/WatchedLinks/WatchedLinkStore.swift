@@ -48,17 +48,26 @@ actor WatchedLinkStore {
             canonicalURL: canonical, enabled: enabled, state: enabled ? .ready : .disabled,
             etag: nil, lastModifiedHeader: nil, fingerprint: nil, lastAttempt: nil,
             lastSuccess: nil, lastMeaningfulChange: nil, consecutiveFailures: 0,
-            nextEligibleRefresh: nil, pageTitle: nil, changes: []
+            nextEligibleRefresh: nil, pageTitle: nil, changes: [],
+            transportConsentRevision: enabled ? WatchedLinkLimits.transportConsentRevision : nil
         )
         state.links.append(record); try persist(); return record
     }
 
     func setEnabled(_ id: UUID, enabled: Bool) throws {
         try load(); guard let index = state.links.firstIndex(where: { $0.id == id }) else { return }
+        if enabled {
+            guard try WebURLPolicy.validate(state.links[index].canonicalURL) == state.links[index].canonicalURL else { throw WatchedLinkError.invalidURL }
+        }
         generations.removeValue(forKey: id)
         state.links[index].enabled = enabled
+        state.links[index].transportConsentRevision = enabled ? WatchedLinkLimits.transportConsentRevision : nil
         state.links[index].state = enabled ? .ready : .disabled
-        if enabled { state.links[index].nextEligibleRefresh = nil }
+        if enabled {
+            state.links[index].nextEligibleRefresh = nil
+            // A newly reviewed page must supply a complete fresh response.
+            state.links[index].etag = nil; state.links[index].lastModifiedHeader = nil
+        }
         try persist()
     }
 
@@ -68,6 +77,7 @@ actor WatchedLinkStore {
 
     func requestRefresh(_ id: UUID) throws {
         try load(); guard let index = state.links.firstIndex(where: { $0.id == id }), state.links[index].enabled else { throw WatchedLinkError.disabled }
+        guard state.links[index].permitsFetching else { throw WatchedLinkError.consentRequired }
         generations.removeValue(forKey: id)
         state.links[index].nextEligibleRefresh = nil
         try persist()
@@ -76,6 +86,7 @@ actor WatchedLinkStore {
     func begin(_ id: UUID, now: Date, force: Bool) throws -> WatchedLinkRefresh? {
         try load(); guard let index = state.links.firstIndex(where: { $0.id == id }) else { return nil }
         guard state.links[index].enabled else { throw WatchedLinkError.disabled }
+        guard state.links[index].permitsFetching else { throw WatchedLinkError.consentRequired }
         if generations[id] != nil && !force { return nil }
         if !force, let next = state.links[index].nextEligibleRefresh, next > now { return nil }
         let generation = UUID(); generations[id] = generation
@@ -84,7 +95,7 @@ actor WatchedLinkStore {
     }
 
     func commit(_ id: UUID, generation: UUID, response: WatchedLinkFetchResponse, extraction: WebPageExtraction?, now: Date) throws -> Bool {
-        try load(); guard generations[id] == generation, let index = state.links.firstIndex(where: { $0.id == id }), state.links[index].enabled else { throw WatchedLinkError.staleRefresh }
+        try load(); guard generations[id] == generation, let index = state.links.firstIndex(where: { $0.id == id }), state.links[index].permitsFetching else { throw WatchedLinkError.staleRefresh }
         try Task.checkCancellation()
         if let extraction {
             let content = ([extraction.title] + extraction.changes.flatMap { [$0.title, $0.detail, $0.location ?? ""] }).joined(separator: " ")
@@ -117,7 +128,7 @@ actor WatchedLinkStore {
         let failures = state.links[index].consecutiveFailures
         let delay = min(WatchedLinkLimits.maximumBackoff, WatchedLinkLimits.minimumRefreshInterval * pow(2, Double(min(failures, 6))))
         state.links[index].nextEligibleRefresh = now.addingTimeInterval(delay)
-        state.links[index].state = switch error { case .blockedHost, .unsupportedScheme: .blocked; case .timeout, .unavailable: .offline; default: .error }
+        state.links[index].state = switch error { case .blockedHost, .unsupportedScheme, .transportRestricted: .blocked; case .timeout, .unavailable: .offline; default: .error }
         try persist()
     }
 
@@ -131,7 +142,8 @@ actor WatchedLinkStore {
         }
     }
 
-    func cancelAll() {
+    func cancelAll(respectingTaskCancellation: Bool = false) {
+        guard !respectingTaskCancellation || !Task.isCancelled else { return }
         // An unopened store has no in-flight work. Never overwrite unread data.
         guard loaded else { return }
         generations.removeAll()
@@ -180,7 +192,7 @@ actor WatchedLinkStore {
                   Set(decoded.links.map(\.canonicalURL)).count == decoded.links.count else { throw WatchedLinkError.persistence }
             for index in decoded.links.indices {
                 let record = decoded.links[index]
-                guard (try? WebURLPolicy.validate(record.canonicalURL)) == record.canonicalURL,
+                guard (try? WebURLPolicy.validateLegacyStoredURL(record.canonicalURL)) == record.canonicalURL,
                       record.name.count <= 80, record.changes.count <= WatchedLinkLimits.sections,
                       record.consecutiveFailures >= 0, record.consecutiveFailures <= 64,
                       Set(record.changes.map(\.id)).count == record.changes.count,

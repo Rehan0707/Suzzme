@@ -1,0 +1,34 @@
+Window: "", App: Suzzme.
+0 sheet Secondary Actions: Raise
+	1 container
+		2 text Value: Ask Suzzme, Secondary Actions: Cancel
+		3 button Description: Latest message, Help: Return to the end of this conversation, ID: suzzme-assistant-latest, Secondary Actions: Cancel
+		4 text field (settable) Description: Question for Suzzme, Placeholder: Ask Suzzme or follow up, ID: suzzme-assistant-input, Secondary Actions: Cancel
+		5 button (disabled) Description: Send question, ID: suzzme-assistant-submit, Secondary Actions: Cancel
+		6 button Description: Start voice conversation, Secondary Actions: Cancel
+		7 switch Read answers aloud, Help: Speak Suzzme’s answers to typed questions, Value: off, Secondary Actions: Cancel
+		8 scroll area Secondary Actions: Scroll Up, Scroll Down, Cancel
+			9 list Secondary Actions: AXScrollToTop, AXScrollToBottom
+				10 text Suzzme status: Ready when you are Apple Intelligence is ready on this device.
+				11 unknown Description: You said: What can you do?, ID: suzzme-turn-B7C0BF6E-11A6-483B-B0FE-253C285F3823-user
+				12 unknown ID: suzzme-turn-B7C0BF6E-11A6-483B-B0FE-253C285F3823-assistant, Description: Suzzme answered: I can help you understand your day, summarize authorized calendar events and reminders, and answer follow-up questions. You can type or talk to me. I can also propose supported changes to your calendar and reminders, which need your confirmation. Choose what I may access in Sources.
+				13 text Answered without generative AI Using authorized context
+				14 button Share
+				15 button Read aloud
+			16 scroll bar (settable, float) 0.6503496503496503
+				17 value indicator (settable, float) 0.6503496503496503
+				18 increment arrow button
+				19 decrement arrow button
+				20 increment page button
+				21 decrement page button
+		22 button Done
+		23 button Manage sources
+24 menu bar
+	25 Suzzme
+	26 Edit
+	27 View
+	28 Companion
+	29 Window
+	30 Help
+
+The focused UI element is 0 sheet Secondary Actions: Raise

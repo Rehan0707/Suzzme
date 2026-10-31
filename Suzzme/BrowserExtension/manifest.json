@@ -1,0 +1,34 @@
+{
+  "manifest_version": 3,
+  "name": "Suzzme App Connections",
+  "version": "0.1.0",
+  "minimum_chrome_version": "102",
+  "description": "Connect supported app tabs to Suzzme with your approval.",
+  "permissions": [
+    "activeTab",
+    "nativeMessaging",
+    "storage"
+  ],
+  "background": {
+    "service_worker": "service-worker.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "Connect this app with Suzzme",
+    "default_popup": "popup.html"
+  },
+  "incognito": "not_allowed",
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'none'"
+  },
+  "optional_host_permissions": [
+    "https://github.com/*",
+    "https://*.github.com/*",
+    "https://linkedin.com/*",
+    "https://*.linkedin.com/*",
+    "https://notion.so/*",
+    "https://*.notion.so/*",
+    "https://slack.com/*",
+    "https://*.slack.com/*"
+  ]
+}

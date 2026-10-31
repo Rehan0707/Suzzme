@@ -1,0 +1,341 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -project /tmp/SuzzmeNativePlatformAcceptanceProject/Suzzme.xcodeproj -scheme NativePlatformAcceptance -configuration Debug -destination "platform=iOS Simulator,id=BF97982B-6BF2-4C6D-B647-2CC5A387A30B" -derivedDataPath /tmp/SuzzmeNativePlatformIOSBuild -clonedSourcePackagesDirPath /Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages -disableAutomaticPackageResolution -skipPackageUpdates CODE_SIGNING_ALLOWED=NO -parallel-testing-enabled NO "-only-testing:NativePlatformUITests/NativePlatformUITests/test05SecondarySettingsRemainReachable" -resultBundlePath /tmp/SuzzmeNativeAccessibilityPickerFix-20261014.xcresult test-without-building
+
+Build settings from command line:
+    CODE_SIGNING_ALLOWED = NO
+
+Resolve Package Graph
+
+
+Resolved source packages:
+  AppCheck: https://github.com/google/app-check.git @ 11.3.2
+  InteropForGoogle: https://github.com/google/interop-ios-for-google-sdks.git @ 101.0.0
+  mcp-swift-sdk: https://github.com/modelcontextprotocol/swift-sdk @ 0.12.1
+  GoogleUtilities: https://github.com/google/GoogleUtilities.git @ 8.1.4
+  Promises: https://github.com/google/promises.git @ 2.4.1
+  swift-collections: https://github.com/apple/swift-collections.git @ 1.7.2
+  GoogleSignIn: https://github.com/google/GoogleSignIn-iOS @ 10.0.0
+  swift-log: https://github.com/apple/swift-log.git @ 1.6.2
+  GTMAppAuth: https://github.com/google/GTMAppAuth.git @ 6.0.0
+  AppAuth: https://github.com/openid/AppAuth-iOS.git @ 3.0.0
+  GTMSessionFetcher: https://github.com/google/gtm-session-fetcher.git @ 5.3.1
+  swift-atomics: https://github.com/apple/swift-atomics.git @ 1.3.1
+  swift-nio: https://github.com/apple/swift-nio.git @ 2.104.0
+  swift-system: https://github.com/apple/swift-system.git @ 1.8.1
+  EventSource: https://github.com/mattt/eventsource.git @ 1.5.1
+
+Writing result bundle at path:
+	/tmp/SuzzmeNativeAccessibilityPickerFix-20261014.xcresult
+
+2026-10-14 09:33:17.780022+0530 NativePlatformUITests-Runner[12300:739099] [Default] Running tests...
+    t =      nans Interface orientation changed to Portrait
+Test Suite 'Selected tests' started at 2026-10-14 09:33:21.570.
+Test Suite 'NativePlatformUITests.xctest' started at 2026-10-14 09:33:21.573.
+Test Suite 'NativePlatformUITests' started at 2026-10-14 09:33:21.573.
+Test Case '-[NativePlatformUITests.NativePlatformUITests test05SecondarySettingsRemainReachable]' started.
+    t =     0.00s Start Test at 2026-10-14 09:33:21.576
+    t =     0.28s Set Up
+    t =     0.29s Open dev.suzzme.NativeAcceptance
+    t =     0.29s     Launch dev.suzzme.NativeAcceptance
+2026-10-14 09:33:22.282 xcodebuild[12142:737742] [MT] IDELaunchParametersSnapshot: debugger version lookup failed for path '<nil>': noURL
+2026-10-14 09:33:22.282 xcodebuild[12142:737742] [MT] IDELaunchParametersSnapshot: no debugger version
+objc[12300]: Class UIAccessibilityLoaderWebShared is implemented in both /Library/Developer/CoreSimulator/Volumes/iOS_24A434/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime/Contents/Resources/RuntimeRoot/System/Library/AccessibilityBundles/WebKit.axbundle/WebKit (0x1057e8398) and /Library/Developer/CoreSimulator/Volumes/iOS_24A434/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime/Contents/Resources/RuntimeRoot/System/Library/AccessibilityBundles/WebCore.axbundle/WebCore (0x105cd0310). This may cause spurious casting failures and mysterious crashes. One of the duplicates must be removed or renamed.
+    t =     4.83s         Setting up automation session
+    t =     9.09s         Wait for dev.suzzme.NativeAcceptance to idle
+    t =    13.67s Waiting 60.0s for "suzzme-home-talk" Button to exist
+    t =    14.70s     Checking `Expect predicate `existsNoRetry == 1` for object "suzzme-home-talk" Button`
+    t =    14.71s         Checking existence of `"suzzme-home-talk" Button`
+    t =    15.01s Tap "Settings" Button
+    t =    15.01s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    15.02s     Find the "Settings" Button
+    t =    15.06s     Check for interrupting elements affecting "gearshape" Button
+    t =    15.17s     Synthesize event
+    t =    15.70s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    16.71s Waiting 10.0s for "Settings" NavigationBar to exist
+    t =    17.75s     Checking `Expect predicate `existsNoRetry == 1` for object "Settings" NavigationBar`
+    t =    17.75s         Checking existence of `"Settings" NavigationBar`
+    t =    17.86s Checking existence of `Button (First Match)`
+    t =    17.89s Find the Button (First Match)
+    t =    17.94s Checking existence of `"Presence, Suzzme Purple" Button`
+    t =    17.97s Find the "Presence, Suzzme Purple" Button
+    t =    18.02s Tap "Presence, Suzzme Purple" Button
+    t =    18.02s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    18.02s     Find the "Presence, Suzzme Purple" Button
+    t =    18.05s     Check for interrupting elements affecting "Presence, Suzzme Purple" Button
+    t =    18.08s     Synthesize event
+    t =    18.42s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    18.84s Waiting 10.0s for "Suzzme Presence" NavigationBar to exist
+    t =    19.88s     Checking `Expect predicate `existsNoRetry == 1` for object "Suzzme Presence" NavigationBar`
+    t =    19.88s         Checking existence of `"Suzzme Presence" NavigationBar`
+    t =    19.94s Find the Target Application 'dev.suzzme.NativeAcceptance'
+    t =    20.19s Added attachment named '11-settings-detail-Presence'
+    t =    20.19s Checking existence of `Alert (First Match)`
+    t =    20.23s Tap Button (First Match)
+    t =    20.23s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    20.23s     Find the Button (First Match)
+    t =    20.24s     Check for interrupting elements affecting "BackButton" Button
+    t =    20.27s     Synthesize event
+    t =    20.58s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    20.92s Waiting 10.0s for "Settings" NavigationBar to exist
+    t =    21.95s     Checking `Expect predicate `existsNoRetry == 1` for object "Settings" NavigationBar`
+    t =    21.96s         Checking existence of `"Settings" NavigationBar`
+    t =    22.01s Checking existence of `Button (First Match)`
+    t =    22.04s Find the Button (First Match)
+    t =    22.09s Checking existence of `"Talk to Suzzme, Shortcuts and controls" Button`
+    t =    22.12s Find the "Talk to Suzzme, Shortcuts and controls" Button
+    t =    22.17s Tap "Talk to Suzzme, Shortcuts and controls" Button
+    t =    22.17s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    22.18s     Find the "Talk to Suzzme, Shortcuts and controls" Button
+    t =    22.22s     Check for interrupting elements affecting "Talk to Suzzme, Shortcuts and controls" Button
+    t =    22.25s     Synthesize event
+    t =    22.54s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    22.95s Waiting 10.0s for "Talk to Suzzme" NavigationBar to exist
+    t =    23.99s     Checking `Expect predicate `existsNoRetry == 1` for object "Talk to Suzzme" NavigationBar`
+    t =    23.99s         Checking existence of `"Talk to Suzzme" NavigationBar`
+    t =    24.01s Find the Target Application 'dev.suzzme.NativeAcceptance'
+    t =    24.12s Added attachment named '11-settings-detail-Talk to Suzzme'
+    t =    24.12s Checking existence of `Alert (First Match)`
+    t =    24.14s Tap Button (First Match)
+    t =    24.14s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    24.15s     Find the Button (First Match)
+    t =    24.16s     Check for interrupting elements affecting "BackButton" Button
+    t =    24.18s     Synthesize event
+    t =    24.48s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    24.79s Waiting 10.0s for "Settings" NavigationBar to exist
+    t =    25.82s     Checking `Expect predicate `existsNoRetry == 1` for object "Settings" NavigationBar`
+    t =    25.82s         Checking existence of `"Settings" NavigationBar`
+    t =    25.87s Checking existence of `Button (First Match)`
+    t =    25.92s Swipe up Target Application 'dev.suzzme.NativeAcceptance'
+    t =    25.92s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    25.92s     Find the Target Application 'dev.suzzme.NativeAcceptance'
+    t =    25.94s     Check for interrupting elements affecting "Suzzme" Application
+    t =    25.96s     Synthesize event
+    t =    26.38s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    28.49s Checking existence of `Button (First Match)`
+    t =    28.53s Swipe up Target Application 'dev.suzzme.NativeAcceptance'
+    t =    28.53s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    28.53s     Find the Target Application 'dev.suzzme.NativeAcceptance'
+    t =    28.55s     Check for interrupting elements affecting "Suzzme" Application
+    t =    28.57s     Synthesize event
+    t =    29.00s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    31.10s Checking existence of `Button (First Match)`
+    t =    31.15s Find the Button (First Match)
+    t =    31.19s Checking existence of `"Daily Summary, 8:00 AM" Button`
+    t =    31.22s Find the "Daily Summary, 8:00 AM" Button
+    t =    31.26s Tap "Daily Summary, 8:00 AM" Button
+    t =    31.26s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    31.26s     Find the "Daily Summary, 8:00 AM" Button
+    t =    31.30s     Check for interrupting elements affecting "Daily Summary, 8:00 AM" Button
+    t =    31.32s     Synthesize event
+    t =    31.61s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    31.70s Waiting 10.0s for "Daily Summary & Suggestions" NavigationBar to exist
+    t =    32.73s     Checking `Expect predicate `existsNoRetry == 1` for object "Daily Summary & Suggestions" NavigationBar`
+    t =    32.74s         Checking existence of `"Daily Summary & Suggestions" NavigationBar`
+    t =    32.83s Find the Target Application 'dev.suzzme.NativeAcceptance'
+    t =    32.94s Added attachment named '11-settings-detail-Daily Summary'
+    t =    32.94s Checking existence of `Alert (First Match)`
+    t =    32.97s Tap Button (First Match)
+    t =    32.97s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    32.97s     Find the Button (First Match)
+    t =    32.98s     Check for interrupting elements affecting "BackButton" Button
+    t =    33.01s     Synthesize event
+    t =    33.30s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    33.62s Waiting 10.0s for "Settings" NavigationBar to exist
+    t =    34.66s     Checking `Expect predicate `existsNoRetry == 1` for object "Settings" NavigationBar`
+    t =    34.67s         Checking existence of `"Settings" NavigationBar`
+    t =    34.71s Checking existence of `Button (First Match)`
+    t =    34.76s Swipe up Target Application 'dev.suzzme.NativeAcceptance'
+    t =    34.76s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    34.76s     Find the Target Application 'dev.suzzme.NativeAcceptance'
+    t =    34.78s     Check for interrupting elements affecting "Suzzme" Application
+    t =    34.80s     Synthesize event
+    t =    35.22s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    37.33s Checking existence of `Button (First Match)`
+    t =    37.38s Find the Button (First Match)
+    t =    37.42s Checking existence of `"Privacy, On-device processing and controls" Button`
+    t =    37.45s Find the "Privacy, On-device processing and controls" Button
+    t =    37.49s Tap "Privacy, On-device processing and controls" Button
+    t =    37.49s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    37.50s     Find the "Privacy, On-device processing and controls" Button
+    t =    37.53s     Check for interrupting elements affecting "Privacy, On-device processing and controls" Button
+    t =    37.56s     Synthesize event
+    t =    37.85s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    38.20s Waiting 10.0s for "Privacy" NavigationBar to exist
+    t =    39.23s     Checking `Expect predicate `existsNoRetry == 1` for object "Privacy" NavigationBar`
+    t =    39.24s         Checking existence of `"Privacy" NavigationBar`
+    t =    39.29s Find the Target Application 'dev.suzzme.NativeAcceptance'
+    t =    39.40s Added attachment named '11-settings-detail-Privacy'
+    t =    39.40s Checking existence of `Alert (First Match)`
+    t =    39.43s Tap Button (First Match)
+    t =    39.43s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    39.43s     Find the Button (First Match)
+    t =    39.44s     Check for interrupting elements affecting "BackButton" Button
+    t =    39.46s     Synthesize event
+    t =    39.76s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    40.07s Waiting 10.0s for "Settings" NavigationBar to exist
+    t =    41.10s     Checking `Expect predicate `existsNoRetry == 1` for object "Settings" NavigationBar`
+    t =    41.10s         Checking existence of `"Settings" NavigationBar`
+    t =    41.16s Checking existence of `Button (First Match)`
+    t =    41.19s Find the Button (First Match)
+    t =    41.24s Checking existence of `"Notifications, Off or unavailable" Button`
+    t =    41.27s Find the "Notifications, Off or unavailable" Button
+    t =    41.31s Tap "Notifications, Off or unavailable" Button
+    t =    41.31s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    41.31s     Find the "Notifications, Off or unavailable" Button
+    t =    41.35s     Check for interrupting elements affecting "Notifications, Off or unavailable" Button
+    t =    41.37s     Synthesize event
+    t =    41.67s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    42.01s Waiting 10.0s for "Notifications" NavigationBar to exist
+    t =    43.05s     Checking `Expect predicate `existsNoRetry == 1` for object "Notifications" NavigationBar`
+    t =    43.05s         Checking existence of `"Notifications" NavigationBar`
+    t =    43.09s Find the Target Application 'dev.suzzme.NativeAcceptance'
+    t =    43.21s Added attachment named '11-settings-detail-Notifications'
+    t =    43.21s Checking existence of `Alert (First Match)`
+    t =    43.24s Tap Button (First Match)
+    t =    43.24s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    43.24s     Find the Button (First Match)
+    t =    43.26s     Check for interrupting elements affecting "BackButton" Button
+    t =    43.28s     Synthesize event
+    t =    43.58s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    43.88s Waiting 10.0s for "Settings" NavigationBar to exist
+    t =    44.93s     Checking `Expect predicate `existsNoRetry == 1` for object "Settings" NavigationBar`
+    t =    44.93s         Checking existence of `"Settings" NavigationBar`
+    t =    44.98s Checking existence of `Button (First Match)`
+    t =    45.03s Swipe up Target Application 'dev.suzzme.NativeAcceptance'
+    t =    45.03s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    45.03s     Find the Target Application 'dev.suzzme.NativeAcceptance'
+    t =    45.05s     Check for interrupting elements affecting "Suzzme" Application
+    t =    45.07s     Synthesize event
+    t =    45.49s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    47.59s Checking existence of `Button (First Match)`
+    t =    47.66s Find the Button (First Match)
+    t =    47.71s Checking existence of `"Accessibility, Motion, transparency, and reading" Button`
+    t =    47.74s Find the "Accessibility, Motion, transparency, and reading" Button
+    t =    47.78s Tap "Accessibility, Motion, transparency, and reading" Button
+    t =    47.78s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    47.79s     Find the "Accessibility, Motion, transparency, and reading" Button
+    t =    47.82s     Check for interrupting elements affecting "Accessibility, Motion, transparency, and reading" Button
+    t =    47.86s     Synthesize event
+    t =    48.15s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    48.53s Waiting 10.0s for "Accessibility" NavigationBar to exist
+    t =    49.56s     Checking `Expect predicate `existsNoRetry == 1` for object "Accessibility" NavigationBar`
+    t =    49.57s         Checking existence of `"Accessibility" NavigationBar`
+    t =    49.62s Find the Target Application 'dev.suzzme.NativeAcceptance'
+    t =    49.75s Added attachment named '11-settings-detail-Accessibility'
+    t =    49.75s Checking existence of `Alert (First Match)`
+    t =    49.78s Tap Button (First Match)
+    t =    49.78s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    49.78s     Find the Button (First Match)
+    t =    49.79s     Check for interrupting elements affecting "BackButton" Button
+    t =    49.81s     Synthesize event
+    t =    50.11s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    50.44s Waiting 10.0s for "Settings" NavigationBar to exist
+    t =    51.46s     Checking `Expect predicate `existsNoRetry == 1` for object "Settings" NavigationBar`
+    t =    51.46s         Checking existence of `"Settings" NavigationBar`
+    t =    51.53s Checking existence of `Button (First Match)`
+    t =    51.57s Swipe up Target Application 'dev.suzzme.NativeAcceptance'
+    t =    51.57s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    51.58s     Find the Target Application 'dev.suzzme.NativeAcceptance'
+    t =    51.59s     Check for interrupting elements affecting "Suzzme" Application
+    t =    51.62s     Synthesize event
+    t =    52.04s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    54.14s Checking existence of `Button (First Match)`
+    t =    54.18s Find the Button (First Match)
+    t =    54.22s Checking existence of `"Profile, Your name, stored on this device" Button`
+    t =    54.25s Find the "Profile, Your name, stored on this device" Button
+    t =    54.29s Tap "Profile, Your name, stored on this device" Button
+    t =    54.29s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    54.30s     Find the "Profile, Your name, stored on this device" Button
+    t =    54.33s     Check for interrupting elements affecting "Profile, Your name, stored on this device" Button
+    t =    54.37s     Synthesize event
+    t =    54.66s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    54.70s Waiting 10.0s for "Profile" NavigationBar to exist
+    t =    55.73s     Checking `Expect predicate `existsNoRetry == 1` for object "Profile" NavigationBar`
+    t =    55.73s         Checking existence of `"Profile" NavigationBar`
+    t =    55.82s Find the Target Application 'dev.suzzme.NativeAcceptance'
+    t =    55.93s Added attachment named '11-settings-detail-Profile'
+    t =    55.94s Checking existence of `Alert (First Match)`
+    t =    55.97s Tap Button (First Match)
+    t =    55.97s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    55.97s     Find the Button (First Match)
+    t =    55.99s     Check for interrupting elements affecting "BackButton" Button
+    t =    56.01s     Synthesize event
+    t =    56.30s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    56.70s Waiting 10.0s for "Settings" NavigationBar to exist
+    t =    57.73s     Checking `Expect predicate `existsNoRetry == 1` for object "Settings" NavigationBar`
+    t =    57.73s         Checking existence of `"Settings" NavigationBar`
+    t =    57.78s Checking existence of `Button (First Match)`
+    t =    57.81s Find the Button (First Match)
+    t =    57.86s Checking existence of `"About Suzzme, Version and principles" Button`
+    t =    57.89s Find the "About Suzzme, Version and principles" Button
+    t =    57.93s Tap "About Suzzme, Version and principles" Button
+    t =    57.93s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    57.93s     Find the "About Suzzme, Version and principles" Button
+    t =    57.96s     Check for interrupting elements affecting "About Suzzme, Version and principles" Button
+    t =    57.99s     Synthesize event
+    t =    58.28s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    58.61s Waiting 10.0s for "About Suzzme" NavigationBar to exist
+    t =    59.63s     Checking `Expect predicate `existsNoRetry == 1` for object "About Suzzme" NavigationBar`
+    t =    59.64s         Checking existence of `"About Suzzme" NavigationBar`
+    t =    59.70s Find the Target Application 'dev.suzzme.NativeAcceptance'
+    t =    59.81s Added attachment named '11-settings-detail-About Suzzme'
+    t =    59.81s Checking existence of `Alert (First Match)`
+    t =    59.84s Tap Button (First Match)
+    t =    59.84s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    59.84s     Find the Button (First Match)
+    t =    59.85s     Check for interrupting elements affecting "BackButton" Button
+    t =    59.87s     Synthesize event
+    t =    60.17s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    60.49s Waiting 10.0s for "Settings" NavigationBar to exist
+    t =    61.51s     Checking `Expect predicate `existsNoRetry == 1` for object "Settings" NavigationBar`
+    t =    61.51s         Checking existence of `"Settings" NavigationBar`
+    t =    61.56s Checking existence of `Button (First Match)`
+    t =    61.60s Swipe up Target Application 'dev.suzzme.NativeAcceptance'
+    t =    61.60s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    61.60s     Find the Target Application 'dev.suzzme.NativeAcceptance'
+    t =    61.62s     Check for interrupting elements affecting "Suzzme" Application
+    t =    61.64s     Synthesize event
+    t =    62.07s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    63.02s Checking existence of `Button (First Match)`
+    t =    63.07s Find the Button (First Match)
+    t =    63.11s Checking existence of `"Suzzme Brain Lab" Button`
+    t =    63.15s Find the "Suzzme Brain Lab" Button
+    t =    63.19s Tap "Suzzme Brain Lab" Button
+    t =    63.19s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    63.19s     Find the "Suzzme Brain Lab" Button
+    t =    63.22s     Check for interrupting elements affecting "Suzzme Brain Lab" Button
+    t =    63.25s     Synthesize event
+    t =    63.54s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    64.04s Waiting 10.0s for "Brain Lab" NavigationBar to exist
+    t =    65.05s     Checking `Expect predicate `existsNoRetry == 1` for object "Brain Lab" NavigationBar`
+    t =    65.05s         Checking existence of `"Brain Lab" NavigationBar`
+    t =    65.15s Find the Target Application 'dev.suzzme.NativeAcceptance'
+    t =    65.26s Added attachment named '11-settings-detail-Suzzme Brain Lab'
+    t =    65.26s Checking existence of `Alert (First Match)`
+    t =    65.28s Tap Button (First Match)
+    t =    65.28s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    65.29s     Find the Button (First Match)
+    t =    65.30s     Check for interrupting elements affecting "BackButton" Button
+    t =    65.32s     Synthesize event
+    t =    65.61s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    65.93s Waiting 10.0s for "Settings" NavigationBar to exist
+    t =    66.96s     Checking `Expect predicate `existsNoRetry == 1` for object "Settings" NavigationBar`
+    t =    66.96s         Checking existence of `"Settings" NavigationBar`
+    t =    67.01s Tear Down
+Test Case '-[NativePlatformUITests.NativePlatformUITests test05SecondarySettingsRemainReachable]' passed (67.684 seconds).
+Test Suite 'NativePlatformUITests' passed at 2026-10-14 09:34:29.267.
+	 Executed 1 test, with 0 failures (0 unexpected) in 67.684 (67.694) seconds
+Test Suite 'NativePlatformUITests.xctest' passed at 2026-10-14 09:34:29.276.
+	 Executed 1 test, with 0 failures (0 unexpected) in 67.684 (67.703) seconds
+Test Suite 'Selected tests' passed at 2026-10-14 09:34:29.276.
+	 Executed 1 test, with 0 failures (0 unexpected) in 67.684 (67.706) seconds
+2026-10-14 09:34:29.690 xcodebuild[12142:737742] [MT] IDETestOperationsObserverDebug: 93.494 elapsed -- Testing started completed.
+2026-10-14 09:34:29.690 xcodebuild[12142:737742] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start
+2026-10-14 09:34:29.690 xcodebuild[12142:737742] [MT] IDETestOperationsObserverDebug: 93.494 sec, +93.494 sec -- end
+
+Test session results, code coverage, and logs:
+	/tmp/SuzzmeNativeAccessibilityPickerFix-20261014.xcresult
+
+** TEST EXECUTE SUCCEEDED **
+
+Testing started

@@ -1,0 +1,4 @@
+Query chain:
+ →Find: Target Application 'dev.suzzme.NativeAcceptance'
+  ↪︎Find: Descendants matching type NavigationBar
+    ↪︎Find: Elements matching predicate '"History" IN identifiers'

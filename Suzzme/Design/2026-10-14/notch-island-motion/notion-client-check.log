@@ -1,0 +1,101 @@
+PASS connection verified with stable bot and workspace identity
+PASS verification checks identity, allowed page and content capability
+PASS credentials sent only in bearer header to fixed GET origin
+PASS real client produces page title and readable block excerpt
+PASS read verifies live identity and makes only three bounded calls
+PASS read labels scope rather than claiming attachments or comments
+PASS task completion state retained without inventing an action
+PASS completed task state is distinguishable
+PASS empty page is a truthful empty excerpt
+PASS maximum scope verification bounded to ten requests
+PASS mutable name not used as account authority
+PASS invalid credential rejected before request 0
+PASS invalid credential made no network requests 0
+PASS invalid credential rejected before request 17
+PASS invalid credential made no network requests 17
+PASS invalid credential rejected before request 12
+PASS invalid credential made no network requests 12
+PASS invalid credential rejected before request 1025
+PASS invalid credential made no network requests 1025
+PASS invalid credential rejected before request 6
+PASS invalid credential made no network requests 6
+PASS malformed or excessive allowed page scope 0
+PASS malformed or excessive allowed page scope 1
+PASS malformed or excessive allowed page scope 2
+PASS malformed or excessive allowed page scope 3
+PASS malformed or excessive allowed page scope 4
+PASS malformed or excessive allowed page scope 5
+PASS noncanonical read target rejected
+PASS malformed saved bot identity rejected
+PASS malformed saved workspace identity rejected
+PASS personal access token excluded from internal-connection flow
+PASS malformed live bot identity rejected
+PASS credential switched to a different bot cannot read
+PASS identity mismatch prevents every page request
+PASS explicit workspace mismatch rejects stale binding
+PASS optional workspace metadata not falsely required
+PASS workspace display name used when user-name capability absent
+PASS oversized identity display projection rejected
+PASS returned page must match requested stable ID
+PASS obsolete page not read true-false
+PASS obsolete page blocks body retrieval true-false
+PASS obsolete page not read false-true
+PASS obsolete page blocks body retrieval false-true
+PASS unshared/missing page denied 403
+PASS unshared/missing page denied 404
+PASS content capability checked before Connected
+PASS revoked token returns authentication recovery
+PASS nested/paginated content explicitly disclosed
+PASS opaque cursor and nested children never cause unbounded traversal
+PASS child pages or unsupported blocks are not followed or represented as fetched
+PASS archived blocks omitted
+PASS duplicate block identities rejected
+PASS UUID casing cannot conceal duplicate blocks
+PASS malformed block identity rejected
+PASS malformed JSON sanitized
+PASS invalid page schema not presented as a successful excerpt
+PASS oversized wire result rejected before decode
+PASS oversized usable excerpt rejected
+PASS credential-bearing content excluded 30
+PASS credential-bearing content excluded 36
+PASS credential-bearing content excluded 39
+PASS retrieved instructions remain data for existing Core trust boundary
+PASS hostile content cannot change request targets or invoke writes
+PASS excessively nested JSON rejected
+PASS unreviewed transport target rejected 0
+PASS unreviewed transport target rejected 1
+PASS unreviewed transport target rejected 2
+PASS unreviewed transport target rejected 3
+PASS unreviewed transport target rejected 4
+PASS unreviewed transport target rejected 5
+PASS unreviewed transport target rejected 6
+PASS unreviewed transport target rejected 7
+PASS unreviewed transport target rejected 8
+PASS unreviewed transport target rejected 9
+PASS unreviewed transport target rejected 10
+PASS mutating HTTP method rejected POST
+PASS mutating HTTP method rejected PATCH
+PASS mutating HTTP method rejected DELETE
+PASS mutating HTTP method rejected PUT
+PASS body cannot smuggle extra operation into GET
+PASS unreviewed protocol version rejected
+PASS response origin mismatch rejected
+PASS redirect never accepted as read success
+PASS provider error sanitized without automatic retry 429
+PASS provider failure cannot trigger retry burst 429
+PASS provider error sanitized without automatic retry 500
+PASS provider failure cannot trigger retry burst 500
+PASS provider error sanitized without automatic retry 503
+PASS provider failure cannot trigger retry burst 503
+PASS unexpected content type rejected
+PASS oversized advertised response rejected
+PASS raw URLSession errors not leaked upstream
+PASS provider session has no cookie authority
+PASS provider session has no cache or ambient credentials
+PASS provider session does not wait indefinitely for connectivity
+PASS whole operation has bounded deadline
+PASS deadline cancellation stops subsequent provider calls
+PASS caller cancellation preserved
+PASS cancelled read makes no later page request
+PASS repeated reads reverify identity and do not use stale cached content
+Notion client checks: 100 passed, 0 failed. Synthetic HTTP only; live account acceptance pending.

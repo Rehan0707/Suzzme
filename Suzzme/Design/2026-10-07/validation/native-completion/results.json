@@ -1,0 +1,75 @@
+{
+  "date": "2026-10-07",
+  "regression_suites": {
+    "passed": 28,
+    "failed": 0,
+    "scripts": [
+      "check.sh",
+      "companion-presence-check.sh",
+      "companion3-intelligence-check.sh",
+      "connector-acceptance-check.sh",
+      "global-screen-check.sh",
+      "global-shortcut-check.sh",
+      "global-voice-check.sh",
+      "live-activity-check.sh",
+      "p0-blocker-check.sh",
+      "persistence-check.sh",
+      "premium-presence-check.sh",
+      "product-flow-check.sh",
+      "step10-check.sh",
+      "step11-check.sh",
+      "step12-check.sh",
+      "step12-presence-check.sh",
+      "step12-recovery-check.sh",
+      "step3-check.sh",
+      "step4-check.sh",
+      "step5-check.sh",
+      "step6-check.sh",
+      "step7-check.sh",
+      "step8-check.sh",
+      "step8-core-check.sh",
+      "step9-check.sh",
+      "ui-recovery-check.sh",
+      "voice-lifecycle-acceptance-check.sh",
+      "voice-quality-check.sh"
+    ]
+  },
+  "native_ui_checks": {
+    "passed": 53,
+    "failed": 0
+  },
+  "mac_presence_runtime_checks": {
+    "passed": 51,
+    "failed": 0
+  },
+  "live_activity_lifecycle_checks": {
+    "passed": 36,
+    "failed": 0
+  },
+  "release_builds": {
+    "macOS_signed_before_final_menu_labels": "passed",
+    "macOS_signed_final": "passed",
+    "iOS_simulator_app_and_extension": "passed"
+  },
+  "manual_mac_checks": [
+    "Home and Settings native UI in dark appearance",
+    "Command-K does not stack assistant sheets",
+    "Escape cancels active work and dismisses an idle conversation",
+    "Closing Settings returns to Home",
+    "Closing the main window leaves the app running"
+  ],
+  "unverified": [
+    "Physical iPhone Live Activity and Dynamic Island appearance",
+    "Full hardware acceptance matrix",
+    "End-to-end Gmail authentication with owner OAuth IDs",
+    "Distribution provisioning and notarization"
+  ],
+  "macOS_release_signature": {
+    "deep_strict_verification": "passed",
+    "sandbox": true,
+    "network_client": true,
+    "audio_input": true,
+    "get_task_allow": false,
+    "binary_sha256": "c12daf8b46e5ada373cc7ce8b129dc4f254cad153ea7a56e9108d6fb3dee033d"
+  }
+}

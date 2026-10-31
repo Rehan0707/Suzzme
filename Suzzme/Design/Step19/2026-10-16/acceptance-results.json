@@ -1,0 +1,68 @@
+{
+  "scope": "Step 19 production UI refinement and iOS startup investigation",
+  "completeApplication": false,
+  "statuses": {
+    "IMPLEMENTED": [
+      "Latest message and modern native scroll visibility",
+      "actual end marker outside transcript padding",
+      "summary spacing and item separators",
+      "shared Mac collection top padding",
+      "active-scene selection feedback",
+      "important-state accessibility announcements"
+    ],
+    "BUILD PASSED": [
+      "macOS Release arm64 final source",
+      "iOS Release arm64 simulator final source"
+    ],
+    "TEST PASSED": {
+      "uiRecovery": 46,
+      "productFlow": 39,
+      "p0Regressions": 71,
+      "voiceQuality": 23,
+      "voiceLifecycle": 31,
+      "step6": 53,
+      "step7": 90,
+      "step8": 198,
+      "step9": 156
+    },
+    "RUNTIME OBSERVED": [
+      "fresh final Mac process",
+      "real generated follow-up and retained earlier response",
+      "auto-follow to actual bottom",
+      "earlier turns show Latest message; click reaches bottom and hides it",
+      "Listening then cancellation to Ready without submission",
+      "seven main routes at compact Mac window size",
+      "regular restored layouts",
+      "light/dark affected screens",
+      "Sources Back and Escape",
+      "System appearance restored"
+    ],
+    "PHYSICAL DEVICE VERIFIED": [],
+    "BLOCKED": [
+      "iOS rendered launch and keyboard/voice/navigation acceptance"
+    ],
+    "PENDING": [
+      "full VoiceOver and accessibility setting matrix",
+      "physical haptics, notch and phone Live Activity",
+      "spoken end-to-end conversation",
+      "exact minimum/maximum window and phone matrices",
+      "macOS 14/iOS 17 fallback runtime",
+      "current onboarding runtime",
+      "native presence response/confirmation detail"
+    ]
+  },
+  "acceptedDistinctChecks": 707,
+  "finalNativeMacScreenshots": 33,
+  "allStep19NativeScreenshots": 49,
+  "iOSInstalled": true,
+  "iOSInstalledProduct": "baseline before UI refinements",
+  "iOSWhiteScreenReproduced": false,
+  "iOSWhiteScreenFixed": false,
+  "iOSRuntimeObserved": false,
+  "simulatorErased": false,
+  "signingConfigurationChanged": false,
+  "inputMonitoringChanged": false,
+  "rawEvidence": "evidence/batch-results.json",
+  "runtimeEvidence": "evidence/runtime-evidence-check.json",
+  "startupDiagnosis": "IOS-STARTUP.md"
+}

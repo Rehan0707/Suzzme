@@ -57,7 +57,17 @@ struct Step12Checks {
     static func urlSecurity() async throws {
         let blocked = ["http://example.edu", "file:///etc/passwd", "ftp://example.edu", "javascript:alert(1)", "https://user:pass@example.edu", "https://localhost", "https://localhost.", "https://x.local", "https://x.internal", "https://127.0.0.1", "https://10.0.0.1", "https://172.16.0.1", "https://192.168.0.1", "https://169.254.169.254", "https://100.64.0.1", "https://0.0.0.0", "https://224.0.0.1", "https://255.255.255.255", "https://198.18.0.1", "https://192.0.2.1", "https://198.51.100.1", "https://203.0.113.1", "https://[::1]", "https://[::]", "https://[fe80::1]", "https://[fc00::1]", "https://[ff02::1]", "https://[::ffff:127.0.0.1]", "https://[::ffff:192.168.1.1]", "https://[2001:db8::1]", "https://example.edu?access_token=secret", "https://example.edu?api%5Fkey=secret"]
         for input in blocked { check(rejects { _ = try WebURLPolicy.validate(input) }, "URL denies \(input)") }
-        for input in ["https://example.edu/notices", "https://EXAMPLE.edu/path#section", "https://example.edu/timetable?term=fall", "https://8.8.8.8", "https://[2606:4700:4700::1111]"] {
+        // Watched URLs require a DNS identity for Host, SNI and TLS verification.
+        // Public numeric addresses are allowed only as validated DNS outputs.
+        for input in ["https://8.8.8.8", "https://[2606:4700:4700::1111]"] {
+            do {
+                _ = try WebURLPolicy.validate(input)
+                check(false, "URL denies literal public address \(input)")
+            } catch let error as WatchedLinkError {
+                check(error == .blockedHost, "URL denies literal public address with blockedHost \(input)")
+            } catch { check(false, "URL rejects literal public address with unexpected error \(input): \(error)") }
+        }
+        for input in ["https://example.edu/notices", "https://EXAMPLE.edu/path#section", "https://example.edu/timetable?term=fall"] {
             do {
                 let url = try WebURLPolicy.validate(input)
                 check(url.scheme == "https" && url.fragment == nil, "URL canonicalizes public \(input)")

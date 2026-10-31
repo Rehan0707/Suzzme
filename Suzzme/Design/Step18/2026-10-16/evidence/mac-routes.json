@@ -1,0 +1,44 @@
+[
+  {
+    "route": "Home",
+    "appearance": "System (dark)",
+    "window": "Window: \"Home\", App: Suzzme.",
+    "screenshot": "home-dark.jpg"
+  },
+  {
+    "route": "Today",
+    "appearance": "System (dark)",
+    "window": "Window: \"Today\", App: Suzzme.",
+    "screenshot": "today-dark.jpg"
+  },
+  {
+    "route": "Daily Summary",
+    "appearance": "System (dark)",
+    "window": "Window: \"Daily Summary\", App: Suzzme.",
+    "screenshot": "daily-summary-dark.jpg"
+  },
+  {
+    "route": "Personal Memory",
+    "appearance": "System (dark)",
+    "window": "Window: \"Personal Memory\", App: Suzzme.",
+    "screenshot": "personal-memory-dark.jpg"
+  },
+  {
+    "route": "Sources",
+    "appearance": "System (dark)",
+    "window": "Window: \"Sources\", App: Suzzme.",
+    "screenshot": "sources-dark.jpg"
+  },
+  {
+    "route": "History",
+    "appearance": "System (dark)",
+    "window": "Window: \"History\", App: Suzzme.",
+    "screenshot": "history-dark.jpg"
+  },
+  {
+    "route": "Settings",
+    "appearance": "System (dark)",
+    "window": "Window: \"Settings\", App: Suzzme.",
+    "screenshot": "settings-dark.jpg"
+  }
+]

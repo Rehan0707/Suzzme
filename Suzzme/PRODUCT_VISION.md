@@ -8,7 +8,7 @@ Suzzme is not a notification list, an admin dashboard, or a collection of separa
 - Mac
 - text
 - voice
-- Mac Presence
+- Mac Presence and menu bar
 - Daily Summary
 - supported actions
 
@@ -44,7 +44,9 @@ Remind · Summarize · Answer · Act
 iPhone and Mac Presence
 ```
 
-Sources must be honest and permission controlled. Supported sources may include Calendar, Reminders, Contacts, explicitly watched public webpages, and future public integrations. Suzzme must never claim access it does not have or inspect private app databases, Messages, WhatsApp, notifications, or other protected data through unsupported techniques.
+Sources must be honest and permission controlled. Current source adapters include Calendar, Reminders, Contacts, user-selected Messages text, and an optional metadata-only Gmail connection. Saved Watched Links remain inspectable and removable, but public-page fetching and new intake are currently paused for connection-level network safety. A new transport must pass the full security contract before enablement; earlier saved links require individual review before checking can resume. Cached watched details also require current source authorization and matching provenance before appearing in Daily Summary or opportunities. Gmail requires configured Google OAuth clients and an explicit account grant; it uses Google's network and reads sender, subject and date without message bodies, attachments or mail changes. GitHub and Notion have explicit, scoped read paths; live provider acceptance still requires the owner’s accounts. Catalog-only entries grant no access. The native Share extension handles only explicitly shared URLs and requires signed App Group setup.
+
+Suzzme must never claim access it does not have or inspect private app databases, Messages, WhatsApp, notifications, or other protected data through unsupported techniques. A user-pasted text import does not grant access to an app's history. A consented Mac screen capture is bounded to a question and is not continuous screen sharing. Chat file attachments remain unavailable. A Firebase-identified Suzzme account and opt-in transport for one prepared Mac Daily Summary are implemented in the app; the companion-summary Supabase schema is deployed, with real same-account transfer still to be tested. Local Knowledge separately supports explicitly selected text/Markdown files; shared app context supports reviewed text from selected screenshots.
 
 ## Daily Context and Daily Summary
 
@@ -69,6 +71,8 @@ Listening → Transcribing → Understanding → Checking Context
 
 Natural follow-ups may resolve references from the active conversation and current grounded context. Voice never gains extra authority over text.
 
+Home is a focused entrance with the Suzzme Face, a primary Talk action, a typed composer and useful context choices. Today, Daily Summary, Memory, Sources, saved structured History and Settings remain reachable without making every interaction a dashboard. iPhone uses native stack navigation. Mac provides a main window with an optional sidebar, native Settings and a compact menu bar entrance backed by the same companion.
+
 ## Safe actions
 
 All supported mutations use the central action boundary:
@@ -82,9 +86,11 @@ Generated language may understand and propose. Deterministic Swift code owns pri
 
 ## Presence
 
-On a MacBook with a notch, Suzzme uses a public-API, app-owned Presence surface directly below the physical notch. The hardware is never modified. A Mac without a notch uses an appropriate top-center surface. Both invoke the same `SuzzmeCore` used everywhere else.
+On a MacBook with a notch, Suzzme uses a public-API, app-owned Presence surface aligned with the physical cutout. The hardware is never modified. A Mac without a notch uses an appropriate top-center surface within the available screen area. The menu bar, main window and transient panel invoke the same `SuzzmeCore` used everywhere else. One app-owned invocation controller retains global shortcut, voice and panel ownership when the main window closes.
 
-On iPhone, the primary experience is the Suzzme Face, Talk to Suzzme, Type to Suzzme, What Matters Today, and Daily Summary. Suzzme respects Dynamic Island limitations and never draws a fake island or uses private APIs.
+On iPhone, the primary experience is the Suzzme Face, Talk to Suzzme, Type to Suzzme, Today and Daily Summary. A real ActivityKit/WidgetKit extension provides supported Lock Screen, compact, minimal and expanded Dynamic Island presentations for an ongoing session. The system governs visibility and update animation. Presence ends when the session ends; it does not create a permanent decorative island or use private APIs.
+
+Animations communicate state and progress, respect Reduce Motion and reduced luminance, and retain readable labels when motion is suppressed. Native appearance, adaptive text, accessible controls and Increase Contrast/Reduce Transparency behavior apply across the app. Real-device accessibility, voice, notch/display and Live Activity lifecycle acceptance remain separate from builds and test-double evidence.
 
 ## Privacy principles
 

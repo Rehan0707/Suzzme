@@ -2,12 +2,7 @@ import SwiftUI
 
 extension SuzzmeAssistantState {
     var haloDuration: Double {
-        switch self {
-        case .idle: 4
-        case .listening, .transcribing: 2.5
-        case .understanding, .gatheringContext, .reasoning, .planning: 1.8
-        case .acting, .speaking, .success, .error, .awaitingConfirmation: 1.2
-        }
+        SuzzmePresenceMotion.make(for: self).duration + SuzzmeTheme.Motion.calm
     }
 }
 
@@ -21,7 +16,8 @@ struct SuzzmeHalo: View {
     @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
     @Environment(\.colorSchemeContrast) private var colorSchemeContrast
     @Environment(\.scenePhase) private var scenePhase
-    @State private var expanded = false
+    @State private var phase: CGFloat = 0
+    private var motion: SuzzmePresenceMotion { .make(for: state) }
 
     init(state: SuzzmeAssistantState = .idle, theme: SuzzmePresenceTheme = .suzzmePurple, animation: SuzzmePresenceAnimation = .gentle) {
         self.state = state
@@ -30,9 +26,9 @@ struct SuzzmeHalo: View {
     }
 
     var body: some View {
-        let colors = presenceTheme.colors(for: colorScheme)
+        let colors = SuzzmePresenceColors.mascot(for: colorScheme)
         ZStack {
-            if !reduceTransparency {
+            if !reduceTransparency && colorSchemeContrast != .increased && state != .idle {
                 Capsule()
                     .fill(
                         LinearGradient(
@@ -53,19 +49,27 @@ struct SuzzmeHalo: View {
                     )
                 )
                 .frame(width: 96, height: colorSchemeContrast == .increased ? 8 : 6)
-                .scaleEffect(x: expanded ? 1.06 : 1)
+                .scaleEffect(x: 1 + phase * motion.spread)
+                .offset(x: phase * motion.travel * SuzzmeTheme.Spacing.small)
+                .opacity(state == .idle ? 0.4 : 1)
         }
         .frame(height: 44)
         .frame(maxWidth: .infinity)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Suzzme presence")
-        .accessibilityValue(state.rawValue.capitalized)
+        .accessibilityValue(SuzzmeAssistantPresentation.make(for: state).systemStatus)
         .task(id: "\(reduceMotion)-\(state.rawValue)-\(animation.rawValue)-\(scenePhase == .active)") {
-            expanded = false
-            guard !reduceMotion, scenePhase == .active, state != .idle, animation.duration > 0 else { return }
-            withAnimation(.easeInOut(duration: max(state.haloDuration, animation.duration)).repeatForever(autoreverses: true)) {
-                expanded = true
-            }
+            var reset = Transaction()
+            reset.disablesAnimations = true
+            withTransaction(reset) { phase = 0 }
+            guard SuzzmePresenceMotion.allowsMotion(state: state, animation: animation,
+                                                     reduceMotion: reduceMotion, isActive: scenePhase == .active) else { return }
+            let duration = motion.entryDuration(for: animation)
+            withAnimation(.smooth(duration: duration)) { phase = 1 }
+            do { try await Task.sleep(for: .seconds(duration)) }
+            catch { return }
+            guard !Task.isCancelled else { return }
+            withAnimation(.easeOut(duration: SuzzmeTheme.Motion.calm)) { phase = 0 }
         }
     }
 }

@@ -1,0 +1,14 @@
++Suzzme/Validation/live-activity-check.sh:2> set -eu
++Suzzme/Validation/live-activity-check.sh:3> cd /Users/rehan/Documents/Projects/Suzzme/Suzzme/Validation/..
++Suzzme/Validation/live-activity-check.sh:4> output=+Suzzme/Validation/live-activity-check.sh:4> mktemp -d
++Suzzme/Validation/live-activity-check.sh:4> output=/var/folders/tp/gdnfpld55dj76lq6wbsnlml40000gn/T/tmp.RseurNVRrM 
++Suzzme/Validation/live-activity-check.sh:5> trap 'rm -rf "$output"' EXIT
++Suzzme/Validation/live-activity-check.sh:6> xcrun swiftc -swift-version 6 -parse-as-library PresenceShared/SuzzmeLiveActivityPhase.swift Suzzme/Core/Models/SuzzmeAssistantState.swift Validation/LiveActivityChecks.swift -o /var/folders/tp/gdnfpld55dj76lq6wbsnlml40000gn/T/tmp.RseurNVRrM/LiveActivityChecks
++Suzzme/Validation/live-activity-check.sh:10> /var/folders/tp/gdnfpld55dj76lq6wbsnlml40000gn/T/tmp.RseurNVRrM/LiveActivityChecks
+Live Activity checks: 36 passed / 0 failed
++Suzzme/Validation/live-activity-check.sh:11> rg -n 'URLSession|EventKit|SuzzmeCore|AVAudioEngine' PresenceShared SuzzmePresenceWidget
++Suzzme/Validation/live-activity-check.sh:12> rg -q 'let liveActivity = SuzzmeLiveActivityController\(\)' Suzzme/App/SuzzmeAppStartup.swift
++Suzzme/Validation/live-activity-check.sh:13> rg -q 'await liveActivity.update\(.idle\)' Suzzme/App/SuzzmeAppStartup.swift
++Suzzme/Validation/live-activity-check.sh:14> rg -q 'foreground: self.applicationPhase != .background' Suzzme/App/SuzzmeAppStartup.swift
++Suzzme/Validation/live-activity-check.sh:15> rg -q 'applicationRuntime?.updateLiveActivity' Suzzme/App/ContentView.swift
++Suzzme/Validation/live-activity-check.sh:15> rm -rf /var/folders/tp/gdnfpld55dj76lq6wbsnlml40000gn/T/tmp.RseurNVRrM

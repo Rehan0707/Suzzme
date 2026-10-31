@@ -1,72 +1,49 @@
 #if os(iOS)
 import SwiftUI
 
+private enum MobileTab: Hashable {
+    case today, summary, settings
+}
+
 struct MobileRootView: View {
     @Environment(AppRouter.self) private var router
-    @Environment(\.horizontalSizeClass) private var sizeClass
-    private let primaryDestinations: [AppDestination] = [.home, .briefing, .memory]
+    @State private var selectedTab: MobileTab = .today
+    @State private var todayPath: [AppDestination] = []
 
     var body: some View {
-        @Bindable var router = router
-
-        if sizeClass == .regular {
-            NavigationSplitView {
-                List(primaryDestinations, selection: Binding<AppDestination?>(
-                    get: { router.selection },
-                    set: { router.selection = $0 ?? .home }
-                )) { destination in
-                    Label(destination.title, systemImage: destination.symbol)
-                        .tag(destination)
-                }
-                .navigationTitle("Suzzme")
-                .safeAreaInset(edge: .top) {
-                    sidebarBrand
-                }
-                .safeAreaInset(edge: .bottom) {
-                    NavigationLink { SettingsView() } label: {
-                        Label("Settings", systemImage: "gearshape")
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding()
-                    }
-                    .buttonStyle(.plain)
-                    .background(.bar)
-                }
-            } detail: {
-                NavigationStack {
-                    DestinationView(destination: router.selection)
-                        .navigationBarTitleDisplayMode(.inline)
-                }
-            }
-        } else {
-            TabView(selection: $router.selection) {
-                ForEach(primaryDestinations) { destination in
-                    NavigationStack {
+        TabView(selection: $selectedTab) {
+            NavigationStack(path: $todayPath) {
+                MobileCompanionTodayView()
+                    .navigationDestination(for: AppDestination.self) { destination in
                         DestinationView(destination: destination)
                             .navigationBarTitleDisplayMode(.inline)
                     }
-                    .tabItem {
-                        Label(destination.title, systemImage: destination.symbol)
-                    }
-                    .tag(destination)
-                }
             }
-        }
-    }
+            .tabItem { Label("Today", systemImage: "sun.max") }
+            .tag(MobileTab.today)
 
-    private var sidebarBrand: some View {
-        HStack(spacing: 12) {
-            SuzzmeMark().frame(width: 38, height: 38)
-            VStack(alignment: .leading, spacing: 2) {
-                Text("Suzzme").font(.headline)
-                Text("Your calm companion")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-            Spacer()
+            NavigationStack { MobileCompanionSummaryView() }
+                .tabItem { Label("Summary", systemImage: "text.alignleft") }
+                .tag(MobileTab.summary)
+
+            NavigationStack { SettingsView() }
+                .tabItem { Label("Settings", systemImage: "gearshape") }
+                .tag(MobileTab.settings)
         }
-        .padding(.horizontal)
-        .padding(.vertical, 10)
-        .background(.bar)
+        .tint(SuzzmeTheme.controlAccent)
+        .onChange(of: router.selection) { _, destination in
+            selectedTab = destination == .settings ? .settings : destination == .briefing ? .summary : .today
+            if destination == .home {
+                todayPath.removeAll()
+            } else if destination != .settings && destination != .briefing && todayPath.last != destination {
+                todayPath = [destination]
+            }
+        }
+        .onChange(of: todayPath) { _, path in
+            if selectedTab == .today {
+                router.selection = path.last ?? .home
+            }
+        }
     }
 }
 #endif

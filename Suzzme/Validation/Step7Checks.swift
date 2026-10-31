@@ -66,7 +66,7 @@ struct Step7Checks {
         let first = InvocationCoordinator(defaults: defaults)
         expect(first.presenceTheme == .suzzmePurple, "purple is the default theme")
         expect(first.presenceAnimation == .gentle, "gentle is the default animation")
-        expect(first.keyboardShortcut == .commandOptionSpace, "default shortcut is configurable command option space")
+        expect(first.keyboardShortcut == .controlOption, "default shortcut is safe control option push to talk")
         first.presenceTheme = .burgundy
         first.presenceAnimation = .minimal
         first.keyboardShortcut = .commandOptionReturn

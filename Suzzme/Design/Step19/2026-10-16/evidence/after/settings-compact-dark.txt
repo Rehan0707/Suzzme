@@ -1,0 +1,72 @@
+Window: "Settings", App: Suzzme.
+0 standard window Settings, ID: main, Secondary Actions: Raise
+	1 split group main, SidebarNavigationSplitView
+		2 scroll area Secondary Actions: Scroll Up, Scroll Down
+			3 list Sidebar
+				4 row (selectable)
+				5 row (selectable) Suzzme, Your personal companion
+				6 row (selectable) Your day
+				7 row (selectable) Home
+				8 row (selectable) Today
+				9 row (selectable) Daily Summary
+				10 row (selectable) Your information
+				11 row (selectable) Personal Memory
+				12 row (selectable) Sources
+				13 row (selectable) History
+				14 row (selectable)
+				15 row (selected) Settings
+			16 scroll bar (settable, float) 0
+				17 value indicator (settable, float) 0
+				18 increment arrow button
+				19 decrement arrow button
+				20 increment page button
+				21 decrement page button
+		22 splitter (disabled, settable, float) 232
+		23 scroll area Secondary Actions: Scroll Up, Scroll Down, Cancel
+			24 container
+				25 unknown Suzzme
+				26 text Suzzme Make it yours
+			27 heading Companion
+			28 container
+				29 button Voice, Karen
+				30 button Presence, Suzzme Purple
+				31 button Talk to Suzzme, Shortcuts and controls
+			32 heading Intelligence
+			33 container
+				34 button Integrations, Connected accounts and reviewed capabilities
+				35 button Personal Memory, Useful details you choose to keep
+				36 button Daily Summary, 8:00 AM
+			37 heading Your information
+			38 container
+				39 button Sources, Access, updates, and connections
+				40 button Privacy, On-device processing and controls
+				41 button Notifications, Off or unavailable
+			42 heading Appearance and accessibility
+			43 container
+				44 pop up button Appearance, Value: System, ID: suzzme-appearance-picker
+				45 button Accessibility, Motion, transparency, and reading
+			46 container
+				47 button Profile, Your name, stored on this device
+				48 button About Suzzme, Version and principles
+			49 scroll bar (settable, float) 0
+				50 value indicator (settable, float) 0
+				51 increment arrow button
+				52 decrement arrow button
+				53 increment page button
+				54 decrement page button
+	55 toolbar
+		56 button Description: Hide Sidebar, Secondary Actions: Increment, Decrement, Delete, Cancel
+		57 button Description: Ask Suzzme, Help: Ask Suzzme (⌘K), ID: suzzme-ask-open, Secondary Actions: Increment, Decrement, Delete, Cancel, Move previous, Remove from toolbar
+	58 close button
+	59 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	60 minimize button
+	61 text Settings
+62 menu bar
+	63 Suzzme
+	64 Edit
+	65 View
+	66 Companion
+	67 Window
+	68 Help
+
+The focused UI element is 0 standard window Settings, ID: main, Secondary Actions: Raise

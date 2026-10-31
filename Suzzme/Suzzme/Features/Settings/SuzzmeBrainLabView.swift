@@ -21,8 +21,7 @@ struct SuzzmeBrainLabView: View {
 
     var body: some View {
         SuzzmePage {
-            SuzzmeEmptyState(
-                symbol: "brain",
+            SuzzmeScreenIntroduction(
                 title: "Suzzme Brain Lab",
                 message: "Paste something Suzzme should understand. This debug tool keeps input in memory and saves only the structured items you choose."
             )
@@ -37,7 +36,7 @@ struct SuzzmeBrainLabView: View {
             TextEditor(text: $text)
                 .font(.body)
                 .frame(minHeight: 160)
-                .padding(12)
+                .padding(SuzzmeTheme.Spacing.small)
                 .background(SuzzmeTheme.surface, in: RoundedRectangle(cornerRadius: SuzzmeTheme.cornerRadius))
                 .accessibilityLabel("Text for Suzzme to understand")
 
@@ -90,7 +89,7 @@ struct SuzzmeBrainLabView: View {
         } catch is CancellationError {
             statusMessage = "Understanding was cancelled."
         } catch {
-            statusMessage = error.localizedDescription
+            statusMessage = "Suzzme couldn’t understand that text. Check the text and try again."
         }
     }
 

@@ -26,18 +26,32 @@ xcuserdata/
 .build/
 .swiftpm/
 
+# Python / Node tooling
+__pycache__/
+*.py[cod]
+node_modules/
+.wrangler/
+
 # Validation reports & test output
 Suzzme/Validation/Reports/
 
 # Local Suzzme website waitlist data
 suzzme web/data/
 
-# Python bytecode
-__pycache__/
-
 # Website preview captures and local verification artifacts
 /suzzme web/output/
 /output/
 
+# Generated connector deployment bundles
+/Suzzme/Release/ConnectorServer-render*/
+/Suzzme/Release/ConnectorServer-render*.zip
+
+# Connector secrets are local/server-only; templates are safe to track.
+Suzzme/ConnectorServer/.env*
+!Suzzme/ConnectorServer/.env.example
+
 # Local promotional videos and generation scripts
 /Media/
+
+# Root archive bundles
+/*.zip

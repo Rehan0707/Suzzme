@@ -1,0 +1,59 @@
+Window: "Home", App: Suzzme.
+0 standard window Home, ID: main, Secondary Actions: Raise
+	1 split group main, SidebarNavigationSplitView
+		2 scroll area Secondary Actions: Scroll Up, Scroll Down
+			3 list Sidebar
+				4 row (selectable)
+				5 row (selectable) Suzzme, Your personal companion
+				6 row (selectable) Your day
+				7 row (selected) Home
+				8 row (selectable) Today
+				9 row (selectable) Daily Summary
+				10 row (selectable) Your information
+				11 row (selectable) Personal Memory
+				12 row (selectable) Sources
+				13 row (selectable) History
+				14 row (selectable)
+				15 row (selectable) Settings
+			16 scroll bar (settable, float) 0
+				17 value indicator (settable, float) 0
+				18 increment arrow button
+				19 decrement arrow button
+				20 increment page button
+				21 decrement page button
+		22 splitter (disabled, settable, float) 232
+		23 container
+			24 button Description: Choose context, ID: plus, Secondary Actions: Cancel
+			25 text field (settable) Description: Your question, Placeholder: Ask anything…, Secondary Actions: Cancel
+			26 button (disabled) Description: Send question, ID: arrow.up, Secondary Actions: Cancel
+			27 text Value: Uses only the context you choose., Secondary Actions: Cancel
+			28 scroll area Secondary Actions: Scroll Up, Scroll Down, Cancel
+				29 heading Good evening
+				30 text What’s on your mind? Ready when you are
+				31 button Description: Talk to Suzzme, Help: Talk to Suzzme (⇧⌘T), ID: suzzme-home-talk
+				32 heading Your day
+				33 text 16 Oct
+				34 button Description: What matters today, 10 updates from your sources., ID: suzzme-home-today
+				35 button ID: suzzme-home-briefing, Description: Daily Summary, Good evening. By 10 Sep 2026 at 12:00 AM, ‎WhatsApp Audio ‪Vaibhav‬ On 17 Oct 2026, First Day of Durga Puja Festivities is an all-day event. On 18 Oct 2026, Maha Saptami is an all-day event. On 19 Oct 2026, Maha Ashtami is an all-day event. On 20 Oct 2026, Dussehra is an all-day event.
+				36 scroll bar (settable, float) 0
+					37 value indicator (settable, float) 0
+					38 increment arrow button
+					39 decrement arrow button
+					40 increment page button
+					41 decrement page button
+	42 toolbar
+		43 button Description: Hide Sidebar, Secondary Actions: Increment, Decrement, Delete, Cancel
+		44 button Description: Ask Suzzme, Help: Ask Suzzme (⌘K), ID: suzzme-ask-open, Secondary Actions: Increment, Decrement, Delete, Cancel, Move previous, Remove from toolbar
+	45 close button
+	46 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	47 minimize button
+	48 text Home
+49 menu bar
+	50 Suzzme
+	51 Edit
+	52 View
+	53 Companion
+	54 Window
+	55 Help
+
+The focused UI element is 0 standard window Home, ID: main, Secondary Actions: Raise

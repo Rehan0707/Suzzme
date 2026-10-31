@@ -1,0 +1,17 @@
+[
+  {
+    "screen": "Voice",
+    "appearance": "Dark",
+    "screenshot": "voice-dark.jpg"
+  },
+  {
+    "screen": "Integrations",
+    "appearance": "Dark",
+    "screenshot": "integrations-dark.jpg"
+  },
+  {
+    "screen": "Presence",
+    "appearance": "Dark",
+    "screenshot": "presence-dark.jpg"
+  }
+]

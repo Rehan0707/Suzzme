@@ -1,0 +1,47 @@
+Window: "Home", App: Suzzme.
+0 standard window Home, ID: main, Secondary Actions: Raise
+	1 split group main, SidebarNavigationSplitView
+		2 scroll area
+			3 list Sidebar
+				4 row (selectable)
+				5 row (selectable) Suzzme, Your personal companion
+				6 row (selectable) Your day
+				7 row (selected) Home
+				8 row (selectable) Today
+				9 row (selectable) Daily Summary
+				10 row (selectable) Your information
+				11 row (selectable) Personal Memory
+				12 row (selectable) Sources
+				13 row (selectable) History
+				14 row (selectable)
+				15 row (selectable) Settings
+		16 splitter (disabled, settable, float) 232
+		17 container
+			18 button Description: Choose context, ID: plus, Secondary Actions: Cancel
+			19 text field (settable) Description: Your question, Placeholder: Ask anything…, Secondary Actions: Cancel
+			20 button (disabled) Description: Send question, ID: arrow.up, Secondary Actions: Cancel
+			21 text Value: Uses only the context you choose., Secondary Actions: Cancel
+			22 scroll area Secondary Actions: Cancel
+				23 heading Your day
+				24 text 16 Oct
+				25 heading Good evening
+				26 button Description: What matters today, 10 updates from your sources., ID: suzzme-home-today
+				27 text What’s on your mind? Ready when you are
+				28 button Description: Talk to Suzzme, Help: Talk to Suzzme (⇧⌘T), ID: suzzme-home-talk
+				29 button ID: suzzme-home-briefing, Description: Daily Summary, Good evening. By 10 Sep 2026 at 12:00 AM, ‎WhatsApp Audio ‪Vaibhav‬ On 17 Oct 2026, First Day of Durga Puja Festivities is an all-day event. On 18 Oct 2026, Maha Saptami is an all-day event. On 19 Oct 2026, Maha Ashtami is an all-day event. On 20 Oct 2026, Dussehra is an all-day event.
+	30 toolbar
+		31 button Description: Hide Sidebar, Secondary Actions: Increment, Decrement, Delete, Cancel
+		32 button Description: Ask Suzzme, Help: Ask Suzzme (⌘K), ID: suzzme-ask-open, Secondary Actions: Increment, Decrement, Delete, Cancel, Move previous, Remove from toolbar
+	33 close button
+	34 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	35 minimize button
+	36 text Home
+37 menu bar
+	38 Suzzme
+	39 Edit
+	40 View
+	41 Companion
+	42 Window
+	43 Help
+
+The focused UI element is 0 standard window Home, ID: main, Secondary Actions: Raise

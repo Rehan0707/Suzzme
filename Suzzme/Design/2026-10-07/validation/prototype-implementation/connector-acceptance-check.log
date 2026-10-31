@@ -1,0 +1,40 @@
+PASS long-import boundary fixture
+PASS long import reports success
+PASS long import survives production pruning and retrieval
+PASS duplicate import is a successful no-op
+PASS duplicate creates exactly one current record
+PASS long import persists after container restart
+PASS protected message is rejected
+PASS empty import rejected
+PASS oversized import rejected
+SwiftData.DefaultStore save failed with error: Error Domain=NSCocoaErrorDomain Code=513 "The file couldn’t be saved because you don’t have permission." UserInfo={NSPersistentStoreOptions={
+    NSInferMappingModelAutomaticallyOption = 1;
+    NSMigratePersistentStoresAutomaticallyOption = 1;
+    NSPersistentHistoryTrackingKey = 1;
+    NSPersistentStoreRemoteChangeNotificationOptionKey = 1;
+    NSReadOnlyPersistentStoreOption = 1;
+}, reason=Unable to write to file opened Read Only., storeURL=/var/folders/tp/gdnfpld55dj76lq6wbsnlml40000gn/T/SuzzmeConnectorChecks-96D3D7B7-03A6-4160-9A8F-A7F0577E1F54/information.sqlite}
+PASS failed deletion propagates persistence error
+PASS failed deletion preserves persisted data
+PASS successful deletion removes imports
+PASS Gmail headers reach production store
+PASS Gmail records are account-scoped
+PASS new account cannot retrieve previous account cache
+PASS same Gmail message ID is isolated across accounts
+PASS revocation immediately blocks cached retrieval
+PASS HTTP 401 updates source health
+PASS HTTP 401 cannot expose data
+PASS HTTP 403 updates source health
+PASS HTTP 403 cannot expose data
+PASS token refresh failure becomes authorization-expired
+PASS in-flight account switch cannot commit
+PASS in-flight permission revocation cannot commit
+PASS Calendar-only refresh cannot fetch another enabled local or external source
+PASS selected Calendar refresh persists only its own observation
+PASS a selected refresh leaves unrelated source checkpoints and health attempts untouched
+PASS Reminder-only refresh cannot trigger Calendar or enabled external intake
+PASS denied selected-source refresh reports access change without fetching other sources
+PASS authorized Calendar refresh preserves the separate disabled intake opt-in
+PASS enabling selected intake can refresh its source without contacting external sources
+PASS explicit all-source refresh retains the original enabled-source behavior
+Connector acceptance: 32 passed / 0 failed

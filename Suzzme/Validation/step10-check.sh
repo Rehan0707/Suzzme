@@ -4,11 +4,13 @@ cd "${0:A:h}/.."
 output=$(mktemp -d)
 trap 'rm -rf "$output"' EXIT
 
-xcrun swiftc -swift-version 6 -parse-as-library -framework SwiftData -framework SwiftUI -framework EventKit -framework AVFoundation -framework Speech -framework Contacts \
+xcrun swiftc -disable-sandbox -swift-version 6 -enable-upcoming-feature NonisolatedNonsendingByDefault -module-cache-path "$output/cache" -parse-as-library -framework SwiftData -framework SwiftUI -framework EventKit -framework AVFoundation -framework Speech -framework Contacts \
   Suzzme/Core/Models/SuzzmeItem.swift \
   Suzzme/Core/Models/SuzzmeAssistantState.swift \
   Suzzme/Core/Context/SuzzmeContextItem.swift \
   Suzzme/Core/Context/SuzzmeContextQuery.swift \
+  Suzzme/Core/Context/ScreenContext.swift \
+  Suzzme/Core/Context/ScreenContextPolicy.swift \
   Suzzme/Core/Context/ContextEngine.swift \
   Suzzme/Core/Connectors/AppleContextSources.swift \
   Suzzme/Core/Connectors/AppleContextPermissions.swift \
@@ -19,6 +21,9 @@ xcrun swiftc -swift-version 6 -parse-as-library -framework SwiftData -framework 
   Suzzme/Core/Information/InformationModels.swift \
   Suzzme/Core/Information/InformationStore.swift \
   Suzzme/Core/Information/InformationEngine.swift \
+  Suzzme/Core/Information/GmailSelection.swift Suzzme/Core/Information/GmailAccessGrant.swift \
+  Suzzme/Core/Information/GmailMessageMetadata.swift \
+  Suzzme/Core/Information/GmailInformationSource.swift \
   Suzzme/Core/Information/WatchedLinks/WatchedLinkModels.swift \
   Suzzme/Core/Information/WatchedLinks/WebURLPolicy.swift \
   Suzzme/Core/Information/WatchedLinks/WebContentExtractor.swift \
@@ -34,10 +39,13 @@ xcrun swiftc -swift-version 6 -parse-as-library -framework SwiftData -framework 
   Suzzme/Core/Actions/EventKitCapabilities.swift \
   Suzzme/Core/Actions/ActionMutation.swift \
   Suzzme/Core/Actions/SettingsCapability.swift \
-  Suzzme/DesignSystem/Theme/SuzzmeTheme.swift \
+  Suzzme/DesignSystem/Components/SuzzmeMascotArtwork.swift \
   Suzzme/Core/Invocation/SuzzmePresenceTheme.swift \
   Suzzme/Core/Invocation/AssistantPresentation.swift \
   Suzzme/Core/Voice/VoiceTranscriptFinalizer.swift \
+  Suzzme/Core/Voice/SuzzmeAssemblyAITranscription.swift \
+  Suzzme/Core/Voice/SuzzmePCM16AudioConverter.swift \
+  Validation/VoiceTestCloudStub.swift \
   Suzzme/Core/Voice/VoiceSessionController.swift \
   Suzzme/Platform/Shared/ProactiveNotificationDelivery.swift \
   Validation/Step10Checks.swift -o "$output/Step10Checks"
@@ -50,7 +58,7 @@ print -r -- "$result"
 [[ "$test_status" == "0" ]]
 passed=$(print -r -- "$result" | awk -F': ' '/^Step 10 behavioral checks passed:/ { print $2 }')
 failed=$(print -r -- "$result" | awk -F': ' '/^Step 10 behavioral checks failed:/ { print $2 }')
-[[ "$passed" == "190" ]]
+[[ "$passed" == "219" ]]
 [[ "$failed" == "0" ]]
 
 # Architectural boundaries are checked in addition to executing production behavior.
@@ -64,7 +72,9 @@ if rg -n 'EKEventStore|SuzzmeActionExecutionCoordinator|EventKit.*Capability|mem
   print 'FAIL: proactive layer crossed a mutation boundary'
   exit 1
 fi
-if rg -n 'http://|https://|OpenAI|Anthropic|Gemini|Firebase|Supabase' Suzzme/Core/Proactive Suzzme/Features/Briefing Suzzme/Features/Settings/ProactiveIntelligenceSettingsView.swift; then
+# Provenance may contain an inert web:https identity. Audit network capability
+# and endpoint construction rather than mistaking that identity for retrieval.
+if rg -n 'URLSession|URLRequest|URL\(string:|NWConnection|DNSService|getaddrinfo|import (Network|NIO|SuzzmeWatchedTransport)|OpenAI|Anthropic|Gemini|Firebase|Supabase' Suzzme/Core/Proactive Suzzme/Features/Briefing Suzzme/Features/Settings/ProactiveIntelligenceSettingsView.swift; then
   print 'FAIL: external dependency in Step 10'
   exit 1
 fi

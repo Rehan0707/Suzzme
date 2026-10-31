@@ -1,0 +1,324 @@
+A  .design-rules
+ M .gitignore
+A  .gitmodules
+ M Suzzme/PRODUCT_VISION.md
+ M Suzzme/README.md
+ M Suzzme/Suzzme.xcodeproj/project.pbxproj
+ M Suzzme/Suzzme/App/AppEnvironment.swift
+ M Suzzme/Suzzme/App/AppRouter.swift
+ M Suzzme/Suzzme/App/ContentView.swift
+ M Suzzme/Suzzme/App/LaunchExperience.swift
+ M Suzzme/Suzzme/App/SuzzmeApp.swift
+ M Suzzme/Suzzme/Assets.xcassets/Canvas.colorset/Contents.json
+ M Suzzme/Suzzme/Assets.xcassets/Surface.colorset/Contents.json
+ M Suzzme/Suzzme/Core/Actions/ActionPlanner.swift
+ M Suzzme/Suzzme/Core/Connectors/AppleContextPermissions.swift
+ M Suzzme/Suzzme/Core/Connectors/AppleContextSources.swift
+ M Suzzme/Suzzme/Core/Context/ContextEngine.swift
+ M Suzzme/Suzzme/Core/Context/SuzzmeContextItem.swift
+ M Suzzme/Suzzme/Core/Context/SuzzmeContextQuery.swift
+ M Suzzme/Suzzme/Core/Information/AppleInformationSource.swift
+ M Suzzme/Suzzme/Core/Information/InformationEngine.swift
+ M Suzzme/Suzzme/Core/Information/InformationModels.swift
+ M Suzzme/Suzzme/Core/Information/InformationRequest.swift
+ M Suzzme/Suzzme/Core/Information/InformationStore.swift
+ M Suzzme/Suzzme/Core/Information/WatchedLinks/WatchedLinkModels.swift
+ M Suzzme/Suzzme/Core/Information/WatchedLinks/WatchedLinkStore.swift
+ M Suzzme/Suzzme/Core/Information/WatchedLinks/WatchedWebSource.swift
+ M Suzzme/Suzzme/Core/Intelligence/AppleIntelligenceService.swift
+ M Suzzme/Suzzme/Core/Intelligence/DailyBriefingBuilder.swift
+ M Suzzme/Suzzme/Core/Intelligence/IntelligenceRouter.swift
+ M Suzzme/Suzzme/Core/Intelligence/IntelligenceService.swift
+ M Suzzme/Suzzme/Core/Intelligence/SuzzmeCore.swift
+ M Suzzme/Suzzme/Core/Intelligence/SuzzmeUnderstandingPipeline.swift
+ M Suzzme/Suzzme/Core/Invocation/AssistantPresentation.swift
+ M Suzzme/Suzzme/Core/Invocation/SuzzmePresenceTheme.swift
+ M Suzzme/Suzzme/Core/LongTermMemory/LongTermMemoryStore.swift
+ M Suzzme/Suzzme/Core/Memory/SessionMemoryEngine.swift
+ M Suzzme/Suzzme/Core/Models/SuzzmeAssistantState.swift
+ M Suzzme/Suzzme/Core/Privacy/PrivacyEngine.swift
+ M Suzzme/Suzzme/Core/Proactive/ProactiveIntelligenceEngine.swift
+ M Suzzme/Suzzme/Core/Proactive/ProactiveIntelligenceStore.swift
+ M Suzzme/Suzzme/Core/Proactive/ProactiveModels.swift
+ M Suzzme/Suzzme/Core/Voice/VoiceSessionController.swift
+ M Suzzme/Suzzme/Core/Voice/VoiceTranscriptFinalizer.swift
+AM Suzzme/Suzzme/DesignSystem/Components/SuzzmeAssistantComponents.swift
+ M Suzzme/Suzzme/DesignSystem/Components/SuzzmeAssistantPresenceView.swift
+ M Suzzme/Suzzme/DesignSystem/Components/SuzzmeComponents.swift
+ M Suzzme/Suzzme/DesignSystem/Components/SuzzmeFace.swift
+ M Suzzme/Suzzme/DesignSystem/Components/SuzzmeItemRow.swift
+ M Suzzme/Suzzme/DesignSystem/Effects/SuzzmeHalo.swift
+ M Suzzme/Suzzme/DesignSystem/Layout/SuzzmePage.swift
+ M Suzzme/Suzzme/DesignSystem/Theme/SuzzmeTheme.swift
+ M Suzzme/Suzzme/Features/Briefing/BriefingView.swift
+A  Suzzme/Suzzme/Features/DesignLab/ApprovedAssistantDesignGallery.swift
+AM Suzzme/Suzzme/Features/DesignLab/AssistantDesignConcepts.swift
+A  Suzzme/Suzzme/Features/DesignLab/AssistantPreviewFixtures.swift
+AM Suzzme/Suzzme/Features/DesignLab/AssistantResponsiveDesignLab.swift
+ M Suzzme/Suzzme/Features/History/HistoryView.swift
+ M Suzzme/Suzzme/Features/Home/AskSuzzmeView.swift
+ M Suzzme/Suzzme/Features/Home/HomeView.swift
+ M Suzzme/Suzzme/Features/Home/ItemDetailView.swift
+ M Suzzme/Suzzme/Features/Invocation/InvocationSettingsView.swift
+ M Suzzme/Suzzme/Features/Invocation/PresenceMotionLabView.swift
+ M Suzzme/Suzzme/Features/Invocation/PresenceSettingsView.swift
+ M Suzzme/Suzzme/Features/Memory/MemoryView.swift
+ M Suzzme/Suzzme/Features/Settings/ProactiveIntelligenceSettingsView.swift
+ M Suzzme/Suzzme/Features/Settings/SettingsDetailViews.swift
+ M Suzzme/Suzzme/Features/Settings/SettingsView.swift
+ M Suzzme/Suzzme/Features/Settings/SuzzmeBrainLabView.swift
+ M Suzzme/Suzzme/Features/Settings/VoiceSettingsView.swift
+ M Suzzme/Suzzme/Features/Sources/InformationInspectionView.swift
+ M Suzzme/Suzzme/Features/Sources/SourcesView.swift
+ M Suzzme/Suzzme/Features/Sources/WatchedLinksView.swift
+ M Suzzme/Suzzme/Platform/Shared/ProactiveNotificationDelivery.swift
+ M Suzzme/Suzzme/Platform/iOS/MobileRootView.swift
+ M Suzzme/Suzzme/Platform/macOS/MacAssistantPresence.swift
+ M Suzzme/Suzzme/Platform/macOS/MacRootView.swift
+ M Suzzme/Suzzme/SuzzmeRelease.entitlements
+ M Suzzme/Validation/FinalUIBehaviorChecks.swift
+ M Suzzme/Validation/FinalUIPresenceRender.swift
+ M Suzzme/Validation/FinalUIRuntime.swift
+ M Suzzme/Validation/Fixtures/Step12/01f66b7/historical.store
+ M Suzzme/Validation/Fixtures/Step12/01f66b7/manifest.json
+ M Suzzme/Validation/Fixtures/Step12/89dfc2d/historical.store
+ M Suzzme/Validation/Fixtures/Step12/89dfc2d/manifest.json
+ M Suzzme/Validation/ProductFlowChecks.swift
+ M Suzzme/Validation/Step10Checks.swift
+ M Suzzme/Validation/Step11Checks.swift
+ M Suzzme/Validation/Step12PresenceChecks.swift
+ M Suzzme/Validation/Step3Checks.swift
+ M Suzzme/Validation/Step7Checks.swift
+A  Suzzme/Validation/backend-reliability-check.py
+ M Suzzme/Validation/check.sh
+ M Suzzme/Validation/final-ui-check.py
+ M Suzzme/Validation/final-ui-ios-runtime.py
+ M Suzzme/Validation/final-ui-mac-runtime.py
+ M Suzzme/Validation/final-ui-presence-render.sh
+ M Suzzme/Validation/persistence-check.sh
+ M Suzzme/Validation/product-flow-check.sh
+A  Suzzme/Validation/screen-privacy-check.py
+ M Suzzme/Validation/step10-check.sh
+ M Suzzme/Validation/step11-check.sh
+ M Suzzme/Validation/step12-check.sh
+ M Suzzme/Validation/step12-presence-check.sh
+ M Suzzme/Validation/step12-recovery-check.sh
+ M Suzzme/Validation/step12-web-probe.sh
+ M Suzzme/Validation/step3-check.sh
+ M Suzzme/Validation/step4-check.sh
+ M Suzzme/Validation/step7-check.sh
+ M Suzzme/Validation/step8-core-check.sh
+ M Suzzme/Validation/step9-check.sh
+ M Suzzme/Validation/ui-recovery-check.sh
+?? App-Screenshots/
+?? Suzzme/BrowserExtension/
+?? Suzzme/BrowserNativeHost/
+?? Suzzme/Design/
+?? Suzzme/GmailOAuthInfo.plist
+?? Suzzme/PresenceShared/
+?? Suzzme/ReferenceSource/
+?? Suzzme/Release/
+?? Suzzme/Suzzme.xcodeproj/project.xcworkspace/xcshareddata/
+?? Suzzme/Suzzme/App/SignInView.swift
+?? Suzzme/Suzzme/App/SuzzmeAppStartup.swift
+?? Suzzme/Suzzme/Assets.xcassets/Integration-airtable.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-asana.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-basecamp.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-bitbucket.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-box.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-cal-com.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-calendly.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-clickup.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-confluence.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-contentful.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-crowdin.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-dart.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-discord-bot.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-discord.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-dropbox.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-facebook.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-fathom.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-figma.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-github.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-gitlab.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-gmail.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-google-ads.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-google-analytics.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-google-bigquery.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-google-calendar.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-google-classroom.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-google-docs.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-google-drive.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-google-maps.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-google-meet.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-google-photos.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-google-search-console.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-google-sheets.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-google-slides.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-google-tasks.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-greenhouse.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-gumroad.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-hubspot.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-hugging-face.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-instagram.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-intercom.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-jira.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-kit.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-linear.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-mailchimp.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-miro.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-mural.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-notion.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-pagerduty.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-pinterest-ads.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-pinterest.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-prisma.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-pushbullet.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-quickbooks.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-reddit-ads.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-sentry.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-shopify.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-square.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-stack-exchange.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-stripe.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-supabase.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-ticketmaster.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-ticktick.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-tiktok-ads.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-todoist.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-trello.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-twitch.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-typeform.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-wakatime.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-webex.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-whatsapp.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-youtube.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-zendesk.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-zoho-bigin.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-zoho-books.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-zoho-desk.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-zoho-inventory.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-zoho-invoice.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-zoho-mail.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-zoho.imageset/
+?? Suzzme/Suzzme/Assets.xcassets/Integration-zoom.imageset/
+?? Suzzme/Suzzme/Core/BrowserBridge/
+?? Suzzme/Suzzme/Core/Context/ScreenContext.swift
+?? Suzzme/Suzzme/Core/Context/ScreenContextPolicy.swift
+?? Suzzme/Suzzme/Core/Information/GmailAccessGrant.swift
+?? Suzzme/Suzzme/Core/Information/GmailAccountController.swift
+?? Suzzme/Suzzme/Core/Information/GmailInformationSource.swift
+?? Suzzme/Suzzme/Core/Information/GmailMessageMetadata.swift
+?? Suzzme/Suzzme/Core/Information/GmailSelection.swift
+?? Suzzme/Suzzme/Core/Information/UserSelectedMessageSource.swift
+?? Suzzme/Suzzme/Core/Integrations/
+?? Suzzme/Suzzme/DesignSystem/Components/IntegrationBrandMark.swift
+?? Suzzme/Suzzme/DesignSystem/Components/SuzzmeInteractionFeedback.swift
+?? Suzzme/Suzzme/Features/Home/CompanionHomeView.swift
+?? Suzzme/Suzzme/Features/Home/SuzzmeConversationPresentation.swift
+?? Suzzme/Suzzme/Features/Settings/CustomMCPConnectionView.swift
+?? Suzzme/Suzzme/Features/Settings/GoogleProviderConnectionView.swift
+?? Suzzme/Suzzme/Features/Settings/IntegrationsView.swift
+?? Suzzme/Suzzme/Features/Settings/NotionConnectionSheet.swift
+?? Suzzme/Suzzme/Features/Settings/ProviderConnectionView.swift
+?? Suzzme/Suzzme/Features/Sources/GmailConnectionView.swift
+?? Suzzme/Suzzme/Features/Sources/SelectedMessageImportView.swift
+?? Suzzme/Suzzme/Platform/iOS/SuzzmeLiveActivityController.swift
+?? Suzzme/Suzzme/Platform/macOS/BrowserPairingView.swift
+?? Suzzme/Suzzme/Platform/macOS/MacAppLifetime.swift
+?? Suzzme/Suzzme/Platform/macOS/MacBrowserBridgeController.swift
+?? Suzzme/Suzzme/Platform/macOS/MacCompanionCommands.swift
+?? Suzzme/Suzzme/Platform/macOS/MacCompanionMenuController.swift
+?? Suzzme/Suzzme/Platform/macOS/MacCursorCompanion.swift
+?? Suzzme/Suzzme/Platform/macOS/MacGlobalInvocationController.swift
+?? Suzzme/Suzzme/Platform/macOS/MacGlobalInvocationSettings.swift
+?? Suzzme/Suzzme/Platform/macOS/MacGuidanceOverlay.swift
+?? Suzzme/Suzzme/Platform/macOS/MacMenuBarView.swift
+?? Suzzme/Suzzme/Platform/macOS/MacScreenContextSource.swift
+?? Suzzme/Suzzme/Platform/macOS/MacSettingsView.swift
+?? Suzzme/Suzzme/Platform/macOS/MacWorkspaceEscapeBridge.swift
+?? Suzzme/Suzzme/Resources/
+?? Suzzme/SuzzmePresenceWidget-Info.plist
+?? Suzzme/SuzzmePresenceWidget/
+?? Suzzme/Validation/BackgroundCleanupChecks.swift
+?? Suzzme/Validation/BrowserBridgeChecks.swift
+?? Suzzme/Validation/BrowserBridgeControllerChecks.swift
+?? Suzzme/Validation/BrowserGitHubControllerChecks.swift
+?? Suzzme/Validation/BrowserGitHubHandoffChecks.swift
+?? Suzzme/Validation/Companion3IntelligenceChecks.swift
+?? Suzzme/Validation/CompanionPresenceChecks.swift
+?? Suzzme/Validation/CompanionSpaceChecks.swift
+?? Suzzme/Validation/ConnectorAcceptanceChecks.swift
+?? Suzzme/Validation/FinalExtractionGroundingChecks.swift
+?? Suzzme/Validation/GlobalEnvironmentChecks.swift
+?? Suzzme/Validation/GlobalScreenChecks.swift
+?? Suzzme/Validation/GlobalShortcutChecks.swift
+?? Suzzme/Validation/GlobalShortcutMonitorChecks.swift
+?? Suzzme/Validation/GlobalVoiceChecks.swift
+?? Suzzme/Validation/IOSRuntimeBehavior.swift
+?? Suzzme/Validation/IntegrationCoreChecks.swift
+?? Suzzme/Validation/IntegrationMCPChecks.swift
+?? Suzzme/Validation/IntegrationPresentationChecks.swift
+?? Suzzme/Validation/IntegrationSafetyChecks.swift
+?? Suzzme/Validation/LiveActivityChecks.swift
+?? Suzzme/Validation/MacProductionRuntimeDriver.swift
+?? Suzzme/Validation/NativePlatformUITests/
+?? Suzzme/Validation/NativePlatformUnitTests/
+?? Suzzme/Validation/NotionClientChecks.swift
+?? Suzzme/Validation/NotionCoreChecks.swift
+?? Suzzme/Validation/NotionGatewayChecks.swift
+?? Suzzme/Validation/P0BlockerChecks.swift
+?? Suzzme/Validation/PremiumPresenceChecks.swift
+?? Suzzme/Validation/ProviderReadChecks.swift
+?? Suzzme/Validation/Step15GoogleChecks.swift
+?? Suzzme/Validation/Step15MCPChecks.swift
+?? Suzzme/Validation/Step15OAuthChecks.m
+?? Suzzme/Validation/Step16ActualPipelineChecks.swift
+?? Suzzme/Validation/Step17SummaryFollowUpChecks.swift
+?? Suzzme/Validation/VoiceLifecycleAcceptanceChecks.swift
+?? Suzzme/Validation/VoiceQualityChecks.swift
+?? Suzzme/Validation/WatchedTransportChecks.swift
+?? Suzzme/Validation/__pycache__/
+?? Suzzme/Validation/background-cleanup-check.py
+?? Suzzme/Validation/browser-bridge-check.sh
+?? Suzzme/Validation/browser-github-controller-check.sh
+?? Suzzme/Validation/browser-github-handoff-check.sh
+?? Suzzme/Validation/clicky-companion-check.py
+?? Suzzme/Validation/companion-presence-check.sh
+?? Suzzme/Validation/companion-space-check.py
+?? Suzzme/Validation/companion3-intelligence-check.sh
+?? Suzzme/Validation/completion-inventory.py
+?? Suzzme/Validation/completion-validation.py
+?? Suzzme/Validation/connector-acceptance-check.sh
+?? Suzzme/Validation/final-extraction-grounding-check.sh
+?? Suzzme/Validation/global-environment-check.py
+?? Suzzme/Validation/global-screen-check.sh
+?? Suzzme/Validation/global-shortcut-check.sh
+?? Suzzme/Validation/global-shortcut-monitor-check.py
+?? Suzzme/Validation/global-voice-check.sh
+?? Suzzme/Validation/integration-core-check.sh
+?? Suzzme/Validation/integration-mcp-check.sh
+?? Suzzme/Validation/integration-presentation-check.sh
+?? Suzzme/Validation/integration-safety-check.sh
+?? Suzzme/Validation/integrations-regressions.py
+?? Suzzme/Validation/live-activity-check.sh
+?? Suzzme/Validation/native-platform-runtime.py
+?? Suzzme/Validation/notion-client-check.sh
+?? Suzzme/Validation/notion-core-check.sh
+?? Suzzme/Validation/notion-gateway-check.sh
+?? Suzzme/Validation/p0-blocker-check.sh
+?? Suzzme/Validation/premium-presence-check.sh
+?? Suzzme/Validation/provider-read-check.sh
+?? Suzzme/Validation/release-preflight.py
+?? Suzzme/Validation/step14-supplemental.py
+?? Suzzme/Validation/step15-google-check.sh
+?? Suzzme/Validation/step15-mcp-check.sh
+?? Suzzme/Validation/step15-oauth-check.sh
+?? Suzzme/Validation/step15-validation.py
+?? Suzzme/Validation/step16-actual-pipeline-check.sh
+?? Suzzme/Validation/step16-release-preflight-check.py
+?? Suzzme/Validation/step17-release-preflight-check.py
+?? Suzzme/Validation/step17-summary-follow-up-check.sh
+?? Suzzme/Validation/voice-lifecycle-acceptance-check.sh
+?? Suzzme/Validation/voice-quality-check.sh
+?? Suzzme/Validation/watched-transport-check.sh

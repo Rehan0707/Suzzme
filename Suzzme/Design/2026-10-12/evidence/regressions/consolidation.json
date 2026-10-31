@@ -1,0 +1,23 @@
+{
+  "suite_count": 46,
+  "final_exit_zero_count": 46,
+  "initial_exit_zero_count": 37,
+  "initial_nonzero_count": 9,
+  "preserved_initial_results_sha256": "6d52bba6a2d9d9091816381073683bd0ce235474cc28559bbfc9c05ca63a8849",
+  "initial_results": "initial-results.json",
+  "final_results": "final-results.json",
+  "method": "Merged original command outcomes with recorded targeted rechecks, configured SDK outcomes and coordinated final command observations; checked every final log exists, is nonempty and contains success without failing assertions. Unchanged checks were not rerun.",
+  "latest_replaced_entries": [
+    "connector-acceptance-check.sh",
+    "final-extraction-grounding-check.sh",
+    "integration-mcp-check.sh",
+    "step10-check.sh",
+    "step12-recovery-check.sh",
+    "step15-mcp-check.sh",
+    "step15-oauth-check.sh",
+    "step3-check.sh",
+    "step7-check.sh",
+    "ui-recovery-check.sh"
+  ],
+  "acceptance_limit": "46 exit-zero validation scripts do not establish all UI, physical-device, live-account, signing/distribution or owner acceptance. Fixture limitations remain in each log."
+}

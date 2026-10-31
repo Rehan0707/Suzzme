@@ -1,0 +1,8 @@
+{
+  "binary": "/tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.app/Contents/MacOS/Suzzme",
+  "binaryModified": "2026-10-16T23:30:37.668325",
+  "binarySHA256": "53fe69091986c0676872d91dc1925f5edeae604f11bb8a244869e6289847941a",
+  "processes": [
+    "73953 Fri Oct 16 23:31:39 2026     /private/tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.app/Contents/MacOS/Suzzme"
+  ]
+}

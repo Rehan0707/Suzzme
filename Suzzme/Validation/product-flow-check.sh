@@ -31,6 +31,8 @@ xcrun swiftc -swift-version 6 -parse-as-library -framework SwiftData -framework 
   Validation/Step8StoreDouble.swift \
   Suzzme/Core/Actions/SettingsCapability.swift \
   Suzzme/Core/Intelligence/IntelligenceCapability.swift \
+  Suzzme/Core/Context/ScreenContext.swift \
+  Suzzme/Core/Context/ScreenContextPolicy.swift \
   Suzzme/Core/Intelligence/IntelligenceService.swift \
   Suzzme/Core/Intelligence/BasicIntelligenceService.swift \
   Suzzme/Core/Intelligence/AppleIntelligenceService.swift \

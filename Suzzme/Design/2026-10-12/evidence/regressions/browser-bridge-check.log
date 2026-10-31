@@ -1,0 +1,58 @@
+PASS pairing requires explicit native approval
+PASS unknown extension cannot be approved
+PASS unconfigured origin rejected
+PASS approved origin pairs
+PASS pairing secret and extension identity bound
+PASS pairing callback replay rejected
+PASS pairing code is single use
+PASS pairing code expires
+PASS native challenge proves pairing
+PASS authenticated metadata reaches typed delivery
+PASS delivery preserves pairing and task ownership
+PASS delivery authorization rechecked
+PASS acknowledgment authenticates exact accepted context
+PASS duplicate callback cannot deliver twice
+PASS challenge cannot be reused with new request ID
+PASS native challenge proves pairing
+PASS dismissed context tombstone prevents reopening
+PASS native challenge proves pairing
+PASS other task cannot invalidate context
+PASS native challenge proves pairing
+PASS owning task invalidates its context
+PASS native challenge proves pairing
+PASS reject private host
+PASS native challenge proves pairing
+PASS reject path traversal
+PASS native challenge proves pairing
+PASS reject extra path
+PASS native challenge proves pairing
+PASS reject encoded path
+PASS native challenge proves pairing
+PASS reject future or expired browser observation
+PASS native challenge proves pairing
+PASS reject future or expired browser observation
+PASS native challenge proves pairing
+PASS payload tampering invalidates HMAC
+PASS JSON boolean cannot masquerade as protocol version
+PASS future protocol rejected
+PASS unknown envelope keys rejected
+PASS oversize rejected before JSON decode
+PASS malformed JSON rejected
+PASS cancellation cannot deliver
+PASS native challenge proves pairing
+PASS revocation deletes transport credentials
+PASS revocation retires cached delivery
+PASS revocation rejects delayed authenticated callback
+PASS native framing round trip
+PASS native frame size checked before allocation
+PASS silent native input times out
+PASS truncated native payload rejected
+PASS valid configuration syntax accepted without claiming signing
+PASS missing distribution configuration fails closed
+PASS foreign App Group rejected
+PASS invalid extension identifier rejected
+PASS installed macOS Security accepts exact peer code requirement
+PASS installed macOS Security accepts exact peer code requirement
+PASS installed macOS Security accepts exact peer code requirement
+PASS unsigned unconfigured harness cannot activate bridge
+Browser bridge checks: 57 passed, 0 failed. Transport fixtures, not signed installation acceptance.

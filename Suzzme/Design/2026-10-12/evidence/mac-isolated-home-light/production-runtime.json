@@ -1,0 +1,19 @@
+{
+  "accessibilityTrusted" : false,
+  "appPath" : "\/tmp\/SuzzmeNativePlatformMacAcceptanceBuild\/Build\/Products\/Debug\/Suzzme.app",
+  "appSandboxEntitled" : true,
+  "bundleIdentifier" : "dev.suzzme.NativeAcceptance",
+  "driverCompleted" : false,
+  "entryPointReplaced" : false,
+  "environmentInjected" : false,
+  "error" : "The application “Suzzme” could not be launched because a miscellaneous error occurred.",
+  "executableSHA256" : "61fc2330353b81dffa4f5e3b74c852212405d80346998f62b73cc544f23aee4c",
+  "launchArgumentDefaults" : [
+    "-suzzme.appearance",
+    "light",
+    "-hasCompletedWelcome",
+    "YES"
+  ],
+  "screenCaptureAuthorized" : true,
+  "wasAlreadyRunning" : false
+}

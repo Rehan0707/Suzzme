@@ -1,0 +1,16 @@
+# Deploy only the connector bundle, never the whole app or .env.local.
+services:
+  - type: web
+    name: suzzme-connector
+    runtime: node
+    plan: free
+    region: singapore
+    autoDeployTrigger: "off"
+    buildCommand: node --check server.mjs && node --check notion-read.mjs && node --check hosted.mjs
+    startCommand: node hosted.mjs
+    healthCheckPath: /healthz
+    envVars:
+      - key: NODE_VERSION
+        value: "24"
+# Initial deployment exposes health only (setup-required). Add the real secrets,
+# HTTPS origin, auth-config IDs and verified callback flag privately afterward.

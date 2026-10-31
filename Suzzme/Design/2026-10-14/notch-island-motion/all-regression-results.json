@@ -1,0 +1,269 @@
+{
+  "live-activity-check.sh": {
+    "exit": 0,
+    "log": "live-activity-check.log",
+    "logSHA256": "5d03aee1ae6fd3bd301dc25cd660cf2af95bc84f263b527f10b8c5e2dcf10f94"
+  },
+  "companion-presence-check.sh": {
+    "exit": 0,
+    "log": "companion-presence-check.log",
+    "logSHA256": "8771b7ccc6bea626962477f498ea53922059927af9ed5248763e85a9766d8b2d"
+  },
+  "premium-presence-check.sh": {
+    "exit": 0,
+    "log": "premium-presence-check.log",
+    "logSHA256": "d8d1bf2dc0bf64f214918d2c026cb70a6121cc20fefac56d8bdc43968f5c8f59"
+  },
+  "step12-presence-check.sh": {
+    "exit": 0,
+    "log": "step12-presence-check.log",
+    "logSHA256": "ef6316c368533fb6212d537a0d86a6722642be1ff3cd12aeca1ca3a1f5017f21"
+  },
+  "step6-check.sh": {
+    "exit": 0,
+    "log": "step6-check.log",
+    "logSHA256": "987eaffb2d975e4a6980f30dcc285ed11051b4ac8c3ecc7cb143b8c0c1a9941d"
+  },
+  "step7-check.sh": {
+    "exit": 0,
+    "log": "step7-check.log",
+    "logSHA256": "70e9f20bafc6a3ff6808a995c51d6e13f2bbf30801c2059edc6becb29fbac8d6"
+  },
+  "step8-check.sh": {
+    "exit": 0,
+    "log": "step8-check.log",
+    "logSHA256": "c13e117d24910cbc0e613523b99eb6784d879a5553eae451ea9407ac88461bc4"
+  },
+  "step8-core-check.sh": {
+    "exit": 0,
+    "log": "step8-core-check.log",
+    "logSHA256": "277fccf19a876cf0df1f0ee87c7f71b7aec9d58e35f304df95e61cd5cf173bd8"
+  },
+  "step9-check.sh": {
+    "exit": 0,
+    "log": "step9-check.log",
+    "logSHA256": "681ace50835d02029c2ad392ca502b5782afc26313abfa527a8e46971306de8f"
+  },
+  "browser-bridge-check.sh": {
+    "exit": 0,
+    "seconds": 8.77,
+    "log": "browser-bridge-check.log",
+    "logSHA256": "c63555cbe317514de5a44e65b9cd77157c29a58a6644d610e56d7d469effe7cd"
+  },
+  "browser-github-controller-check.sh": {
+    "exit": 0,
+    "seconds": 15.98,
+    "log": "browser-github-controller-check.log",
+    "logSHA256": "a24fd91f81b54de5eb358205624572bf0f29002434ab7b658e65c82e6a9d0bd3"
+  },
+  "browser-github-handoff-check.sh": {
+    "exit": 0,
+    "seconds": 6.86,
+    "log": "browser-github-handoff-check.log",
+    "logSHA256": "4c4390769cd13f38a4de2e61ba468a3a10a85563691d44a190872e83900d5267"
+  },
+  "check.sh": {
+    "exit": 0,
+    "seconds": 5.39,
+    "log": "check.log",
+    "logSHA256": "f88797b047487105302e2b469db403aa2b0c24a263a42db8ea9f1e8464b3ee30"
+  },
+  "companion3-intelligence-check.sh": {
+    "exit": 0,
+    "seconds": 26.66,
+    "log": "companion3-intelligence-check.log",
+    "logSHA256": "296c544b5d0a5e71b615a96bc45308b07f02a0d7d7d2c342fc32145ccfead4c5"
+  },
+  "connector-acceptance-check.sh": {
+    "exit": 0,
+    "seconds": 10.22,
+    "log": "connector-acceptance-check.log",
+    "logSHA256": "5daa01772fc610760aae37825f11090d40f3df1e3b945ae0d94177fbcfe747c5"
+  },
+  "final-extraction-grounding-check.sh": {
+    "exit": 0,
+    "seconds": 10.86,
+    "log": "final-extraction-grounding-check.log",
+    "logSHA256": "3fcad20408f2573c05e35dd9b1ba995011dc314cafcdaaee45b1bfed59bd5de4"
+  },
+  "global-screen-check.sh": {
+    "exit": 0,
+    "seconds": 22.14,
+    "log": "global-screen-check.log",
+    "logSHA256": "929519fdb8b51610e3300cba3f2840a8244d55d6dc08e668e4db0e14d80a58e4"
+  },
+  "global-shortcut-check.sh": {
+    "exit": 0,
+    "seconds": 7.12,
+    "log": "global-shortcut-check.log",
+    "logSHA256": "3152c3a1e990f09760dbb24fdb44237bccb5998f264eba70b6cbd7e20492bb50"
+  },
+  "global-voice-check.sh": {
+    "exit": 0,
+    "seconds": 10.62,
+    "log": "global-voice-check.log",
+    "logSHA256": "f820b3a6c7d25bc43dedb9a3ac8010eee14a55d8dbe99da53889cb1d654b7684"
+  },
+  "integration-core-check.sh": {
+    "exit": 0,
+    "seconds": 21.48,
+    "log": "integration-core-check.log",
+    "logSHA256": "3cfff3025adaf2b16551205f9a240f2620b829941985b8643d93eebdc67932e6"
+  },
+  "integration-mcp-check.sh": {
+    "exit": 0,
+    "seconds": 3.85,
+    "log": "integration-mcp-check.log",
+    "logSHA256": "48ebbcbf4332e9aec1a267880a373146586f81c13f5009ee019d519a8c47c79c"
+  },
+  "integration-presentation-check.sh": {
+    "exit": 0,
+    "seconds": 4.26,
+    "log": "integration-presentation-check.log",
+    "logSHA256": "aab969bdc026bec877ddee5f4afceab241774c0a5ecd009d70c0e2aaed15310e"
+  },
+  "integration-safety-check.sh": {
+    "exit": 0,
+    "seconds": 13.62,
+    "log": "integration-safety-check.log",
+    "logSHA256": "767927a0a73ff72c5a9e9d88f4d0d66169e0daf6b78a63d4624e1bec4ac261aa"
+  },
+  "notion-client-check.sh": {
+    "exit": 0,
+    "seconds": 5.31,
+    "log": "notion-client-check.log",
+    "logSHA256": "eabf0ba5b0333702575ae5af40d0df2aaa1eda73c096a9cf0219d00739a08f10"
+  },
+  "notion-core-check.sh": {
+    "exit": 0,
+    "seconds": 47.47,
+    "log": "notion-core-check.log",
+    "logSHA256": "7d5cf5e518ecd178ab2cf480d2b3c3c4cd3d62dd7d5df2ae9ad819f71c3dfb36"
+  },
+  "notion-gateway-check.sh": {
+    "exit": 0,
+    "seconds": 10.66,
+    "log": "notion-gateway-check.log",
+    "logSHA256": "d1fa9707848899438514942049263896f64570f28d06259b6e4c9de90ec01006"
+  },
+  "p0-blocker-check.sh": {
+    "exit": 0,
+    "seconds": 29.52,
+    "log": "p0-blocker-check.log",
+    "logSHA256": "8b73be845deac8a4b7e7325f9863c001a387b5258206aad28ce0903d080a2e03"
+  },
+  "persistence-check.sh": {
+    "exit": 0,
+    "seconds": 5.77,
+    "log": "persistence-check.log",
+    "logSHA256": "812e69a1183b33d8332196cf0137afbc0918b87a6aee141e11d75432a0af87ec"
+  },
+  "product-flow-check.sh": {
+    "exit": 0,
+    "seconds": 43.2,
+    "log": "product-flow-check.log",
+    "logSHA256": "d9f2ce3f89c11fcb8e6791a6ea3b6075ea307f0d7eb3599f51d8c49011bb7aa3"
+  },
+  "provider-read-check.sh": {
+    "exit": 0,
+    "seconds": 7.65,
+    "log": "provider-read-check.log",
+    "logSHA256": "6407e14002ad593f2e9f60454cd8f3f4c0ba2b13112df82f32b7b2257e2df8b8"
+  },
+  "step10-check.sh": {
+    "exit": 0,
+    "seconds": 24.67,
+    "log": "step10-check.log",
+    "logSHA256": "61d776d1a1916a805d17edc03555d76650a91b6d2ddc0bd526a7791c227d8c98"
+  },
+  "step11-check.sh": {
+    "exit": 0,
+    "seconds": 23.54,
+    "log": "step11-check.log",
+    "logSHA256": "76044d28174f98244fd8a39487e173b849f5ad9872479993c67b1b42d49ae127"
+  },
+  "step12-check.sh": {
+    "exit": 0,
+    "seconds": 48.89,
+    "log": "step12-check.log",
+    "logSHA256": "2fa15f2c1b70e7eb09a181ee1ec1f05d7a06a5c96641d7b71e93ca953552b550"
+  },
+  "step12-recovery-check.sh": {
+    "exit": 0,
+    "seconds": 46.0,
+    "log": "step12-recovery-check.log",
+    "logSHA256": "32b7d36ddfb71748412b9b7cd3637728e9cd4fda987343c830fe121a55b2362e"
+  },
+  "step15-google-check.sh": {
+    "exit": 0,
+    "seconds": 79.47,
+    "log": "step15-google-check.log",
+    "logSHA256": "cf3edbef76957c904186ed1bdf2357407aa56e392c513f55cb7acf59f300ca91"
+  },
+  "step15-mcp-check.sh": {
+    "exit": 0,
+    "seconds": 11.51,
+    "log": "step15-mcp-check.log",
+    "logSHA256": "69216cf6236d2f11983087a104a94099ed7f49b3532e295c9bf023f949223e95"
+  },
+  "step15-oauth-check.sh": {
+    "exit": 0,
+    "seconds": 2.65,
+    "log": "step15-oauth-check.log",
+    "logSHA256": "f87cda73423316c97d7953c4eb4e1fb4c3935231fb86ff759333c06f2d1f36a6"
+  },
+  "step16-actual-pipeline-check.sh": {
+    "exit": 0,
+    "seconds": 20.04,
+    "log": "step16-actual-pipeline-check.log",
+    "logSHA256": "12370e0aeedcbc0c0d8a3d9f1ad14a315b8a1cd565c7aa6b0f4b9e17d9a84c52"
+  },
+  "step17-summary-follow-up-check.sh": {
+    "exit": 0,
+    "seconds": 24.64,
+    "log": "step17-summary-follow-up-check.log",
+    "logSHA256": "967beee89963eebfe67428d11b28a983c0444f83c8136a36f67fc3da250a17b5"
+  },
+  "step3-check.sh": {
+    "exit": 0,
+    "seconds": 38.87,
+    "log": "step3-check.log",
+    "logSHA256": "55d8023728d7a8727709034da26818a5eaab0610ec30cfa651efe441e64c6a09"
+  },
+  "step4-check.sh": {
+    "exit": 0,
+    "seconds": 7.05,
+    "log": "step4-check.log",
+    "logSHA256": "56d9298a4920a4628c8002d0c676dbd73cb517a5e07eb76d0807f774e5f68417"
+  },
+  "step5-check.sh": {
+    "exit": 0,
+    "seconds": 1.17,
+    "log": "step5-check.log",
+    "logSHA256": "a4b1ccdf40d650c257df921408c83863225da70318829d7962c9261d34081f9a"
+  },
+  "ui-recovery-check.sh": {
+    "exit": 0,
+    "seconds": 0.19,
+    "log": "ui-recovery-check.log",
+    "logSHA256": "80ade61d4cddd5295bfd72a7a22656a3fe690aaf234e463301f3ad268b34d1f7"
+  },
+  "voice-lifecycle-acceptance-check.sh": {
+    "exit": 0,
+    "seconds": 4.9,
+    "log": "voice-lifecycle-acceptance-check.log",
+    "logSHA256": "451b0e809092c24866b74f7702484d0cc82949b2b6156461603a801a028aa2f3"
+  },
+  "voice-quality-check.sh": {
+    "exit": 0,
+    "seconds": 3.6,
+    "log": "voice-quality-check.log",
+    "logSHA256": "933521f0441b6583360c6f493b6a21ad387a2657fae2f287407f5fbd0932459d"
+  },
+  "watched-transport-check.sh": {
+    "exit": 0,
+    "seconds": 16.71,
+    "log": "watched-transport-check.log",
+    "logSHA256": "efdb46b4de297905c2138b5290d85266adc95471b6d1cbf80a893211290e5592"
+  }
+}

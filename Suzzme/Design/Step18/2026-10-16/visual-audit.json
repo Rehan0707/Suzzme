@@ -1,0 +1,658 @@
+[
+  {
+    "screenshot": "Mac-UI/assistant-answer.jpg",
+    "screen": "Assistant Answer",
+    "observed": "Conversation sits in a narrow sheet; a separate bottom footer contains a prominent, icon-only Sources destination. Composer and voice controls consume another bottom band.",
+    "severity": "P1",
+    "correction": "Widen the Mac sheet within the main window, name Sources, make it secondary, and reduce composer/voice chrome while preserving 44-point targets.",
+    "source": "Suzzme/Suzzme/Features/Home/AskSuzzmeView.swift"
+  },
+  {
+    "screenshot": "Mac-UI/daily-summary.jpg",
+    "screen": "Daily Summary",
+    "observed": "The summary is a dense continuous paragraph above the item sections; long names and multiple dates are harder to scan.",
+    "severity": "P2",
+    "correction": "Consider presentation-only paragraph spacing in a later batch; preserve all generated facts and partial-source warnings.",
+    "source": "Suzzme/Suzzme/Features/Briefing/BriefingView.swift"
+  },
+  {
+    "screenshot": "Mac-UI/history.jpg",
+    "screen": "History",
+    "observed": "No additional defect confirmed in this static capture.",
+    "severity": "None observed",
+    "correction": "Retain; runtime/accessibility checks remain separate.",
+    "source": "Suzzme/Suzzme/Features/History/HistoryView.swift"
+  },
+  {
+    "screenshot": "Mac-UI/home.jpg",
+    "screen": "Home",
+    "observed": "Idle Home has substantial negative space; the Face, primary Talk action, day cards and composer remain distinct. No confirmed clipping.",
+    "severity": "None observed",
+    "correction": "Retain the calm idle composition; evaluate narrow windows after shared Assistant changes.",
+    "source": "Suzzme/Suzzme/Features/Home/CompanionHomeView.swift"
+  },
+  {
+    "screenshot": "Mac-UI/isolated-apple-availability.jpg",
+    "screen": "Isolated Apple Availability",
+    "observed": "Information sheets show readable content and Done, but reserve generous unused vertical space for short text.",
+    "severity": "P3",
+    "correction": "Consider content-fitting sheet height later; retain truthful availability and privacy information.",
+    "source": "Suzzme/Suzzme/App/SignInView.swift"
+  },
+  {
+    "screenshot": "Mac-UI/isolated-follow-up-state.jpg",
+    "screen": "Isolated Follow Up State",
+    "observed": "Conversation sits in a narrow sheet; a separate bottom footer contains a prominent, icon-only Sources destination. Composer and voice controls consume another bottom band.",
+    "severity": "P1",
+    "correction": "Widen the Mac sheet within the main window, name Sources, make it secondary, and reduce composer/voice chrome while preserving 44-point targets.",
+    "source": "Suzzme/Suzzme/Features/Home/AskSuzzmeView.swift"
+  },
+  {
+    "screenshot": "Mac-UI/isolated-google-availability.jpg",
+    "screen": "Isolated Google Availability",
+    "observed": "Information sheets show readable content and Done, but reserve generous unused vertical space for short text.",
+    "severity": "P3",
+    "correction": "Consider content-fitting sheet height later; retain truthful availability and privacy information.",
+    "source": "Suzzme/Suzzme/App/SignInView.swift"
+  },
+  {
+    "screenshot": "Mac-UI/isolated-home.jpg",
+    "screen": "Isolated Home",
+    "observed": "Idle Home has substantial negative space; the Face, primary Talk action, day cards and composer remain distinct. No confirmed clipping.",
+    "severity": "None observed",
+    "correction": "Retain the calm idle composition; evaluate narrow windows after shared Assistant changes.",
+    "source": "Suzzme/Suzzme/Features/Home/CompanionHomeView.swift"
+  },
+  {
+    "screenshot": "Mac-UI/isolated-need-a-hand.jpg",
+    "screen": "Isolated Need A Hand",
+    "observed": "Information sheets show readable content and Done, but reserve generous unused vertical space for short text.",
+    "severity": "P3",
+    "correction": "Consider content-fitting sheet height later; retain truthful availability and privacy information.",
+    "source": "Suzzme/Suzzme/App/SignInView.swift"
+  },
+  {
+    "screenshot": "Mac-UI/isolated-onboarding-1.jpg",
+    "screen": "Isolated Onboarding 1",
+    "observed": "A diagonal purple gradient covers the entire idle onboarding window behind the Face and form content.",
+    "severity": "P2",
+    "correction": "Use the shared neutral page surface; retain the original Face, purple accent details, seven steps, permission controls, and progress.",
+    "source": "Suzzme/Suzzme/App/LaunchExperience.swift"
+  },
+  {
+    "screenshot": "Mac-UI/isolated-onboarding-2.jpg",
+    "screen": "Isolated Onboarding 2",
+    "observed": "A diagonal purple gradient covers the entire idle onboarding window behind the Face and form content.",
+    "severity": "P2",
+    "correction": "Use the shared neutral page surface; retain the original Face, purple accent details, seven steps, permission controls, and progress.",
+    "source": "Suzzme/Suzzme/App/LaunchExperience.swift"
+  },
+  {
+    "screenshot": "Mac-UI/isolated-onboarding-3.jpg",
+    "screen": "Isolated Onboarding 3",
+    "observed": "A diagonal purple gradient covers the entire idle onboarding window behind the Face and form content.",
+    "severity": "P2",
+    "correction": "Use the shared neutral page surface; retain the original Face, purple accent details, seven steps, permission controls, and progress.",
+    "source": "Suzzme/Suzzme/App/LaunchExperience.swift"
+  },
+  {
+    "screenshot": "Mac-UI/isolated-onboarding-4.jpg",
+    "screen": "Isolated Onboarding 4",
+    "observed": "A diagonal purple gradient covers the entire idle onboarding window behind the Face and form content.",
+    "severity": "P2",
+    "correction": "Use the shared neutral page surface; retain the original Face, purple accent details, seven steps, permission controls, and progress.",
+    "source": "Suzzme/Suzzme/App/LaunchExperience.swift"
+  },
+  {
+    "screenshot": "Mac-UI/isolated-onboarding-5.jpg",
+    "screen": "Isolated Onboarding 5",
+    "observed": "A diagonal purple gradient covers the entire idle onboarding window behind the Face and form content.",
+    "severity": "P2",
+    "correction": "Use the shared neutral page surface; retain the original Face, purple accent details, seven steps, permission controls, and progress.",
+    "source": "Suzzme/Suzzme/App/LaunchExperience.swift"
+  },
+  {
+    "screenshot": "Mac-UI/isolated-onboarding-6.jpg",
+    "screen": "Isolated Onboarding 6",
+    "observed": "A diagonal purple gradient covers the entire idle onboarding window behind the Face and form content.",
+    "severity": "P2",
+    "correction": "Use the shared neutral page surface; retain the original Face, purple accent details, seven steps, permission controls, and progress.",
+    "source": "Suzzme/Suzzme/App/LaunchExperience.swift"
+  },
+  {
+    "screenshot": "Mac-UI/isolated-onboarding-7.jpg",
+    "screen": "Isolated Onboarding 7",
+    "observed": "A diagonal purple gradient covers the entire idle onboarding window behind the Face and form content.",
+    "severity": "P2",
+    "correction": "Use the shared neutral page surface; retain the original Face, purple accent details, seven steps, permission controls, and progress.",
+    "source": "Suzzme/Suzzme/App/LaunchExperience.swift"
+  },
+  {
+    "screenshot": "Mac-UI/isolated-privacy-policy.jpg",
+    "screen": "Isolated Privacy Policy",
+    "observed": "Information sheets show readable content and Done, but reserve generous unused vertical space for short text.",
+    "severity": "P3",
+    "correction": "Consider content-fitting sheet height later; retain truthful availability and privacy information.",
+    "source": "Suzzme/Suzzme/App/SignInView.swift"
+  },
+  {
+    "screenshot": "Mac-UI/isolated-sign-in.jpg",
+    "screen": "Isolated Sign In",
+    "observed": "The rectangular white Google SDK button and rounded Apple button have different silhouettes. Account unavailability is explicitly disclosed.",
+    "severity": "P3",
+    "correction": "Retain the approved Face and truthful entry behavior. Review SDK-compliant button sizing/shape in a separate branding-sensitive pass.",
+    "source": "Suzzme/Suzzme/App/SignInView.swift"
+  },
+  {
+    "screenshot": "Mac-UI/isolated-terms-of-service.jpg",
+    "screen": "Isolated Terms Of Service",
+    "observed": "Information sheets show readable content and Done, but reserve generous unused vertical space for short text.",
+    "severity": "P3",
+    "correction": "Consider content-fitting sheet height later; retain truthful availability and privacy information.",
+    "source": "Suzzme/Suzzme/App/SignInView.swift"
+  },
+  {
+    "screenshot": "Mac-UI/personal-memory.jpg",
+    "screen": "Personal Memory",
+    "observed": "The empty memory prompt and controls are readable, with a large unused area below. This alone is not a defect.",
+    "severity": "None observed",
+    "correction": "Retain; runtime/accessibility checks remain separate.",
+    "source": "Suzzme/Suzzme/Features/Memory/MemoryView.swift"
+  },
+  {
+    "screenshot": "Mac-UI/settings-about-suzzme.jpg",
+    "screen": "Settings About Suzzme",
+    "observed": "No additional defect confirmed in this static capture.",
+    "severity": "None observed",
+    "correction": "Retain; runtime/accessibility checks remain separate.",
+    "source": "Suzzme/Suzzme/Features/Settings/SettingsDetailViews.swift"
+  },
+  {
+    "screenshot": "Mac-UI/settings-accessibility.jpg",
+    "screen": "Settings Accessibility",
+    "observed": "The first form section starts immediately below the toolbar with less breathing room than the page-based screens.",
+    "severity": "P2",
+    "correction": "Check native form scroll position and top inset in live compact/regular windows before applying a global spacing change.",
+    "source": "Suzzme/Suzzme/Features/Settings/SettingsDetailViews.swift"
+  },
+  {
+    "screenshot": "Mac-UI/settings-daily-summary.jpg",
+    "screen": "Settings Daily Summary",
+    "observed": "The first form section starts immediately below the toolbar with less breathing room than the page-based screens.",
+    "severity": "P2",
+    "correction": "Check native form scroll position and top inset in live compact/regular windows before applying a global spacing change.",
+    "source": "Suzzme/Suzzme/Features/Settings/ProactiveIntelligenceSettingsView.swift"
+  },
+  {
+    "screenshot": "Mac-UI/settings-integrations.jpg",
+    "screen": "Settings Integrations",
+    "observed": "A long introduction/data-flow block precedes search. The first directory cards are unavailable catalog entries, pushing usable connections lower.",
+    "severity": "P1",
+    "correction": "Move search immediately after the heading; disclose detailed access information; show supported/limited entries first and retain optional catalog browsing and all-item search.",
+    "source": "Suzzme/Suzzme/Features/Settings/IntegrationsView.swift"
+  },
+  {
+    "screenshot": "Mac-UI/settings-notifications.jpg",
+    "screen": "Settings Notifications",
+    "observed": "No additional defect confirmed in this static capture.",
+    "severity": "None observed",
+    "correction": "Retain; runtime/accessibility checks remain separate.",
+    "source": "Suzzme/Suzzme/Features/Settings/SettingsDetailViews.swift"
+  },
+  {
+    "screenshot": "Mac-UI/settings-presence.jpg",
+    "screen": "Settings Presence",
+    "observed": "Listening is explicitly inside a Live preview section, not presented as an actual recording. No static clipping confirmed.",
+    "severity": "None observed",
+    "correction": "Retain the preview label. Do not use this image as live microphone or notch acceptance.",
+    "source": "Suzzme/Suzzme/Features/Invocation/PresenceSettingsView.swift"
+  },
+  {
+    "screenshot": "Mac-UI/settings-privacy.jpg",
+    "screen": "Settings Privacy",
+    "observed": "The first form section starts immediately below the toolbar with less breathing room than the page-based screens.",
+    "severity": "P2",
+    "correction": "Check native form scroll position and top inset in live compact/regular windows before applying a global spacing change.",
+    "source": "Suzzme/Suzzme/Features/Settings/SettingsDetailViews.swift"
+  },
+  {
+    "screenshot": "Mac-UI/settings-profile.jpg",
+    "screen": "Settings Profile",
+    "observed": "No additional defect confirmed in this static capture.",
+    "severity": "None observed",
+    "correction": "Retain; runtime/accessibility checks remain separate.",
+    "source": "Suzzme/Suzzme/Features/Settings/SettingsDetailViews.swift"
+  },
+  {
+    "screenshot": "Mac-UI/settings-talk-to-suzzme.jpg",
+    "screen": "Settings Talk To Suzzme",
+    "observed": "The permission explanation and shortcut controls are visible. Content continues below the captured viewport.",
+    "severity": "None observed",
+    "correction": "Verify scrolling and keyboard reachability. Keep Input Monitoring unchanged.",
+    "source": "Suzzme/Suzzme/Features/Invocation/InvocationSettingsView.swift"
+  },
+  {
+    "screenshot": "Mac-UI/settings-voice.jpg",
+    "screen": "Settings Voice",
+    "observed": "Speaking pace is repeated as a value row and the visible slider label.",
+    "severity": "P2",
+    "correction": "Group value and slider in one row; hide only the redundant visual label and retain the slider accessibility label/value.",
+    "source": "Suzzme/Suzzme/Features/Settings/VoiceSettingsView.swift"
+  },
+  {
+    "screenshot": "Mac-UI/settings.jpg",
+    "screen": "Settings",
+    "observed": "Settings groups are visually consistent; lower groups continue below the viewport.",
+    "severity": "None observed",
+    "correction": "Retain grouping and verify scroll reachability.",
+    "source": "Suzzme/Suzzme/Features/Settings/SettingsView.swift"
+  },
+  {
+    "screenshot": "Mac-UI/sources.jpg",
+    "screen": "Sources",
+    "observed": "Permission and health labels are visible and distinguish checked, off, and unavailable states. No additional confirmed static defect.",
+    "severity": "None observed",
+    "correction": "Retain; runtime/accessibility checks remain separate.",
+    "source": "Suzzme/Suzzme/Features/Sources/SourcesView.swift"
+  },
+  {
+    "screenshot": "Mac-UI/today.jpg",
+    "screen": "Today",
+    "observed": "Two-column Today hierarchy is visible with readable event and summary cards. No additional confirmed static defect.",
+    "severity": "None observed",
+    "correction": "Retain; runtime/accessibility checks remain separate.",
+    "source": "Suzzme/Suzzme/Features/Home/HomeView.swift"
+  },
+  {
+    "screenshot": "PresencePreviews/Dark-acting.png",
+    "screen": "Dark Acting",
+    "observed": "Face, state label, cancel control and restrained active rim are visible without static clipping.",
+    "severity": "None observed",
+    "correction": "Retain; a still image cannot validate spring timing, interruption, or actual voice lifecycle.",
+    "source": "Suzzme/Suzzme/Platform/macOS/MacAssistantPresence.swift"
+  },
+  {
+    "screenshot": "PresencePreviews/Dark-awaitingConfirmation.png",
+    "screen": "Dark Awaitingconfirmation",
+    "observed": "The header and Delete Reminder/Cancel controls are visible, but the resolved target text is absent from the body.",
+    "severity": "P1 evidence",
+    "correction": "The production source supplies a white title inside ScrollView. Capture a live NSHostingView before changing production; ImageRenderer omission is suspected, not proven.",
+    "source": "Suzzme/Suzzme/Platform/macOS/MacAssistantPresence.swift; Suzzme/Validation/FinalUIPresenceRender.swift"
+  },
+  {
+    "screenshot": "PresencePreviews/Dark-error.png",
+    "screen": "Dark Error",
+    "observed": "Status, Face, Share and Done are visible; the supplied response text is absent from the body.",
+    "severity": "P1 evidence",
+    "correction": "Compare a native rendered surface against the ImageRenderer output. Do not claim the empty body is a confirmed production defect.",
+    "source": "Suzzme/Suzzme/Platform/macOS/MacAssistantPresence.swift; Suzzme/Validation/FinalUIPresenceRender.swift"
+  },
+  {
+    "screenshot": "PresencePreviews/Dark-gatheringContext.png",
+    "screen": "Dark Gatheringcontext",
+    "observed": "Status and Xcode/Screen context chips fit without visible clipping.",
+    "severity": "None observed",
+    "correction": "Retain; never show these fixture labels as real captured context.",
+    "source": "Suzzme/Suzzme/Platform/macOS/MacAssistantPresence.swift"
+  },
+  {
+    "screenshot": "PresencePreviews/Dark-idle.png",
+    "screen": "Dark Idle",
+    "observed": "Compact idle is nearly still, showing the Face without a decorative rim.",
+    "severity": "None observed",
+    "correction": "Retain; verify accessible status in the runtime tree separately.",
+    "source": "Suzzme/Suzzme/Platform/macOS/MacAssistantPresence.swift"
+  },
+  {
+    "screenshot": "PresencePreviews/Dark-listening.png",
+    "screen": "Dark Listening",
+    "observed": "Face, state label, cancel control and restrained active rim are visible without static clipping.",
+    "severity": "None observed",
+    "correction": "Retain; a still image cannot validate spring timing, interruption, or actual voice lifecycle.",
+    "source": "Suzzme/Suzzme/Platform/macOS/MacAssistantPresence.swift"
+  },
+  {
+    "screenshot": "PresencePreviews/Dark-planning.png",
+    "screen": "Dark Planning",
+    "observed": "Face, state label, cancel control and restrained active rim are visible without static clipping.",
+    "severity": "None observed",
+    "correction": "Retain; a still image cannot validate spring timing, interruption, or actual voice lifecycle.",
+    "source": "Suzzme/Suzzme/Platform/macOS/MacAssistantPresence.swift"
+  },
+  {
+    "screenshot": "PresencePreviews/Dark-reasoning.png",
+    "screen": "Dark Reasoning",
+    "observed": "Face, state label, cancel control and restrained active rim are visible without static clipping.",
+    "severity": "None observed",
+    "correction": "Retain; a still image cannot validate spring timing, interruption, or actual voice lifecycle.",
+    "source": "Suzzme/Suzzme/Platform/macOS/MacAssistantPresence.swift"
+  },
+  {
+    "screenshot": "PresencePreviews/Dark-speaking.png",
+    "screen": "Dark Speaking",
+    "observed": "Status, Face, Share and Done are visible; the supplied response text is absent from the body.",
+    "severity": "P1 evidence",
+    "correction": "Compare a native rendered surface against the ImageRenderer output. Do not claim the empty body is a confirmed production defect.",
+    "source": "Suzzme/Suzzme/Platform/macOS/MacAssistantPresence.swift; Suzzme/Validation/FinalUIPresenceRender.swift"
+  },
+  {
+    "screenshot": "PresencePreviews/Dark-success.png",
+    "screen": "Dark Success",
+    "observed": "Status, Face, Share and Done are visible; the supplied response text is absent from the body.",
+    "severity": "P1 evidence",
+    "correction": "Compare a native rendered surface against the ImageRenderer output. Do not claim the empty body is a confirmed production defect.",
+    "source": "Suzzme/Suzzme/Platform/macOS/MacAssistantPresence.swift; Suzzme/Validation/FinalUIPresenceRender.swift"
+  },
+  {
+    "screenshot": "PresencePreviews/Dark-transcribing.png",
+    "screen": "Dark Transcribing",
+    "observed": "Face, state label, cancel control and restrained active rim are visible without static clipping.",
+    "severity": "None observed",
+    "correction": "Retain; a still image cannot validate spring timing, interruption, or actual voice lifecycle.",
+    "source": "Suzzme/Suzzme/Platform/macOS/MacAssistantPresence.swift"
+  },
+  {
+    "screenshot": "PresencePreviews/Dark-understanding.png",
+    "screen": "Dark Understanding",
+    "observed": "Face, state label, cancel control and restrained active rim are visible without static clipping.",
+    "severity": "None observed",
+    "correction": "Retain; a still image cannot validate spring timing, interruption, or actual voice lifecycle.",
+    "source": "Suzzme/Suzzme/Platform/macOS/MacAssistantPresence.swift"
+  },
+  {
+    "screenshot": "PresencePreviews/GitHub-Fallback-Allowed-Dark.png",
+    "screen": "Github Fallback Allowed Dark",
+    "observed": "Repository and access explanation are visible on the black notch/fallback surface; the original Face and decision buttons fit this fixture.",
+    "severity": "None observed",
+    "correction": "Retain. This is an ImageRenderer fixture, not signed browser IPC, physical notch, or hardware accessibility acceptance.",
+    "source": "Suzzme/Suzzme/Platform/macOS/MacAssistantPresence.swift"
+  },
+  {
+    "screenshot": "PresencePreviews/GitHub-Fallback-Allowed-LargeType.png",
+    "screen": "Github Fallback Allowed Largetype",
+    "observed": "Repository and access explanation are visible on the black notch/fallback surface; the original Face and decision buttons fit this fixture. The text does not visibly enlarge much relative to the other Mac variants.",
+    "severity": "P2 evidence",
+    "correction": "Verify actual preferred-text scaling and keyboard/VoiceOver in a native panel; do not count the filename as accessibility acceptance.",
+    "source": "Suzzme/Suzzme/Platform/macOS/MacAssistantPresence.swift"
+  },
+  {
+    "screenshot": "PresencePreviews/GitHub-Fallback-Allowed-Light.png",
+    "screen": "Github Fallback Allowed Light",
+    "observed": "Repository and access explanation are visible on the black notch/fallback surface; the original Face and decision buttons fit this fixture.",
+    "severity": "None observed",
+    "correction": "Retain. This is an ImageRenderer fixture, not signed browser IPC, physical notch, or hardware accessibility acceptance.",
+    "source": "Suzzme/Suzzme/Platform/macOS/MacAssistantPresence.swift"
+  },
+  {
+    "screenshot": "PresencePreviews/GitHub-Fallback-Request-Dark.png",
+    "screen": "Github Fallback Request Dark",
+    "observed": "Repository and access explanation are visible on the black notch/fallback surface; the original Face and decision buttons fit this fixture.",
+    "severity": "None observed",
+    "correction": "Retain. This is an ImageRenderer fixture, not signed browser IPC, physical notch, or hardware accessibility acceptance.",
+    "source": "Suzzme/Suzzme/Platform/macOS/MacAssistantPresence.swift"
+  },
+  {
+    "screenshot": "PresencePreviews/GitHub-Fallback-Request-LargeType.png",
+    "screen": "Github Fallback Request Largetype",
+    "observed": "Repository and access explanation are visible on the black notch/fallback surface; the original Face and decision buttons fit this fixture. The text does not visibly enlarge much relative to the other Mac variants.",
+    "severity": "P2 evidence",
+    "correction": "Verify actual preferred-text scaling and keyboard/VoiceOver in a native panel; do not count the filename as accessibility acceptance.",
+    "source": "Suzzme/Suzzme/Platform/macOS/MacAssistantPresence.swift"
+  },
+  {
+    "screenshot": "PresencePreviews/GitHub-Fallback-Request-Light.png",
+    "screen": "Github Fallback Request Light",
+    "observed": "Repository and access explanation are visible on the black notch/fallback surface; the original Face and decision buttons fit this fixture.",
+    "severity": "None observed",
+    "correction": "Retain. This is an ImageRenderer fixture, not signed browser IPC, physical notch, or hardware accessibility acceptance.",
+    "source": "Suzzme/Suzzme/Platform/macOS/MacAssistantPresence.swift"
+  },
+  {
+    "screenshot": "PresencePreviews/GitHub-Notch-Allowed-Dark.png",
+    "screen": "Github Notch Allowed Dark",
+    "observed": "Repository and access explanation are visible on the black notch/fallback surface; the original Face and decision buttons fit this fixture.",
+    "severity": "None observed",
+    "correction": "Retain. This is an ImageRenderer fixture, not signed browser IPC, physical notch, or hardware accessibility acceptance.",
+    "source": "Suzzme/Suzzme/Platform/macOS/MacAssistantPresence.swift"
+  },
+  {
+    "screenshot": "PresencePreviews/GitHub-Notch-Allowed-LargeType.png",
+    "screen": "Github Notch Allowed Largetype",
+    "observed": "Repository and access explanation are visible on the black notch/fallback surface; the original Face and decision buttons fit this fixture. The text does not visibly enlarge much relative to the other Mac variants.",
+    "severity": "P2 evidence",
+    "correction": "Verify actual preferred-text scaling and keyboard/VoiceOver in a native panel; do not count the filename as accessibility acceptance.",
+    "source": "Suzzme/Suzzme/Platform/macOS/MacAssistantPresence.swift"
+  },
+  {
+    "screenshot": "PresencePreviews/GitHub-Notch-Allowed-Light.png",
+    "screen": "Github Notch Allowed Light",
+    "observed": "Repository and access explanation are visible on the black notch/fallback surface; the original Face and decision buttons fit this fixture.",
+    "severity": "None observed",
+    "correction": "Retain. This is an ImageRenderer fixture, not signed browser IPC, physical notch, or hardware accessibility acceptance.",
+    "source": "Suzzme/Suzzme/Platform/macOS/MacAssistantPresence.swift"
+  },
+  {
+    "screenshot": "PresencePreviews/GitHub-Notch-Request-Dark.png",
+    "screen": "Github Notch Request Dark",
+    "observed": "Repository and access explanation are visible on the black notch/fallback surface; the original Face and decision buttons fit this fixture.",
+    "severity": "None observed",
+    "correction": "Retain. This is an ImageRenderer fixture, not signed browser IPC, physical notch, or hardware accessibility acceptance.",
+    "source": "Suzzme/Suzzme/Platform/macOS/MacAssistantPresence.swift"
+  },
+  {
+    "screenshot": "PresencePreviews/GitHub-Notch-Request-LargeType.png",
+    "screen": "Github Notch Request Largetype",
+    "observed": "Repository and access explanation are visible on the black notch/fallback surface; the original Face and decision buttons fit this fixture. The text does not visibly enlarge much relative to the other Mac variants.",
+    "severity": "P2 evidence",
+    "correction": "Verify actual preferred-text scaling and keyboard/VoiceOver in a native panel; do not count the filename as accessibility acceptance.",
+    "source": "Suzzme/Suzzme/Platform/macOS/MacAssistantPresence.swift"
+  },
+  {
+    "screenshot": "PresencePreviews/GitHub-Notch-Request-Light.png",
+    "screen": "Github Notch Request Light",
+    "observed": "Repository and access explanation are visible on the black notch/fallback surface; the original Face and decision buttons fit this fixture.",
+    "severity": "None observed",
+    "correction": "Retain. This is an ImageRenderer fixture, not signed browser IPC, physical notch, or hardware accessibility acceptance.",
+    "source": "Suzzme/Suzzme/Platform/macOS/MacAssistantPresence.swift"
+  },
+  {
+    "screenshot": "PresencePreviews/LargeType-acting.png",
+    "screen": "Largetype Acting",
+    "observed": "Face, state label, cancel control and restrained active rim are visible without static clipping.",
+    "severity": "None observed",
+    "correction": "Retain; a still image cannot validate spring timing, interruption, or actual voice lifecycle.",
+    "source": "Suzzme/Suzzme/Platform/macOS/MacAssistantPresence.swift"
+  },
+  {
+    "screenshot": "PresencePreviews/LargeType-awaitingConfirmation.png",
+    "screen": "Largetype Awaitingconfirmation",
+    "observed": "The header and Delete Reminder/Cancel controls are visible, but the resolved target text is absent from the body.",
+    "severity": "P1 evidence",
+    "correction": "The production source supplies a white title inside ScrollView. Capture a live NSHostingView before changing production; ImageRenderer omission is suspected, not proven.",
+    "source": "Suzzme/Suzzme/Platform/macOS/MacAssistantPresence.swift; Suzzme/Validation/FinalUIPresenceRender.swift"
+  },
+  {
+    "screenshot": "PresencePreviews/LargeType-error.png",
+    "screen": "Largetype Error",
+    "observed": "Status, Face, Share and Done are visible; the supplied response text is absent from the body.",
+    "severity": "P1 evidence",
+    "correction": "Compare a native rendered surface against the ImageRenderer output. Do not claim the empty body is a confirmed production defect.",
+    "source": "Suzzme/Suzzme/Platform/macOS/MacAssistantPresence.swift; Suzzme/Validation/FinalUIPresenceRender.swift"
+  },
+  {
+    "screenshot": "PresencePreviews/LargeType-gatheringContext.png",
+    "screen": "Largetype Gatheringcontext",
+    "observed": "Status and Xcode/Screen context chips fit without visible clipping.",
+    "severity": "None observed",
+    "correction": "Retain; never show these fixture labels as real captured context.",
+    "source": "Suzzme/Suzzme/Platform/macOS/MacAssistantPresence.swift"
+  },
+  {
+    "screenshot": "PresencePreviews/LargeType-idle.png",
+    "screen": "Largetype Idle",
+    "observed": "Compact idle is nearly still, showing the Face without a decorative rim.",
+    "severity": "None observed",
+    "correction": "Retain; verify accessible status in the runtime tree separately.",
+    "source": "Suzzme/Suzzme/Platform/macOS/MacAssistantPresence.swift"
+  },
+  {
+    "screenshot": "PresencePreviews/LargeType-listening.png",
+    "screen": "Largetype Listening",
+    "observed": "Face, state label, cancel control and restrained active rim are visible without static clipping.",
+    "severity": "None observed",
+    "correction": "Retain; a still image cannot validate spring timing, interruption, or actual voice lifecycle.",
+    "source": "Suzzme/Suzzme/Platform/macOS/MacAssistantPresence.swift"
+  },
+  {
+    "screenshot": "PresencePreviews/LargeType-planning.png",
+    "screen": "Largetype Planning",
+    "observed": "Face, state label, cancel control and restrained active rim are visible without static clipping.",
+    "severity": "None observed",
+    "correction": "Retain; a still image cannot validate spring timing, interruption, or actual voice lifecycle.",
+    "source": "Suzzme/Suzzme/Platform/macOS/MacAssistantPresence.swift"
+  },
+  {
+    "screenshot": "PresencePreviews/LargeType-reasoning.png",
+    "screen": "Largetype Reasoning",
+    "observed": "Face, state label, cancel control and restrained active rim are visible without static clipping.",
+    "severity": "None observed",
+    "correction": "Retain; a still image cannot validate spring timing, interruption, or actual voice lifecycle.",
+    "source": "Suzzme/Suzzme/Platform/macOS/MacAssistantPresence.swift"
+  },
+  {
+    "screenshot": "PresencePreviews/LargeType-speaking.png",
+    "screen": "Largetype Speaking",
+    "observed": "Status, Face, Share and Done are visible; the supplied response text is absent from the body.",
+    "severity": "P1 evidence",
+    "correction": "Compare a native rendered surface against the ImageRenderer output. Do not claim the empty body is a confirmed production defect.",
+    "source": "Suzzme/Suzzme/Platform/macOS/MacAssistantPresence.swift; Suzzme/Validation/FinalUIPresenceRender.swift"
+  },
+  {
+    "screenshot": "PresencePreviews/LargeType-success.png",
+    "screen": "Largetype Success",
+    "observed": "Status, Face, Share and Done are visible; the supplied response text is absent from the body.",
+    "severity": "P1 evidence",
+    "correction": "Compare a native rendered surface against the ImageRenderer output. Do not claim the empty body is a confirmed production defect.",
+    "source": "Suzzme/Suzzme/Platform/macOS/MacAssistantPresence.swift; Suzzme/Validation/FinalUIPresenceRender.swift"
+  },
+  {
+    "screenshot": "PresencePreviews/LargeType-transcribing.png",
+    "screen": "Largetype Transcribing",
+    "observed": "Face, state label, cancel control and restrained active rim are visible without static clipping.",
+    "severity": "None observed",
+    "correction": "Retain; a still image cannot validate spring timing, interruption, or actual voice lifecycle.",
+    "source": "Suzzme/Suzzme/Platform/macOS/MacAssistantPresence.swift"
+  },
+  {
+    "screenshot": "PresencePreviews/LargeType-understanding.png",
+    "screen": "Largetype Understanding",
+    "observed": "Face, state label, cancel control and restrained active rim are visible without static clipping.",
+    "severity": "None observed",
+    "correction": "Retain; a still image cannot validate spring timing, interruption, or actual voice lifecycle.",
+    "source": "Suzzme/Suzzme/Platform/macOS/MacAssistantPresence.swift"
+  },
+  {
+    "screenshot": "PresencePreviews/Light-acting.png",
+    "screen": "Light Acting",
+    "observed": "Face, state label, cancel control and restrained active rim are visible without static clipping.",
+    "severity": "None observed",
+    "correction": "Retain; a still image cannot validate spring timing, interruption, or actual voice lifecycle.",
+    "source": "Suzzme/Suzzme/Platform/macOS/MacAssistantPresence.swift"
+  },
+  {
+    "screenshot": "PresencePreviews/Light-awaitingConfirmation.png",
+    "screen": "Light Awaitingconfirmation",
+    "observed": "The header and Delete Reminder/Cancel controls are visible, but the resolved target text is absent from the body.",
+    "severity": "P1 evidence",
+    "correction": "The production source supplies a white title inside ScrollView. Capture a live NSHostingView before changing production; ImageRenderer omission is suspected, not proven.",
+    "source": "Suzzme/Suzzme/Platform/macOS/MacAssistantPresence.swift; Suzzme/Validation/FinalUIPresenceRender.swift"
+  },
+  {
+    "screenshot": "PresencePreviews/Light-error.png",
+    "screen": "Light Error",
+    "observed": "Status, Face, Share and Done are visible; the supplied response text is absent from the body.",
+    "severity": "P1 evidence",
+    "correction": "Compare a native rendered surface against the ImageRenderer output. Do not claim the empty body is a confirmed production defect.",
+    "source": "Suzzme/Suzzme/Platform/macOS/MacAssistantPresence.swift; Suzzme/Validation/FinalUIPresenceRender.swift"
+  },
+  {
+    "screenshot": "PresencePreviews/Light-gatheringContext.png",
+    "screen": "Light Gatheringcontext",
+    "observed": "Status and Xcode/Screen context chips fit without visible clipping.",
+    "severity": "None observed",
+    "correction": "Retain; never show these fixture labels as real captured context.",
+    "source": "Suzzme/Suzzme/Platform/macOS/MacAssistantPresence.swift"
+  },
+  {
+    "screenshot": "PresencePreviews/Light-idle.png",
+    "screen": "Light Idle",
+    "observed": "Compact idle is nearly still, showing the Face without a decorative rim.",
+    "severity": "None observed",
+    "correction": "Retain; verify accessible status in the runtime tree separately.",
+    "source": "Suzzme/Suzzme/Platform/macOS/MacAssistantPresence.swift"
+  },
+  {
+    "screenshot": "PresencePreviews/Light-listening.png",
+    "screen": "Light Listening",
+    "observed": "Face, state label, cancel control and restrained active rim are visible without static clipping.",
+    "severity": "None observed",
+    "correction": "Retain; a still image cannot validate spring timing, interruption, or actual voice lifecycle.",
+    "source": "Suzzme/Suzzme/Platform/macOS/MacAssistantPresence.swift"
+  },
+  {
+    "screenshot": "PresencePreviews/Light-planning.png",
+    "screen": "Light Planning",
+    "observed": "Face, state label, cancel control and restrained active rim are visible without static clipping.",
+    "severity": "None observed",
+    "correction": "Retain; a still image cannot validate spring timing, interruption, or actual voice lifecycle.",
+    "source": "Suzzme/Suzzme/Platform/macOS/MacAssistantPresence.swift"
+  },
+  {
+    "screenshot": "PresencePreviews/Light-reasoning.png",
+    "screen": "Light Reasoning",
+    "observed": "Face, state label, cancel control and restrained active rim are visible without static clipping.",
+    "severity": "None observed",
+    "correction": "Retain; a still image cannot validate spring timing, interruption, or actual voice lifecycle.",
+    "source": "Suzzme/Suzzme/Platform/macOS/MacAssistantPresence.swift"
+  },
+  {
+    "screenshot": "PresencePreviews/Light-speaking.png",
+    "screen": "Light Speaking",
+    "observed": "Status, Face, Share and Done are visible; the supplied response text is absent from the body.",
+    "severity": "P1 evidence",
+    "correction": "Compare a native rendered surface against the ImageRenderer output. Do not claim the empty body is a confirmed production defect.",
+    "source": "Suzzme/Suzzme/Platform/macOS/MacAssistantPresence.swift; Suzzme/Validation/FinalUIPresenceRender.swift"
+  },
+  {
+    "screenshot": "PresencePreviews/Light-success.png",
+    "screen": "Light Success",
+    "observed": "Status, Face, Share and Done are visible; the supplied response text is absent from the body.",
+    "severity": "P1 evidence",
+    "correction": "Compare a native rendered surface against the ImageRenderer output. Do not claim the empty body is a confirmed production defect.",
+    "source": "Suzzme/Suzzme/Platform/macOS/MacAssistantPresence.swift; Suzzme/Validation/FinalUIPresenceRender.swift"
+  },
+  {
+    "screenshot": "PresencePreviews/Light-transcribing.png",
+    "screen": "Light Transcribing",
+    "observed": "Face, state label, cancel control and restrained active rim are visible without static clipping.",
+    "severity": "None observed",
+    "correction": "Retain; a still image cannot validate spring timing, interruption, or actual voice lifecycle.",
+    "source": "Suzzme/Suzzme/Platform/macOS/MacAssistantPresence.swift"
+  },
+  {
+    "screenshot": "PresencePreviews/Light-understanding.png",
+    "screen": "Light Understanding",
+    "observed": "Face, state label, cancel control and restrained active rim are visible without static clipping.",
+    "severity": "None observed",
+    "correction": "Retain; a still image cannot validate spring timing, interruption, or actual voice lifecycle.",
+    "source": "Suzzme/Suzzme/Platform/macOS/MacAssistantPresence.swift"
+  },
+  {
+    "screenshot": "UNAVAILABLE \u2014 iOS runtime images",
+    "screen": "iOS launch, Home, Assistant, navigation, Voice, light/dark, keyboard",
+    "observed": "No iOS runtime screenshots are referenced in the supplied gallery. Current baseline boot succeeded, but app installation timed out.",
+    "severity": "P1 BLOCKED",
+    "correction": "Obtain a real current iOS launch and rendered screens before making any white-screen claim.",
+    "source": "Suzzme/Suzzme/App/SuzzmeAppStartup.swift; Suzzme/Suzzme/Platform/iOS/MobileRootView.swift"
+  }
+]

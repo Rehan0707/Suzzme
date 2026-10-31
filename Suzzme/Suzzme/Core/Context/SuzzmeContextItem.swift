@@ -53,6 +53,44 @@ protocol ContextSource: Sendable {
     func fetchContext(for request: SuzzmeContextRequest) async throws -> [SuzzmeContextItem]
 }
 
+/// Resource facts are intentionally not Codable and never enter Session Memory,
+/// Daily Context, Information, or action planning. Connectivity grants no approval.
+struct SuzzmeResourceContext: Sendable {
+    let id: UUID
+    let content: String
+    let provenance: String
+    let capturedAt: Date
+}
+
+/// A native resolution result, never model-authored authority. The source must
+/// revalidate this account generation and its explicit selection before reading.
+struct SuzzmeSummaryResourceReference: Sendable {
+    let accountID: UUID
+    let generation: UUID
+    let url: String
+    var questionOverride: String? = nil
+    var question: String { questionOverride ?? "Read " + url }
+}
+
+protocol SuzzmeResourceContextProviding: Sendable {
+    func recognizes(_ question: String) async -> Bool
+    func readContext(for question: String, requestID: UUID) async throws -> SuzzmeResourceContext?
+    func validate(_ context: SuzzmeResourceContext, requestID: UUID) async -> Bool
+    func cancel(requestID: UUID) async
+    func resolveSummaryReference(_ question: String, context: [SuzzmeContextItem]) async -> SuzzmeSummaryResourceReference?
+    func readSummaryReference(_ reference: SuzzmeSummaryResourceReference, requestID: UUID) async throws -> SuzzmeResourceContext?
+}
+
+extension SuzzmeResourceContextProviding {
+    func resolveSummaryReference(_ question: String, context: [SuzzmeContextItem]) async -> SuzzmeSummaryResourceReference? { nil }
+    func readSummaryReference(_ reference: SuzzmeSummaryResourceReference, requestID: UUID) async throws -> SuzzmeResourceContext? {
+        throw SuzzmeResourceContextFailure(recovery: "Select the current account and resource in Integrations before reading it.")
+    }
+}
+
+/// Only native, fixed recovery copy can cross the transport-to-Core error boundary.
+struct SuzzmeResourceContextFailure: Error, Sendable { let recovery: String }
+
 enum SuzzmeContextError: LocalizedError, Sendable {
     case sourceUnavailable(String), cancelled
     var errorDescription: String? {

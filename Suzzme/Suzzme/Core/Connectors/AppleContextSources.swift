@@ -9,6 +9,7 @@ actor CalendarContextSource: ContextSource {
     func fetchContext(for request: SuzzmeContextRequest) async throws -> [SuzzmeContextItem] {
         guard Self.status == .authorized else { throw SuzzmeContextError.sourceUnavailable(identifier) }
         try Task.checkCancellation()
+        store.reset()
         let range = request.query.dateRange ?? DateInterval(start: request.referenceDate, duration: 7 * 24 * 60 * 60)
         let predicate = store.predicateForEvents(withStart: range.start, end: range.end, calendars: nil)
         let events = store.events(matching: predicate)
@@ -38,12 +39,11 @@ actor CalendarContextSource: ContextSource {
             .sorted { $0.startDate < $1.startDate }
         let bounded = events.prefix(max(0, min(limit, 100)))
         let items = bounded.compactMap { event -> SuzzmeContextItem? in
-            guard let identifier = event.eventIdentifier else { return nil }
-            let occurrence = event.occurrenceDate.map { "@" + String($0.timeIntervalSince1970) } ?? ""
-            return .init(sourceIdentifier: identifier + occurrence, content: event.title ?? "", timestamp: event.lastModifiedDate ?? event.creationDate ?? window.start,
-                         entities: [], metadata: ["title": event.title ?? "", "notes": event.notes ?? "", "location": event.location ?? "",
+            guard let identifier = Self.informationIdentifier(event) else { return nil }
+            return .init(sourceIdentifier: identifier, content: event.title ?? "", timestamp: event.lastModifiedDate ?? event.creationDate ?? window.start,
+                         entities: event.calendarItemExternalIdentifier.map { ["ical:" + $0] } ?? [], metadata: ["title": event.title ?? "", "notes": event.notes ?? "", "location": event.location ?? "",
                          "start": ISO8601DateFormatter().string(from: event.startDate), "end": ISO8601DateFormatter().string(from: event.endDate),
-                         "cancelled": String(event.status == .canceled)])
+                         "cancelled": String(event.status == .canceled), "allDay": String(event.isAllDay)])
         }
         return (items, events.count <= limit && items.count == bounded.count)
     }
@@ -52,11 +52,17 @@ actor CalendarContextSource: ContextSource {
         switch EKEventStore.authorizationStatus(for: .event) {
         case .fullAccess: .authorized
         case .notDetermined: .notDetermined
-        case .writeOnly: .denied
+        case .writeOnly: .writeOnly
         case .denied: .denied
         case .restricted: .restricted
         @unknown default: .unavailable
         }
+    }
+
+    private static func informationIdentifier(_ event: EKEvent) -> String? {
+        guard let identifier = event.eventIdentifier else { return nil }
+        let occurrence = event.occurrenceDate.map { "@" + String($0.timeIntervalSince1970) } ?? ""
+        return identifier + occurrence
     }
 
     private static func item(_ event: EKEvent) -> SuzzmeContextItem {
@@ -74,7 +80,8 @@ actor CalendarContextSource: ContextSource {
             importance: event.availability == .busy ? .important : .normal,
             sensitivity: .personal,
             metadata: [
-                "source": "calendar", "calendar": calendarName, "title": event.title ?? "",
+                "source": "calendar", "icalUID": event.calendarItemExternalIdentifier ?? "", "calendar": calendarName, "title": event.title ?? "",
+                "informationIdentifier": informationIdentifier(event) ?? "",
                 "calendarID": event.calendar.calendarIdentifier, "fingerprint": SuzzmeEventKitFingerprint.event(event),
                 "recurring": String(event.hasRecurrenceRules), "attendees": String(event.hasAttendees),
                 "start": ISO8601DateFormatter().string(from: event.startDate),
@@ -96,18 +103,19 @@ actor RemindersContextSource: ContextSource {
         guard Self.status == .authorized else { throw SuzzmeContextError.sourceUnavailable(identifier) }
         try Task.checkCancellation()
         let range = request.query.dateRange ?? DateInterval(start: request.referenceDate, duration: 7 * 24 * 60 * 60)
-        let predicate = store.predicateForIncompleteReminders(withDueDateStarting: range.start, ending: range.end, calendars: nil)
-        let reminders = await fetchReminders(matching: predicate)
-            .filter { !$0.isCompleted }
-            .sorted { ($0.dueDate ?? .distantFuture) < ($1.dueDate ?? .distantFuture) }
-            .prefix(request.limit)
+        // EventKit has no fetch limit. Select bounded value snapshots inside
+        // its callback; open work is selected by state, not a lookback cutoff.
+        store.reset()
+        let predicate = store.predicateForIncompleteReminders(withDueDateStarting: nil, ending: nil, calendars: nil)
+        let reminders = try await fetchReminders(matching: predicate, selection: request, range: range)
+        try Task.checkCancellation()
         return reminders.map(Self.item)
     }
 
     func completedActionTargets() async throws -> [SuzzmeContextItem] {
         guard Self.status == .authorized else { throw SuzzmeContextError.sourceUnavailable(identifier) }
         store.reset()
-        let values = await fetchReminders(matching: store.predicateForCompletedReminders(withCompletionDateStarting: nil, ending: nil, calendars: nil))
+        let values = try await fetchReminders(matching: store.predicateForCompletedReminders(withCompletionDateStarting: nil, ending: nil, calendars: nil))
         try Task.checkCancellation()
         return values.filter(\.isCompleted).prefix(21).map(Self.item)
     }
@@ -115,7 +123,7 @@ actor RemindersContextSource: ContextSource {
     func actionTargets(named title: String) async throws -> [SuzzmeContextItem] {
         guard Self.status == .authorized else { throw SuzzmeContextError.sourceUnavailable(identifier) }
         store.reset()
-        let values = await fetchReminders(matching: store.predicateForReminders(in: nil))
+        let values = try await fetchReminders(matching: store.predicateForReminders(in: nil))
         try Task.checkCancellation()
         return values.filter { SuzzmeActionTargetMatcher.matches($0.title, query: title) }.prefix(21).map(Self.item)
     }
@@ -126,22 +134,28 @@ actor RemindersContextSource: ContextSource {
         store.reset()
         var items: [SuzzmeContextItem] = []
         var complete = true
-        // Public EventKit predicates bound the date range. EventKit has no fetch
-        // limit; at most limit + 1 value snapshots leave each callback.
+        // Open work is state-based; completed history retains its date window.
+        // EventKit has no fetch limit; only limit + 1 snapshots leave each callback.
         for completed in [false, true] {
             let predicate = completed
                 ? store.predicateForCompletedReminders(withCompletionDateStarting: window.start, ending: window.end, calendars: nil)
-                : store.predicateForIncompleteReminders(withDueDateStarting: window.start, ending: window.end, calendars: nil)
+                : store.predicateForIncompleteReminders(withDueDateStarting: nil, ending: nil, calendars: nil)
             let result: (items: [SuzzmeContextItem], complete: Bool) = try await withCheckedThrowingContinuation { continuation in
                 store.fetchReminders(matching: predicate) { values in
                     guard let values else { continuation.resume(throwing: SuzzmeContextError.sourceUnavailable("reminders")); return }
-                    let snapshots = values.prefix(max(0, min(limit, 100)) + 1).map { reminder in
+                    let selected = values.filter { reminder in
+                        completed || SuzzmeReminderSelection.includes(dueDate: reminder.dueDateComponents?.date, completed: reminder.isCompleted, range: window, now: window.start)
+                    }.sorted { lhs, rhs in
+                        if lhs.priority != rhs.priority { return (lhs.priority == 0 ? 10 : lhs.priority) < (rhs.priority == 0 ? 10 : rhs.priority) }
+                        return (lhs.dueDateComponents?.date ?? .distantFuture, lhs.calendarItemIdentifier) < (rhs.dueDateComponents?.date ?? .distantFuture, rhs.calendarItemIdentifier)
+                    }
+                    let snapshots = selected.prefix(max(0, min(limit, 100)) + 1).map { reminder in
                         SuzzmeContextItem(sourceIdentifier: reminder.calendarItemIdentifier, content: reminder.title ?? "",
                                           timestamp: reminder.lastModifiedDate ?? reminder.creationDate ?? window.start,
                                           metadata: ["title": reminder.title ?? "", "notes": reminder.notes ?? "", "completed": String(reminder.isCompleted),
                                           "due": reminder.dueDateComponents?.date.map { ISO8601DateFormatter().string(from: $0) } ?? ""])
                     }
-                    continuation.resume(returning: (snapshots, values.count <= limit))
+                    continuation.resume(returning: (snapshots, selected.count <= limit))
                 }
             }
             try Task.checkCancellation()
@@ -155,17 +169,29 @@ actor RemindersContextSource: ContextSource {
         switch EKEventStore.authorizationStatus(for: .reminder) {
         case .fullAccess: .authorized
         case .notDetermined: .notDetermined
-        case .writeOnly: .denied
+        case .writeOnly: .writeOnly
         case .denied: .denied
         case .restricted: .restricted
         @unknown default: .unavailable
         }
     }
 
-    private func fetchReminders(matching predicate: NSPredicate) async -> [ReminderSnapshot] {
-        await withCheckedContinuation { continuation in
+    private func fetchReminders(matching predicate: NSPredicate, selection: SuzzmeContextRequest? = nil, range: DateInterval? = nil) async throws -> [ReminderSnapshot] {
+        try await withCheckedThrowingContinuation { continuation in
             store.fetchReminders(matching: predicate) { reminders in
-                let snapshots = (reminders ?? []).map { reminder in
+                guard var values = reminders else {
+                    continuation.resume(throwing: SuzzmeContextError.sourceUnavailable("reminders"))
+                    return
+                }
+                if let selection {
+                    values = values.filter { SuzzmeReminderSelection.includes(dueDate: $0.dueDateComponents?.date, completed: $0.isCompleted, range: range, now: selection.referenceDate) }
+                    values.sort { lhs, rhs in
+                        if lhs.priority != rhs.priority { return (lhs.priority == 0 ? 10 : lhs.priority) < (rhs.priority == 0 ? 10 : rhs.priority) }
+                        return (lhs.dueDateComponents?.date ?? .distantFuture, lhs.calendarItemIdentifier) < (rhs.dueDateComponents?.date ?? .distantFuture, rhs.calendarItemIdentifier)
+                    }
+                    values = Array(values.prefix(max(0, min(selection.limit, 100))))
+                }
+                let snapshots = values.map { reminder in
                     ReminderSnapshot(identifier: reminder.calendarItemIdentifier, title: reminder.title ?? "Untitled reminder", createdAt: reminder.creationDate ?? .now, dueDate: reminder.dueDateComponents?.date, isCompleted: reminder.isCompleted, priority: reminder.priority, list: reminder.calendar.title, calendarID: reminder.calendar.calendarIdentifier, fingerprint: SuzzmeEventKitFingerprint.reminder(reminder), recurring: reminder.hasRecurrenceRules)
                 }
                 continuation.resume(returning: snapshots)
@@ -174,7 +200,7 @@ actor RemindersContextSource: ContextSource {
     }
 
     private static func item(_ reminder: ReminderSnapshot) -> SuzzmeContextItem {
-        let priority: SuzzmeItem.Priority = reminder.priority >= 5 ? .important : reminder.priority > 0 ? .normal : .low
+        let priority = Self.importance(forNativePriority: reminder.priority)
         return SuzzmeContextItem(
             sourceIdentifier: reminder.identifier, content: reminder.title, timestamp: reminder.createdAt,
             entities: [], intent: .reminder, importance: priority, sensitivity: .personal,
@@ -185,6 +211,15 @@ actor RemindersContextSource: ContextSource {
 
     private struct ReminderSnapshot: Sendable {
         let identifier: String; let title: String; let createdAt: Date; let dueDate: Date?; let isCompleted: Bool; let priority: Int; let list: String; let calendarID: String; let fingerprint: String; let recurring: Bool
+    }
+
+    /// EventKit: 1–4 high, 5 medium, 6–9 low, 0 unspecified.
+    static func importance(forNativePriority priority: Int) -> SuzzmeItem.Priority {
+        switch priority {
+        case 1...4: .important
+        case 5: .normal
+        default: .low
+        }
     }
 }
 

@@ -1,0 +1,37 @@
+{
+  "ios-boot": {
+    "command": [
+      "xcrun",
+      "simctl",
+      "boot",
+      "A4E6594C-838C-474A-B2BA-25A23BA6CEAD"
+    ],
+    "exit": 0,
+    "reason": null,
+    "seconds": 1.01
+  },
+  "ios-boot-status": {
+    "command": [
+      "xcrun",
+      "simctl",
+      "bootstatus",
+      "A4E6594C-838C-474A-B2BA-25A23BA6CEAD",
+      "-b"
+    ],
+    "exit": 0,
+    "reason": null,
+    "seconds": 30.11
+  },
+  "ios-install-baseline": {
+    "command": [
+      "xcrun",
+      "simctl",
+      "install",
+      "A4E6594C-838C-474A-B2BA-25A23BA6CEAD",
+      "/tmp/SuzzmeFullApp20261016/ios/Build/Products/Release-iphonesimulator/Suzzme.app"
+    ],
+    "exit": -2,
+    "reason": "timeout",
+    "seconds": 45.34
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "accessibilityTrusted" : false,
+  "appPath" : "\/tmp\/SuzzmeNativePlatformMacBuild\/Build\/Products\/Release\/Suzzme.app",
+  "appSandboxEntitled" : true,
+  "bundleIdentifier" : "rehan.Suzzme",
+  "captures" : [
+    "\/Users\/rehan\/Documents\/Projects\/Suzzme\/Suzzme\/Design\/2026-10-14\/evidence\/mac-release-runtime\/suzzme-window-680.png",
+    "\/Users\/rehan\/Documents\/Projects\/Suzzme\/Suzzme\/Design\/2026-10-14\/evidence\/mac-release-runtime\/suzzme-window-679.png"
+  ],
+  "driverCompleted" : true,
+  "entryPointReplaced" : false,
+  "environmentInjected" : false,
+  "executableSHA256" : "ba20fa76f3c105d528e90287bcd6601e7067f675c722ea77360581c384da8ce3",
+  "initialWindowVisible" : true,
+  "launchArgumentDefaults" : [
+
+  ],
+  "processIdentifier" : 5498,
+  "running" : true,
+  "screenCaptureAuthorized" : true,
+  "uiActions" : "Not run: driver has no existing Accessibility authorization. No permission was requested.",
+  "wasAlreadyRunning" : false,
+  "windows" : [
+    {
+      "kCGWindowBounds" : {
+        "Height" : 110,
+        "Width" : 328,
+        "X" : 571,
+        "Y" : 0
+      },
+      "kCGWindowLayer" : 25,
+      "kCGWindowName" : "",
+      "kCGWindowNumber" : 680
+    },
+    {
+      "kCGWindowBounds" : {
+        "Height" : 820,
+        "Width" : 1080,
+        "X" : 195,
+        "Y" : 51
+      },
+      "kCGWindowLayer" : 0,
+      "kCGWindowName" : "Home",
+      "kCGWindowNumber" : 679
+    }
+  ]
+}

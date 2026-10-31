@@ -1,0 +1,5 @@
+macOS Debug: BUILD SUCCEEDED
+macOS Release (signed, final menu changes): BUILD SUCCEEDED
+iOS Simulator Release (app and widget extension): BUILD SUCCEEDED
+macOS Release signature: deep strict verification passed
+macOS entitlements: sandbox=true, network-client=true, audio-input=true, get-task-allow=false

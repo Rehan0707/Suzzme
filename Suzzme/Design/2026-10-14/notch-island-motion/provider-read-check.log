@@ -1,0 +1,414 @@
+PASS fixtures cover all twenty-four adapters
+PASS Asana verified identity is non-secret
+PASS Asana verifies identity and allowed resource with reads only
+PASS Asana resource uses fixed provider origin
+PASS Asana documented projection parses bounded content
+PASS Asana projection excludes unrelated private content and attachments
+PASS Asana rejects scope injection
+PASS Asana rejects model-supplied endpoints
+PASS Asana maps HTTP 401 without disclosing provider error bodies
+PASS Asana maps HTTP 403 without disclosing provider error bodies
+PASS Asana maps HTTP 404 without disclosing provider error bodies
+PASS Asana maps HTTP 429 without disclosing provider error bodies
+PASS Asana maps HTTP 500 without disclosing provider error bodies
+PASS Asana rejects escaped credential echoes
+PASS Asana rejects oversized bodies
+PASS Asana rejects control characters in credentials
+PASS Asana cannot read another account's data
+PASS Asana account mismatch stops before resource read
+PASS Airtable verified identity is non-secret
+PASS Airtable verifies identity and allowed resource with reads only
+PASS Airtable resource uses fixed provider origin
+PASS Airtable documented projection parses bounded content
+PASS Airtable projection excludes unrelated private content and attachments
+PASS Airtable rejects scope injection
+PASS Airtable rejects model-supplied endpoints
+PASS Airtable maps HTTP 401 without disclosing provider error bodies
+PASS Airtable maps HTTP 403 without disclosing provider error bodies
+PASS Airtable maps HTTP 404 without disclosing provider error bodies
+PASS Airtable maps HTTP 429 without disclosing provider error bodies
+PASS Airtable maps HTTP 500 without disclosing provider error bodies
+PASS Airtable rejects escaped credential echoes
+PASS Airtable rejects oversized bodies
+PASS Airtable rejects control characters in credentials
+PASS Airtable cannot read another account's data
+PASS Airtable account mismatch stops before resource read
+PASS ClickUp verified identity is non-secret
+PASS ClickUp verifies identity and allowed resource with reads only
+PASS ClickUp resource uses fixed provider origin
+PASS ClickUp documented projection parses bounded content
+PASS ClickUp projection excludes unrelated private content and attachments
+PASS ClickUp rejects scope injection
+PASS ClickUp rejects model-supplied endpoints
+PASS ClickUp maps HTTP 401 without disclosing provider error bodies
+PASS ClickUp maps HTTP 403 without disclosing provider error bodies
+PASS ClickUp maps HTTP 404 without disclosing provider error bodies
+PASS ClickUp maps HTTP 429 without disclosing provider error bodies
+PASS ClickUp maps HTTP 500 without disclosing provider error bodies
+PASS ClickUp rejects escaped credential echoes
+PASS ClickUp rejects oversized bodies
+PASS ClickUp rejects control characters in credentials
+PASS ClickUp cannot read another account's data
+PASS ClickUp account mismatch stops before resource read
+PASS GitLab verified identity is non-secret
+PASS GitLab verifies identity and allowed resource with reads only
+PASS GitLab resource uses fixed provider origin
+PASS GitLab documented projection parses bounded content
+PASS GitLab projection excludes unrelated private content and attachments
+PASS GitLab rejects scope injection
+PASS GitLab rejects model-supplied endpoints
+PASS GitLab maps HTTP 401 without disclosing provider error bodies
+PASS GitLab maps HTTP 403 without disclosing provider error bodies
+PASS GitLab maps HTTP 404 without disclosing provider error bodies
+PASS GitLab maps HTTP 429 without disclosing provider error bodies
+PASS GitLab maps HTTP 500 without disclosing provider error bodies
+PASS GitLab rejects escaped credential echoes
+PASS GitLab rejects oversized bodies
+PASS GitLab rejects control characters in credentials
+PASS GitLab cannot read another account's data
+PASS GitLab account mismatch stops before resource read
+PASS Figma verified identity is non-secret
+PASS Figma verifies identity and allowed resource with reads only
+PASS Figma resource uses fixed provider origin
+PASS Figma documented projection parses bounded content
+PASS Figma projection excludes unrelated private content and attachments
+PASS Figma rejects scope injection
+PASS Figma rejects model-supplied endpoints
+PASS Figma maps HTTP 401 without disclosing provider error bodies
+PASS Figma maps HTTP 403 without disclosing provider error bodies
+PASS Figma maps HTTP 404 without disclosing provider error bodies
+PASS Figma maps HTTP 429 without disclosing provider error bodies
+PASS Figma maps HTTP 500 without disclosing provider error bodies
+PASS Figma rejects escaped credential echoes
+PASS Figma rejects oversized bodies
+PASS Figma rejects control characters in credentials
+PASS Figma cannot read another account's data
+PASS Figma account mismatch stops before resource read
+PASS Todoist verified identity is non-secret
+PASS Todoist verifies identity and allowed resource with reads only
+PASS Todoist resource uses fixed provider origin
+PASS Todoist documented projection parses bounded content
+PASS Todoist projection excludes unrelated private content and attachments
+PASS Todoist rejects scope injection
+PASS Todoist rejects model-supplied endpoints
+PASS Todoist maps HTTP 401 without disclosing provider error bodies
+PASS Todoist maps HTTP 403 without disclosing provider error bodies
+PASS Todoist maps HTTP 404 without disclosing provider error bodies
+PASS Todoist maps HTTP 429 without disclosing provider error bodies
+PASS Todoist maps HTTP 500 without disclosing provider error bodies
+PASS Todoist rejects escaped credential echoes
+PASS Todoist rejects oversized bodies
+PASS Todoist rejects control characters in credentials
+PASS Todoist cannot read another account's data
+PASS Todoist account mismatch stops before resource read
+PASS Typeform verified identity is non-secret
+PASS Typeform verifies identity and allowed resource with reads only
+PASS Typeform resource uses fixed provider origin
+PASS Typeform documented projection parses bounded content
+PASS Typeform projection excludes unrelated private content and attachments
+PASS Typeform rejects scope injection
+PASS Typeform rejects model-supplied endpoints
+PASS Typeform maps HTTP 401 without disclosing provider error bodies
+PASS Typeform maps HTTP 403 without disclosing provider error bodies
+PASS Typeform maps HTTP 404 without disclosing provider error bodies
+PASS Typeform maps HTTP 429 without disclosing provider error bodies
+PASS Typeform maps HTTP 500 without disclosing provider error bodies
+PASS Typeform rejects escaped credential echoes
+PASS Typeform rejects oversized bodies
+PASS Typeform rejects control characters in credentials
+PASS Typeform cannot read another account's data
+PASS Typeform account mismatch stops before resource read
+PASS Pushbullet verified identity is non-secret
+PASS Pushbullet verifies identity and allowed resource with reads only
+PASS Pushbullet resource uses fixed provider origin
+PASS Pushbullet documented projection parses bounded content
+PASS Pushbullet projection excludes unrelated private content and attachments
+PASS Pushbullet rejects scope injection
+PASS Pushbullet rejects model-supplied endpoints
+PASS Pushbullet maps HTTP 401 without disclosing provider error bodies
+PASS Pushbullet maps HTTP 403 without disclosing provider error bodies
+PASS Pushbullet maps HTTP 404 without disclosing provider error bodies
+PASS Pushbullet maps HTTP 429 without disclosing provider error bodies
+PASS Pushbullet maps HTTP 500 without disclosing provider error bodies
+PASS Pushbullet rejects escaped credential echoes
+PASS Pushbullet rejects oversized bodies
+PASS Pushbullet rejects control characters in credentials
+PASS Pushbullet cannot read another account's data
+PASS Pushbullet account mismatch stops before resource read
+PASS Harvest verified identity is non-secret
+PASS Harvest verifies identity and allowed resource with reads only
+PASS Harvest resource uses fixed provider origin
+PASS Harvest documented projection parses bounded content
+PASS Harvest projection excludes unrelated private content and attachments
+PASS Harvest rejects scope injection
+PASS Harvest rejects model-supplied endpoints
+PASS Harvest maps HTTP 401 without disclosing provider error bodies
+PASS Harvest maps HTTP 403 without disclosing provider error bodies
+PASS Harvest maps HTTP 404 without disclosing provider error bodies
+PASS Harvest maps HTTP 429 without disclosing provider error bodies
+PASS Harvest maps HTTP 500 without disclosing provider error bodies
+PASS Harvest rejects escaped credential echoes
+PASS Harvest rejects oversized bodies
+PASS Harvest rejects control characters in credentials
+PASS Harvest cannot read another account's data
+PASS Harvest account mismatch stops before resource read
+PASS WakaTime verified identity is non-secret
+PASS WakaTime verifies identity and allowed resource with reads only
+PASS WakaTime resource uses fixed provider origin
+PASS WakaTime documented projection parses bounded content
+PASS WakaTime projection excludes unrelated private content and attachments
+PASS WakaTime rejects scope injection
+PASS WakaTime rejects model-supplied endpoints
+PASS WakaTime maps HTTP 401 without disclosing provider error bodies
+PASS WakaTime maps HTTP 403 without disclosing provider error bodies
+PASS WakaTime maps HTTP 404 without disclosing provider error bodies
+PASS WakaTime maps HTTP 429 without disclosing provider error bodies
+PASS WakaTime maps HTTP 500 without disclosing provider error bodies
+PASS WakaTime rejects escaped credential echoes
+PASS WakaTime rejects oversized bodies
+PASS WakaTime rejects control characters in credentials
+PASS WakaTime cannot read another account's data
+PASS WakaTime account mismatch stops before resource read
+PASS YNAB verified identity is non-secret
+PASS YNAB verifies identity and allowed resource with reads only
+PASS YNAB resource uses fixed provider origin
+PASS YNAB documented projection parses bounded content
+PASS YNAB projection excludes unrelated private content and attachments
+PASS YNAB rejects scope injection
+PASS YNAB rejects model-supplied endpoints
+PASS YNAB maps HTTP 401 without disclosing provider error bodies
+PASS YNAB maps HTTP 403 without disclosing provider error bodies
+PASS YNAB maps HTTP 404 without disclosing provider error bodies
+PASS YNAB maps HTTP 429 without disclosing provider error bodies
+PASS YNAB maps HTTP 500 without disclosing provider error bodies
+PASS YNAB rejects escaped credential echoes
+PASS YNAB rejects oversized bodies
+PASS YNAB rejects control characters in credentials
+PASS YNAB cannot read another account's data
+PASS YNAB account mismatch stops before resource read
+PASS Contentful verified identity is non-secret
+PASS Contentful verifies identity and allowed resource with reads only
+PASS Contentful resource uses fixed provider origin
+PASS Contentful documented projection parses bounded content
+PASS Contentful projection excludes unrelated private content and attachments
+PASS Contentful rejects scope injection
+PASS Contentful rejects model-supplied endpoints
+PASS Contentful maps HTTP 401 without disclosing provider error bodies
+PASS Contentful maps HTTP 403 without disclosing provider error bodies
+PASS Contentful maps HTTP 404 without disclosing provider error bodies
+PASS Contentful maps HTTP 429 without disclosing provider error bodies
+PASS Contentful maps HTTP 500 without disclosing provider error bodies
+PASS Contentful rejects escaped credential echoes
+PASS Contentful rejects oversized bodies
+PASS Contentful rejects control characters in credentials
+PASS Contentful cannot read another account's data
+PASS Contentful account mismatch stops before resource read
+PASS Eventbrite verified identity is non-secret
+PASS Eventbrite verifies identity and allowed resource with reads only
+PASS Eventbrite resource uses fixed provider origin
+PASS Eventbrite documented projection parses bounded content
+PASS Eventbrite projection excludes unrelated private content and attachments
+PASS Eventbrite rejects scope injection
+PASS Eventbrite rejects model-supplied endpoints
+PASS Eventbrite maps HTTP 401 without disclosing provider error bodies
+PASS Eventbrite maps HTTP 403 without disclosing provider error bodies
+PASS Eventbrite maps HTTP 404 without disclosing provider error bodies
+PASS Eventbrite maps HTTP 429 without disclosing provider error bodies
+PASS Eventbrite maps HTTP 500 without disclosing provider error bodies
+PASS Eventbrite rejects escaped credential echoes
+PASS Eventbrite rejects oversized bodies
+PASS Eventbrite rejects control characters in credentials
+PASS Eventbrite cannot read another account's data
+PASS Eventbrite account mismatch stops before resource read
+PASS Google Drive verified identity is non-secret
+PASS Google Drive verifies identity and allowed resource with reads only
+PASS Google Drive resource uses fixed provider origin
+PASS Google Drive documented projection parses bounded content
+PASS Google Drive projection excludes unrelated private content and attachments
+PASS Google Drive rejects scope injection
+PASS Google Drive rejects model-supplied endpoints
+PASS Google Drive maps HTTP 401 without disclosing provider error bodies
+PASS Google Drive maps HTTP 403 without disclosing provider error bodies
+PASS Google Drive maps HTTP 404 without disclosing provider error bodies
+PASS Google Drive maps HTTP 429 without disclosing provider error bodies
+PASS Google Drive maps HTTP 500 without disclosing provider error bodies
+PASS Google Drive rejects escaped credential echoes
+PASS Google Drive rejects oversized bodies
+PASS Google Drive rejects control characters in credentials
+PASS Google Drive cannot read another account's data
+PASS Google Drive account mismatch stops before resource read
+PASS Google Calendar verified identity is non-secret
+PASS Google Calendar verifies identity and allowed resource with reads only
+PASS Google Calendar resource uses fixed provider origin
+PASS Google Calendar documented projection parses bounded content
+PASS Google Calendar projection excludes unrelated private content and attachments
+PASS Google Calendar rejects scope injection
+PASS Google Calendar rejects model-supplied endpoints
+PASS Google Calendar maps HTTP 401 without disclosing provider error bodies
+PASS Google Calendar maps HTTP 403 without disclosing provider error bodies
+PASS Google Calendar maps HTTP 404 without disclosing provider error bodies
+PASS Google Calendar maps HTTP 429 without disclosing provider error bodies
+PASS Google Calendar maps HTTP 500 without disclosing provider error bodies
+PASS Google Calendar rejects escaped credential echoes
+PASS Google Calendar rejects oversized bodies
+PASS Google Calendar rejects control characters in credentials
+PASS Google Calendar cannot read another account's data
+PASS Google Calendar account mismatch stops before resource read
+PASS Google Docs verified identity is non-secret
+PASS Google Docs verifies identity and allowed resource with reads only
+PASS Google Docs resource uses fixed provider origin
+PASS Google Docs documented projection parses bounded content
+PASS Google Docs projection excludes unrelated private content and attachments
+PASS Google Docs rejects scope injection
+PASS Google Docs rejects model-supplied endpoints
+PASS Google Docs maps HTTP 401 without disclosing provider error bodies
+PASS Google Docs maps HTTP 403 without disclosing provider error bodies
+PASS Google Docs maps HTTP 404 without disclosing provider error bodies
+PASS Google Docs maps HTTP 429 without disclosing provider error bodies
+PASS Google Docs maps HTTP 500 without disclosing provider error bodies
+PASS Google Docs rejects escaped credential echoes
+PASS Google Docs rejects oversized bodies
+PASS Google Docs rejects control characters in credentials
+PASS Google Docs cannot read another account's data
+PASS Google Docs account mismatch stops before resource read
+PASS Google Sheets verified identity is non-secret
+PASS Google Sheets verifies identity and allowed resource with reads only
+PASS Google Sheets resource uses fixed provider origin
+PASS Google Sheets documented projection parses bounded content
+PASS Google Sheets projection excludes unrelated private content and attachments
+PASS Google Sheets rejects scope injection
+PASS Google Sheets rejects model-supplied endpoints
+PASS Google Sheets maps HTTP 401 without disclosing provider error bodies
+PASS Google Sheets maps HTTP 403 without disclosing provider error bodies
+PASS Google Sheets maps HTTP 404 without disclosing provider error bodies
+PASS Google Sheets maps HTTP 429 without disclosing provider error bodies
+PASS Google Sheets maps HTTP 500 without disclosing provider error bodies
+PASS Google Sheets rejects escaped credential echoes
+PASS Google Sheets rejects oversized bodies
+PASS Google Sheets rejects control characters in credentials
+PASS Google Sheets cannot read another account's data
+PASS Google Sheets account mismatch stops before resource read
+PASS Google Slides verified identity is non-secret
+PASS Google Slides verifies identity and allowed resource with reads only
+PASS Google Slides resource uses fixed provider origin
+PASS Google Slides documented projection parses bounded content
+PASS Google Slides projection excludes unrelated private content and attachments
+PASS Google Slides rejects scope injection
+PASS Google Slides rejects model-supplied endpoints
+PASS Google Slides maps HTTP 401 without disclosing provider error bodies
+PASS Google Slides maps HTTP 403 without disclosing provider error bodies
+PASS Google Slides maps HTTP 404 without disclosing provider error bodies
+PASS Google Slides maps HTTP 429 without disclosing provider error bodies
+PASS Google Slides maps HTTP 500 without disclosing provider error bodies
+PASS Google Slides rejects escaped credential echoes
+PASS Google Slides rejects oversized bodies
+PASS Google Slides rejects control characters in credentials
+PASS Google Slides cannot read another account's data
+PASS Google Slides account mismatch stops before resource read
+PASS Google Tasks verified identity is non-secret
+PASS Google Tasks verifies identity and allowed resource with reads only
+PASS Google Tasks resource uses fixed provider origin
+PASS Google Tasks documented projection parses bounded content
+PASS Google Tasks projection excludes unrelated private content and attachments
+PASS Google Tasks rejects scope injection
+PASS Google Tasks rejects model-supplied endpoints
+PASS Google Tasks maps HTTP 401 without disclosing provider error bodies
+PASS Google Tasks maps HTTP 403 without disclosing provider error bodies
+PASS Google Tasks maps HTTP 404 without disclosing provider error bodies
+PASS Google Tasks maps HTTP 429 without disclosing provider error bodies
+PASS Google Tasks maps HTTP 500 without disclosing provider error bodies
+PASS Google Tasks rejects escaped credential echoes
+PASS Google Tasks rejects oversized bodies
+PASS Google Tasks rejects control characters in credentials
+PASS Google Tasks cannot read another account's data
+PASS Google Tasks account mismatch stops before resource read
+PASS Google Classroom verified identity is non-secret
+PASS Google Classroom verifies identity and allowed resource with reads only
+PASS Google Classroom resource uses fixed provider origin
+PASS Google Classroom documented projection parses bounded content
+PASS Google Classroom projection excludes unrelated private content and attachments
+PASS Google Classroom rejects scope injection
+PASS Google Classroom rejects model-supplied endpoints
+PASS Google Classroom maps HTTP 401 without disclosing provider error bodies
+PASS Google Classroom maps HTTP 403 without disclosing provider error bodies
+PASS Google Classroom maps HTTP 404 without disclosing provider error bodies
+PASS Google Classroom maps HTTP 429 without disclosing provider error bodies
+PASS Google Classroom maps HTTP 500 without disclosing provider error bodies
+PASS Google Classroom rejects escaped credential echoes
+PASS Google Classroom rejects oversized bodies
+PASS Google Classroom rejects control characters in credentials
+PASS Google Classroom cannot read another account's data
+PASS Google Classroom account mismatch stops before resource read
+PASS Google Meet verified identity is non-secret
+PASS Google Meet verifies identity and allowed resource with reads only
+PASS Google Meet resource uses fixed provider origin
+PASS Google Meet documented projection parses bounded content
+PASS Google Meet projection excludes unrelated private content and attachments
+PASS Google Meet rejects scope injection
+PASS Google Meet rejects model-supplied endpoints
+PASS Google Meet maps HTTP 401 without disclosing provider error bodies
+PASS Google Meet maps HTTP 403 without disclosing provider error bodies
+PASS Google Meet maps HTTP 404 without disclosing provider error bodies
+PASS Google Meet maps HTTP 429 without disclosing provider error bodies
+PASS Google Meet maps HTTP 500 without disclosing provider error bodies
+PASS Google Meet rejects escaped credential echoes
+PASS Google Meet rejects oversized bodies
+PASS Google Meet rejects control characters in credentials
+PASS Google Meet cannot read another account's data
+PASS Google Meet account mismatch stops before resource read
+PASS Google Analytics verified identity is non-secret
+PASS Google Analytics verifies identity and allowed resource with reads only
+PASS Google Analytics resource uses fixed provider origin
+PASS Google Analytics documented projection parses bounded content
+PASS Google Analytics projection excludes unrelated private content and attachments
+PASS Google Analytics rejects scope injection
+PASS Google Analytics rejects model-supplied endpoints
+PASS Google Analytics maps HTTP 401 without disclosing provider error bodies
+PASS Google Analytics maps HTTP 403 without disclosing provider error bodies
+PASS Google Analytics maps HTTP 404 without disclosing provider error bodies
+PASS Google Analytics maps HTTP 429 without disclosing provider error bodies
+PASS Google Analytics maps HTTP 500 without disclosing provider error bodies
+PASS Google Analytics rejects escaped credential echoes
+PASS Google Analytics rejects oversized bodies
+PASS Google Analytics rejects control characters in credentials
+PASS Google Analytics cannot read another account's data
+PASS Google Analytics account mismatch stops before resource read
+PASS Google Search Console verified identity is non-secret
+PASS Google Search Console verifies identity and allowed resource with reads only
+PASS Google Search Console resource uses fixed provider origin
+PASS Google Search Console documented projection parses bounded content
+PASS Google Search Console projection excludes unrelated private content and attachments
+PASS Google Search Console rejects scope injection
+PASS Google Search Console rejects model-supplied endpoints
+PASS Google Search Console maps HTTP 401 without disclosing provider error bodies
+PASS Google Search Console maps HTTP 403 without disclosing provider error bodies
+PASS Google Search Console maps HTTP 404 without disclosing provider error bodies
+PASS Google Search Console maps HTTP 429 without disclosing provider error bodies
+PASS Google Search Console maps HTTP 500 without disclosing provider error bodies
+PASS Google Search Console rejects escaped credential echoes
+PASS Google Search Console rejects oversized bodies
+PASS Google Search Console rejects control characters in credentials
+PASS Google Search Console cannot read another account's data
+PASS Google Search Console account mismatch stops before resource read
+PASS Google BigQuery verified identity is non-secret
+PASS Google BigQuery verifies identity and allowed resource with reads only
+PASS Google BigQuery resource uses fixed provider origin
+PASS Google BigQuery documented projection parses bounded content
+PASS Google BigQuery projection excludes unrelated private content and attachments
+PASS Google BigQuery rejects scope injection
+PASS Google BigQuery rejects model-supplied endpoints
+PASS Google BigQuery maps HTTP 401 without disclosing provider error bodies
+PASS Google BigQuery maps HTTP 403 without disclosing provider error bodies
+PASS Google BigQuery maps HTTP 404 without disclosing provider error bodies
+PASS Google BigQuery maps HTTP 429 without disclosing provider error bodies
+PASS Google BigQuery maps HTTP 500 without disclosing provider error bodies
+PASS Google BigQuery rejects escaped credential echoes
+PASS Google BigQuery rejects oversized bodies
+PASS Google BigQuery rejects control characters in credentials
+PASS Google BigQuery cannot read another account's data
+PASS Google BigQuery account mismatch stops before resource read
+PASS bounded three-page reads disclose incompleteness
+PASS Contentful offset advances by page size without duplicate pages
+PASS empty authorized resources are a factual empty success
+PASS cancelled reads terminate without provider retry
+Provider adapters: 413 passed / 0 failed. Fixtures only; live acceptance pending.

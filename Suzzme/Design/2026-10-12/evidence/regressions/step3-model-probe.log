@@ -1,0 +1,20 @@
+KNOWN_FIXTURES_ONLY; DATE 2026-10-12T14:52:02Z
+CAPABILITY available
+FIXTURE_GENERATED_ITEMS [{"category":"deadline","confidence":1,"priority":"high","reason":"Direct statement about sending the project outline before Friday.","sourceExcerpt":"\"send the project outline before Friday\"","summary":"Send the project outline before Friday","title":"Send project outline deadline"}]
+FIXTURE_GROUNDED_COUNT 0
+DIRECT_EXTRACTION ERROR Probe.SuzzmeIntelligenceError.invalidOutput DESCRIPTION Suzzme could not find useful information in that text.
+DIRECT_SUMMARY SUCCESS - Project review at 11 AM.
+  - Source: "Project review at 11 AM."
+- Submit the design outline by Friday.
+  - Source: "Submit the design outline by Friday."
+DIRECT_ANSWER Photosynthesis is the process plants use to make their own food. They use sunlight, carbon dioxide, and water to create energy and oxygen.
+FIXTURE_GENERATED_ITEMS [{"category":"deadline","confidence":1,"priority":"high","reason":"Direct statement about sending the project outline before Friday.","sourceExcerpt":"\"send the project outline before Friday\"","summary":"Send the project outline before Friday.","title":"Send project outline deadline"}]
+FIXTURE_GROUNDED_COUNT 0
+PIPELINE_EXTRACTION_1 USED_MODEL false ITEM_COUNT 1
+FIXTURE_GENERATED_ITEMS [{"category":"deadline","confidence":1,"priority":"high","reason":"Direct statement about sending the project outline before Friday.","sourceExcerpt":"\"send the project outline before Friday\"","summary":"Send the project outline before Friday.","title":"Send project outline deadline"}]
+FIXTURE_GROUNDED_COUNT 0
+PIPELINE_EXTRACTION_2 USED_MODEL false ITEM_COUNT 1
+PIPELINE_SUMMARY USED_MODEL true TEXT - Project review at 11 AM.
+  - Source: "Project review at 11 AM."
+- Submit the design outline by Friday.
+  - Source: "Submit the design outline by Friday."

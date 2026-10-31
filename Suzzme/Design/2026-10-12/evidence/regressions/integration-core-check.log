@@ -1,0 +1,19 @@
+PASS actual Core uses resource answer route
+PASS resource account provenance included
+PASS injected instructions produce no extracted items or action
+PASS injected external instructions never mutate native provider
+PASS resource content never reaches extraction
+PASS resource facts marked untrusted to existing on-device model
+PASS resource content never admitted to durable Memory
+PASS resource read never persists Suzzme items
+PASS resource content never enters actionable Session Memory
+PASS completed resource releases request ownership
+PASS explicit native action containing URL keeps existing central action flow
+PASS local reminder proposal does not fetch GitHub
+PASS unconfigured integration returns actionable recovery
+PASS unavailable integration does not fall through to capture
+PASS stale context returns recovery before model answer
+PASS oversized resource returns recovery from Context Engine
+PASS failed reads leave Memory untouched
+PASS fallback labels excerpt without claiming model understanding
+Integration Core checks: 18 passed, 0 failed. No real-account acceptance.

@@ -1,0 +1,44 @@
+Window: "Suzzme Presence", App: Suzzme.
+0 standard window Suzzme Presence, ID: main, Secondary Actions: Raise
+	1 split group main, SidebarNavigationSplitView
+		2 scroll area
+			3 list Sidebar
+				4 row (selectable)
+				5 row (selectable) Suzzme, Your personal companion
+				6 row (selectable) Your day
+				7 row (selectable) Home
+				8 row (selectable) Today
+				9 row (selectable) Daily Summary
+				10 row (selectable) Your information
+				11 row (selectable) Personal Memory
+				12 row (selectable) Sources
+				13 row (selectable) History
+				14 row (selectable)
+				15 row (selected) Settings
+		16 splitter (disabled, settable, float) 232
+		17 scroll area Secondary Actions: Cancel
+			18 heading Live preview
+			19 text Preview of Suzzme Purple presence theme
+			20 heading Appearance
+			21 container
+				22 switch Show companion near cursor, Value: off
+				23 text Shows a brief response beside your pointer during a request. It never captures your screen or clicks anything.
+				24 pop up button Presence theme, Help: Changes Suzzme’s active intelligence signal, Value: Suzzme Purple
+				25 pop up button Presence animation, Value: Gentle
+				26 text Reduce Motion always replaces animated effects with calm state changes.
+	27 toolbar
+		28 button Description: Hide Sidebar, Secondary Actions: Increment, Decrement, Delete, Cancel
+		29 button Description: Back, ID: chevron.backward, Secondary Actions: Increment, Decrement, Delete, Cancel, Move previous, Remove from toolbar
+	30 close button
+	31 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	32 minimize button
+	33 text Suzzme Presence
+34 menu bar
+	35 Suzzme
+	36 Edit
+	37 View
+	38 Companion
+	39 Window
+	40 Help
+
+The focused UI element is 0 standard window Suzzme Presence, ID: main, Secondary Actions: Raise

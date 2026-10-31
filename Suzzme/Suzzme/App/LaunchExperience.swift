@@ -1,77 +1,30 @@
 import SwiftUI
-
-enum LaunchPhase: Equatable { case splash, authentication, onboarding, app }
+import FirebaseAuth
+#if os(macOS)
+import AppKit
+#endif
 
 struct SplashView: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @State private var isVisible = false
-
     var body: some View {
         ZStack {
             SuzzmeTheme.backgroundPrimary.ignoresSafeArea()
-            SuzzmeFace(color: .primary, lineWidth: 5)
-                .frame(width: 104, height: 104)
-                .scaleEffect(isVisible || reduceMotion ? 1 : 0.9)
-                .opacity(isVisible || reduceMotion ? 1 : 0)
+            SuzzmeMascot(size: 104, isAnimated: false)
+                .accessibilityHidden(true)
         }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Suzzme")
-        .task {
-            guard !reduceMotion else { return }
-            withAnimation(.easeOut(duration: SuzzmeTheme.Motion.calm)) { isVisible = true }
-        }
-    }
-}
-
-/// Account sync is not part of the current local build. This screen states that
-/// boundary explicitly instead of presenting non-functional credentials.
-struct SignInView: View {
-    let onContinue: () -> Void
-    let onGuestContinue: () -> Void
-
-    var body: some View {
-        ZStack {
-            SuzzmeTheme.launchGradient.ignoresSafeArea()
-            ScrollView {
-                VStack(spacing: SuzzmeTheme.Spacing.extraLarge) {
-                    Spacer(minLength: SuzzmeTheme.Spacing.hero)
-                    SuzzmeFace(color: .primary, lineWidth: 5)
-                        .frame(width: 112, height: 112)
-                    VStack(spacing: SuzzmeTheme.Spacing.small) {
-                        Text("Meet Suzzme").font(.largeTitle.weight(.bold))
-                        Text("A quiet intelligence layer for the things that matter in your day.")
-                            .font(.title3)
-                            .foregroundStyle(SuzzmeTheme.textSecondary)
-                            .multilineTextAlignment(.center)
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
-                    Button("Get Started", action: onGuestContinue)
-                        .buttonStyle(.borderedProminent)
-                        .controlSize(.large)
-                        .frame(maxWidth: 360)
-                        .accessibilityHint("Continues with local, on-device setup")
-                    Label("No account needed. Your information stays on this device.", systemImage: "lock.shield")
-                        .font(.footnote)
-                        .foregroundStyle(SuzzmeTheme.textSecondary)
-                        .multilineTextAlignment(.center)
-                    Text("Account sync is not available.")
-                        .font(.footnote).foregroundStyle(SuzzmeTheme.textSecondary)
-                    Spacer(minLength: SuzzmeTheme.Spacing.large)
-                }
-                .padding(SuzzmeTheme.Spacing.large)
-                .frame(maxWidth: 620)
-                .frame(maxWidth: .infinity)
-            }
-        }
     }
 }
 
 struct OnboardingView: View {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     let onComplete: () -> Void
 
     @Environment(AppEnvironment.self) private var environment
-    @AppStorage("suzzme.profile.name") private var profileName = "Rehan"
+    @AppStorage("suzzme.profile.name") private var profileName = ""
     @State private var step = 0
+    @State private var intelligenceCapability: IntelligenceCapability?
+    @State private var showsGmailSetup = false
     private let pages = OnboardingPage.pages
 
     var body: some View {
@@ -79,17 +32,49 @@ struct OnboardingView: View {
             SuzzmeTheme.launchGradient.ignoresSafeArea()
             VStack(spacing: 0) {
                 header
-                ScrollView {
-                    pageContent
-                        .id(step)
-                        .transition(.opacity)
-                        .padding(.vertical, SuzzmeTheme.Spacing.large)
+                GeometryReader { geometry in
+                    ScrollView {
+                        pageContent
+                            .id(step)
+                            .transition(.opacity)
+                            .frame(maxWidth: .infinity)
+                            .frame(minHeight: geometry.size.height, alignment: .center)
+                    }
+                    .scrollIndicators(.hidden)
                 }
                 controls
             }
-            .padding(SuzzmeTheme.Spacing.large)
-            .frame(maxWidth: 680)
+            .padding(.horizontal, SuzzmeTheme.Spacing.large)
+            .padding(.vertical, SuzzmeTheme.Spacing.medium)
+            .frame(maxWidth: SuzzmeTheme.Layout.readingWidth)
             .frame(maxWidth: .infinity)
+        }
+        .suzzmeSelectionFeedback(trigger: step)
+        .sheet(isPresented: $showsGmailSetup) {
+            NavigationStack {
+                ScrollView { GmailConnectionView().padding(SuzzmeTheme.Spacing.large) }
+                    .navigationTitle("Gmail")
+                    .toolbar { Button("Done") { showsGmailSetup = false } }
+            }
+            .frame(minWidth: 480, minHeight: 400)
+        }
+        .onAppear {
+            guard profileName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+                  let user = CompanionSummaryStore.currentUser else { return }
+            let accountName = user.displayName?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+            if !accountName.isEmpty {
+                profileName = accountName
+            } else if let localPart = user.email?.split(separator: "@").first {
+                profileName = localPart.replacingOccurrences(of: ".", with: " ")
+                    .replacingOccurrences(of: "_", with: " ")
+                    .replacingOccurrences(of: "-", with: " ")
+            }
+        }
+        .task(id: step) {
+            guard pages[step].kind == .availability else { return }
+            let capability = await environment.intelligenceCapability()
+            guard !Task.isCancelled else { return }
+            intelligenceCapability = capability
         }
     }
 
@@ -100,34 +85,47 @@ struct OnboardingView: View {
                 Text("Suzzme").font(.headline)
             }
             Spacer()
-            Button("Skip", action: onComplete).foregroundStyle(SuzzmeTheme.textSecondary)
+            Text("\(step + 1) of \(pages.count)")
+                .font(.caption.weight(.medium))
+                .foregroundStyle(SuzzmeTheme.textSecondary)
+                .accessibilityHidden(true)
+            Button("Skip", action: onComplete)
+                .buttonStyle(.plain)
+                .foregroundStyle(SuzzmeTheme.textSecondary)
+                .padding(.horizontal, SuzzmeTheme.Spacing.small)
+                .frame(minHeight: SuzzmeTheme.Layout.touchTarget)
+                .accessibilityLabel("Skip setup")
         }
     }
 
     @ViewBuilder private var pageContent: some View {
         let page = pages[step]
-        VStack(spacing: SuzzmeTheme.Spacing.extraLarge) {
-            SuzzmeFace(color: SuzzmeTheme.intelligencePrimary, lineWidth: 5)
-                .frame(width: 108, height: 108)
+        VStack(spacing: SuzzmeTheme.Spacing.large) {
+            SuzzmeMascot(state: environment.presenceState, size: SuzzmeTheme.Layout.companionFace,
+                animation: environment.invocation.presenceAnimation,
+                isGreeting: step == 0)
                 .accessibilityHidden(true)
-            VStack(spacing: SuzzmeTheme.Spacing.small) {
-                Label(page.eyebrow, systemImage: page.symbol)
-                    .font(.caption.weight(.semibold))
+            VStack(spacing: SuzzmeTheme.Spacing.xs) {
+                Text(page.eyebrow)
+                    .font(.caption.weight(.bold))
+                    .tracking(1.5)
                     .foregroundStyle(SuzzmeTheme.intelligencePrimary)
                 Text(page.title)
                     .font(.largeTitle.weight(.bold))
                     .multilineTextAlignment(.center)
                     .accessibilityAddTraits(.isHeader)
                 Text(page.message)
-                    .font(.title3)
+                    .font(.body)
                     .foregroundStyle(SuzzmeTheme.textSecondary)
                     .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
             }
+            .frame(maxWidth: 500)
             pageDetails(page.kind)
+                .padding(.top, SuzzmeTheme.Spacing.small)
         }
         .frame(maxWidth: 560)
-        .frame(maxWidth: .infinity)
+        .padding(.vertical, SuzzmeTheme.Spacing.extraLarge)
     }
 
     @ViewBuilder private func pageDetails(_ kind: OnboardingPage.Kind) -> some View {
@@ -136,31 +134,66 @@ struct OnboardingView: View {
             VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.xs) {
                 Text("What should Suzzme call you?").font(.headline)
                 TextField("Your name", text: $profileName)
-                    .textFieldStyle(.roundedBorder)
+                    .textFieldStyle(.plain)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, SuzzmeTheme.Spacing.medium)
+                    .frame(minHeight: SuzzmeTheme.Layout.touchTarget)
+                    .background(SuzzmeTheme.backgroundSecondary, in: Capsule())
+                    .overlay(Capsule().strokeBorder(SuzzmeTheme.separator, lineWidth: 1))
                     .textContentType(.name)
                     .submitLabel(.done)
-                Text("Stored only on this device. You can change it in Settings.")
+                Label("Stored only on this device. Change it anytime in Settings.", systemImage: "lock")
                     .font(.footnote).foregroundStyle(SuzzmeTheme.textSecondary)
             }
             .frame(maxWidth: 420)
         case .capabilities:
             VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.medium) {
-                capability("Talk naturally", "waveform")
-                capability("Understand your day", "calendar")
-                capability("Remember what matters", "square.stack.3d.up")
-                capability("Help with changes you approve", "checkmark.shield")
+                capability("Talk naturally", "Ask by voice or by typing.", "waveform")
+                capability("Understand your day", "Your schedule and tasks, in context.", "calendar")
+                capability("Remember what matters", "Keep useful details close.", "square.stack.3d.up")
+                capability("Help with changes you approve", "Nothing changes without your OK.", "checkmark.shield")
             }
             .frame(maxWidth: 420)
+        case .availability:
+            VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.medium) {
+                if let intelligenceCapability {
+                    Label(intelligenceCapability.usesFoundationModels ? "On-device model ready" : "Local assistance available",
+                          systemImage: intelligenceCapability.usesFoundationModels ? "checkmark.circle" : "info.circle")
+                        .font(.headline)
+                    Text(intelligenceCapability.displayDescription)
+                        .foregroundStyle(SuzzmeTheme.textSecondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Text("You can always type and use supported local information. Generative answers need a supported device with Apple Intelligence enabled.")
+                        .font(.subheadline).foregroundStyle(SuzzmeTheme.textSecondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                } else {
+                    ProgressView("Checking on-device availability…")
+                }
+            }
+            .frame(maxWidth: SuzzmeTheme.Layout.primaryColumnMinimum, alignment: .leading)
         case .privacy:
             VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.medium) {
-                capability("On-device first", "iphone")
-                capability("Minimum necessary access", "hand.raised")
-                capability("Memory and sources stay under your control", "lock.shield")
+                capability("On-device first", "Your information stays close to you.", "iphone")
+                capability("Minimum necessary access", "Choose the sources Suzzme can use.", "hand.raised")
+                capability("Your information, your choice", "Review memory and sources anytime.", "lock.shield")
             }
             .frame(maxWidth: 460)
+        case .macCompanion:
+            VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.medium) {
+                capability("Use the same account on Mac", "Sign in to connect your devices.", "desktopcomputer")
+                capability("Choose your sources on Mac", "You decide what Suzzme can read.", "tray.2")
+                capability("Share your Daily Summary", "Turn on iPhone sharing in Mac settings.", "arrow.triangle.2.circlepath")
+                Text("This iPhone can show the prepared result without requesting the Mac’s app permissions. You can finish Mac setup later.")
+                    .font(.subheadline).foregroundStyle(SuzzmeTheme.textSecondary)
+            }
+            .frame(maxWidth: 500)
         case .voice:
             VStack(spacing: SuzzmeTheme.Spacing.medium) {
+                #if os(iOS)
+                SuzzmeStateLabel(title: "Your Mac prepares your day. This iPhone reads the shared summary aloud.", symbol: "speaker.wave.2")
+                #else
                 SuzzmeStateLabel(title: "Microphone and Speech access are requested when you first talk to Suzzme.", symbol: "mic")
+                #endif
                 Toggle("Speak Suzzme’s responses", isOn: Binding(
                     get: { environment.voice.speaksResponses },
                     set: { environment.voice.speaksResponses = $0 }
@@ -172,91 +205,182 @@ struct OnboardingView: View {
                 Text("Connect now or later in Settings. Without access, Suzzme stays usable and tells you what it could not check.")
                     .font(.subheadline).foregroundStyle(SuzzmeTheme.textSecondary)
                 ForEach(SuzzmeContextSourceKind.allCases) { source in onboardingPermissionRow(source) }
+                #if os(macOS)
+                HStack(spacing: SuzzmeTheme.Spacing.small) {
+                    appleAppIcon(bundleID: "com.apple.mail", fallback: "envelope")
+                    VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.xxs) {
+                        Text("Apple Mail").font(.headline)
+                        Text("Apple Mail access is not available yet.").font(.caption).foregroundStyle(SuzzmeTheme.textSecondary)
+                    }
+                    Spacer()
+                    Text("Unavailable").font(.caption).foregroundStyle(SuzzmeTheme.textSecondary)
+                }.frame(minHeight: SuzzmeTheme.Layout.touchTarget)
+                HStack(spacing: SuzzmeTheme.Spacing.small) {
+                    Image(systemName: "envelope").frame(width: 32).accessibilityHidden(true)
+                    VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.xxs) {
+                        Text("Gmail").font(.headline)
+                        Text("Connect Google and choose what Suzzme can read.").font(.caption).foregroundStyle(SuzzmeTheme.textSecondary)
+                    }
+                    Spacer()
+                    Button(environment.gmailAccount.isConnected ? "Manage" : "Connect") { showsGmailSetup = true }
+                        .buttonStyle(.bordered)
+                }.frame(minHeight: SuzzmeTheme.Layout.touchTarget)
+                #endif
+                if let error = environment.sourcePermissionError {
+                    Text(error).font(.footnote).foregroundStyle(SuzzmeTheme.textSecondary)
+                }
             }
             .frame(maxWidth: 500)
-            .task { await environment.refreshSourcePermissions() }
-        case .personalize:
-            VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.medium) {
-                Picker("Presence theme", selection: Binding(
-                    get: { environment.invocation.presenceTheme },
-                    set: { environment.invocation.presenceTheme = $0 }
-                )) {
-                    ForEach(SuzzmePresenceTheme.allCases) { theme in Text(theme.title).tag(theme) }
-                }
-                Text("A quiet color for the moments Suzzme is helping.")
-                    .font(.footnote).foregroundStyle(SuzzmeTheme.textSecondary)
-            }
-            .frame(maxWidth: 420)
+            .task { await environment.refreshSourcePermissions(); await environment.restoreGmailSignIn() }
         }
     }
 
-    private func capability(_ title: String, _ symbol: String) -> some View {
-        Label(title, systemImage: symbol).font(.headline)
+    private func capability(_ title: String, _ subtitle: String, _ symbol: String) -> some View {
+        HStack(alignment: .center, spacing: SuzzmeTheme.Spacing.medium) {
+            Image(systemName: symbol)
+                .font(.title3.weight(.medium))
+                .foregroundStyle(SuzzmeTheme.intelligencePrimary)
+                .frame(width: SuzzmeTheme.Layout.touchTarget, height: SuzzmeTheme.Layout.touchTarget)
+                .background(SuzzmeTheme.intelligenceSurface, in: RoundedRectangle(cornerRadius: SuzzmeTheme.Radius.control))
+                .accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.xxs) {
+                Text(title).font(.headline)
+                Text(subtitle).font(.subheadline).foregroundStyle(SuzzmeTheme.textSecondary)
+            }
+            Spacer(minLength: 0)
+        }
+        .accessibilityElement(children: .combine)
     }
 
     private func onboardingPermissionRow(_ source: SuzzmeContextSourceKind) -> some View {
         let state = environment.sourcePermissions[source] ?? .notDetermined
-        return HStack(spacing: SuzzmeTheme.Spacing.small) {
-            Image(systemName: source.symbol).frame(width: 24)
+        let details = HStack(alignment: .top, spacing: SuzzmeTheme.Spacing.small) {
+            #if os(macOS)
+            appleAppIcon(bundleID: source == .calendar ? "com.apple.iCal" : source == .reminders ? "com.apple.reminders" : "com.apple.AddressBook", fallback: source.symbol)
+            #else
+            Image(systemName: source.symbol).frame(width: 32).accessibilityHidden(true)
+            #endif
             VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.xxs) {
                 Text(source.title).font(.headline)
                 Text(source.permissionPurpose).font(.caption).foregroundStyle(SuzzmeTheme.textSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
-            Spacer()
-            if state == .notDetermined || state == .writeOnly {
-                Button("Allow") { Task { await environment.requestSourcePermission(source) } }
-                    .buttonStyle(.bordered)
-            } else {
-                Text(state.displayName).font(.caption.weight(.medium))
+        }
+        .accessibilityElement(children: .combine)
+
+        return ViewThatFits(in: .horizontal) {
+            HStack(spacing: SuzzmeTheme.Spacing.small) {
+                details
+                Spacer(minLength: SuzzmeTheme.Spacing.small)
+                onboardingPermissionAction(source, state: state)
+            }
+            VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.small) {
+                details
+                onboardingPermissionAction(source, state: state)
             }
         }
         .frame(minHeight: 44)
     }
 
-    private var controls: some View {
-        VStack(spacing: SuzzmeTheme.Spacing.medium) {
-            ProgressView(value: Double(step + 1), total: Double(pages.count))
-                .tint(SuzzmeTheme.intelligencePrimary)
-                .accessibilityLabel("Setup progress")
-                .accessibilityValue("Step \(step + 1) of \(pages.count)")
-            ViewThatFits {
-                HStack(spacing: SuzzmeTheme.Spacing.small) { navigationButtons }
-                VStack(spacing: SuzzmeTheme.Spacing.small) { navigationButtons }
-            }
+    #if os(macOS)
+    @ViewBuilder private func appleAppIcon(bundleID: String, fallback: String) -> some View {
+        if let url = NSWorkspace.shared.urlForApplication(withBundleIdentifier: bundleID) {
+            Image(nsImage: NSWorkspace.shared.icon(forFile: url.path))
+                .resizable().scaledToFit().frame(width: 32, height: 32).accessibilityHidden(true)
+        } else {
+            Image(systemName: fallback).frame(width: 32, height: 32).accessibilityHidden(true)
+        }
+    }
+    #endif
+
+    @ViewBuilder
+    private func onboardingPermissionAction(_ source: SuzzmeContextSourceKind, state: SuzzmePermissionState) -> some View {
+        if state == .notDetermined || state == .writeOnly {
+            Button("Allow") { Task { await environment.requestSourcePermission(source) } }
+                .buttonStyle(.bordered)
+                .controlSize(.large)
+        } else {
+            Label(state.displayName, systemImage: state == .authorized ? "checkmark.circle" : "exclamationmark.circle")
+                .font(.caption.weight(.medium))
+                .foregroundStyle(SuzzmeTheme.textSecondary)
         }
     }
 
-    @ViewBuilder private var navigationButtons: some View {
-        if step > 0 {
-            Button("Back") { withAnimation(.easeInOut(duration: SuzzmeTheme.Motion.standard)) { step -= 1 } }
-                .buttonStyle(.bordered).controlSize(.large)
+    private var controls: some View {
+        VStack(spacing: SuzzmeTheme.Spacing.medium) {
+            HStack(spacing: SuzzmeTheme.Spacing.xs) {
+                ForEach(pages.indices, id: \.self) { index in
+                    Capsule()
+                        .fill(index == step ? SuzzmeTheme.intelligencePrimary : SuzzmeTheme.separator)
+                        .frame(width: index == step ? 24 : 7, height: 7)
+                }
+            }
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("Setup progress")
+            .accessibilityValue("Step \(step + 1) of \(pages.count)")
+            navigationButtons
         }
-        Button(step == pages.count - 1 ? "Start using Suzzme" : "Continue") {
-            if step == pages.count - 1 { onComplete() }
-            else { withAnimation(.easeInOut(duration: SuzzmeTheme.Motion.standard)) { step += 1 } }
-        }
-        .buttonStyle(.borderedProminent)
-        .controlSize(.large)
+        .padding(.top, SuzzmeTheme.Spacing.medium)
+        .frame(maxWidth: 420)
         .frame(maxWidth: .infinity)
+    }
+
+    private var navigationButtons: some View {
+        VStack(spacing: SuzzmeTheme.Spacing.xs) {
+            Button {
+                if step == pages.count - 1 { onComplete() }
+                else { withAnimation(SuzzmeTheme.Motion.disclosure(reduceMotion: reduceMotion)) { step += 1 } }
+            } label: {
+                Text(step == pages.count - 1 ? "Start using Suzzme" : "Continue")
+                    .font(.headline)
+                    .foregroundStyle(SuzzmeTheme.textPrimary)
+                    .frame(maxWidth: .infinity, minHeight: SuzzmeTheme.Layout.touchTarget)
+                    .contentShape(Capsule())
+                    .suzzmeGlassSurface(cornerRadius: SuzzmeTheme.Layout.touchTarget / 2)
+            }
+            .buttonStyle(.plain)
+            .controlSize(.large)
+            if step > 0 {
+                Button("Back") { withAnimation(SuzzmeTheme.Motion.disclosure(reduceMotion: reduceMotion)) { step -= 1 } }
+                    .buttonStyle(.plain)
+                    .foregroundStyle(SuzzmeTheme.textSecondary)
+                    .frame(minHeight: SuzzmeTheme.Layout.touchTarget)
+            }
+        }
     }
 }
 
 private struct OnboardingPage {
-    enum Kind { case profile, capabilities, privacy, voice, permissions, personalize }
+    enum Kind { case profile, capabilities, availability, privacy, macCompanion, voice, permissions }
     let kind: Kind
     let eyebrow: LocalizedStringResource
     let title: LocalizedStringResource
     let message: LocalizedStringResource
     let symbol: String
 
-    static let pages: [Self] = [
-        .init(kind: .profile, eyebrow: "HELLO", title: "Make it personal", message: "A name is enough to begin.", symbol: "person.crop.circle"),
-        .init(kind: .capabilities, eyebrow: "SUZZME", title: "A little less to hold", message: "Talk naturally. Suzzme helps organize context and prepares changes for your approval.", symbol: "sparkles"),
-        .init(kind: .privacy, eyebrow: "ON DEVICE", title: "Private by design", message: "Suzzme uses minimum-necessary information and keeps its intelligence local whenever supported.", symbol: "lock.shield"),
-        .init(kind: .voice, eyebrow: "VOICE", title: "Talk naturally", message: "Ask a question, think out loud, or pick up where you left off.", symbol: "mic"),
-        .init(kind: .permissions, eyebrow: "YOUR CHOICE", title: "Connect only what helps", message: "Every source explains why it is useful before requesting access.", symbol: "hand.raised"),
-        .init(kind: .personalize, eyebrow: "PRESENCE", title: "Make Suzzme yours", message: "Choose the color you’ll see when Suzzme listens and responds.", symbol: "circle.hexagongrid")
-    ]
+    static var pages: [Self] {
+        #if os(iOS)
+        return [
+            .init(kind: .profile, eyebrow: "HELLO", title: "Make it personal", message: "A name is enough to begin.", symbol: "person.crop.circle"),
+            .init(kind: .macCompanion, eyebrow: "YOUR MAC", title: "Your day comes with you", message: "Your Mac prepares your schedule and what matters today. This iPhone receives and reads the result.", symbol: "desktopcomputer"),
+            .init(kind: .voice, eyebrow: "VOICE", title: "Listen to your day", message: "Choose when Suzzme may read your shared summaries aloud.", symbol: "speaker.wave.2")
+        ]
+        #else
+        var result: [Self] = [
+            .init(kind: .profile, eyebrow: "HELLO", title: "Make it personal", message: "A name is enough to begin.", symbol: "person.crop.circle"),
+            .init(kind: .capabilities, eyebrow: "SUZZME", title: "A little less to hold", message: "Talk naturally. Suzzme helps organize context and prepares changes for your approval.", symbol: "sparkles"),
+            .init(kind: .availability, eyebrow: "INTELLIGENCE", title: "Ready for your device", message: "Suzzme checks what this device can do and makes its limits clear.", symbol: "iphone"),
+            .init(kind: .privacy, eyebrow: "PRIVACY", title: "Private by design", message: "Suzzme uses only the information you allow.", symbol: "lock.shield")
+        ]
+        #if os(iOS)
+        result.append(.init(kind: .macCompanion, eyebrow: "YOUR MAC", title: "Your day comes with you", message: "Your Mac prepares the Daily Summary. This iPhone shows what you choose to share.", symbol: "desktopcomputer"))
+        #else
+        result.append(.init(kind: .permissions, eyebrow: "YOUR CHOICE", title: "Connect only what helps", message: "Every source explains why it is useful before requesting access.", symbol: "hand.raised"))
+        #endif
+        result.append(.init(kind: .voice, eyebrow: "VOICE", title: "Talk naturally", message: "Ask a question, think out loud, or pick up where you left off.", symbol: "mic"))
+        return result
+        #endif
+    }
 }
 
 extension SuzzmeContextSourceKind {

@@ -1,0 +1,170 @@
+PASS process death partial, delete=false, trustworthy commit only
+PASS second reopen stable partial, delete=false
+PASS process death temporaryWritten, delete=false, trustworthy commit only
+PASS second reopen stable temporaryWritten, delete=false
+PASS process death recoveryRetired, delete=false, trustworthy commit only
+PASS second reopen stable recoveryRetired, delete=false
+PASS process death primaryReplaced, delete=false, trustworthy commit only
+PASS second reopen stable primaryReplaced, delete=false
+PASS process death recoveryWritten, delete=false, trustworthy commit only
+PASS second reopen stable recoveryWritten, delete=false
+PASS process death partial, delete=true, trustworthy commit only
+PASS second reopen stable partial, delete=true
+PASS process death temporaryWritten, delete=true, trustworthy commit only
+PASS second reopen stable temporaryWritten, delete=true
+PASS process death recoveryRetired, delete=true, trustworthy commit only
+PASS second reopen stable recoveryRetired, delete=true
+PASS process death primaryReplaced, delete=true, trustworthy commit only
+PASS second reopen stable primaryReplaced, delete=true
+PASS recovery cannot resurrect committed deletion primaryReplaced
+PASS process death recoveryWritten, delete=true, trustworthy commit only
+PASS second reopen stable recoveryWritten, delete=true
+PASS recovery cannot resurrect committed deletion recoveryWritten
+PASS zero primary uses validated recovery
+PASS both zero fail safely
+PASS truncated primary uses validated recovery
+PASS both truncated fail safely
+PASS malformed-version primary uses validated recovery
+PASS both malformed-version fail safely
+PASS invalid-json primary uses validated recovery
+PASS both invalid-json fail safely
+PASS future primary never silently downgraded to recovery
+PASS unsupported future preserved intact
+PASS valid primary wins over corrupt recovery
+PASS missing primary repaired from valid recovery
+PASS duplicate identifiers fail closed without valid recovery
+PASS cancellation temporaryWritten reports no phantom success and reopens actual commit
+PASS cancellation primaryReplaced reports no phantom success and reopens actual commit
+PASS proactive preferences recover through full store validation
+PASS watched reset surfaces post-commit mirror failure
+PASS same watched actor cannot serve pre-reset cache after commit failure
+PASS watched reset really committed despite caller failure
+PASS next watched mutation cannot resurrect erased link
+PASS faulted proactive actor first caches old preference
+PASS proactive reset surfaces post-commit mirror failure
+PASS same proactive actor reopens actual reset state after failure
+PASS privacy fixture has real structured summary and Today entries
+PASS privacy fixture changed sensitivity metadata
+PASS restricted metadata rejected from primary
+PASS restricted metadata rejected from recovery
+PASS source reset invalidates pending intake ownership
+PASS watched reset persists source-scoped deletion and preserves Calendar
+PASS source reset cannot retain false healthy checkpoint
+PASS real process terminated at sqlite-insert-before
+PASS SQLite insert before reopen 1 sees only committed records
+PASS SQLite insert before reopen 2 sees only committed records
+PASS real process terminated at sqlite-insert-after
+PASS real process terminated at sqlite-delete-before
+PASS SQLite deletion before preserves transaction boundary
+PASS real process terminated at sqlite-insert-after
+PASS SQLite insert after reopen 1 sees only committed records
+PASS SQLite insert after reopen 2 sees only committed records
+PASS real process terminated at sqlite-delete-after
+PASS SQLite deletion after preserves transaction boundary
+PASS Information before uses real abrupt process exit
+PASS Information before reopen 1 preserves committed rows and truthful source health
+PASS Information before reopen 1 never exposes incomplete refresh as current
+PASS Information before reopen 1 rejects dead-process ownership
+PASS Information before reopen 2 preserves committed rows and truthful source health
+PASS Information before reopen 2 never exposes incomplete refresh as current
+PASS Information before reopen 2 rejects dead-process ownership
+PASS Information after uses real abrupt process exit
+PASS Information after reopen 1 preserves committed rows and truthful source health
+PASS Information after reopen 1 never exposes incomplete refresh as current
+PASS Information after reopen 1 rejects dead-process ownership
+PASS Information after reopen 2 preserves committed rows and truthful source health
+PASS Information after reopen 2 never exposes incomplete refresh as current
+PASS Information after reopen 2 rejects dead-process ownership
+PASS Information delete uses real abrupt process exit
+PASS Information delete reopen 1 preserves committed rows and truthful source health
+PASS Information delete reopen 1 never exposes incomplete refresh as current
+PASS Information delete reopen 1 rejects dead-process ownership
+PASS Information delete reopen 2 preserves committed rows and truthful source health
+PASS Information delete reopen 2 never exposes incomplete refresh as current
+PASS Information delete reopen 2 rejects dead-process ownership
+PASS Information disable uses real abrupt process exit
+PASS Information disable reopen 1 preserves committed rows and truthful source health
+PASS Information disable reopen 1 never exposes incomplete refresh as current
+PASS Information disable reopen 1 rejects dead-process ownership
+PASS Information disable reopen 2 preserves committed rows and truthful source health
+PASS Information disable reopen 2 never exposes incomplete refresh as current
+PASS Information disable reopen 2 rejects dead-process ownership
+PASS Information failure uses real abrupt process exit
+PASS Information failure reopen 1 preserves committed rows and truthful source health
+PASS Information failure reopen 1 never exposes incomplete refresh as current
+PASS Information failure reopen 1 rejects dead-process ownership
+PASS Information failure reopen 2 preserves committed rows and truthful source health
+PASS Information failure reopen 2 never exposes incomplete refresh as current
+PASS Information failure reopen 2 rejects dead-process ownership
+PASS Watched before uses real abrupt process exit
+PASS Watched before reopen 1 preserves committed content and exits refreshing state
+PASS Watched before reopen 1 rejects dead-process callbacks
+PASS Watched before reopen 2 preserves committed content and exits refreshing state
+PASS Watched before reopen 2 rejects dead-process callbacks
+PASS Watched after uses real abrupt process exit
+PASS Watched after reopen 1 preserves committed content and exits refreshing state
+PASS Watched after reopen 1 rejects dead-process callbacks
+PASS Watched after reopen 2 preserves committed content and exits refreshing state
+PASS Watched after reopen 2 rejects dead-process callbacks
+PASS Watched delete uses real abrupt process exit
+PASS Watched delete reopen 1 preserves committed content and exits refreshing state
+PASS Watched delete reopen 1 rejects dead-process callbacks
+PASS Watched delete reopen 2 preserves committed content and exits refreshing state
+PASS Watched delete reopen 2 rejects dead-process callbacks
+PASS Watched disable uses real abrupt process exit
+PASS Watched disable reopen 1 preserves committed content and exits refreshing state
+PASS Watched disable reopen 1 rejects dead-process callbacks
+PASS Watched disable reopen 2 preserves committed content and exits refreshing state
+PASS Watched disable reopen 2 rejects dead-process callbacks
+PASS Watched failure uses real abrupt process exit
+PASS Watched failure reopen 1 preserves committed content and exits refreshing state
+PASS Watched failure reopen 1 rejects dead-process callbacks
+PASS Watched failed refresh reopen 1 preserves backoff and last verified success
+PASS Watched failure reopen 2 preserves committed content and exits refreshing state
+PASS Watched failure reopen 2 rejects dead-process callbacks
+PASS Watched failed refresh reopen 2 preserves backoff and last verified success
+PASS Restart fixture produced by real relevance and Daily Context engine
+PASS Summary/Today before uses real abrupt process exiCoreData: debug: WAL checkpoint: Database did checkpoint. Log size: 1005 checkpointed: 1005
+CoreData: debug: WAL checkpoint: Database did checkpoint. Log size: 1007 checkpointed: 1007
+t
+PASS Summary/Today before reopen 1 has one consistent committed snapshot
+PASS Summary/Today before reopen 1 preserves summary identity
+PASS Summary/Today before reopen 1 rejects dead-process generation
+PASS Summary/Today before reopen 2 has one consistent committed snapshot
+PASS Summary/Today before reopen 2 preserves summary identity
+PASS Summary/Today before reopen 2 rejects dead-process generation
+PASS Summary/Today after uses real abrupt process exit
+PASS Summary/Today after reopen 1 has one consistent committed snapshot
+PASS Summary/Today after reopen 1 preserves summary identity
+PASS Summary/Today after reopen 1 rejects dead-process generation
+PASS Summary/Today after reopen 2 has one consistent committed snapshot
+PASS Summary/Today after reopen 2 preserves summary identity
+PASS Summary/Today after reopen 2 rejects dead-process generation
+PASS Summary/Today delete uses real abrupt process exit
+PASS Summary/Today delete reopen 1 has one consistent committed snapshot
+PASS Summary/Today delete reopen 1 preserves summary identity
+PASS Summary/Today delete reopen 1 rejects dead-process generation
+PASS Summary/Today delete reopen 2 has one consistent committed snapshot
+PASS Summary/Today delete reopen 2 preserves summary identity
+PASS Summary/Today delete reopen 2 rejects dead-process generation
+PASS Settings before uses real abrupt process exit through capability coordinator
+PASS Settings before reopen 1 retains only committed change
+PASS Settings before reopen 1 cannot replay dead request without active owner
+PASS Settings before reopen 2 retains only committed change
+PASS Settings before reopen 2 cannot replay dead request without active owner
+PASS Settings after uses real abrupt process exit through capability coordinator
+PASS Settings after reopen 1 retains only committed change
+PASS Settings after reopen 1 cannot replay dead request without active owner
+PASS Settings after reopen 2 retains only committed change
+PASS Settings after reopen 2 cannot replay dead request without active owner
+PASS 100 Watched refresh/cancel and Information supersession cycles preserve bounded ownership
+PASS 100 Information updates retain only bounded versions across restart
+PASS 100 Watched refreshes retain latest verified page across restart
+MEASUREMENT Watched/Information 100-cycle RSS bytes: [26787840, 26984448, 26984448, 27017216, 27033600, 27033600]
+PASS 100 real summary/Today preparations and cancellations remain bounded
+PASS 100 generations persist only three summaries
+PASS repeated settings updates survive restart
+PASS restart on next day expires old Today context
+MEASUREMENT summary/context/settings 100-cycle RSS bytes: [27000832, 27049984, 26722304, 26722304, 26722304, 26722304]
+Remediation recovery checks passed: 164
+Remediation recovery checks failed: 0

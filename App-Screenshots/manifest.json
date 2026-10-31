@@ -1,0 +1,596 @@
+[
+  {
+    "file": "iOS/00-final-release-home.png",
+    "label": "Final Release Home",
+    "source": "Suzzme/Design/2026-10-14/evidence/ios-production-release-final-home.png",
+    "kind": "native iOS simulator",
+    "width": 1206,
+    "height": 2622,
+    "sha256": "ec5a5b0e42cf64d3d5e8e1315060392cafe1cc73b9e8b499cf4a8c29ff6b472a"
+  },
+  {
+    "file": "iOS/Accessibility-Largest-Text/11-settings-detail-about-suzzme.png",
+    "label": "11-settings-detail-About Suzzme",
+    "source": "Suzzme/Design/2026-10-14/evidence/ios-picker-repair-screenshots/2625F03C-CBEE-42B9-86E6-DB820721A1F5.png",
+    "kind": "native iOS simulator",
+    "width": 1206,
+    "height": 2622,
+    "sha256": "d590c9f9e2ddd09408eb3e96698b969bfb4ba265b75b0030e61c4e75b762b1cb"
+  },
+  {
+    "file": "iOS/Accessibility-Largest-Text/11-settings-detail-accessibility.png",
+    "label": "11-settings-detail-Accessibility",
+    "source": "Suzzme/Design/2026-10-14/evidence/ios-picker-repair-screenshots/C8C9DD6C-E8DD-46D2-A4D9-8676E70C0A7E.png",
+    "kind": "native iOS simulator",
+    "width": 1206,
+    "height": 2622,
+    "sha256": "51112a6148d4d52416e377f8e39aea1631d56f0231ac7ce3db9f39fdf912eb2d"
+  },
+  {
+    "file": "iOS/Accessibility-Largest-Text/11-settings-detail-daily-summary.png",
+    "label": "11-settings-detail-Daily Summary",
+    "source": "Suzzme/Design/2026-10-14/evidence/ios-picker-repair-screenshots/63E75905-E4D4-4A8D-8D37-BD8F0783DA58.png",
+    "kind": "native iOS simulator",
+    "width": 1206,
+    "height": 2622,
+    "sha256": "13c3ad2e4bc0b74439cad79de2c04f10ee2e87f1a14e296fd79ea5aa4ec5cfa7"
+  },
+  {
+    "file": "iOS/Accessibility-Largest-Text/11-settings-detail-notifications.png",
+    "label": "11-settings-detail-Notifications",
+    "source": "Suzzme/Design/2026-10-14/evidence/ios-picker-repair-screenshots/D9ECA691-B4CD-409B-A47A-6A5C45797AD5.png",
+    "kind": "native iOS simulator",
+    "width": 1206,
+    "height": 2622,
+    "sha256": "ad32ebece8b356276263ac128765b1421d24025b8f89fb44382aaffeaf6f42ce"
+  },
+  {
+    "file": "iOS/Accessibility-Largest-Text/11-settings-detail-presence.png",
+    "label": "11-settings-detail-Presence",
+    "source": "Suzzme/Design/2026-10-14/evidence/ios-picker-repair-screenshots/77B49DF5-68A8-4C1A-B0B0-6F3B8CBB295E.png",
+    "kind": "native iOS simulator",
+    "width": 1206,
+    "height": 2622,
+    "sha256": "134f0bb3b5cb039102ca146a93c1417476ecfffe1277536ae53d0aa3cbb0df20"
+  },
+  {
+    "file": "iOS/Accessibility-Largest-Text/11-settings-detail-privacy.png",
+    "label": "11-settings-detail-Privacy",
+    "source": "Suzzme/Design/2026-10-14/evidence/ios-picker-repair-screenshots/F16F2172-5A47-4BE8-9525-F913A1EF4FEE.png",
+    "kind": "native iOS simulator",
+    "width": 1206,
+    "height": 2622,
+    "sha256": "e656158d090fe48a835461987d4c395926f7a8ef844eb3d16967909a6671ae35"
+  },
+  {
+    "file": "iOS/Accessibility-Largest-Text/11-settings-detail-profile.png",
+    "label": "11-settings-detail-Profile",
+    "source": "Suzzme/Design/2026-10-14/evidence/ios-picker-repair-screenshots/21B9259E-9C79-48E1-9019-D20A70E923AD.png",
+    "kind": "native iOS simulator",
+    "width": 1206,
+    "height": 2622,
+    "sha256": "cad9c6f19b12887a844cee59ed06cc836ac56252dfc4a069f96feea1f5bb8393"
+  },
+  {
+    "file": "iOS/Accessibility-Largest-Text/11-settings-detail-suzzme-brain-lab.png",
+    "label": "11-settings-detail-Suzzme Brain Lab",
+    "source": "Suzzme/Design/2026-10-14/evidence/ios-picker-repair-screenshots/219E2495-F89E-49EB-8106-ED6DFBB6F8A8.png",
+    "kind": "native iOS simulator",
+    "width": 1206,
+    "height": 2622,
+    "sha256": "a740baeec46ef7f26c8d0fa5b0162c15dc95b9d572657e33015d0d3940a11967"
+  },
+  {
+    "file": "iOS/Accessibility-Largest-Text/11-settings-detail-talk-to-suzzme.png",
+    "label": "11-settings-detail-Talk to Suzzme",
+    "source": "Suzzme/Design/2026-10-14/evidence/ios-picker-repair-screenshots/C270F263-B03F-4233-B29C-4D34BA3466B7.png",
+    "kind": "native iOS simulator",
+    "width": 1206,
+    "height": 2622,
+    "sha256": "5488d35617e065e30ff24899933ed24648c2b83ba26ea692d6e679d14519ca03"
+  },
+  {
+    "file": "iOS/Main-Screens/01-welcome-light.png",
+    "label": "01-welcome-light",
+    "source": "Suzzme/Design/2026-10-14/evidence/ios-production-ui-screenshots/E3E38562-CF5A-41E9-8997-C89365EA3762.png",
+    "kind": "native iOS simulator",
+    "width": 1206,
+    "height": 2622,
+    "sha256": "fc33542459a57305d7762191b167a376f15cf3e1a7b1bff7f4efbcb0d7be6d50"
+  },
+  {
+    "file": "iOS/Main-Screens/02-onboarding-0.png",
+    "label": "02-onboarding-0",
+    "source": "Suzzme/Design/2026-10-14/evidence/ios-production-ui-screenshots/17E85279-5634-4902-8865-BF45E9DFBB91.png",
+    "kind": "native iOS simulator",
+    "width": 1206,
+    "height": 2622,
+    "sha256": "ca3dbf060452bcc0d8a99402bf7ca656419c6065a3558df9ba7379b1ffc125da"
+  },
+  {
+    "file": "iOS/Main-Screens/02-onboarding-1.png",
+    "label": "02-onboarding-1",
+    "source": "Suzzme/Design/2026-10-14/evidence/ios-production-ui-screenshots/5A2CDFA0-B4FB-49AC-A47A-1D4AFB4FBC08.png",
+    "kind": "native iOS simulator",
+    "width": 1206,
+    "height": 2622,
+    "sha256": "290d7ecda0d492678d4478c65c76734b62874b0a4b9b5b709c3192a31a6b3487"
+  },
+  {
+    "file": "iOS/Main-Screens/02-onboarding-2.png",
+    "label": "02-onboarding-2",
+    "source": "Suzzme/Design/2026-10-14/evidence/ios-production-ui-screenshots/C1B762FC-4DA1-450E-97BD-EF7D75351D3D.png",
+    "kind": "native iOS simulator",
+    "width": 1206,
+    "height": 2622,
+    "sha256": "d25460a2070225a5431e13e612aaa31832fbcf3338e62ad628774d2f11e870a3"
+  },
+  {
+    "file": "iOS/Main-Screens/02-onboarding-3.png",
+    "label": "02-onboarding-3",
+    "source": "Suzzme/Design/2026-10-14/evidence/ios-production-ui-screenshots/36E70827-EF43-4265-A60D-78B8675EB3D8.png",
+    "kind": "native iOS simulator",
+    "width": 1206,
+    "height": 2622,
+    "sha256": "46d6d7dd942db5f9d5b2b5ddc83feeae0753d0ae63f53ceb0847c07e50929cfd"
+  },
+  {
+    "file": "iOS/Main-Screens/02-onboarding-4.png",
+    "label": "02-onboarding-4",
+    "source": "Suzzme/Design/2026-10-14/evidence/ios-production-ui-screenshots/F8D62592-B69D-4440-801E-F4BFD1104E65.png",
+    "kind": "native iOS simulator",
+    "width": 1206,
+    "height": 2622,
+    "sha256": "d968e085a1382253eced84efa9b43a5045ae112fb692de21e138b9a52cfdcdf7"
+  },
+  {
+    "file": "iOS/Main-Screens/02-onboarding-5.png",
+    "label": "02-onboarding-5",
+    "source": "Suzzme/Design/2026-10-14/evidence/ios-production-ui-screenshots/77E7F26B-82A6-48CF-B148-25B969BBB95B.png",
+    "kind": "native iOS simulator",
+    "width": 1206,
+    "height": 2622,
+    "sha256": "fb691ce59689903210d9c59c174ad7c7ee02de87b03c2b962af0bd35c58a2cd0"
+  },
+  {
+    "file": "iOS/Main-Screens/02-onboarding-6.png",
+    "label": "02-onboarding-6",
+    "source": "Suzzme/Design/2026-10-14/evidence/ios-production-ui-screenshots/259B5CE5-10A0-4416-9CBB-BF9D0383C200.png",
+    "kind": "native iOS simulator",
+    "width": 1206,
+    "height": 2622,
+    "sha256": "3783e2e6b847b73c4ff1aad4655291e609fe41bf6efb370c3c2e1a680323e024"
+  },
+  {
+    "file": "iOS/Main-Screens/03-production-home-light.png",
+    "label": "03-production-home-light",
+    "source": "Suzzme/Design/2026-10-14/evidence/ios-production-ui-screenshots/D3D96CB2-5973-49BF-8BB0-A07E29AD9FE5.png",
+    "kind": "native iOS simulator",
+    "width": 1206,
+    "height": 2622,
+    "sha256": "486058c07a55bdab084caefaf059536a2fc50ad783ead35717aad8de96d929c8"
+  },
+  {
+    "file": "iOS/Main-Screens/04-real-core-conversation.png",
+    "label": "04-real-core-conversation",
+    "source": "Suzzme/Design/2026-10-14/evidence/ios-production-ui-screenshots/9BBD7BD9-0CA5-4459-A126-A68ED8F6B60E.png",
+    "kind": "native iOS simulator",
+    "width": 1206,
+    "height": 2622,
+    "sha256": "8aa93e99b112b8565744497b86fea93a0243f5b408958deee1a218d7b034bdb2"
+  },
+  {
+    "file": "iOS/Main-Screens/05-follow-up-and-real-availability.png",
+    "label": "05-follow-up-and-real-availability",
+    "source": "Suzzme/Design/2026-10-14/evidence/ios-production-ui-screenshots/BCAC1C30-9DBB-41FF-91AF-E3565E85D86B.png",
+    "kind": "native iOS simulator",
+    "width": 1206,
+    "height": 2622,
+    "sha256": "ed4e72718dc91009668ff2fb86fca1fddc50ac4e92f72006da00773fe186b79c"
+  },
+  {
+    "file": "iOS/Main-Screens/06-production-home-dark.png",
+    "label": "06-production-home-dark",
+    "source": "Suzzme/Design/2026-10-14/evidence/ios-production-ui-screenshots/E05E85AC-4349-4A9A-8F1F-DD49299B05C3.png",
+    "kind": "native iOS simulator",
+    "width": 1206,
+    "height": 2622,
+    "sha256": "d15fcb42899cb52ab10896525e125e838fa4a9ab711caa6dc313eeed6cb4e328"
+  },
+  {
+    "file": "iOS/Main-Screens/07-route-daily-summary.png",
+    "label": "07-route-Daily Summary",
+    "source": "Suzzme/Design/2026-10-14/evidence/ios-production-ui-screenshots/E4FF8495-F49A-40DB-8233-2F1AC1563763.png",
+    "kind": "native iOS simulator",
+    "width": 1206,
+    "height": 2622,
+    "sha256": "312d65be4aa2d490a9fc8bceeec8bb4afd11499758fa33353dd1635106b125f8"
+  },
+  {
+    "file": "iOS/Main-Screens/07-route-history.png",
+    "label": "07-route-History",
+    "source": "Suzzme/Design/2026-10-14/evidence/ios-production-ui-screenshots/E0620FE7-8D25-4F8F-B879-BC3D0CE4DEDD.png",
+    "kind": "native iOS simulator",
+    "width": 1206,
+    "height": 2622,
+    "sha256": "fd61fdf5bbc13af196cbed69b5e5fa93fb4ed7dcff8caaf633897e04e3b22cdc"
+  },
+  {
+    "file": "iOS/Main-Screens/07-route-personal-memory.png",
+    "label": "07-route-Personal Memory",
+    "source": "Suzzme/Design/2026-10-14/evidence/ios-production-ui-screenshots/09328ADB-936A-4301-91C6-1CCD8A4C1C7E.png",
+    "kind": "native iOS simulator",
+    "width": 1206,
+    "height": 2622,
+    "sha256": "453c60a7b9f3a16bc4d54606c2e5c1eca814ae4034a78bf64138aefc44434e6d"
+  },
+  {
+    "file": "iOS/Main-Screens/07-route-sources.png",
+    "label": "07-route-Sources",
+    "source": "Suzzme/Design/2026-10-14/evidence/ios-production-ui-screenshots/CB6EAB5E-B501-430E-8106-E54513FDEED9.png",
+    "kind": "native iOS simulator",
+    "width": 1206,
+    "height": 2622,
+    "sha256": "83f5931d1b2366620e1e9103e713776337a1dd0199604a28a9845cbbc438512e"
+  },
+  {
+    "file": "iOS/Main-Screens/07-route-today.png",
+    "label": "07-route-Today",
+    "source": "Suzzme/Design/2026-10-14/evidence/ios-production-ui-screenshots/7F81ED77-BC1C-4618-879F-6876776F85A8.png",
+    "kind": "native iOS simulator",
+    "width": 1206,
+    "height": 2622,
+    "sha256": "81d63d16e9f4b63bc9c20e806bf03d6a58626bbdcf0012c99da8c30d33cd7b96"
+  },
+  {
+    "file": "iOS/Main-Screens/08-settings-dark.png",
+    "label": "08-settings-dark",
+    "source": "Suzzme/Design/2026-10-14/evidence/ios-production-ui-screenshots/48015B36-A08B-42D2-B28D-EE4CF4D883D3.png",
+    "kind": "native iOS simulator",
+    "width": 1206,
+    "height": 2622,
+    "sha256": "ea60ed2679a7f49957cb9a423fffa11eb5765ae7e58128421c0d372776c854a2"
+  },
+  {
+    "file": "iOS/Main-Screens/09-voice-settings-dark.png",
+    "label": "09-voice-settings-dark",
+    "source": "Suzzme/Design/2026-10-14/evidence/ios-production-ui-screenshots/FF954F45-194C-40AF-9E00-85CF340221FE.png",
+    "kind": "native iOS simulator",
+    "width": 1206,
+    "height": 2622,
+    "sha256": "3016e869bd85df9d8e48679729eb1a30a921906b46674d87972ac8d3fad8447a"
+  },
+  {
+    "file": "iOS/Main-Screens/09-voice-settings-light.png",
+    "label": "09-voice-settings-light",
+    "source": "Suzzme/Design/2026-10-14/evidence/ios-production-ui-screenshots/2B395546-B070-49B6-A1FA-1BA479497641.png",
+    "kind": "native iOS simulator",
+    "width": 1206,
+    "height": 2622,
+    "sha256": "a62d831f414e28e3c96048443dd650b5af73db2603063e1c56c17c8836c41c20"
+  },
+  {
+    "file": "iOS/Main-Screens/10-colored-integrations-dark.png",
+    "label": "10-colored-integrations-dark",
+    "source": "Suzzme/Design/2026-10-14/evidence/ios-production-ui-screenshots/366643D0-0876-4D56-BCA4-2CACBEF303C0.png",
+    "kind": "native iOS simulator",
+    "width": 1206,
+    "height": 2622,
+    "sha256": "5aefa1b26eca3aea3f756c596f733ef7eab002fde9e880049f5cba9c4a97f9ed"
+  },
+  {
+    "file": "iOS/Main-Screens/10-colored-integrations-light.png",
+    "label": "10-colored-integrations-light",
+    "source": "Suzzme/Design/2026-10-14/evidence/ios-production-ui-screenshots/2B969EDE-281E-467D-A1B8-B9312696B634.png",
+    "kind": "native iOS simulator",
+    "width": 1206,
+    "height": 2622,
+    "sha256": "8b24774186279ff2b7c1da853c54b9c2e53a7197a579a2823ea412d8b2768975"
+  },
+  {
+    "file": "macOS/01-home.jpg",
+    "label": "Home",
+    "source": "Native computer-use capture, 14 October 2026, final Release rehan.Suzzme",
+    "kind": "native macOS",
+    "width": 2160,
+    "height": 1640,
+    "sha256": "9afc92481ca087bedd978e32799d78b1f69498d90904d53c51627480b1f86fee"
+  },
+  {
+    "file": "macOS/02-today.jpg",
+    "label": "Today",
+    "source": "Native computer-use capture, 14 October 2026, final Release rehan.Suzzme",
+    "kind": "native macOS",
+    "width": 2160,
+    "height": 1640,
+    "sha256": "95f6cc0cae971ed330c9b601cdc2e9bd4ff19ff106e43c05451e22de627fe713"
+  },
+  {
+    "file": "macOS/03-daily-summary.jpg",
+    "label": "Daily Summary",
+    "source": "Native computer-use capture, 14 October 2026, final Release rehan.Suzzme",
+    "kind": "native macOS",
+    "width": 2160,
+    "height": 1640,
+    "sha256": "5e4c94420e226eeb49f3dbb3487700967c8b5dce9a0103bcb3da76fa2852e32c"
+  },
+  {
+    "file": "macOS/04-personal-memory.jpg",
+    "label": "Personal Memory",
+    "source": "Native computer-use capture, 14 October 2026, final Release rehan.Suzzme",
+    "kind": "native macOS",
+    "width": 2160,
+    "height": 1640,
+    "sha256": "73d3cc29bf5797163be0f1d878d7f27e1db2afc7a8243d37e693a161b5602024"
+  },
+  {
+    "file": "macOS/05-sources.jpg",
+    "label": "Sources",
+    "source": "Native computer-use capture, 14 October 2026, final Release rehan.Suzzme",
+    "kind": "native macOS",
+    "width": 2160,
+    "height": 1640,
+    "sha256": "7b476e3a78050d87b814910beba0277368b014d71b370a209fa91b678bf9169d"
+  },
+  {
+    "file": "macOS/05b-sources-bottom.jpg",
+    "label": "Sources Bottom",
+    "source": "Native computer-use capture, 14 October 2026, final Release rehan.Suzzme",
+    "kind": "native macOS",
+    "width": 2160,
+    "height": 1640,
+    "sha256": "a3dcfe9a3c40655d0ac98a025b3bac5166589323a8e3c244fabd7331b3816d97"
+  },
+  {
+    "file": "macOS/06-history.jpg",
+    "label": "History",
+    "source": "Native computer-use capture, 14 October 2026, final Release rehan.Suzzme",
+    "kind": "native macOS",
+    "width": 2160,
+    "height": 1640,
+    "sha256": "d54e53e8e446ae65f808fcd28cea6533ba9975a4a225917d72f05dd296e57a2f"
+  },
+  {
+    "file": "macOS/06b-history-item-detail.jpg",
+    "label": "History Item Detail",
+    "source": "Native computer-use capture, 14 October 2026, final Release rehan.Suzzme",
+    "kind": "native macOS",
+    "width": 2160,
+    "height": 1640,
+    "sha256": "1f7b5d3721f0ba0c2d10ba88f04de574951f78d4e9de6254b90f520ce0640c79"
+  },
+  {
+    "file": "macOS/07-settings.jpg",
+    "label": "Settings",
+    "source": "Native computer-use capture, 14 October 2026, final Release rehan.Suzzme",
+    "kind": "native macOS",
+    "width": 2160,
+    "height": 1640,
+    "sha256": "aeb234907a2ae2e412c0f49f0c695da8a006df94087e03b88e643bb4e5a6b98d"
+  },
+  {
+    "file": "macOS/07b-settings-bottom.jpg",
+    "label": "Settings Bottom",
+    "source": "Native computer-use capture, 14 October 2026, final Release rehan.Suzzme",
+    "kind": "native macOS",
+    "width": 2160,
+    "height": 1640,
+    "sha256": "8ed24ca2eb9dd18f02569a04e9667f02678dffbf6902a36ee817890096db27e4"
+  },
+  {
+    "file": "macOS/08-colored-integrations.jpg",
+    "label": "Colored integrations",
+    "source": "Suzzme/Design/2026-10-14/evidence/mac-final-colored-integrations.png",
+    "kind": "native macOS",
+    "width": 2160,
+    "height": 1640,
+    "sha256": "d2d5ba2be1663c6f6fba0bb87060991b24ea4800a1b6f0d12f74c8069633cbaf"
+  },
+  {
+    "file": "macOS/08a-integrations-catalog.jpg",
+    "label": "Integrations Catalog",
+    "source": "Native computer-use capture, 14 October 2026, final Release rehan.Suzzme",
+    "kind": "native macOS",
+    "width": 2160,
+    "height": 1640,
+    "sha256": "908dd458a15e4ad21991bb4952ca4040fefea5d506f77eabbf4db5cdb9adcf63"
+  },
+  {
+    "file": "macOS/09-voice-settings.jpg",
+    "label": "Voice Settings",
+    "source": "Native computer-use capture, 14 October 2026, final Release rehan.Suzzme",
+    "kind": "native macOS",
+    "width": 2160,
+    "height": 1640,
+    "sha256": "cadd71433ed5f9f37b5ac5946b0b8a670651300a69b4c3b8a2e28d3fa2488f3e"
+  },
+  {
+    "file": "macOS/09b-voice-selection.jpg",
+    "label": "Voice Selection",
+    "source": "Native computer-use capture, 14 October 2026, final Release rehan.Suzzme",
+    "kind": "native macOS",
+    "width": 2160,
+    "height": 1640,
+    "sha256": "33517c2d1fd5152d807f17214fb0d8aeefbac61ed7372d88adb442d835d37040"
+  },
+  {
+    "file": "macOS/10-presence-settings.jpg",
+    "label": "Presence Settings",
+    "source": "Native computer-use capture, 14 October 2026, final Release rehan.Suzzme",
+    "kind": "native macOS",
+    "width": 2160,
+    "height": 1640,
+    "sha256": "731aacca1150c4be327bbc80adce3025f8f42a475e8f354872f0485ee605b13f"
+  },
+  {
+    "file": "macOS/11-talk-controls.jpg",
+    "label": "Talk Controls",
+    "source": "Native computer-use capture, 14 October 2026, final Release rehan.Suzzme",
+    "kind": "native macOS",
+    "width": 2160,
+    "height": 1640,
+    "sha256": "5ed7f2ba461faf9e65e6a41b7e32ea13ba0e4ee9153832137eb8a43df61231e9"
+  },
+  {
+    "file": "macOS/12-daily-summary-settings.jpg",
+    "label": "Daily Summary Settings",
+    "source": "Native computer-use capture, 14 October 2026, final Release rehan.Suzzme",
+    "kind": "native macOS",
+    "width": 2160,
+    "height": 1640,
+    "sha256": "240e467a5ea30a8ba73023b1199ff16cdd6875d77a7335b9333bc0293b91f70d"
+  },
+  {
+    "file": "macOS/13-privacy.jpg",
+    "label": "Privacy",
+    "source": "Native computer-use capture, 14 October 2026, final Release rehan.Suzzme",
+    "kind": "native macOS",
+    "width": 2160,
+    "height": 1640,
+    "sha256": "f8f9c0cebe4d990ac7b86e0238b03b8d9d848bdee195345a16429bc83b1a8d70"
+  },
+  {
+    "file": "macOS/14-notifications.jpg",
+    "label": "Notifications",
+    "source": "Native computer-use capture, 14 October 2026, final Release rehan.Suzzme",
+    "kind": "native macOS",
+    "width": 2160,
+    "height": 1640,
+    "sha256": "d4757dd3d7201af4919d13a93f797f4d6492ea1a73feac6b8aeabb63b2c77ede"
+  },
+  {
+    "file": "macOS/15-accessibility.jpg",
+    "label": "Accessibility",
+    "source": "Native computer-use capture, 14 October 2026, final Release rehan.Suzzme",
+    "kind": "native macOS",
+    "width": 2160,
+    "height": 1640,
+    "sha256": "9814de767fd89038e6166a612724b76bb29cebca012ac13fb41ce3ec1c2b7ef9"
+  },
+  {
+    "file": "macOS/16-profile.jpg",
+    "label": "Profile",
+    "source": "Native computer-use capture, 14 October 2026, final Release rehan.Suzzme",
+    "kind": "native macOS",
+    "width": 2160,
+    "height": 1640,
+    "sha256": "a09ffd53a5a0ff3ab8d30579e78d8ece56faeced5ceb2501cc0e4a8742bf2b37"
+  },
+  {
+    "file": "macOS/17-about.jpg",
+    "label": "About",
+    "source": "Native computer-use capture, 14 October 2026, final Release rehan.Suzzme",
+    "kind": "native macOS",
+    "width": 2160,
+    "height": 1640,
+    "sha256": "8789daa0f0ba9cdfe2f021698403b9935c44726d9680cf4b22e0a16aa1bcc3a0"
+  },
+  {
+    "file": "macOS/18-ask-suzzme-empty.jpg",
+    "label": "Ask Suzzme Empty",
+    "source": "Native computer-use capture, 14 October 2026, final Release rehan.Suzzme",
+    "kind": "native macOS",
+    "width": 940,
+    "height": 1252,
+    "sha256": "81ae168d1996eecc5166d415d1eec8b07028df2f362cbadbef0fa11197e84ebf"
+  },
+  {
+    "file": "macOS/19-ask-suzzme-response.jpg",
+    "label": "Ask Suzzme Response",
+    "source": "Native computer-use capture, 14 October 2026, final Release rehan.Suzzme",
+    "kind": "native macOS",
+    "width": 940,
+    "height": 1456,
+    "sha256": "2b605847e23d138624aaa53c5db7a0dc07d9af8af6586a83310e16a6c83ce824"
+  },
+  {
+    "file": "macOS/20-source-calendar.jpg",
+    "label": "Source Calendar",
+    "source": "Native computer-use capture, 14 October 2026, final Release rehan.Suzzme",
+    "kind": "native macOS",
+    "width": 2160,
+    "height": 1640,
+    "sha256": "6a16b5e28bf389ce8448e573c3f20dbb5e15a9387086bc347ffd10bad9de0bb1"
+  },
+  {
+    "file": "macOS/21-source-reminders.jpg",
+    "label": "Source Reminders",
+    "source": "Native computer-use capture, 14 October 2026, final Release rehan.Suzzme",
+    "kind": "native macOS",
+    "width": 2160,
+    "height": 1640,
+    "sha256": "cbadbe39554b1f6c6f0c42e553eda243c6ffe0965168e3770979166949afc413"
+  },
+  {
+    "file": "macOS/22-source-contacts.jpg",
+    "label": "Source Contacts",
+    "source": "Native computer-use capture, 14 October 2026, final Release rehan.Suzzme",
+    "kind": "native macOS",
+    "width": 2160,
+    "height": 1640,
+    "sha256": "f1f1d68f3dd8e011791a32e1da287886abd1f08b44a9cdb3f2a86dc9eb6f2958"
+  },
+  {
+    "file": "macOS/23-source-gmail.jpg",
+    "label": "Source Gmail",
+    "source": "Native computer-use capture, 14 October 2026, final Release rehan.Suzzme",
+    "kind": "native macOS",
+    "width": 2160,
+    "height": 1640,
+    "sha256": "27bee7634ef066988b0e8119e63320fa7be8ba18ad3e7e468a40640fc71177ee"
+  },
+  {
+    "file": "macOS/24-source-shared-messages.jpg",
+    "label": "Source Shared Messages",
+    "source": "Native computer-use capture, 14 October 2026, final Release rehan.Suzzme",
+    "kind": "native macOS",
+    "width": 2160,
+    "height": 1640,
+    "sha256": "8468bfe5a7f126de928bd547260c2701949c8f6caf2c0e4366bdec8d45a05085"
+  },
+  {
+    "file": "macOS/25-watched-links.jpg",
+    "label": "Watched Links",
+    "source": "Native computer-use capture, 14 October 2026, final Release rehan.Suzzme",
+    "kind": "native macOS",
+    "width": 2160,
+    "height": 1640,
+    "sha256": "12da1ad6e5387c628cce245ad6263d71d73b6d656564ec0f369d1d32b3c5cddf"
+  },
+  {
+    "file": "macOS/26-recent-information.jpg",
+    "label": "Recent Information",
+    "source": "Native computer-use capture, 14 October 2026, final Release rehan.Suzzme",
+    "kind": "native macOS",
+    "width": 2160,
+    "height": 1640,
+    "sha256": "c38a01a70ad0d0d64e3db62fd4f5dba8ca7927c03abb9dc0c9a7ce879452b297"
+  },
+  {
+    "file": "macOS/28-companion-panel.jpg",
+    "label": "Companion Panel",
+    "source": "Native computer-use capture, 14 October 2026, final Release rehan.Suzzme",
+    "kind": "native macOS",
+    "width": 640,
+    "height": 1120,
+    "sha256": "72236f310d31a41b82fe7eaaef9fd23577ec11b8b153da8601a8e27e87dd8ceb"
+  },
+  {
+    "file": "macOS/28b-companion-panel-controls.jpg",
+    "label": "Companion Panel Controls",
+    "source": "Native computer-use capture, 14 October 2026, final Release rehan.Suzzme",
+    "kind": "native macOS",
+    "width": 640,
+    "height": 1120,
+    "sha256": "549b1a339403375da6f7db535b59bb2c12c38e1011b3cd3f4fb7fd72d496b959"
+  },
+  {
+    "file": "macOS/29-notch-presence-earlier-release.png",
+    "label": "Notch presence — earlier 14 October Release capture",
+    "source": "Suzzme/Design/2026-10-14/evidence/mac-release-runtime/suzzme-window-680.png",
+    "kind": "native macOS; earlier Release capture",
+    "width": 656,
+    "height": 220,
+    "sha256": "89c9b5f199db25fb2d96bdb295500541a199079675b493a0857811b16b1b53ac"
+  }
+]

@@ -1,0 +1,50 @@
+Window: "Privacy", App: Suzzme.
+0 standard window Privacy, ID: main, Secondary Actions: Raise
+	1 split group main, SidebarNavigationSplitView
+		2 scroll area Secondary Actions: Scroll Up, Scroll Down
+			3 list Sidebar
+				4 row (selectable)
+				5 row (selectable) Suzzme, Your personal companion
+				6 row (selectable) Your day
+				7 row (selectable) Home
+				8 row (selectable) Today
+				9 row (selectable) Daily Summary
+				10 row (selectable) Your information
+				11 row (selectable) Personal Memory
+				12 row (selectable) Sources
+				13 row (selectable) History
+				14 row (selectable)
+				15 row (selected) Settings
+			16 scroll bar (settable, float) 0
+				17 value indicator (settable, float) 0
+				18 increment arrow button
+				19 decrement arrow button
+				20 increment page button
+				21 decrement page button
+		22 splitter (disabled, settable, float) 232
+		23 scroll area
+			24 list Secondary Actions: Cancel
+				25 row (selectable) On-device intelligence
+				26 row (selectable) Suzzme processes locally when the device supports it.
+				27 row (selectable) No external AI service is required.
+				28 row (selectable) Your controls
+				29 row (selectable) Personal Memory
+				30 row (selectable) Sources and Permissions
+				31 row (selectable) Recent Information
+				32 row (selectable) Clearing recent information does not delete source items or Personal Memory. Memory controls do not change Calendar, Contacts, or Reminders.
+	33 toolbar
+		34 button Description: Hide Sidebar, Secondary Actions: Increment, Decrement, Delete, Cancel
+		35 button Description: Back, ID: chevron.backward, Secondary Actions: Increment, Decrement, Delete, Cancel, Move previous, Remove from toolbar
+	36 close button
+	37 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	38 minimize button
+	39 text Privacy
+40 menu bar
+	41 Suzzme
+	42 Edit
+	43 View
+	44 Companion
+	45 Window
+	46 Help
+
+The focused UI element is 0 standard window Privacy, ID: main, Secondary Actions: Raise

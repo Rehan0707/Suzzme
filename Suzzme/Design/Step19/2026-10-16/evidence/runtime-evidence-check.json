@@ -1,0 +1,14 @@
+{
+  "source": "Assertions against saved native production accessibility trees, not a separate UI test runner",
+  "checks": {
+    "real_on_device_follow_up_and_retained_first_turn": true,
+    "latest_shown_while_reading_earlier": true,
+    "latest_hidden_after_return": true,
+    "return_reaches_actual_bottom": true,
+    "new_answer_follows_to_bottom": true,
+    "real_listening_and_cancel_control": true,
+    "cancel_restores_ready": true,
+    "one_pace_accessibility_slider": true,
+    "appearance_restored_system": true
+  }
+}

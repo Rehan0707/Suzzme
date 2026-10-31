@@ -1,0 +1,21 @@
+PASS answers expand downward without widening the active surface
+PASS long answers receive more vertical reading room
+PASS long answer viewport is bounded for scrolling
+PASS provenance has dedicated height instead of clipping into the rim
+PASS screen provenance preserves the active width
+PASS confirmation keeps the same surface width
+PASS confirmation reserves vertical target and button space
+PASS long fallback remains in the available display
+PASS explicit panel interaction supports keyboard focus without becoming the main app window
+PASS first-click controls can obtain focus without global keyboard permission
+PASS Escape dismisses a completed answer through the native responder chain
+PASS Escape cancels active capture without Input Monitoring
+PASS Escape rejects the captured review and never confirms it
+PASS completed answer survives the core idle transition for its reading interval
+PASS retained answer remains dismissible
+PASS core completion cannot resurrect a dismissed answer
+PASS a new proactive signal can reveal a previously dismissed surface
+PASS a fresh listening state discards the old answer and restores the compact surface
+PASS updates of the dismissed request do not reopen its surface
+PASS a new request reopens the surface even when its phase and copy match
+Premium Presence layout checks: 20 passed / 0 failed

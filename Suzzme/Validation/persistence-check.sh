@@ -7,6 +7,11 @@ sdk=$(xcrun --sdk macosx --show-sdk-path)
 xcrun swiftc -swift-version 6 -parse-as-library -sdk "$sdk" -target arm64-apple-macos14.0 \
     Suzzme/Core/Models/*.swift \
     Suzzme/Core/Intelligence/IntelligenceCapability.swift \
+  Suzzme/Core/Context/SuzzmeContextItem.swift \
+  Suzzme/Core/Context/SuzzmeContextQuery.swift \
+  Suzzme/Core/Privacy/PrivacyEngine.swift \
+  Suzzme/Core/Context/ScreenContext.swift \
+  Suzzme/Core/Context/ScreenContextPolicy.swift \
     Suzzme/Core/Intelligence/IntelligenceService.swift \
     Suzzme/Core/Intelligence/MockIntelligenceService.swift \
     Suzzme/Core/Intelligence/BasicIntelligenceService.swift \

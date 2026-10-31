@@ -1,0 +1,26 @@
+| Appearance | Text/focus role | Background | Contrast |
+| --- | --- | --- | --- |
+| Light | textPrimary | canvas | 16.24:1 |
+| Light | textPrimary | surface | 15.02:1 |
+| Light | textSecondary | canvas | 5.95:1 |
+| Light | textSecondary | surface | 5.51:1 |
+| Light | intelligencePrimary | canvas | 7.37:1 |
+| Light | intelligencePrimary | surface | 6.82:1 |
+| Light | focus | canvas | 5.73:1 |
+| Light | focus | surface | 5.30:1 |
+| Light | destructive | canvas | 6.99:1 |
+| Light | destructive | surface | 6.47:1 |
+| Light | warning | canvas | 6.51:1 |
+| Light | warning | surface | 6.02:1 |
+| Dark | textPrimary | canvas | 16.90:1 |
+| Dark | textPrimary | surface | 14.53:1 |
+| Dark | textSecondary | canvas | 8.14:1 |
+| Dark | textSecondary | surface | 7.00:1 |
+| Dark | intelligencePrimary | canvas | 10.06:1 |
+| Dark | intelligencePrimary | surface | 8.65:1 |
+| Dark | focus | canvas | 9.63:1 |
+| Dark | focus | surface | 8.28:1 |
+| Dark | destructive | canvas | 10.75:1 |
+| Dark | destructive | surface | 9.24:1 |
+| Dark | warning | canvas | 10.68:1 |
+| Dark | warning | surface | 9.18:1 |

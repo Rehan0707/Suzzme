@@ -29,6 +29,7 @@ enum SuzzmeAssistantState: String, Sendable, CaseIterable {
 final class AssistantStateController {
     private(set) var state: SuzzmeAssistantState = .idle
     private(set) var message: String?
+    private(set) var revision = UUID()
     private var completionTask: Task<Void, Never>?
 
     func transition(to state: SuzzmeAssistantState, message: String? = nil) {
@@ -36,15 +37,16 @@ final class AssistantStateController {
         completionTask = nil
         self.state = state
         self.message = message ?? state.activityDescription
+        revision = UUID()
     }
 
-    func complete(message: String? = nil) { settle(at: .success, message: message) }
+    func complete(message: String? = nil, after delay: Duration = .seconds(1.5)) { settle(at: .success, message: message, after: delay) }
     func fail(message: String? = nil) { settle(at: .error, message: message) }
 
-    private func settle(at state: SuzzmeAssistantState, message: String?) {
+    private func settle(at state: SuzzmeAssistantState, message: String?, after delay: Duration = .seconds(1.5)) {
         transition(to: state, message: message)
         completionTask = Task { [weak self] in
-            try? await Task.sleep(for: .seconds(1.5))
+            try? await Task.sleep(for: delay)
             guard !Task.isCancelled else { return }
             self?.reset()
         }
@@ -55,5 +57,6 @@ final class AssistantStateController {
         completionTask = nil
         state = .idle
         message = nil
+        revision = UUID()
     }
 }

@@ -6,9 +6,12 @@ struct SuzzmeCoreResponse: Sendable {
     let contextCount: Int
     let extractedItems: [SuzzmeItem]
     let action: SuzzmeAction?
+    let spatialReference: SpatialReference?
+    let screenMetadata: ScreenContextMetadata?
 
-    init(text: String, route: SuzzmeRoute, contextCount: Int, extractedItems: [SuzzmeItem], action: SuzzmeAction? = nil) {
+    init(text: String, route: SuzzmeRoute, contextCount: Int, extractedItems: [SuzzmeItem], action: SuzzmeAction? = nil, spatialReference: SpatialReference? = nil, screenMetadata: ScreenContextMetadata? = nil) {
         self.text = text; self.route = route; self.contextCount = contextCount; self.extractedItems = extractedItems; self.action = action
+        self.spatialReference = spatialReference; self.screenMetadata = screenMetadata
     }
 }
 
@@ -16,6 +19,7 @@ struct SuzzmeCoreResponse: Sendable {
 actor SuzzmeCore {
     private let information: InformationEngine?
     private let proactive: ProactiveIntelligenceEngine?
+    private let resourceContext: (any SuzzmeResourceContextProviding)?
     private let contextEngine: ContextEngine
     private let router: IntelligenceRouter
     private let memory: SessionMemoryEngine
@@ -32,20 +36,97 @@ actor SuzzmeCore {
     // No raw transcript, durable memory, or action authorization is retained.
     private var settingsFollowUp: (capability: SuzzmeSettingsCapabilityID, expiresAt: Date)?
 
-    init(contextEngine: ContextEngine = ContextEngine(), router: IntelligenceRouter = IntelligenceRouter(), memory: SessionMemoryEngine = SessionMemoryEngine(), privacy: PrivacyEngine = PrivacyEngine(), memoryStore: LongTermMemoryStore? = nil, actionCoordinator: SuzzmeActionExecutionCoordinator? = nil, settingsCoordinator: SuzzmeSettingsCapabilityCoordinator? = nil, information: InformationEngine? = nil, proactive: ProactiveIntelligenceEngine? = nil) {
+    init(contextEngine: ContextEngine = ContextEngine(), router: IntelligenceRouter = IntelligenceRouter(), memory: SessionMemoryEngine = SessionMemoryEngine(), privacy: PrivacyEngine = PrivacyEngine(), memoryStore: LongTermMemoryStore? = nil, actionCoordinator: SuzzmeActionExecutionCoordinator? = nil, settingsCoordinator: SuzzmeSettingsCapabilityCoordinator? = nil, information: InformationEngine? = nil, proactive: ProactiveIntelligenceEngine? = nil, resourceContext: (any SuzzmeResourceContextProviding)? = nil) {
         self.contextEngine = contextEngine; self.router = router; self.memory = memory; self.privacy = privacy; self.longTermMemory = LongTermMemoryEngine(); self.memoryStore = memoryStore
         self.information = information
         self.proactive = proactive
+        self.resourceContext = resourceContext
         self.actionPlanner = SuzzmeActionPlanner()
         self.actionCoordinator = actionCoordinator ?? SuzzmeActionExecutionCoordinator(registry: SuzzmeCapabilityRegistry(capabilities: [EventKitReminderCapability(), EventKitCalendarCapability()]))
         self.settingsPlanner = SuzzmeSettingsPlanner()
         self.settingsCoordinator = settingsCoordinator
     }
 
-    func respond(to text: String, sources: [any ContextSource], query: SuzzmeContextQuery = .init(), requestID: UUID = UUID(), confirmationActionID: UUID? = nil, existingFingerprints: Set<String>, contextUnavailableMessage: String? = nil, profileName: String? = nil, progress: @Sendable (SuzzmeAssistantState) async -> Void) async throws -> SuzzmeCoreResponse {
+    func respond(to text: String, sources: [any ContextSource], query: SuzzmeContextQuery = .init(), requestID: UUID = UUID(), confirmationActionID: UUID? = nil, existingFingerprints: Set<String>, contextUnavailableMessage: String? = nil, profileName: String? = nil, screenSource: (any ScreenContextSource)? = nil, visualGuidance: Bool = false, explicitResource: SuzzmeResourceContext? = nil, conversationID: UUID? = nil, progress: @Sendable (SuzzmeAssistantState) async -> Void) async throws -> SuzzmeCoreResponse {
         let previousSetting = settingsFollowUp.flatMap { $0.expiresAt > .now ? $0.capability : nil }
         settingsFollowUp = nil
         activeRequestID = requestID
+        if let explicitResource {
+            await memory.beginReadOnlyRequest(requestID, conversationID: conversationID)
+            pendingAction = nil
+            _ = await actionCoordinator.cancelPending()
+            await settingsCoordinator?.begin(requestID: requestID)
+            try ensureActive(requestID)
+            guard let resourceContext, privacy.classify(text).policy != .neverProcess,
+                  await resourceContext.validate(explicitResource, requestID: requestID) else { throw SuzzmeCoreError.restrictedContent }
+            try ensureActive(requestID); await progress(.reasoning)
+            let answer = try await router.answerResource(question: text, context: explicitResource)
+            try ensureActive(requestID)
+            guard await resourceContext.validate(explicitResource, requestID: requestID), privacy.classify(answer.text).policy != .neverProcess else { throw CancellationError() }
+            await resourceContext.cancel(requestID: requestID); await progress(.success)
+            return .init(text: answer.text, route: answer.route, contextCount: 1, extractedItems: [])
+        }
+        await memory.beginReadOnlyRequest(requestID, conversationID: conversationID)
+        try ensureActive(requestID)
+        let summaryReferences = Set(await memory.snapshot().contextItems.filter {
+            ["connectedApps", "watchedWeb", "gmail"].contains($0.metadata["authoritySource"] ?? $0.metadata["source"] ?? "")
+        }.map(\.sourceIdentifier))
+        if !summaryReferences.isEmpty {
+            let allowed = Set((try? await information?.retrieve(.init(sources: [.connectedApps, .watchedWeb, .gmail], limit: InformationLimits.records)))?.map(\.externalID) ?? [])
+            if !summaryReferences.isSubset(of: allowed) {
+                // Assistant turns can quote the revoked titles too. Retire the
+                // bounded conversation, not just its structured fact array.
+                await memory.clearRevokedContext(requestID: requestID)
+            }
+            try ensureActive(requestID)
+        }
+        // Screen data has a separate, read-only route in this same Core. It
+        // never receives a memory capability, reaches a planner, or enters any
+        // actionable session facts, information or Daily Context store. Only a
+        // bounded derived answer may support a later read-only question.
+        if screenSource != nil || ScreenContextPolicy.isScreenQuestion(text) {
+            guard privacy.classify(text).policy != .neverProcess else { throw SuzzmeCoreError.restrictedContent }
+            await memory.clearScreenUnderstanding()
+            try ensureActive(requestID)
+            await progress(.gatheringContext)
+            guard let screenSource else {
+                await progress(.success)
+                return .init(text: "Screen Awareness is off for this request. Use Ask about this screen to allow a single capture.", route: .localContext, contextCount: 0, extractedItems: [])
+            }
+            do {
+                let screen = try await contextEngine.collectScreen(from: screenSource, requestID: requestID)
+                try ensureActive(requestID)
+                // Only explicitly requested personal context is collected, from
+                // the same authorized sources. Screen text cannot select sources.
+                let personal = query.sources.isEmpty ? [] : try await contextEngine.collect(from: sources, request: .init(query: query))
+                try ensureActive(requestID)
+                await progress(.reasoning)
+                let wantsGuidance = visualGuidance && ScreenContextPolicy.asksForGuidance(text)
+                let answer = try await router.answerScreen(question: text, context: screen, wantsGuidance: wantsGuidance, personalContext: personal)
+                try ensureActive(requestID)
+                guard await screenSource.validate(screen) else { throw ScreenContextError.focusChanged }
+                try ensureActive(requestID)
+                let responseText = answer.text.trimmingCharacters(in: .whitespacesAndNewlines)
+                guard !responseText.isEmpty, responseText.count <= 2_000,
+                      privacy.classify(responseText).policy != .neverProcess else { throw SuzzmeIntelligenceError.invalidOutput }
+                let reference = answer.spatialReference.flatMap {
+                    wantsGuidance && $0.isValid(for: screen, requestID: requestID, now: .now) ? $0 : nil
+                }
+                await screenSource.cancel(requestID: requestID)
+                try ensureActive(requestID)
+                if answer.usedOnDeviceModel {
+                    await memory.rememberScreenUnderstanding(requestID: requestID, question: text, answer: responseText)
+                    try ensureActive(requestID)
+                }
+                await progress(.success)
+                return .init(text: responseText, route: answer.usedOnDeviceModel ? .onDeviceIntelligence : .localContext,
+                    contextCount: 1 + personal.count, extractedItems: [], spatialReference: reference,
+                    screenMetadata: reference == nil ? nil : screen.metadata)
+            } catch {
+                await screenSource.cancel(requestID: requestID)
+                throw error
+            }
+        }
         if let memoryStore { await memoryStore.authorize(requestID) }
         // Releasing this request's capability makes a late continuation unable
         // to mutate long-term memory after it finishes or is cancelled. A newer
@@ -199,24 +280,92 @@ actor SuzzmeCore {
                 break
             }
         }
-        if let informationQuery = InformationRequest.query(for: text), let information {
+        // Account-backed external facts have their own ephemeral read route.
+        // The same existing model has no tools; results cannot reach any planner.
+        let summaryReference: SuzzmeSummaryResourceReference?
+        if let resourceContext, screenSource == nil, !ScreenContextPolicy.isScreenQuestion(text) {
+            summaryReference = await resourceContext.resolveSummaryReference(text, context: await memory.snapshot().contextItems)
+        } else { summaryReference = nil }
+        if let resourceContext, screenSource == nil, !ScreenContextPolicy.isScreenQuestion(text), await resourceContext.recognizes(summaryReference?.question ?? text) {
+            try ensureActive(requestID)
+            guard privacy.classify(text).policy != .neverProcess else { throw SuzzmeCoreError.restrictedContent }
+            await progress(.gatheringContext)
+            do {
+                if let resource = try await contextEngine.collectResource(from: resourceContext, question: text, requestID: requestID, summaryReference: summaryReference) {
+                    try ensureActive(requestID)
+                    await progress(.reasoning)
+                    let answer = try await router.answerResource(question: text, context: resource)
+                    try ensureActive(requestID)
+                    guard await resourceContext.validate(resource, requestID: requestID),
+                          privacy.classify(answer.text).policy != .neverProcess else { throw CancellationError() }
+                    await resourceContext.cancel(requestID: requestID)
+                    try ensureActive(requestID)
+                    await progress(.success)
+                    return .init(text: answer.text, route: answer.route, contextCount: 1, extractedItems: [])
+                }
+            } catch let failure as SuzzmeResourceContextFailure {
+                await resourceContext.cancel(requestID: requestID)
+                try ensureActive(requestID)
+                await progress(.error)
+                return .init(text: failure.recovery, route: .localContext, contextCount: 0, extractedItems: [])
+            } catch {
+                await resourceContext.cancel(requestID: requestID)
+                throw error
+            }
+        }
+        let emailFollowUp = ["who sent the latest one", "who sent the latest email", "and what about the email", "what about the email"].contains(text.lowercased().trimmingCharacters(in: .whitespacesAndNewlines.union(.punctuationCharacters)))
+        if emailFollowUp, let information {
+            let referenced = await memory.snapshot().contextItems.filter { $0.metadata["source"] == "gmail" && !$0.isExpired }
+            try ensureActive(requestID)
+            guard !referenced.isEmpty else { return .init(text: "Which selected email source do you mean? Ask about your selected Gmail headers first.", route: .localContext, contextCount: 0, extractedItems: []) }
+            await progress(.gatheringContext); try await information.refresh(source: .gmail, force: true)
+            let events = try await information.retrieve(.init(sources: [.gmail], limit: 30)).sorted { $0.sourceUpdatedAt > $1.sourceUpdatedAt }
+            try ensureActive(requestID)
+            guard let latest = events.first, referenced.contains(where: { reference in
+                let accountPrefix = reference.sourceIdentifier.split(separator: ":").prefix(4).joined(separator: ":") + ":"
+                return latest.externalID.hasPrefix(accountPrefix)
+            }) else { return .init(text: "The referenced Gmail source is no longer available. Refresh its authorized headers before continuing.", route: .localContext, contextCount: 0, extractedItems: []) }
+            await progress(.success)
+            return .init(text: "Latest authorized header: “\(latest.title)”. Checked \(latest.observedAt.formatted()). Message bodies were not read.", route: .localContext, contextCount: 1, extractedItems: [])
+        }
+        if var informationQuery = InformationRequest.query(for: text), let information {
+            let calendarChanges = text.localizedCaseInsensitiveContains("calendar")
+            let taskChanges = text.localizedCaseInsensitiveContains("reminder")
+            if calendarChanges || taskChanges { informationQuery.sources.insert(.connectedApps) }
             await progress(.gatheringContext)
             // Recheck live snapshots. History never substitutes for a failed source.
             try await information.refresh(force: true)
             try ensureActive(requestID)
-            let events = try await information.retrieve(informationQuery)
+            let events = try await information.retrieve(informationQuery).filter { event in
+                if calendarChanges { return event.source == .calendar || event.entities.contains("googleCalendar") }
+                if taskChanges { return event.source == .reminders || event.entities.contains("googleTasks") }
+                return true
+            }
             let health = try await information.health()
             try ensureActive(requestID)
             await progress(.success)
-            // Source text is quoted data, never sent to an action planner, model,
-            // or memory admission. No model is needed for this bounded response.
+            // Selected header references support a bounded read-only follow-up.
+            // They never enter long-term Memory or action planning.
+            if informationQuery.sources == [.gmail] {
+                await memory.remember(context: events.map { event in
+                    .init(sourceIdentifier: event.externalID, content: event.title,
+                          timestamp: event.observedAt, metadata: ["source": "gmail"],
+                          expiration: Date.now.addingTimeInterval(120))
+                })
+                try ensureActive(requestID)
+            }
+            // Source text stays quoted data. No model or memory admission runs.
             return .init(text: InformationRequest.response(events: events, health: health, query: informationQuery),
                          route: .localContext, contextCount: events.count, extractedItems: [])
         }
-        if let contextUnavailableMessage, !isDailyOverviewRequest(text) {
+        let precedingSession = await memory.snapshot()
+        try ensureActive(requestID)
+        let hasScreenFollowUp = precedingSession.screenUnderstanding != nil && SuzzmeScreenUnderstanding.isFollowUp(text)
+        let selectedGoogle = try await selectedGoogleContext(for: text, query: query)
+        try ensureActive(requestID)
+        if let contextUnavailableMessage, selectedGoogle.isEmpty, !isDailyOverviewRequest(text), !hasScreenFollowUp {
             return .init(text: contextUnavailableMessage, route: .localContext, contextCount: 0, extractedItems: [])
         }
-        await memory.remember(role: .user, text: text)
         await progress(.gatheringContext)
         if isDailyOverviewRequest(text), proactive != nil {
             // The explicit day question uses the same bounded relevance and
@@ -227,7 +376,7 @@ actor SuzzmeCore {
                 let snapshot = try await prepareProactiveBriefing(from: sources, now: .now, profileName: profileName)
                 if let briefing = snapshot.briefing,
                    !briefing.items.isEmpty || !briefing.healthLimitations.isEmpty {
-                    await memory.remember(role: .assistant, text: briefing.narration)
+                    guard await memory.rememberReadOnlyExchange(question: text, answer: briefing.narration, requestID: requestID) else { throw CancellationError() }
                     await progress(.success)
                     return .init(text: briefing.narration, route: .localContext, contextCount: briefing.items.count, extractedItems: [])
                 }
@@ -236,24 +385,82 @@ actor SuzzmeCore {
                 // user-initiated questions about the day.
             }
         }
-        let session = await memory.snapshot()
-        let priorContext = session.contextItems
-        let gatheredContext = try await contextEngine.collect(from: sources, request: SuzzmeContextRequest(query: query))
-        guard activeRequestID == requestID else { throw CancellationError() }
-        let context = (priorContext + gatheredContext).reduce(into: [SuzzmeContextItem]()) { result, item in
-            if !result.contains(where: { $0.id == item.id }) { result.append(item) }
+        if text.lowercased().contains("what happened in my projects today") {
+            // An empty project summary is not a general-knowledge question.
+            // Reuse Information's authorized projection and health disclosure;
+            // never ask a model to invent activity (or an earlier screen).
+            guard let information else { throw SuzzmeCoreError.contextUnavailable }
+            let projectQuery = InformationQuery(sources: [.connectedApps], since: Calendar.current.startOfDay(for: .now), limit: 5)
+            let events = try await information.retrieve(projectQuery)
+            let health = try await information.health()
+            try ensureActive(requestID)
+            let answer = InformationRequest.response(events: events, health: health, query: projectQuery)
+            guard await memory.rememberReadOnlyExchange(question: text, answer: answer, requestID: requestID) else { throw CancellationError() }
+            await progress(.success)
+            return .init(text: answer, route: .localContext, contextCount: events.count, extractedItems: [])
         }
-        await memory.remember(context: gatheredContext)
-        await progress(.reasoning)
-        let response = try await router.route(text: text, context: context, conversation: session.turns, existingFingerprints: existingFingerprints)
+        let session = await memory.snapshot()
+        let collection = try await contextEngine.collectWithHealth(from: sources, request: SuzzmeContextRequest(query: query))
+        try ensureActive(requestID)
+        let nativeIDs = Set(collection.items.compactMap { $0.metadata["icalUID"] })
+        let gatheredContext = collection.items + selectedGoogle.filter { item in
+            guard let uid = item.metadata["icalUID"], nativeIDs.contains(uid) else { return true }
+            return !collection.items.contains { $0.metadata["icalUID"] == uid && $0.metadata["title"] == item.metadata["title"] && $0.metadata["start"] == item.metadata["start"] && $0.metadata["end"] == item.metadata["end"] && $0.metadata["allDay"] == item.metadata["allDay"] }
+        }
         guard activeRequestID == requestID else { throw CancellationError() }
-        await memory.remember(role: .assistant, text: response.text)
+        // A freshly checked open-work query replaces the conversational reminder
+        // selection. Prior session facts cannot resurrect completed/deleted work.
+        // An unavailable source never proves absence.
+        let replacingReminders = sources.contains(where: { $0.identifier == "reminders" }) && !collection.unavailableSources.contains("reminders")
+        guard await memory.replaceSelectedInformationContext(with: selectedGoogle, gatheredContext: gatheredContext,
+            replacingReminders: replacingReminders, requestID: requestID) else { throw CancellationError() }
+        try ensureActive(requestID)
+        let currentSession = await memory.snapshot()
+        let context = SessionMemoryEngine.merging(currentSession.contextItems, with: gatheredContext).filter {
+            !collection.unavailableSources.contains($0.metadata["source"] ?? "")
+        }
+        await progress(.reasoning)
+        let response = try await router.route(text: text, context: context, conversation: session.turns,
+            screenUnderstanding: currentSession.screenUnderstanding, existingFingerprints: existingFingerprints)
+        guard activeRequestID == requestID else { throw CancellationError() }
+        let answer = collection.unavailableSources.contains("reminders")
+            ? "I couldn’t check Reminders right now. " + response.text : response.text
+        guard await memory.rememberReadOnlyExchange(question: text, answer: answer, requestID: requestID) else { throw CancellationError() }
+        try ensureActive(requestID)
         await progress(.success)
-        return .init(text: response.text, route: response.route, contextCount: context.count, extractedItems: response.extractedItems)
+        return .init(text: answer, route: response.route, contextCount: context.count, extractedItems: response.extractedItems)
+    }
+
+    /// Authorized Information projection into the existing question route. No
+    /// second Context engine, remote model, durable snapshot or action authority.
+    private func selectedGoogleContext(for text: String, query: SuzzmeContextQuery) async throws -> [SuzzmeContextItem] {
+        guard let information, !isDailyOverviewRequest(text), !SuzzmeQuestionIntent.isGeneralExplanation(text),
+              SuzzmeQuestionIntent.classify(text) != .capture,
+              ["schedule", "meeting", "tomorrow", "today", "task", "due", "unfinished", "priorit", "focus", "when", "what time"].contains(where: text.lowercased().contains) else { return [] }
+        try await information.refresh(source: .connectedApps, force: true)
+        var result: [SuzzmeContextItem] = []
+        for (service, kind) in [("googleCalendar", SuzzmeContextSourceKind.calendar), ("googleTasks", .reminders)] where query.sources.contains(kind) {
+            let events = try await information.retrieve(.init(sources: [.connectedApps], entity: service, limit: query.limit))
+            for event in events where event.objectState == .active {
+                if let range = query.dateRange, let date = event.effectiveAt, !range.contains(date) { continue }
+                if text.localizedCaseInsensitiveContains("morning"), let date = event.effectiveAt, Calendar.current.component(.hour, from: date) >= 12 { continue }
+                var metadata = ["source": kind.rawValue, "authoritySource": "connectedApps", "title": event.title,
+                                "provider": service, "completed": "false", "allDay": String(event.isAllDay == true)]
+                if let date = event.effectiveAt { metadata[kind == .calendar ? "start" : "due"] = ISO8601DateFormatter().string(from: date) }
+                if let end = event.effectiveUntil { metadata["end"] = ISO8601DateFormatter().string(from: end) }
+                if let uid = event.entities.first(where: { $0.hasPrefix("ical:") }) { metadata["icalUID"] = String(uid.dropFirst(5)) }
+                result.append(.init(sourceIdentifier: event.externalID, content: event.title, timestamp: event.observedAt,
+                                    intent: kind == .calendar ? .event : .task, metadata: metadata,
+                                    expiration: min(event.expiresAt, Date.now.addingTimeInterval(120))))
+            }
+        }
+        return Array(result.prefix(query.limit))
     }
 
     func cancel(requestID: UUID) async {
         if activeRequestID == requestID { activeRequestID = nil; settingsFollowUp = nil; pendingAction = nil }
+        await memory.retireReadOnlyRequest(requestID)
+        await resourceContext?.cancel(requestID: requestID)
         await actionCoordinator.cancel(requestID: requestID)
         await settingsCoordinator?.cancel(requestID: requestID)
         if let memoryStore { await memoryStore.revoke(requestID) }
@@ -291,13 +498,14 @@ actor SuzzmeCore {
         try await proactive.updatePreferences(preferences)
     }
 
-    func prepareProactiveBriefing(from sources: [any ContextSource], now: Date = .now, profileName: String? = nil) async throws -> ProactiveSnapshot {
+    func prepareProactiveBriefing(from sources: [any ContextSource], now: Date = .now, profileName: String? = nil, rememberInSession: Bool = true, calendar: Calendar = .current, summaryCutoff: Date? = nil) async throws -> ProactiveSnapshot {
         guard let proactive else { throw ProactiveError.invalidState }
-        let snapshot = try await proactive.prepare(from: sources, now: now, profileName: profileName)
-        if let briefing = snapshot.briefing {
+        let snapshot = try await proactive.prepare(from: sources, now: now, calendar: calendar, profileName: profileName, summaryCutoff: summaryCutoff ?? now)
+        if rememberInSession, let briefing = snapshot.briefing {
             let context = briefing.items.prefix(ProactiveLimits.briefingItems).map { item in
-                SuzzmeContextItem(
-                    sourceIdentifier: "proactive:\(item.candidateID)",
+                let provenance = snapshot.dailyContext?.entries.first { $0.id == item.candidateID }
+                return SuzzmeContextItem(
+                    sourceIdentifier: provenance?.sourceReference ?? "proactive:\(item.candidateID)",
                     content: item.summary,
                     timestamp: briefing.createdAt,
                     entities: item.relatedEntities,
@@ -306,8 +514,9 @@ actor SuzzmeCore {
                     sensitivity: item.sensitivity,
                     metadata: [
                         "candidateID": item.candidateID,
-                        "source": "proactive-briefing",
-                        "title": item.summary,
+                        "source": provenance?.source ?? "proactive-briefing",
+                        "proactiveProjection": "true",
+                        "title": provenance?.title ?? item.summary,
                         "kind": item.kind.rawValue,
                         "effectiveAt": item.effectiveTime.map { ISO8601DateFormatter().string(from: $0) } ?? ""
                     ],
@@ -322,7 +531,9 @@ actor SuzzmeCore {
 
     private func isDailyOverviewRequest(_ text: String) -> Bool {
         let lower = text.lowercased()
-        return lower.contains("what do i have today")
+        return SuzzmeQuestionIntent.classify(text) == .priorities && !lower.contains("tomorrow")
+            || lower.contains("what do i have today")
+            || lower.contains("what happened in my projects today")
             || lower.contains("what matters today")
             || lower.contains("daily summary")
             || lower.contains("summarize my day")
@@ -378,8 +589,9 @@ actor SuzzmeCore {
         await memory.clear()
     }
 
-    func cancelProactivePreparation() async {
-        await proactive?.cancel()
+    func cancelProactivePreparation(respectingTaskCancellation: Bool = false) async {
+        guard !respectingTaskCancellation || !Task.isCancelled else { return }
+        await proactive?.cancel(respectingTaskCancellation: respectingTaskCancellation)
     }
 }
 

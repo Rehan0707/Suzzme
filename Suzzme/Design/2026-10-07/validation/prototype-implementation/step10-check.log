@@ -1,0 +1,194 @@
+PASS briefing enabled by default
+PASS time-critical disabled by default
+PASS prepared assistance enabled by default
+PASS briefing disable persists
+PASS selected briefing time persists
+PASS briefing timezone persists
+PASS time-critical enable persists
+PASS prepared assistance disable persists
+PASS preference values are bounded
+PASS invalid timezone falls back safely
+PASS all disabled prevents preparation
+PASS project relevance
+PASS project evidence recorded
+PASS reminder relevance
+PASS temporal proximity relevance
+PASS source reliability evidence
+PASS relevance explainability avoids opaque score
+PASS explicit preference relevance
+PASS commitment relevance
+PASS person relevance
+PASS schedule relevance
+PASS weak information is not promoted
+PASS unrelated memory does not create relevance
+PASS relevance evidence bounded
+PASS briefing retains relevance explanation
+PASS memory retrieval bounded
+PASS next briefing is in the future
+PASS next briefing uses selected hour
+PASS next briefing uses selected minute
+PASS imminent deadline
+PASS near deadline immediate
+PASS past deadline obsolete
+PASS unknown time can wait
+PASS stale event suppressed
+PASS superseded event suppressed
+PASS expired event suppressed
+PASS completed reminder obsolete
+PASS ended event obsolete
+PASS DST spring gap resolves forward
+PASS DST calculation remains bounded
+PASS DST repeated hour resolves deterministically
+PASS DST repeated hour chooses first occurrence
+PASS TIME_CRITICAL classification
+PASS time-critical briefing item
+PASS duplicate delivery suppression
+PASS duplicate remains available for briefing
+PASS cooldown expiry restores eligibility
+PASS time-critical preference off
+PASS relevant item prefers BRIEF when interruption off
+PASS stale cannot be time-critical
+PASS superseded cannot be time-critical
+PASS unhealthy evidence cannot interrupt
+PASS unhealthy evidence is explained
+PASS IGNORE classification
+PASS BRIEF classification
+PASS only current information interrupts
+PASS briefing creation
+PASS briefing includes meaningful bounded items
+PASS today section
+PASS meaningful changes section
+PASS reminder and deadline section
+PASS later section
+PASS schedule ordering
+PASS briefing source evidence
+PASS briefing live context evidence
+PASS briefing memory evidence
+PASS bounded narration
+PASS briefing is not notification enumeration
+PASS briefing ready state
+PASS briefing coverage starts now
+PASS information cutoff recorded
+PASS partial briefing
+PASS source health limitation narrated
+PASS source failure does not invent facts
+PASS multiple source failure can remain partial
+PASS truthful empty briefing
+PASS stale briefing state
+PASS briefing delivery state
+PASS opportunity creation
+PASS deadline opportunity kind
+PASS opportunity supporting memory
+PASS prepared assistance
+PASS prepared assistance is review-only
+PASS required reminder capability preview
+PASS prepared request is bounded
+PASS opportunity active state
+PASS opportunity dismissal
+PASS dismissal survives recomputation
+PASS no opportunity for weak evidence
+PASS prepared assistance disabled
+PASS opportunity remains without prepared action
+PASS calendar overlap opportunity
+PASS conflict has live evidence
+PASS conflict capability preview
+PASS completed reminder invalidates opportunity
+PASS cancelled event invalidates opportunity
+PASS deleted source invalidates opportunity
+PASS correction does not duplicate opportunity
+PASS proposal identity distinct from opportunity
+PASS urgent text has no policy authority
+PASS system-message text cannot authorize interruption
+PASS delete-reminders injection creates no opportunity
+PASS restricted data excluded
+PASS restricted data cannot prepare assistance
+PASS secret-like content blocked
+PASS secret-like content cannot notify
+PASS source content cannot execute
+PASS source content remains data
+PASS notification delivery is a bounded platform adapter
+PASS notification copy is privacy preserving
+PASS narration hides internal scoring
+PASS no chain-of-thought narration
+PASS model input evidence remains bounded
+PASS newer generation wins
+PASS current generation commits
+PASS cancelled generation cannot commit
+PASS generation records its clock
+PASS active opportunities bounded
+PASS briefing items bounded
+PASS briefing sources bounded
+PASS source change produces newer generation
+PASS changed source refreshes affected item
+PASS large generation remains bounded
+PASS large opportunity set remains bounded
+PASS large narration remains bounded
+PASS evidence per item bounded
+PASS real proactive disk file exists
+PASS preference restart
+PASS briefing restart
+PASS opportunity restart
+PASS delivery dedup restart
+PASS restart preserves duplicate suppression
+PASS dismissal after restart
+PASS Step 6 data preserved
+PASS Step 9 data preserved
+PASS clear Step 10 only
+PASS clear keeps proactive preferences
+PASS clear removes delivery history
+PASS pre-Step-10 absence migrates to defaults
+PASS seeded disk briefing was real
+PASS input candidates bounded at construction
+PASS input memories bounded at construction
+PASS health limitations bounded at construction
+PASS candidate entities bounded
+PASS confidence upper bound
+PASS confidence lower bound
+PASS preference validation idempotent
+PASS timezone-local briefing time
+PASS event at current time is immediate
+PASS later event can wait
+PASS low-confidence candidate excluded
+PASS permitted sensitive context remains local and usable
+PASS same-source correction consolidated
+PASS latest correction wins
+PASS cross-source evidence is not falsely deduplicated
+PASS unknown time remains unknown
+PASS briefing summary bounded
+PASS briefing explanation bounded
+PASS natural contextual opening
+PASS partial state explicit
+PASS complete state ready
+PASS ordinary schedule item does not interrupt
+PASS general relevant information waits for briefing
+PASS opportunity has deterministic expiration
+PASS proposal shares opportunity expiration
+PASS separate events do not create conflict
+PASS adjacent events do not overlap
+PASS opportunity identity stable
+PASS briefing item identity stable
+PASS briefing current inside freshness window
+PASS briefing stale outside freshness window
+PASS interrupted voice briefing recorded as partial
+PASS delivery history capped
+PASS retained briefing history capped
+PASS retained opportunity history capped
+PASS expired delivery record cleaned
+PASS malformed persistence rejected
+PASS raw memory detail excluded from narration
+PASS maximum information candidates
+PASS maximum live context candidates
+PASS maximum memory evidence
+PASS maximum evidence per item
+PASS maximum briefing items
+PASS maximum opportunities
+PASS briefing history bounded
+PASS stored opportunities bounded
+PASS delivery records bounded
+PASS narration bound
+PASS cooldown configured
+PASS cleanup retention bounded
+Step 10 behavioral checks passed: 190
+Step 10 behavioral checks failed: 0
+Step 10 production behavioral checks passed: 190
+Step 10 production behavioral checks failed: 0

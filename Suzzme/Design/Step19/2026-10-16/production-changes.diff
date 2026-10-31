@@ -1,0 +1,175 @@
+--- before/Features/Home/AskSuzzmeView.swift
++++ after/Features/Home/AskSuzzmeView.swift
+@@ -77,7 +77,7 @@
+     var body: some View {
+         NavigationStack {
+             ScrollViewReader { proxy in
+-                SuzzmeAssistantConversationScroll {
++                SuzzmeAssistantConversationScroll(followsConversation: $followsConversation) {
+                     conversationPresence
+                     availabilityNotice
+                     if conversation.entries.isEmpty && !focusedSession {
+@@ -103,15 +103,29 @@
+                             message: "Finish or cancel using the control that started this request. Your conversation stays here.")
+                     }
+                     if dynamicTypeSize.isAccessibilitySize { interactionControls }
+-                    Color.clear.frame(height: 1).id("assistant-conversation-bottom")
+-                        .onAppear { followsConversation = true }
+-                        .onDisappear { followsConversation = false }
+                 }
+                 .onChange(of: conversation.revision) { _, _ in
+                     guard followsConversation || scrollToLatest else { return }
+                     scrollToLatest = false
+-                    withAnimation(reduceMotion ? nil : .easeOut(duration: SuzzmeTheme.Motion.standard)) {
++                    withAnimation(SuzzmeTheme.Motion.disclosure(reduceMotion: reduceMotion)) {
+                         proxy.scrollTo("assistant-conversation-bottom", anchor: .bottom)
++                    }
++                }
++                .overlay(alignment: .bottom) {
++                    if !followsConversation && !conversation.entries.isEmpty {
++                        Button {
++                            withAnimation(SuzzmeTheme.Motion.disclosure(reduceMotion: reduceMotion)) {
++                                proxy.scrollTo("assistant-conversation-bottom", anchor: .bottom)
++                            }
++                        } label: {
++                            Label("Latest message", systemImage: "arrow.down")
++                                .frame(minHeight: SuzzmeTheme.Layout.touchTarget)
++                        }
++                        .buttonStyle(.bordered)
++                        .background(SuzzmeTheme.backgroundPrimary, in: Capsule())
++                        .accessibilityHint("Return to the end of this conversation")
++                        .accessibilityIdentifier("suzzme-assistant-latest")
++                        .padding(.bottom, SuzzmeTheme.Spacing.small)
+                     }
+                 }
+                 .safeAreaInset(edge: .bottom) {
+--- before/Features/Briefing/BriefingView.swift
++++ after/Features/Briefing/BriefingView.swift
+@@ -95,8 +95,9 @@
+                     .foregroundStyle(SuzzmeTheme.textSecondary)
+                 Text(briefing.narration)
+                     .font(.body)
+-                    .lineSpacing(SuzzmeTheme.Spacing.xxs)
++                    .lineSpacing(SuzzmeTheme.Spacing.xs)
+                     .fixedSize(horizontal: false, vertical: true)
++                    .frame(maxWidth: SuzzmeTheme.Layout.companionWidth, alignment: .leading)
+                     .textSelection(.enabled)
+                 SuzzmeActionControls {
+                     Button {
+@@ -135,6 +136,7 @@
+                     SuzzmeSectionHeader(title: section.kind.title)
+                     ForEach(section.items) { item in
+                         BriefingItemView(item: item)
++                        if item.id != section.items.last?.id { Divider() }
+                     }
+                 }
+             }
+--- before/DesignSystem/Layout/SuzzmePage.swift
++++ after/DesignSystem/Layout/SuzzmePage.swift
+@@ -6,6 +6,7 @@
+         #if os(macOS)
+         content
+             .environment(\.defaultMinListRowHeight, SuzzmeTheme.Layout.touchTarget)
++            .padding(.top, SuzzmeTheme.Spacing.large)
+             .scrollContentBackground(.hidden)
+             .tint(SuzzmeTheme.textPrimary)
+             .frame(maxWidth: SuzzmeTheme.Layout.readingWidth)
+--- before/DesignSystem/Components/SuzzmeInteractionFeedback.swift
++++ after/DesignSystem/Components/SuzzmeInteractionFeedback.swift
+@@ -84,12 +84,24 @@
+     }
+ }
+ 
++private struct SuzzmeSelectionFeedback<Value: Equatable>: ViewModifier {
++    @Environment(\.scenePhase) private var scenePhase
++    let trigger: Value
++
++    func body(content: Content) -> some View {
++        content.onChange(of: trigger) { _, _ in
++            guard scenePhase == .active else { return }
++            SuzzmeHaptics.play(.selection)
++        }
++    }
++}
++
+ extension View {
+     func suzzmeInteractionFeedback(state: SuzzmeAssistantState, isRecording: Bool, confirmationID: UUID?) -> some View {
+         modifier(SuzzmeInteractionFeedback(state: state, isRecording: isRecording, confirmationID: confirmationID))
+     }
+ 
+     func suzzmeSelectionFeedback<Value: Equatable>(trigger: Value) -> some View {
+-        onChange(of: trigger) { _, _ in SuzzmeHaptics.play(.selection) }
++        modifier(SuzzmeSelectionFeedback(trigger: trigger))
+     }
+ }
+--- before/DesignSystem/Components/SuzzmeAssistantComponents.swift
++++ after/DesignSystem/Components/SuzzmeAssistantComponents.swift
+@@ -79,6 +79,7 @@
+ 
+ struct SuzzmeAssistantStatusIndicator: View {
+     @Environment(\.accessibilityReduceMotion) private var reduceMotion
++    @Environment(\.scenePhase) private var scenePhase
+     let state: SuzzmeAssistantState
+     let statusMessage: String?
+     let colors: SuzzmePresenceColors
+@@ -120,6 +121,11 @@
+         }
+         .accessibilityElement(children: .combine)
+         .accessibilityLabel("Suzzme status: \(statusMessage ?? defaultStatus)")
++        .onChange(of: state) { _, current in
++            guard scenePhase == .active,
++                  [.listening, .awaitingConfirmation, .success, .error].contains(current) else { return }
++            AccessibilityNotification.Announcement(statusMessage ?? defaultStatus).post()
++        }
+     }
+ 
+     private var defaultStatus: String {
+@@ -247,21 +253,41 @@
+ 
+ struct SuzzmeAssistantConversationScroll<Content: View>: View {
+     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
++    @Binding var followsConversation: Bool
+     @ViewBuilder let content: Content
+ 
+     var body: some View {
+         ScrollView {
+-            LazyVStack(alignment: .leading, spacing: dynamicTypeSize.isAccessibilitySize ? SuzzmeTheme.Spacing.extraLarge : SuzzmeTheme.Spacing.large) {
+-                content
+-            }
+-            .padding(.horizontal, SuzzmeTheme.Layout.compactInset)
+-            .padding(.vertical, SuzzmeTheme.Spacing.large)
+-            .frame(maxWidth: SuzzmeTheme.Layout.readingWidth, alignment: .leading)
+-            .frame(maxWidth: .infinity)
++            VStack(spacing: 0) {
++                LazyVStack(alignment: .leading, spacing: dynamicTypeSize.isAccessibilitySize ? SuzzmeTheme.Spacing.extraLarge : SuzzmeTheme.Spacing.large) {
++                    content
++                }
++                .padding(.horizontal, SuzzmeTheme.Layout.compactInset)
++                .padding(.vertical, SuzzmeTheme.Spacing.large)
++                .frame(maxWidth: SuzzmeTheme.Layout.readingWidth, alignment: .leading)
++                .frame(maxWidth: .infinity)
++                // The scroll target belongs after the content padding so its
++                // bottom anchor reaches the actual end of the scroll region.
++                conversationEnd
++            }
+         }
+         .scrollDismissesKeyboard(.interactively)
+         .scrollBounceBehavior(.basedOnSize)
+         .background(SuzzmeTheme.pageBackground)
++    }
++
++    @ViewBuilder private var conversationEnd: some View {
++        if #available(iOS 18, macOS 15, *) {
++            endMarker.onScrollVisibilityChange(threshold: 1) { followsConversation = $0 }
++        } else {
++            // Preserve the existing lifecycle behavior on older supported OSes.
++            endMarker.onAppear { followsConversation = true }
++                .onDisappear { followsConversation = false }
++        }
++    }
++
++    private var endMarker: some View {
++        Color.clear.frame(height: 1).id("assistant-conversation-bottom")
+     }
+ }
+ 

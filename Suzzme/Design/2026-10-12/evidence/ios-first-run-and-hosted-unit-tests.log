@@ -1,0 +1,651 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -project /tmp/SuzzmeNativePlatformAcceptanceProject/Suzzme.xcodeproj -scheme NativePlatformAcceptance -configuration Debug -destination "platform=iOS Simulator,id=BF97982B-6BF2-4C6D-B647-2CC5A387A30B" -derivedDataPath /tmp/SuzzmeNativePlatformIOSBuild -clonedSourcePackagesDirPath /Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages -resultBundlePath /tmp/SuzzmeNativePlatformIOSResults -parallel-testing-enabled NO CODE_SIGNING_ALLOWED=NO test-without-building
+
+Build settings from command line:
+    CODE_SIGNING_ALLOWED = NO
+
+Resolve Package Graph
+
+
+Resolved source packages:
+  InteropForGoogle: https://github.com/google/interop-ios-for-google-sdks.git @ 101.0.0
+  swift-atomics: https://github.com/apple/swift-atomics.git @ 1.3.1
+  GTMAppAuth: https://github.com/google/GTMAppAuth.git @ 6.0.0
+  swift-collections: https://github.com/apple/swift-collections.git @ 1.7.2
+  swift-nio: https://github.com/apple/swift-nio.git @ 2.104.0
+  EventSource: https://github.com/mattt/eventsource.git @ 1.5.1
+  Promises: https://github.com/google/promises.git @ 2.4.1
+  mcp-swift-sdk: https://github.com/modelcontextprotocol/swift-sdk @ 0.12.1
+  AppAuth: https://github.com/openid/AppAuth-iOS.git @ 3.0.0
+  swift-log: https://github.com/apple/swift-log.git @ 1.6.2
+  AppCheck: https://github.com/google/app-check.git @ 11.3.2
+  GTMSessionFetcher: https://github.com/google/gtm-session-fetcher.git @ 5.3.1
+  swift-system: https://github.com/apple/swift-system.git @ 1.8.1
+  GoogleSignIn: https://github.com/google/GoogleSignIn-iOS @ 10.0.0
+  GoogleUtilities: https://github.com/google/GoogleUtilities.git @ 8.1.4
+
+Writing result bundle at path:
+	/tmp/SuzzmeNativePlatformIOSResults
+
+2026-10-12 20:00:16.658087+0530 Suzzme[36407:1048107] [General] Failed to send CA Event for app launch measurements for ca_event_type: 0 event_name: com.apple.app_launch_measurement.FirstFramePresentationMetric
+2026-10-12 20:00:16.739179+0530 Suzzme[36407:1047107] [XPCErrors] non-launching port is incompatible with service identifier "com.apple.PointerUI.pointeruid.default-service"
+objc[36407]: Class UIAccessibilityLoaderWebShared is implemented in both /Library/Developer/CoreSimulator/Volumes/iOS_24A434/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime/Contents/Resources/RuntimeRoot/System/Library/AccessibilityBundles/WebKit.axbundle/WebKit (0x10c728398) and /Library/Developer/CoreSimulator/Volumes/iOS_24A434/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime/Contents/Resources/RuntimeRoot/System/Library/AccessibilityBundles/WebCore.axbundle/WebCore (0x10d3ac310). This may cause spurious casting failures and mysterious crashes. One of the duplicates must be removed or renamed.
+Test Suite 'All tests' started at 2026-10-12 20:00:23.987.
+Test Suite 'NativePlatformUnitTests.xctest' started at 2026-10-12 20:00:23.993.
+Test Suite 'ConversationContinuityTests' started at 2026-10-12 20:00:23.994.
+Test Case '-[NativePlatformUnitTests.ConversationContinuityTests testAnUnwindingGenerationKeepsItsDistinctRetryError]' started.
+Test Case '-[NativePlatformUnitTests.ConversationContinuityTests testAnUnwindingGenerationKeepsItsDistinctRetryError]' passed (0.048 seconds).
+Test Case '-[NativePlatformUnitTests.ConversationContinuityTests testEnvironmentUsesItsExistingProviderForCapabilityAndAnswers]' started.
+2026-10-12 20:00:24.182619+0530 Suzzme[36407:1048546] [as_client] AVAudioSessionImpl_Simulator.mm:139   Unsupported property: SupportsInterruptionEndedAfterActivationError
+2026-10-12 20:00:24.284235+0530 Suzzme[36407:1047107] [AVAudioSession Hang Risk]     AVAudioSession_iOS.mm:978   This method can lead to UI unresponsiveness if called on the main thread. Consider using the asynchronous activate/deactivate API instead for calls from the main thread.
+2026-10-12 20:00:24.393993+0530 Suzzme[36407:1047107] [plugin] AddInstanceForFactory: No factory registered for id <CFUUID 0x10ca06c20> F8BB1C28-BAE8-11D6-9C31-00039315CD46
+/tmp/SuzzmeNativePlatformAcceptanceProject/NativePlatformUnitTests/ConversationContinuityTests.swift:40: warning: -[NativePlatformUnitTests.ConversationContinuityTests testEnvironmentUsesItsExistingProviderForCapabilityAndAnswers] :     AVAudioSession_iOS.mm:978   This method can lead to UI unresponsiveness if called on the main thread. Consider using the asynchronous activate/deactivate API instead for calls from the main thread.
+2026-10-12 20:00:25.110669+0530 Suzzme[36407:1047107] [AVAudioSession Hang Risk]     AVAudioSession_iOS.mm:978   This method can lead to UI unresponsiveness if called on the main thread. Consider using the asynchronous activate/deactivate API instead for calls from the main thread.
+2026-10-12 20:00:25.111259+0530 Suzzme[36407:1047107] [AVAudioSession Hang Risk]     AVAudioSession_iOS.mm:978   This method can lead to UI unresponsiveness if called on the main thread. Consider using the asynchronous activate/deactivate API instead for calls from the main thread.
+Test Case '-[NativePlatformUnitTests.ConversationContinuityTests testEnvironmentUsesItsExistingProviderForCapabilityAndAnswers]' passed (1.084 seconds).
+Test Case '-[NativePlatformUnitTests.ConversationContinuityTests testExplanationRetainsOnlyBoundedCurrentSafeConversation]' started.
+Test Case '-[NativePlatformUnitTests.ConversationContinuityTests testExplanationRetainsOnlyBoundedCurrentSafeConversation]' passed (0.023 seconds).
+Test Suite 'ConversationContinuityTests' passed at 2026-10-12 20:00:25.156.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 1.155 (1.162) seconds
+Test Suite 'StartupRecoveryTests' started at 2026-10-12 20:00:25.158.
+Test Case '-[NativePlatformUnitTests.StartupRecoveryTests testColdLaunchURLsAreBoundedAndTransferredOnce]' started.
+2026-10-12 20:00:25.165381+0530 Suzzme[36407:1047107] [AVAudioSession Hang Risk]     AVAudioSession_iOS.mm:978   This method can lead to UI unresponsiveness if called on the main thread. Consider using the asynchronous activate/deactivate API instead for calls from the main thread.
+2026-10-12 20:00:25.210292+0530 Suzzme[36407:1047107] [AVAudioSession Hang Risk]     AVAudioSession_iOS.mm:978   This method can lead to UI unresponsiveness if called on the main thread. Consider using the asynchronous activate/deactivate API instead for calls from the main thread.
+/tmp/SuzzmeNativePlatformAcceptanceProject/NativePlatformUnitTests/StartupRecoveryTests.swift:172: warning: -[NativePlatformUnitTests.StartupRecoveryTests testColdLaunchURLsAreBoundedAndTransferredOnce] :     AVAudioSession_iOS.mm:978   This method can lead to UI unresponsiveness if called on the main thread. Consider using the asynchronous activate/deactivate API instead for calls from the main thread.
+Test Case '-[NativePlatformUnitTests.StartupRecoveryTests testColdLaunchURLsAreBoundedAndTransferredOnce]' passed (0.057 seconds).
+Test Case '-[NativePlatformUnitTests.StartupRecoveryTests testContinueSupersedesALateSuccessfulPreparation]' started.
+2026-10-12 20:00:25.266786+0530 Suzzme[36407:1047107] [AVAudioSession Hang Risk]     AVAudioSession_iOS.mm:978   This method can lead to UI unresponsiveness if called on the main thread. Consider using the asynchronous activate/deactivate API instead for calls from the main thread.
+2026-10-12 20:00:25.270049+0530 Suzzme[36407:1047107] [AVAudioSession Hang Risk]     AVAudioSession_iOS.mm:978   This method can lead to UI unresponsiveness if called on the main thread. Consider using the asynchronous activate/deactivate API instead for calls from the main thread.
+/tmp/SuzzmeNativePlatformAcceptanceProject/NativePlatformUnitTests/StartupRecoveryTests.swift:172: warning: -[NativePlatformUnitTests.StartupRecoveryTests testContinueSupersedesALateSuccessfulPreparation] :     AVAudioSession_iOS.mm:978   This method can lead to UI unresponsiveness if called on the main thread. Consider using the asynchronous activate/deactivate API instead for calls from the main thread.
+Test Case '-[NativePlatformUnitTests.StartupRecoveryTests testContinueSupersedesALateSuccessfulPreparation]' passed (0.058 seconds).
+Test Case '-[NativePlatformUnitTests.StartupRecoveryTests testDelayedPreparationLeavesAVisibleInteractiveStartup]' started.
+2026-10-12 20:00:25.280856+0530 Suzzme[36407:1047107] [Invalid Configuration] Cannot use Scene methods for URL, NSUserActivity, and other External Events without using SwiftUI Lifecycle. Without SwiftUI Lifecycle, advertising and handling External Events wastes resources, and will have unpredictable results.
+2026-10-12 20:00:25.395871+0530 Suzzme[36407:1047107] [Invalid Configuration] Unable to render flattened version of PlatformViewRepresentableAdaptor<CircularUIKitProgressView>.
+IOSurfaceClientSetSurfaceNotify failed e00002c7
+2026-10-12 20:00:25.402158+0530 Suzzme[36407:1048546] fopen failed for data file: errno = 2 (No such file or directory)
+2026-10-12 20:00:25.416627+0530 Suzzme[36407:1047107] [Invalid Configuration] Cannot use Scene methods for URL, NSUserActivity, and other External Events without using SwiftUI Lifecycle. Without SwiftUI Lifecycle, advertising and handling External Events wastes resources, and will have unpredictable results.
+2026-10-12 20:00:25.423056+0530 Suzzme[36407:1047107] [Invalid Configuration] Cannot use Scene methods for URL, NSUserActivity, and other External Events without using SwiftUI Lifecycle. Without SwiftUI Lifecycle, advertising and handling External Events wastes resources, and will have unpredictable results.
+2026-10-12 20:00:25.511210+0530 Suzzme[36407:1047107] [AVAudioSession Hang Risk]     AVAudioSession_iOS.mm:978   This method can lead to UI unresponsiveness if called on the main thread. Consider using the asynchronous activate/deactivate API instead for calls from the main thread.
+2026-10-12 20:00:25.513860+0530 Suzzme[36407:1047107] [AVAudioSession Hang Risk]     AVAudioSession_iOS.mm:978   This method can lead to UI unresponsiveness if called on the main thread. Consider using the asynchronous activate/deactivate API instead for calls from the main thread.
+/tmp/SuzzmeNativePlatformAcceptanceProject/NativePlatformUnitTests/StartupRecoveryTests.swift:172: warning: -[NativePlatformUnitTests.StartupRecoveryTests testDelayedPreparationLeavesAVisibleInteractiveStartup] :     AVAudioSession_iOS.mm:978   This method can lead to UI unresponsiveness if called on the main thread. Consider using the asynchronous activate/deactivate API instead for calls from the main thread.
+Test Case '-[NativePlatformUnitTests.StartupRecoveryTests testDelayedPreparationLeavesAVisibleInteractiveStartup]' passed (0.243 seconds).
+Test Case '-[NativePlatformUnitTests.StartupRecoveryTests testMultipleSceneRequestsShareOnePreparation]' started.
+Test Case '-[NativePlatformUnitTests.StartupRecoveryTests testMultipleSceneRequestsShareOnePreparation]' passed (0.002 seconds).
+Test Case '-[NativePlatformUnitTests.StartupRecoveryTests testRetryPreservesAnOpenedStoreAndRetiresTheOldRequest]' started.
+2026-10-12 20:00:25.597406+0530 Suzzme[36407:1047107] [AVAudioSession Hang Risk]     AVAudioSession_iOS.mm:978   This method can lead to UI unresponsiveness if called on the main thread. Consider using the asynchronous activate/deactivate API instead for calls from the main thread.
+/tmp/SuzzmeNativePlatformAcceptanceProject/NativePlatformUnitTests/StartupRecoveryTests.swift:108: warning: -[NativePlatformUnitTests.StartupRecoveryTests testRetryPreservesAnOpenedStoreAndRetiresTheOldRequest] :     AVAudioSession_iOS.mm:978   This method can lead to UI unresponsiveness if called on the main thread. Consider using the asynchronous activate/deactivate API instead for calls from the main thread.
+2026-10-12 20:00:25.648962+0530 Suzzme[36407:1047107] [AVAudioSession Hang Risk]     AVAudioSession_iOS.mm:978   This method can lead to UI unresponsiveness if called on the main thread. Consider using the asynchronous activate/deactivate API instead for calls from the main thread.
+2026-10-12 20:00:25.649067+0530 Suzzme[36407:1048106] [General] Failed to send CA Event for app launch measurements for ca_event_type: 1 event_name: com.apple.app_launch_measurement.ExtendedLaunchMetrics
+2026-10-12 20:00:25.649384+0530 Suzzme[36407:1047107] [AVAudioSession Hang Risk]     AVAudioSession_iOS.mm:978   This method can lead to UI unresponsiveness if called on the main thread. Consider using the asynchronous activate/deactivate API instead for calls from the main thread.
+2026-10-12 20:00:25.661453+0530 Suzzme[36407:1047107] [AVAudioSession Hang Risk]     AVAudioSession_iOS.mm:978   This method can lead to UI unresponsiveness if called on the main thread. Consider using the asynchronous activate/deactivate API instead for calls from the main thread.
+2026-10-12 20:00:25.662847+0530 Suzzme[36407:1047107] [AVAudioSession Hang Risk]     AVAudioSession_iOS.mm:978   This method can lead to UI unresponsiveness if called on the main thread. Consider using the asynchronous activate/deactivate API instead for calls from the main thread.
+2026-10-12 20:00:25.663833+0530 Suzzme[36407:1047107] [AVAudioSession Hang Risk]     AVAudioSession_iOS.mm:978   This method can lead to UI unresponsiveness if called on the main thread. Consider using the asynchronous activate/deactivate API instead for calls from the main thread.
+2026-10-12 20:00:25.664185+0530 Suzzme[36407:1047107] [AVAudioSession Hang Risk]     AVAudioSession_iOS.mm:978   This method can lead to UI unresponsiveness if called on the main thread. Consider using the asynchronous activate/deactivate API instead for calls from the main thread.
+Test Case '-[NativePlatformUnitTests.StartupRecoveryTests testRetryPreservesAnOpenedStoreAndRetiresTheOldRequest]' passed (0.261 seconds).
+Test Case '-[NativePlatformUnitTests.StartupRecoveryTests testStorageFailureRequiresExplicitRecoveryChoice]' started.
+2026-10-12 20:00:25.786109+0530 Suzzme[36407:1047107] [AVAudioSession Hang Risk]     AVAudioSession_iOS.mm:978   This method can lead to UI unresponsiveness if called on the main thread. Consider using the asynchronous activate/deactivate API instead for calls from the main thread.
+2026-10-12 20:00:25.788508+0530 Suzzme[36407:1047107] [AVAudioSession Hang Risk]     AVAudioSession_iOS.mm:978   This method can lead to UI unresponsiveness if called on the main thread. Consider using the asynchronous activate/deactivate API instead for calls from the main thread.
+/tmp/SuzzmeNativePlatformAcceptanceProject/NativePlatformUnitTests/StartupRecoveryTests.swift:172: warning: -[NativePlatformUnitTests.StartupRecoveryTests testStorageFailureRequiresExplicitRecoveryChoice] :     AVAudioSession_iOS.mm:978   This method can lead to UI unresponsiveness if called on the main thread. Consider using the asynchronous activate/deactivate API instead for calls from the main thread.
+Test Case '-[NativePlatformUnitTests.StartupRecoveryTests testStorageFailureRequiresExplicitRecoveryChoice]' passed (0.011 seconds).
+Test Suite 'StartupRecoveryTests' passed at 2026-10-12 20:00:25.792.
+	 Executed 6 tests, with 0 failures (0 unexpected) in 0.631 (0.635) seconds
+Test Suite 'NativePlatformUnitTests.xctest' passed at 2026-10-12 20:00:25.793.
+	 Executed 9 tests, with 0 failures (0 unexpected) in 1.786 (1.799) seconds
+Test Suite 'All tests' passed at 2026-10-12 20:00:25.793.
+	 Executed 9 tests, with 0 failures (0 unexpected) in 1.786 (1.806) seconds
+2026-10-12 20:00:39.309092+0530 NativePlatformUITests-Runner[36701:1048986] [Default] Running tests...
+objc[36701]: Class UIAccessibilityLoaderWebShared is implemented in both /Library/Developer/CoreSimulator/Volumes/iOS_24A434/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime/Contents/Resources/RuntimeRoot/System/Library/AccessibilityBundles/WebKit.axbundle/WebKit (0x1092b0398) and /Library/Developer/CoreSimulator/Volumes/iOS_24A434/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime/Contents/Resources/RuntimeRoot/System/Library/AccessibilityBundles/WebCore.axbundle/WebCore (0x1093a4310). This may cause spurious casting failures and mysterious crashes. One of the duplicates must be removed or renamed.
+    t =      nans Interface orientation changed to Portrait
+Test Suite 'All tests' started at 2026-10-12 20:00:47.123.
+Test Suite 'NativePlatformUITests.xctest' started at 2026-10-12 20:00:47.153.
+Test Suite 'NativePlatformUITests' started at 2026-10-12 20:00:47.153.
+Test Case '-[NativePlatformUITests.NativePlatformUITests test01ProductionFirstRunAndOnboarding]' started.
+    t =     0.00s Start Test at 2026-10-12 20:00:47.158
+    t =     0.74s Set Up
+    t =     0.76s Open dev.suzzme.NativeAcceptance
+    t =     0.76s     Launch dev.suzzme.NativeAcceptance
+2026-10-12 20:00:48.704 xcodebuild[36062:1044966] [MT] IDELaunchParametersSnapshot: debugger version lookup failed for path '<nil>': noURL
+2026-10-12 20:00:48.705 xcodebuild[36062:1044966] [MT] IDELaunchParametersSnapshot: no debugger version
+    t =     2.80s         Setting up automation session
+    t =     9.67s         Wait for dev.suzzme.NativeAcceptance to idle
+    t =    13.50s Waiting 60.0s for "Get Started" Button to exist
+    t =    14.53s     Checking `Expect predicate `existsNoRetry == 1` for object "Get Started" Button`
+    t =    14.53s         Checking existence of `"Get Started" Button`
+    t =    14.73s Find the Target Application 'dev.suzzme.NativeAcceptance'
+    t =    15.29s Added attachment named '01-welcome-light'
+    t =    15.29s Tap "Get Started" Button
+    t =    15.29s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    15.29s     Find the "Get Started" Button
+    t =    15.32s     Check for interrupting elements affecting "Get Started" Button
+    t =    15.48s     Synthesize event
+    t =    16.00s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    16.19s Waiting 10.0s for "Make it personal" StaticText to exist
+    t =    17.21s     Checking `Expect predicate `existsNoRetry == 1` for object "Make it personal" StaticText`
+    t =    17.21s         Checking existence of `"Make it personal" StaticText`
+    t =    17.25s Find the Target Application 'dev.suzzme.NativeAcceptance'
+    t =    17.58s Added attachment named '02-onboarding-0'
+    t =    17.58s Checking existence of `"Start using Suzzme" Button`
+    t =    17.60s Checking existence of `"Continue" Button`
+    t =    17.62s Tap "Continue" Button
+    t =    17.62s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    17.62s     Find the "Continue" Button
+    t =    17.64s     Check for interrupting elements affecting "Continue" Button
+    t =    17.67s     Synthesize event
+    t =    17.98s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    18.07s Find the Target Application 'dev.suzzme.NativeAcceptance'
+    t =    18.44s Added attachment named '02-onboarding-1'
+    t =    18.44s Checking existence of `"Start using Suzzme" Button`
+    t =    18.46s Checking existence of `"Continue" Button`
+    t =    18.48s Tap "Continue" Button
+    t =    18.48s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    18.49s     Find the "Continue" Button
+    t =    18.51s     Check for interrupting elements affecting "Continue" Button
+    t =    18.55s     Synthesize event
+    t =    18.85s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    18.86s Find the Target Application 'dev.suzzme.NativeAcceptance'
+    t =    19.20s Added attachment named '02-onboarding-2'
+    t =    19.20s Checking existence of `"Start using Suzzme" Button`
+    t =    19.22s Checking existence of `"Continue" Button`
+    t =    19.23s Tap "Continue" Button
+    t =    19.23s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    19.24s     Find the "Continue" Button
+    t =    19.26s     Check for interrupting elements affecting "Continue" Button
+    t =    19.29s     Synthesize event
+    t =    19.60s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    19.61s Find the Target Application 'dev.suzzme.NativeAcceptance'
+    t =    19.94s Added attachment named '02-onboarding-3'
+    t =    19.95s Checking existence of `"Start using Suzzme" Button`
+    t =    19.97s Checking existence of `"Continue" Button`
+    t =    19.98s Tap "Continue" Button
+    t =    19.98s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    19.99s     Find the "Continue" Button
+    t =    20.01s     Check for interrupting elements affecting "Continue" Button
+    t =    20.04s     Synthesize event
+    t =    20.35s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    20.41s Find the Target Application 'dev.suzzme.NativeAcceptance'
+    t =    20.75s Added attachment named '02-onboarding-4'
+    t =    20.76s Checking existence of `"Start using Suzzme" Button`
+    t =    20.81s Checking existence of `"Continue" Button`
+    t =    20.83s Tap "Continue" Button
+    t =    20.83s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    20.83s     Find the "Continue" Button
+    t =    20.86s     Check for interrupting elements affecting "Continue" Button
+    t =    20.89s     Synthesize event
+    t =    21.20s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    21.21s Find the Target Application 'dev.suzzme.NativeAcceptance'
+    t =    21.61s Added attachment named '02-onboarding-5'
+    t =    21.62s Checking existence of `"Start using Suzzme" Button`
+    t =    21.65s Checking existence of `"Continue" Button`
+    t =    21.68s Tap "Continue" Button
+    t =    21.68s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    21.69s     Find the "Continue" Button
+    t =    21.72s     Check for interrupting elements affecting "Continue" Button
+    t =    21.75s     Synthesize event
+    t =    22.08s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    22.20s Find the Target Application 'dev.suzzme.NativeAcceptance'
+    t =    22.68s Added attachment named '02-onboarding-6'
+    t =    22.68s Checking existence of `"Start using Suzzme" Button`
+    t =    22.70s Tap "Start using Suzzme" Button
+    t =    22.70s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    22.71s     Find the "Start using Suzzme" Button
+    t =    22.74s     Check for interrupting elements affecting "Start using Suzzme" Button
+    t =    22.78s     Synthesize event
+    t =    23.09s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    24.90s Waiting 20.0s for "suzzme-home-talk" Button to exist
+    t =    25.93s     Checking `Expect predicate `existsNoRetry == 1` for object "suzzme-home-talk" Button`
+    t =    25.94s         Checking existence of `"suzzme-home-talk" Button`
+    t =    26.04s Find the Target Application 'dev.suzzme.NativeAcceptance'
+    t =    26.25s Added attachment named '03-production-home-light'
+    t =    26.26s Checking existence of `"Your question" TextField`
+    t =    26.30s Checking existence of `Alert (First Match)`
+    t =    26.36s Tear Down
+Test Case '-[NativePlatformUITests.NativePlatformUITests test01ProductionFirstRunAndOnboarding]' passed (26.739 seconds).
+Test Case '-[NativePlatformUITests.NativePlatformUITests test02RealTextConversationAndFollowUp]' started.
+    t =     0.00s Start Test at 2026-10-12 20:01:13.902
+    t =     0.08s Set Up
+    t =     0.08s Open dev.suzzme.NativeAcceptance
+    t =     0.08s     Launch dev.suzzme.NativeAcceptance
+    t =     0.08s         Terminate dev.suzzme.NativeAcceptance:36855
+2026-10-12 20:01:15.080 xcodebuild[36062:1044966] [MT] IDELaunchParametersSnapshot: debugger version lookup failed for path '<nil>': noURL
+2026-10-12 20:01:15.081 xcodebuild[36062:1044966] [MT] IDELaunchParametersSnapshot: no debugger version
+    t =     1.41s         Setting up automation session
+    t =     9.99s         Wait for dev.suzzme.NativeAcceptance to idle
+    t =    17.78s Waiting 60.0s for "suzzme-home-talk" Button to exist
+    t =    18.80s     Checking `Expect predicate `existsNoRetry == 1` for object "suzzme-home-talk" Button`
+    t =    18.81s         Checking existence of `"suzzme-home-talk" Button`
+    t =    19.16s Checking existence of `"Your question" TextField`
+    t =    19.21s Tap "Your question" TextField
+    t =    19.21s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    19.22s     Find the "Your question" TextField
+    t =    19.26s     Check for interrupting elements affecting "Ask anything…" TextField
+    t =    19.40s     Synthesize event
+    t =    19.81s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    22.06s Type 'What can you do?' into "Ask anything…" TextField
+    t =    22.06s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    22.36s     Find the "Ask anything…" TextField
+    t =    22.50s     Check for interrupting elements affecting "Ask anything…" TextField
+    t =    22.58s     Synthesize event
+    t =    23.07s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    23.52s Tap "Send question" Button
+    t =    23.52s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    23.53s     Find the "Send question" Button
+    t =    23.86s     Check for interrupting elements affecting "arrow.up" Button
+    t =    24.10s     Synthesize event
+    t =    24.44s     Wait for dev.suzzme.NativeAcceptance to idle
+<unknown>:0: warning: -[NativePlatformUITests.NativePlatformUITests test02RealTextConversationAndFollowUp] :     AVAudioSession_iOS.mm:978   This method can lead to UI unresponsiveness if called on the main thread. Consider using the asynchronous activate/deactivate API instead for calls from the main thread.
+    t =    28.80s Waiting 45.0s for "Answered without generative AI" StaticText to exist
+    t =    29.84s     Checking `Expect predicate `existsNoRetry == 1` for object "Answered without generative AI" StaticText`
+    t =    29.88s         Checking existence of `"Answered without generative AI" StaticText`
+    t =    30.36s Checking existence of `StaticText (First Match)`
+    t =    30.81s Find the Target Application 'dev.suzzme.NativeAcceptance'
+    t =    31.58s Added attachment named '04-real-core-conversation'
+    t =    31.59s Checking existence of `"suzzme-assistant-input" TextField`
+    t =    32.51s Checking existence of `"suzzme-assistant-input" TextView`
+    t =    32.65s Requesting snapshot of accessibility hierarchy for app with pid 37095
+    t =    33.47s Requesting snapshot of accessibility hierarchy for app with pid 37095
+/tmp/SuzzmeNativePlatformAcceptanceProject/NativePlatformUITests/NativePlatformUITests.swift:52: error: -[NativePlatformUITests.NativePlatformUITests test02RealTextConversationAndFollowUp] : XCTAssertTrue failed - Attributes: Application, 0x1096f0780, pid: 37095, label: 'Suzzme'
+Element subtree:
+ →Application, 0x1096f0780, pid: 37095, label: 'Suzzme'
+    Window (Main), 0x1096f08c0, {{0.0, 0.0}, {402.0, 874.0}}
+      Other, 0x106673840, {{0.0, 0.0}, {402.0, 874.0}}
+        Other, 0x1066735c0, {{0.0, 0.0}, {402.0, 874.0}}
+          Other, 0x106673c00, {{-402.0, -874.0}, {1206.0, 2622.0}}
+          Other, 0x106673d40, {{0.0, 0.0}, {402.0, 874.0}}
+            Other, 0x106673ac0, {{0.0, 0.0}, {402.0, 874.0}}
+              Other, 0x106670c80, {{0.0, 0.0}, {402.0, 874.0}}
+                NavigationBar, 0x106671400, {{0.0, 62.0}, {402.0, 54.0}}, identifier: 'Suzzme'
+                  Other, 0x1125d0000, {{20.0, 66.0}, {36.0, 36.0}}
+                    Other, 0x1125d0140, {{20.0, 66.0}, {36.0, 36.0}}
+                      Button, 0x1125d0280, {{22.3, 66.0}, {31.3, 36.0}}, label: 'Navigate Suzzme'
+                        Button, 0x1125d03c0, {{22.3, 66.0}, {31.3, 36.0}}
+                          Image, 0x1125d0500, {{27.0, 78.3}, {22.0, 11.7}}, identifier: 'line.3.horizontal', label: 'Drag'
+                  StaticText, 0x1125d0640, {{169.0, 73.7}, {63.7, 20.7}}, label: 'Suzzme'
+                  Other, 0x1125d0780, {{346.0, 66.0}, {36.0, 36.0}}
+                    Other, 0x1125d08c0, {{346.0, 66.0}, {36.0, 36.0}}
+                      Button, 0x1125d0a00, {{348.3, 66.0}, {31.3, 36.0}}, identifier: 'gearshape', label: 'Settings'
+                Other, 0x1125d0b40, {{0.0, 0.0}, {402.0, 874.0}}
+                  Other, 0x1125d0c80, {{0.0, 0.0}, {402.0, 874.0}}
+                    Other, 0x1125d0dc0, {{0.0, 0.0}, {402.0, 874.0}}
+                      Other, 0x1125d0f00, {{0.0, 0.0}, {402.0, 874.0}}
+                        ScrollView, 0x1125d1040, {{0.0, 0.0}, {402.0, 874.0}}
+                          Other, 0x1125d1180, {{0.0, 0.0}, {402.0, 874.0}}
+                            Other, 0x1125d12c0, {{0.0, 0.0}, {402.0, 156.0}}
+                          Other, 0x1125d1400, {{0.0, 0.0}, {402.0, 874.0}}
+                          Other, 0x1125d1540, {{0.0, 116.0}, {402.0, 703.7}}
+                            StaticText, 0x1125d1680, {{113.3, 256.0}, {175.3, 33.7}}, label: 'Good evening'
+                            StaticText, 0x1125d17c0, {{118.8, 297.6}, {164.3, 20.3}}, label: 'What’s on your mind?'
+                            StaticText, 0x1125d1900, {{144.2, 334.0}, {113.7, 14.3}}, label: 'Ready when you are'
+                            Button, 0x1125d1a40, {{92.0, 364.3}, {218.0, 58.0}}, identifier: 'suzzme-home-talk', label: 'Talk to Suzzme'
+                              StaticText, 0x1125d1b80, {{92.0, 364.3}, {218.0, 58.0}}, label: 'Talk to Suzzme'
+                              Image, 0x1125d1cc0, {{130.3, 384.0}, {13.3, 18.7}}, identifier: 'mic.fill', label: 'Microphone'
+                            StaticText, 0x1125d1e00, {{24.0, 466.3}, {62.3, 18.0}}, label: 'Your day'
+                            StaticText, 0x1125d1f40, {{341.3, 468.1}, {36.7, 14.3}}, label: '12 Oct'
+                            Button, 0x1125d2080, {{24.0, 496.3}, {354.0, 114.7}}, identifier: 'suzzme-home-today', label: 'What matters today, Your schedule, tasks and useful updates, together.'
+                              Image, 0x1125d21c0, {{45.3, 517.7}, {18.0, 18.0}}, identifier: 'sun.max', label: 'Brightness Higher'
+                              StaticText, 0x1125d2300, {{72.7, 516.5}, {157.3, 20.3}}, label: 'What matters today'
+                              Image, 0x1125d2440, {{351.3, 521.3}, {6.0, 10.7}}, identifier: 'chevron.right', label: 'Forward'
+                              StaticText, 0x1125d2580, {{44.0, 553.0}, {220.7, 38.0}}, label: 'Your schedule, tasks and useful updates, together.'
+                            Button, 0x1125d26c0, {{24.0, 623.0}, {354.0, 164.7}}, identifier: 'suzzme-home-briefing', label: 'Daily Summary, Good evening. I couldn’t confirm everything in your day because a source was unavailable. A live source could not be checked. This summary may be incomplete., Some sources couldn’t be checked'
+                              Image, 0x1125d2800, {{46.0, 645.7}, {17.0, 14.7}}, identifier: 'text.alignleft', label: 'Align Left'
+                              StaticText, 0x1125d2940, {{73.0, 643.0}, {120.0, 20.3}}, label: 'Daily Summary'
+                              Image, 0x1125d2a80, {{351.3, 647.7}, {6.0, 10.7}}, identifier: 'chevron.right', label: 'Forward'
+                              StaticText, 0x1125d2bc0, {{44.0, 679.3}, {310.7, 58.0}}, label: 'Good evening. I couldn’t confirm everything in your day because a source was unavailable. A live source could not be checked. This summary may be incomplete.'
+                              StaticText, 0x1125d2d00, {{45.0, 753.4}, {219.3, 14.3}}, label: 'Some sources couldn’t be checked'
+                              Image, 0x1125d2e40, {{45.0, 754.3}, {12.0, 12.0}}, identifier: 'exclamationmark.circle', label: 'Error'
+                          Other, 0x1125d2f80, {{369.0, 116.0}, {30.0, 603.7}}, label: 'Vertical scroll bar, 2 pages', value: 0%
+                            Other, 0x1125d30c0, {{396.0, 119.0}, {3.0, 536.3}}
+                          Other, 0x1125d3200, {{369.0, 116.0}, {30.0, 603.7}}, label: 'Vertical scroll bar, 2 pages', value: 0%
+                            Other, 0x1125d3340, {{396.0, 119.0}, {3.0, 536.3}}
+                        Button, 0x1125d3480, {{316.0, 739.7}, {58.0, 58.0}}, identifier: 'arrow.up', label: 'Send question', Disabled
+                        Button, 0x1125d35c0, {{43.0, 768.7}, {14.0, 14.0}}, identifier: 'plus', label: 'Choose context'
+                        TextField, 0x1125d3700, {{80.0, 765.3}, {228.0, 20.3}}, label: 'Your question', placeholderValue: 'Ask anything…'
+                          Other, 0x1125d3840, {{80.0, 763.7}, {0.0, 0.0}}, identifier: '_UITextSelectionRangeAdjustmentContainerView'
+                            Other, 0x1125d3980, {{80.0, 763.7}, {0.0, 0.0}}, identifier: 'com.apple.text.grabber.leading'
+                              Other, 0x1125d3ac0, {{72.8, 750.2}, {16.5, 16.5}}
+                              Other, 0x1125d3c00, {{80.0, 763.7}, {2.0, 0.0}}
+                            Other, 0x1125d3d40, {{80.0, 763.7}, {0.0, 0.0}}, identifier: 'com.apple.text.grabber.leading'
+                              Other, 0x1125d3e80, {{72.8, 750.2}, {16.5, 16.5}}
+                              Other, 0x1125d8000, {{80.0, 763.7}, {2.0, 0.0}}
+                          Other, 0x1125d8140, {{80.0, 772.5}, {228.0, 10.2}}, label: 'Horizontal scroll bar, 1 page', value: 0%
+                            Other, 0x1125d8280, {{83.0, 779.7}, {219.0, 3.0}}
+                        StaticText, 0x1125d83c0, {{103.7, 813.7}, {194.7, 14.3}}, label: 'Uses only the context you choose.'
+                Toolbar, 0x1125d8500, {{0.0, 0.0}, {402.0, 874.0}}, identifier: 'Toolbar', label: 'Toolbar'
+                  Other, 0x1125d8640, {{0.0, 0.0}, {402.0, 874.0}}
+      Other, 0x1125d8780, {{0.0, 0.0}, {402.0, 874.0}}
+        Other, 0x1125d88c0, {{-402.0, -874.0}, {1206.0, 2622.0}}
+        Other, 0x1125d8a00, {{0.0, 62.0}, {402.0, 812.0}}
+          Other, 0x1125d8b40, {{0.0, 62.0}, {402.0, 812.0}}
+            Other, 0x1125d8c80, {{0.0, 62.0}, {402.0, 812.0}}
+              Other, 0x1125d8dc0, {{0.0, 62.0}, {402.0, 812.0}}
+                Other, 0x1125d8f00, {{0.0, 62.0}, {402.0, 812.0}}
+                  NavigationBar, 0x1125d9040, {{0.0, 78.0}, {402.0, 54.0}}, identifier: 'Ask Suzzme'
+                    Other, 0x1125d9180, {{20.0, 82.0}, {64.3, 36.0}}
+                      Other, 0x1125d92c0, {{20.0, 82.0}, {64.3, 36.0}}
+                        Button, 0x1125d9400, {{20.0, 82.0}, {64.3, 36.0}}, label: 'Done'
+                    StaticText, 0x1125d9540, {{152.0, 89.7}, {97.7, 20.7}}, label: 'Ask Suzzme'
+                    Other, 0x1125d9680, {{339.0, 82.0}, {43.0, 36.0}}
+                      Other, 0x1125d97c0, {{339.0, 82.0}, {43.0, 36.0}}
+                        Button, 0x1125d9900, {{339.0, 82.0}, {43.0, 36.0}}, identifier: 'tray.2', label: 'Manage sources'
+                  Other, 0x1125d9a40, {{0.0, 62.0}, {402.0, 812.0}}
+                    Other, 0x1125d9b80, {{0.0, 62.0}, {402.0, 812.0}}
+                      Other, 0x1125d9cc0, {{0.0, 62.0}, {402.0, 812.0}}
+                        Other, 0x1125d9e00, {{0.0, 62.0}, {402.0, 812.0}}
+                          ScrollView, 0x1125d9f40, {{0.0, 62.0}, {402.0, 812.0}}, identifier: 'suzzme-assistant-workspace'
+                            Other, 0x1125da080, {{0.0, 17.3}, {402.0, 543.0}}
+                              Other, 0x1125da1c0, {{4.0, 41.3}, {394.0, 470.0}}
+                                StaticText, 0x1125da300, {{20.0, 41.3}, {193.7, 64.0}}, label: 'Suzzme status: Ready when you are'
+                                  Other, 0x1125da440, {{20.0, 41.3}, {64.0, 64.0}}
+                                  StaticText, 0x1125da580, {{100.0, 54.0}, {63.7, 20.3}}, label: 'Suzzme'
+                                  StaticText, 0x1125da6c0, {{100.0, 78.3}, {113.7, 14.3}}, label: 'Ready when you are'
+                                StaticText, 0x1125da800, {{21.0, 130.3}, {257.7, 14.4}}, label: 'Apple Intelligence is ready on this device.'
+                                Image, 0x1125da940, {{21.0, 130.3}, {14.0, 13.3}}, identifier: 'apple.intelligence', label: 'Apple Intelligence Overlapping Concentric Rings'
+                                StaticText, 0x1125daa80, {{20.0, 168.7}, {168.3, 74.7}}, identifier: 'suzzme-turn-4C9226DD-D90F-4B16-B382-C223F74B64A0-user', label: 'You said: What can you do?'
+                                  StaticText, 0x1125dabc0, {{36.0, 184.7}, {22.0, 14.3}}, label: 'You'
+                                  StaticText, 0x1125dad00, {{36.0, 207.1}, {136.3, 20.3}}, label: 'What can you do?'
+                                StaticText, 0x1125dae40, {{4.0, 259.4}, {394.0, 204.6}}, identifier: 'suzzme-turn-4C9226DD-D90F-4B16-B382-C223F74B64A0-assistant', label: 'Suzzme answered: I can help you understand your day, summarize authorized calendar events and reminders, and answer follow-up questions. You can type or talk to me. I can also propose supported changes to your calendar and reminders, which need your confirmation. Choose what I may access in Sources.'
+                                  StaticText, 0x1125daf80, {{20.0, 259.4}, {46.7, 14.3}}, label: 'Suzzme'
+                                  StaticText, 0x1125db0c0, {{20.0, 281.7}, {362.0, 166.3}}, label: 'I can help you understand your day, summarize authorized calendar events and reminders, and answer follow-up questions. You can type or talk to me. I can also propose supported changes to your calendar and reminders, which need your confirmation. Choose what I may access in Sources.'
+                                Image, 0x1125db200, {{21.3, 465.0}, {12.0, 11.3}}, identifier: 'text.badge.checkmark', label: 'Text With A Checkmark Badge'
+                                StaticText, 0x1125db340, {{21.3, 464.1}, {200.3, 14.3}}, label: 'Answered without generative AI'
+                                Button, 0x1125db480, {{20.0, 494.3}, {54.0, 17.0}}, label: 'Share'
+                                  StaticText, 0x1125db5c0, {{20.0, 494.3}, {54.0, 17.0}}, label: 'Share'
+                                  Image, 0x1125db700, {{21.3, 495.3}, {10.7, 14.3}}, identifier: 'square.and.arrow.up', label: 'Share'
+                                Button, 0x1125db840, {{90.0, 495.7}, {88.0, 14.3}}, label: 'Read aloud'
+                                  StaticText, 0x1125db980, {{90.0, 495.7}, {88.0, 14.3}}, label: 'Read aloud'
+                                  Image, 0x1125dbac0, {{91.7, 497.3}, {13.3, 10.7}}, identifier: 'speaker.wave.2', label: 'Volume High'
+                            Other, 0x1125dbc00, {{0.0, 62.0}, {402.0, 812.0}}
+                              Other, 0x1125dbd40, {{0.0, 62.0}, {402.0, 110.0}}
+                            Other, 0x1125dbe80, {{0.0, 62.0}, {402.0, 812.0}}
+                              Other, 0x1125dc000, {{0.0, 62.0}, {402.0, 110.0}}
+                            Other, 0x1125dc140, {{369.0, 132.0}, {30.0, 456.0}}, label: 'Vertical scroll bar, 2 pages', value: 100%
+                              Other, 0x1125dc280, {{396.0, 206.3}, {3.0, 378.7}}
+                            Other, 0x1125dc3c0, {{369.0, 132.0}, {30.0, 456.0}}, label: 'Vertical scroll bar, 2 pages', value: 100%
+                              Other, 0x1125dc500, {{396.0, 206.3}, {3.0, 378.7}}
+                          Button, 0x1125dc640, {{312.0, 624.0}, {58.0, 58.0}}, identifier: 'suzzme-assistant-workspace', label: 'Send question', Disabled
+                          TextField, 0x1125dc780, {{32.0, 649.0}, {268.0, 22.0}}, identifier: 'suzzme-assistant-workspace', label: 'Question for Suzzme', placeholderValue: 'Ask Suzzme or follow up'
+                            Other, 0x1125dc8c0, {{32.0, 657.0}, {268.0, 11.0}}, label: 'Horizontal scroll bar, 1 page', value: 0%
+                              Other, 0x1125dca00, {{35.0, 665.0}, {262.0, 3.0}}
+                          Button, 0x1125dcb40, {{20.0, 706.0}, {164.7, 58.0}}, identifier: 'suzzme-assistant-workspace', label: 'Start voice conversation'
+                            StaticText, 0x1125dcc80, {{20.0, 706.0}, {164.7, 58.0}}, label: 'Talk to Suzzme'
+                            Image, 0x1125dcdc0, {{34.7, 726.0}, {12.0, 18.0}}, identifier: 'mic', label: 'Microphone'
+                          Switch, 0x1125dcf00, {{20.0, 788.0}, {362.0, 28.0}}, identifier: 'suzzme-assistant-workspace', label: 'Read answers aloud', value: 0
+                            StaticText, 0x1125dd040, {{20.0, 793.0}, {137.0, 18.0}}, label: 'Read answers aloud'
+                            Switch, 0x1125dd180, {{321.0, 788.0}, {63.0, 28.0}}, value: 0
+                  Toolbar, 0x1125dd2c0, {{0.0, 62.0}, {402.0, 812.0}}, identifier: 'Toolbar', label: 'Toolbar'
+                    Other, 0x1125dd400, {{0.0, 62.0}, {402.0, 812.0}}
+    Window, 0x1125dd540, {{0.0, 0.0}, {402.0, 874.0}}
+      Other, 0x1125dd680, {{0.0, 0.0}, {402.0, 874.0}}
+        Other, 0x1125dd7c0, {{0.0, 0.0}, {402.0, 874.0}}
+Path to element:
+ →Application, 0x1096f0780, pid: 37095, label: 'Suzzme'
+Query chain:
+ →Find: Target Application 'dev.suzzme.NativeAcceptance'
+  Output: {
+    Application, 0x1125dd900, pid: 37095, label: 'Suzzme'
+  }
+
+    t =    33.74s Tap "suzzme-assistant-input" TextView
+    t =    33.74s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    33.75s     Find the "suzzme-assistant-input" TextView
+    t =    34.88s         Find the "suzzme-assistant-input" TextView (retry 1)
+    t =    36.08s         Find the "suzzme-assistant-input" TextView (retry 2)
+    t =    36.48s Requesting snapshot of accessibility hierarchy for app with pid 37095
+/tmp/SuzzmeNativePlatformAcceptanceProject/NativePlatformUITests/NativePlatformUITests.swift:53: error: -[NativePlatformUITests.NativePlatformUITests test02RealTextConversationAndFollowUp] : Failed to tap "suzzme-assistant-input" TextView: No matches found for Descendants matching type TextView from input {(
+    Application, pid: 37095, label: 'Suzzme'
+)}
+Possibly caused by runtime issues:
+Automation type mismatch: computed TextField from legacy attributes vs TextView from modern attribute. Input attributes and values: {
+    "XC_kAXXCAttributeAutomationType" = 52;
+    "XC_kAXXCAttributeElementBaseType" = UITextView;
+    "XC_kAXXCAttributeElementType" = "SwiftUI.VerticalTextView";
+    "XC_kAXXCAttributeTraits" = 146029150208;
+}
+See test report attachments for more detail.
+    t =    36.77s Tear Down
+Test Case '-[NativePlatformUITests.NativePlatformUITests test02RealTextConversationAndFollowUp]' failed (37.353 seconds).
+Test Case '-[NativePlatformUITests.NativePlatformUITests test03NativeRoutesAndDarkAppearance]' started.
+    t =     0.01s Start Test at 2026-10-12 20:01:51.258
+    t =     0.20s Set Up
+    t =     0.20s Open dev.suzzme.NativeAcceptance
+    t =     0.20s     Launch dev.suzzme.NativeAcceptance
+    t =     0.20s         Terminate dev.suzzme.NativeAcceptance:37095
+2026-10-12 20:01:52.641 xcodebuild[36062:1044966] [MT] IDELaunchParametersSnapshot: debugger version lookup failed for path '<nil>': noURL
+2026-10-12 20:01:52.642 xcodebuild[36062:1044966] [MT] IDELaunchParametersSnapshot: no debugger version
+    t =     7.08s         Setting up automation session
+    t =    17.93s         Wait for dev.suzzme.NativeAcceptance to idle
+    t =    36.27s Waiting 60.0s for "suzzme-home-talk" Button to exist
+    t =    37.30s     Checking `Expect predicate `existsNoRetry == 1` for object "suzzme-home-talk" Button`
+    t =    37.31s         Checking existence of `"suzzme-home-talk" Button`
+    t =    37.66s Find the Target Application 'dev.suzzme.NativeAcceptance'
+    t =    37.95s Added attachment named '06-production-home-dark'
+    t =    37.95s Tap "Navigate Suzzme" Button
+    t =    37.95s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    37.96s     Find the "Navigate Suzzme" Button
+    t =    38.01s     Check for interrupting elements affecting "Navigate Suzzme" Button
+    t =    38.14s     Synthesize event
+    t =    38.60s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    39.81s Tap "Today" Button
+    t =    39.81s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    39.81s     Find the "Today" Button
+    t =    39.87s     Check for interrupting elements affecting "Today" Button
+    t =    39.94s     Synthesize event
+    t =    40.26s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    42.18s Waiting 10.0s for "Today" NavigationBar to exist
+    t =    43.21s     Checking `Expect predicate `existsNoRetry == 1` for object "Today" NavigationBar`
+    t =    43.30s         Checking existence of `"Today" NavigationBar`
+    t =    43.63s Find the Target Application 'dev.suzzme.NativeAcceptance'
+    t =    44.01s Added attachment named '07-route-Today'
+    t =    44.01s Tap Button (First Match)
+    t =    44.01s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    44.02s     Find the Button (First Match)
+    t =    44.06s     Check for interrupting elements affecting "BackButton" Button
+    t =    44.17s     Synthesize event
+    t =    44.54s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    45.05s Tap "Navigate Suzzme" Button
+    t =    45.05s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    45.05s     Find the "Navigate Suzzme" Button
+    t =    45.15s     Check for interrupting elements affecting "Navigate Suzzme" Button
+    t =    45.23s     Synthesize event
+    t =    45.56s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    46.59s Tap "Daily Summary" Button
+    t =    46.59s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    46.60s     Find the "Daily Summary" Button
+    t =    46.66s     Check for interrupting elements affecting "Daily Summary" Button
+    t =    46.73s     Synthesize event
+    t =    47.06s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    48.52s Waiting 10.0s for "Daily Summary" NavigationBar to exist
+    t =    49.55s     Checking `Expect predicate `existsNoRetry == 1` for object "Daily Summary" NavigationBar`
+    t =    49.55s         Checking existence of `"Daily Summary" NavigationBar`
+    t =    49.59s Find the Target Application 'dev.suzzme.NativeAcceptance'
+    t =    49.82s Added attachment named '07-route-Daily Summary'
+    t =    49.82s Tap Button (First Match)
+    t =    49.82s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    49.82s     Find the Button (First Match)
+    t =    49.85s     Check for interrupting elements affecting "BackButton" Button
+    t =    49.89s     Synthesize event
+    t =    50.20s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    50.53s Tap "Navigate Suzzme" Button
+    t =    50.53s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    50.54s     Find the "Navigate Suzzme" Button
+    t =    50.60s     Check for interrupting elements affecting "Navigate Suzzme" Button
+    t =    50.66s     Synthesize event
+    t =    51.00s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    51.89s Tap "Personal Memory" Button
+    t =    51.89s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    51.90s     Find the "Personal Memory" Button
+    t =    51.99s     Check for interrupting elements affecting "Personal Memory" Button
+    t =    52.07s     Synthesize event
+    t =    52.38s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    54.38s Waiting 10.0s for "Personal Memory" NavigationBar to exist
+    t =    55.42s     Checking `Expect predicate `existsNoRetry == 1` for object "Personal Memory" NavigationBar`
+    t =    55.42s         Checking existence of `"Personal Memory" NavigationBar`
+    t =    55.66s Find the Target Application 'dev.suzzme.NativeAcceptance'
+    t =    55.98s Added attachment named '07-route-Personal Memory'
+    t =    55.99s Tap Button (First Match)
+    t =    55.99s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    56.00s     Find the Button (First Match)
+    t =    56.09s     Check for interrupting elements affecting "BackButton" Button
+    t =    56.33s     Synthesize event
+    t =    56.70s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    57.16s Tap "Navigate Suzzme" Button
+    t =    57.16s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    57.17s     Find the "Navigate Suzzme" Button
+    t =    57.31s     Check for interrupting elements affecting "Navigate Suzzme" Button
+    t =    57.43s     Synthesize event
+    t =    57.82s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    59.16s Tap "Sources" Button
+    t =    59.16s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    59.17s     Find the "Sources" Button
+    t =    59.26s     Check for interrupting elements affecting "Sources" Button
+    t =    59.38s     Synthesize event
+    t =    59.69s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    61.36s Waiting 10.0s for "Sources" NavigationBar to exist
+    t =    62.38s     Checking `Expect predicate `existsNoRetry == 1` for object "Sources" NavigationBar`
+    t =    62.38s         Checking existence of `"Sources" NavigationBar`
+    t =    62.48s Find the Target Application 'dev.suzzme.NativeAcceptance'
+    t =    62.78s Added attachment named '07-route-Sources'
+    t =    62.78s Tap Button (First Match)
+    t =    62.78s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    62.79s     Find the Button (First Match)
+    t =    62.82s     Check for interrupting elements affecting "BackButton" Button
+    t =    62.90s     Synthesize event
+    t =    63.21s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    63.56s Tap "Navigate Suzzme" Button
+    t =    63.56s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    63.57s     Find the "Navigate Suzzme" Button
+    t =    63.63s     Check for interrupting elements affecting "Navigate Suzzme" Button
+    t =    63.70s     Synthesize event
+    t =    64.02s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    64.88s Tap "History" Button
+    t =    64.88s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    64.88s     Find the "History" Button
+    t =    64.96s     Check for interrupting elements affecting "History" Button
+    t =    65.04s     Synthesize event
+    t =    65.35s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    66.44s Waiting 10.0s for "History" NavigationBar to exist
+    t =    67.46s     Checking `Expect predicate `existsNoRetry == 1` for object "History" NavigationBar`
+    t =    67.46s         Checking existence of `"History" NavigationBar`
+    t =    67.50s         Capturing element debug description
+    t =    68.52s     Checking `Expect predicate `existsNoRetry == 1` for object "History" NavigationBar`
+    t =    68.52s         Checking existence of `"History" NavigationBar`
+    t =    68.55s         Capturing element debug description
+    t =    69.45s     Checking `Expect predicate `existsNoRetry == 1` for object "History" NavigationBar`
+    t =    69.45s         Checking existence of `"History" NavigationBar`
+    t =    69.48s         Capturing element debug description
+    t =    70.50s     Checking `Expect predicate `existsNoRetry == 1` for object "History" NavigationBar`
+    t =    70.50s         Checking existence of `"History" NavigationBar`
+    t =    70.54s         Capturing element debug description
+    t =    71.45s     Checking `Expect predicate `existsNoRetry == 1` for object "History" NavigationBar`
+    t =    71.45s         Checking existence of `"History" NavigationBar`
+    t =    71.48s         Capturing element debug description
+    t =    72.50s     Checking `Expect predicate `existsNoRetry == 1` for object "History" NavigationBar`
+    t =    72.52s         Checking existence of `"History" NavigationBar`
+    t =    72.56s         Capturing element debug description
+    t =    73.48s     Checking `Expect predicate `existsNoRetry == 1` for object "History" NavigationBar`
+    t =    73.49s         Checking existence of `"History" NavigationBar`
+    t =    73.51s         Capturing element debug description
+    t =    74.52s     Checking `Expect predicate `existsNoRetry == 1` for object "History" NavigationBar`
+    t =    74.52s         Checking existence of `"History" NavigationBar`
+    t =    74.56s         Capturing element debug description
+    t =    75.48s     Checking `Expect predicate `existsNoRetry == 1` for object "History" NavigationBar`
+    t =    75.48s         Checking existence of `"History" NavigationBar`
+    t =    75.53s         Capturing element debug description
+    t =    76.44s     Checking `Expect predicate `existsNoRetry == 1` for object "History" NavigationBar`
+    t =    76.44s         Checking existence of `"History" NavigationBar`
+    t =    76.49s         Capturing element debug description
+    t =    76.50s     Checking existence of `"History" NavigationBar`
+    t =    76.56s Collecting debug information to assist test failure triage
+    t =    76.56s     Requesting snapshot of accessibility hierarchy for app with pid 37637
+    t =    79.50s Requesting snapshot of accessibility hierarchy for app with pid 37637
+    t =    79.95s Requesting snapshot of accessibility hierarchy for app with pid 37637
+/tmp/SuzzmeNativePlatformAcceptanceProject/NativePlatformUITests/NativePlatformUITests.swift:78: error: -[NativePlatformUITests.NativePlatformUITests test03NativeRoutesAndDarkAppearance] : XCTAssertTrue failed - Attributes: Application, 0x112b92f80, pid: 37637, label: 'Suzzme'
+Element subtree:
+ →Application, 0x112b92f80, pid: 37637, label: 'Suzzme'
+    Window (Main), 0x112b930c0, {{0.0, 0.0}, {402.0, 874.0}}
+      Other, 0x112b93200, {{0.0, 0.0}, {402.0, 874.0}}
+        Other, 0x112b93340, {{0.0, 0.0}, {402.0, 874.0}}
+          Other, 0x112b93480, {{0.0, 0.0}, {402.0, 874.0}}
+            Other, 0x112b935c0, {{0.0, 0.0}, {402.0, 874.0}}
+              Other, 0x112b93700, {{0.0, 0.0}, {402.0, 874.0}}
+                NavigationBar, 0x112b93840, {{0.0, 62.0}, {402.0, 54.0}}, identifier: 'Saved Activity'
+                  Button, 0x112b93980, {{16.0, 62.0}, {44.0, 44.0}}, identifier: 'BackButton', label: 'Suzzme'
+                  StaticText, 0x112b93ac0, {{144.3, 73.7}, {113.0, 20.7}}, label: 'Saved Activity'
+                Other, 0x112b93c00, {{0.0, 0.0}, {402.0, 874.0}}
+                  Other, 0x112b93d40, {{0.0, 0.0}, {402.0, 874.0}}
+                    Other, 0x112b93e80, {{0.0, 0.0}, {402.0, 874.0}}
+                      Other, 0x1096f1b80, {{0.0, 0.0}, {402.0, 874.0}}
+                        ScrollView, 0x1096f1680, {{0.0, 0.0}, {402.0, 874.0}}
+                          Other, 0x112ba4000, {{0.0, 0.0}, {402.0, 874.0}}
+                            Other, 0x112ba4140, {{0.0, 0.0}, {402.0, 156.0}}
+                            Other, 0x112ba4280, {{0.0, 748.0}, {402.0, 126.0}}
+                          Other, 0x112ba43c0, {{0.0, 0.0}, {402.0, 874.0}}
+                          Other, 0x112ba4500, {{0.0, 116.0}, {402.0, 345.0}}
+                            Other, 0x112ba4640, {{20.0, 140.0}, {361.0, 76.3}}
+                              StaticText, 0x112ba4780, {{20.0, 140.0}, {194.3, 26.3}}, label: 'Saved with Suzzme'
+                              StaticText, 0x112ba48c0, {{20.0, 178.3}, {361.0, 38.0}}, label: 'Structured information you chose to keep, stored on this device.'
+                            StaticText, 0x112ba4a00, {{20.0, 320.3}, {180.0, 26.3}}, label: 'Nothing saved yet'
+                            StaticText, 0x112ba4b40, {{20.0, 358.7}, {336.3, 42.3}}, label: 'Ask Suzzme to understand something, then choose what to keep.'
+                          Other, 0x112ba4c80, {{369.0, 116.0}, {30.0, 696.0}}, label: 'Vertical scroll bar, 1 page', value: 0%
+                            Other, 0x112ba4dc0, {{396.0, 446.0}, {3.0, 363.0}}
+                          Other, 0x112ba4f00, {{369.0, 116.0}, {30.0, 696.0}}, label: 'Vertical scroll bar, 1 page', value: 0%
+                            Other, 0x112ba5040, {{396.0, 446.0}, {3.0, 363.0}}
+                Toolbar, 0x112ba5180, {{0.0, 0.0}, {402.0, 874.0}}, identifier: 'Toolbar', label: 'Toolbar'
+                  Other, 0x112ba52c0, {{0.0, 0.0}, {402.0, 874.0}}
+                    Other, 0x112ba5400, {{0.0, 62.0}, {402.0, 812.0}}
+                      Other, 0x112ba5540, {{0.0, 62.0}, {402.0, 812.0}}
+                        Other, 0x112ba5680, {{0.0, 62.0}, {0.0, 0.0}}
+                          Other, 0x112ba57c0, {{28.0, 798.0}, {346.0, 48.0}}
+                            Other, 0x112ba5900, {{28.0, 798.0}, {346.0, 48.0}}
+                              Other, 0x112ba5a40, {{28.0, 808.0}, {346.0, 28.0}}
+                                SearchField, 0x112ba5b80, {{28.0, 808.0}, {346.0, 28.0}}, label: 'Search saved items', placeholderValue: 'Search saved items'
+                                  Image, 0x112ba5cc0, {{40.0, 812.0}, {20.7, 19.3}}, identifier: 'magnifyingglass', label: 'Search'
+Path to element:
+ →Application, 0x112b92f80, pid: 37637, label: 'Suzzme'
+Query chain:
+ →Find: Target Application 'dev.suzzme.NativeAcceptance'
+  Output: {
+    Application, 0x112ba5e00, pid: 37637, label: 'Suzzme'
+  }
+
+    t =    80.05s Find the Target Application 'dev.suzzme.NativeAcceptance'
+    t =    80.55s Added attachment named '07-route-History'
+    t =    80.55s Tap Button (First Match)
+    t =    80.56s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    80.57s     Find the Button (First Match)
+    t =    80.62s     Check for interrupting elements affecting "BackButton" Button
+    t =    81.00s     Synthesize event
+    t =    81.62s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    84.17s Tap "Settings" Button
+    t =    84.17s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    84.68s     Find the "Settings" Button
+    t =    85.12s     Check for interrupting elements affecting "gearshape" Button
+    t =    85.21s     Synthesize event
+    t =    85.59s     Wait for dev.suzzme.NativeAcceptance to idle
+    t =    89.39s Waiting 10.0s for "Settings" NavigationBar to exist
+    t =    90.45s     Checking `Expect predicate `existsNoRetry == 1` for object "Settings" NavigationBar`
+    t =    90.53s         Checking existence of `"Settings" NavigationBar`
+    t =    90.89s Find the Target Application 'dev.suzzme.NativeAcceptance'
+    t =    91.31s Added attachment named '08-settings-dark'
+    t =    91.31s Tear Down
+Test Case '-[NativePlatformUITests.NativePlatformUITests test03NativeRoutesAndDarkAppearance]' failed (91.724 seconds).
+Test Suite 'NativePlatformUITests' failed at 2026-10-12 20:03:22.978.
+	 Executed 3 tests, with 3 failures (0 unexpected) in 155.816 (155.825) seconds
+Test Suite 'NativePlatformUITests.xctest' failed at 2026-10-12 20:03:22.996.
+	 Executed 3 tests, with 3 failures (0 unexpected) in 155.816 (155.844) seconds
+Test Suite 'All tests' failed at 2026-10-12 20:03:22.997.
+	 Executed 3 tests, with 3 failures (0 unexpected) in 155.816 (155.874) seconds
+2026-10-12 20:04:03.009 xcodebuild[36062:1044966] [MT] IDETestOperationsObserverDebug: 282.815 elapsed -- Testing started completed.
+2026-10-12 20:04:03.010 xcodebuild[36062:1044966] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start
+2026-10-12 20:04:03.010 xcodebuild[36062:1044966] [MT] IDETestOperationsObserverDebug: 282.815 sec, +282.815 sec -- end
+
+Test session results, code coverage, and logs:
+	/tmp/SuzzmeNativePlatformIOSResults
+
+Failing tests:
+	NativePlatformUITests.test02RealTextConversationAndFollowUp()
+	NativePlatformUITests.test02RealTextConversationAndFollowUp()
+	NativePlatformUITests.test03NativeRoutesAndDarkAppearance()
+
+** TEST EXECUTE FAILED **
+
+Testing started

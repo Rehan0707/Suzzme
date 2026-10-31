@@ -1,0 +1,24 @@
+Window: "", App: Suzzme.
+0 sheet Secondary Actions: Raise
+	1 container
+		2 text Value: Connect GitHub, Secondary Actions: Cancel
+		3 scroll area Secondary Actions: Cancel
+			4 link Description: Create a read-only token on GitHub, Value: github.com/settings/personal-access-tokens/new
+			5 heading GitHub read access
+			6 container
+				7 text field (settable) Account label
+				8 secure text field (settable) Fine-grained personal access token, Description: GitHub personal access token
+				9 text field (settable) Allowed repositories, owner/name
+			10 text Choose selected repositories and read-only Contents, Issues, and Pull requests permissions in GitHub. The token never enters Suzzme’s model, conversation, or logs. Use commas or new lines between repository names.
+			11 text Suzzme verifies your GitHub identity and discovers reviewed read tools before showing Connected. Repository and provider permissions are checked again for every read.
+		12 button Cancel
+		13 button (disabled) Verify and connect
+14 menu bar
+	15 Suzzme
+	16 Edit
+	17 View
+	18 Companion
+	19 Window
+	20 Help
+
+The focused UI element is 7 text field (settable)

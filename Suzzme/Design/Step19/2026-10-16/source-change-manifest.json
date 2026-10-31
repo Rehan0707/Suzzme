@@ -1,0 +1,27 @@
+{
+  "changedFiles": {
+    "Suzzme/Suzzme/Features/Home/AskSuzzmeView.swift": {
+      "before": "f4878d8ec73c45ced3377e8511b44ed4a470f7f4d26ef6d6df9b5a76a64f7b68",
+      "after": "3b8e45e31e013e9287440e8af75b206af5e37895b189481b0c5653504012a5ab"
+    },
+    "Suzzme/Suzzme/Features/Briefing/BriefingView.swift": {
+      "before": "e9368c58847ad0492661568a7d862dd19fa8052d0d2f7f48000e5bf4c28d105e",
+      "after": "81d3f4c8e557de3dafc2492195c1ec8a0e2c0a095a42233e5b3e5b3e32cff54e"
+    },
+    "Suzzme/Suzzme/DesignSystem/Layout/SuzzmePage.swift": {
+      "before": "4de8a16986679132fc57bebee72dd391f21e98c347c8f89dc8bbfdcb37f0ccc8",
+      "after": "c34b5ba059bb79c5426e0eaa3891a67c6bca3cea1c0d9371fc5009d36c8d28ca"
+    },
+    "Suzzme/Suzzme/DesignSystem/Components/SuzzmeInteractionFeedback.swift": {
+      "before": "d4c75a831a32835c2938752b364691bb9b009f33611958105d6e8c5e3cc68553",
+      "after": "44e7c614c0abc889bb43ab36d9188b35aa64bfe6aee7a283cf37ec1dc7937c9f"
+    },
+    "Suzzme/Suzzme/DesignSystem/Components/SuzzmeAssistantComponents.swift": {
+      "before": "6914a01a5eb0ba3cf48d46aea6c82e962e0f8b93bc7a5fdb28e338e9c66f6e1d",
+      "after": "689e34563e2db7635e0c91ba7c39fd92b11ed7d1babb8b2645c3861fe3d35bf8"
+    }
+  },
+  "changedCount": 5,
+  "unchangedCount": 155,
+  "signingOrEntitlementsChanged": false
+}

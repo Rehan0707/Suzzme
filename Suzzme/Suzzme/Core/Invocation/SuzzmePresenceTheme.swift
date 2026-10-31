@@ -21,7 +21,7 @@ enum SuzzmePresenceTheme: String, CaseIterable, Codable, Sendable, Identifiable 
     func colors(for scheme: ColorScheme) -> SuzzmePresenceColors {
         switch self {
         case .suzzmePurple:
-            .init(primary: SuzzmeTheme.lavender, secondary: SuzzmeTheme.lilac, highlight: Color(red: 0.62, green: 0.39, blue: 0.93), glow: Color(red: 0.76, green: 0.55, blue: 0.91), face: scheme == .dark ? .white : .black)
+            .init(primary: Color(red: 0.38, green: 0.12, blue: 0.62), secondary: Color(red: 0.49, green: 0.22, blue: 0.76), highlight: Color(red: 0.64, green: 0.36, blue: 0.90), glow: Color(red: 0.43, green: 0.15, blue: 0.72), face: scheme == .dark ? .white : .black)
         case .burgundy:
             .init(primary: Color(red: 0.50, green: 0.12, blue: 0.23), secondary: Color(red: 0.76, green: 0.30, blue: 0.38), highlight: Color(red: 0.94, green: 0.57, blue: 0.54), glow: Color(red: 0.62, green: 0.18, blue: 0.32), face: scheme == .dark ? .white : .black)
         case .deepBlue:
@@ -40,6 +40,19 @@ struct SuzzmePresenceColors {
     let highlight: Color
     let glow: Color
     let face: Color
+
+    /// Active presence follows the companion chosen in Settings. The stored
+    /// legacy theme remains decodable, but no longer overrides that choice.
+    @MainActor static func mascot(for scheme: ColorScheme) -> Self {
+        let mascot = SuzzmeMascotAppearance.shared.color
+        return .init(
+            primary: mascot.accent,
+            secondary: mascot.accent,
+            highlight: mascot.eyelid,
+            glow: mascot.accent,
+            face: scheme == .dark ? .white : .black
+        )
+    }
 }
 
 enum SuzzmePresenceAnimation: String, CaseIterable, Codable, Sendable, Identifiable {

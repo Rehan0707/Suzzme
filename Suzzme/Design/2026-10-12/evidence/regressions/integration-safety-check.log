@@ -1,0 +1,191 @@
+PASS no account cannot authorize a read
+PASS one verified account resolves without webpage organization inference
+PASS multiple ready accounts require explicit selection
+PASS an explicit selected account remains the account authority
+PASS a stored read default is an explicit account choice
+PASS an explicit selection overrides a stored read default
+PASS an unknown selected account cannot fall back to the default
+PASS unconfigured alone cannot authorize a read
+PASS selected unconfigured cannot switch to another ready account
+PASS stored unconfigured default cannot silently switch account
+PASS explicit reselection recovers from a unconfigured default
+PASS authorizing alone cannot authorize a read
+PASS selected authorizing cannot switch to another ready account
+PASS stored authorizing default cannot silently switch account
+PASS explicit reselection recovers from a authorizing default
+PASS connecting alone cannot authorize a read
+PASS selected connecting cannot switch to another ready account
+PASS stored connecting default cannot silently switch account
+PASS explicit reselection recovers from a connecting default
+PASS authExpired alone cannot authorize a read
+PASS selected authExpired cannot switch to another ready account
+PASS stored authExpired default cannot silently switch account
+PASS explicit reselection recovers from a authExpired default
+PASS unavailable alone cannot authorize a read
+PASS selected unavailable cannot switch to another ready account
+PASS stored unavailable default cannot silently switch account
+PASS explicit reselection recovers from a unavailable default
+PASS disabled alone cannot authorize a read
+PASS selected disabled cannot switch to another ready account
+PASS stored disabled default cannot silently switch account
+PASS explicit reselection recovers from a disabled default
+PASS another service account cannot grant GitHub authority
+PASS repository policy canonicalizes GitHub case
+PASS repository policy handles surrounding entry whitespace
+PASS repository policy rejects malformed entry 0
+PASS repository policy rejects malformed entry 1
+PASS repository policy rejects malformed entry 2
+PASS repository policy rejects malformed entry 3
+PASS repository policy rejects malformed entry 4
+PASS repository policy rejects malformed entry 5
+PASS repository policy rejects malformed entry 6
+PASS repository policy rejects malformed entry 7
+PASS repository policy rejects malformed entry 8
+PASS repository policy rejects malformed entry 9
+PASS repository policy rejects malformed entry 10
+PASS repository policy rejects malformed entry 11
+PASS repository policy rejects malformed entry 12
+PASS repository policy rejects malformed entry 13
+PASS repository policy rejects malformed entry 14
+PASS allowlist permits the exact canonical repository
+PASS same organization grants no access to a different repository
+PASS same repository name under another owner is denied
+PASS repository prefix matching cannot broaden access
+PASS a lookalike URL cannot become a repository policy entry
+PASS empty repository policy grants no access
+PASS catalog represents each service once
+PASS only implemented provider clients expose read capabilities
+PASS unimplemented account connectors expose configuration status without executable capabilities
+PASS LinkedIn recognition grants no authenticated account access
+PASS remote Google Calendar requires separate OAuth; native device Calendar stays in Sources
+PASS read capability never grants mutation; intake requires a separate empty-by-default selection
+PASS the accepted sixteen-account bound is retained
+PASS the complete directory has unique, stable entries
+PASS every connectable directory item has exactly one implemented read adapter
+PASS catalog-only entries cannot route to an executable connector
+PASS WhatsApp remains intentionally non-connectable
+PASS connection policy enforces the exact storage boundary
+PASS missing metadata has no synthetic connected accounts
+PASS multiple accounts retain identity, generation, repository policy, and reviewed schema metadata
+PASS noncanonical stored policy cannot authorize a widened scope
+PASS rejected policy update preserves the last valid metadata
+PASS duplicate account IDs are rejected
+PASS one provider identity cannot be duplicated under different account IDs
+PASS conflicting stored default accounts are rejected
+PASS malformed reviewed tool digest cannot be restored
+PASS metadata refuses an account count beyond the bounded catalog
+PASS invalid identity or schema updates preserve existing account metadata
+PASS all sixteen valid accounts round-trip without widening the limit
+PASS recovery after disconnect cannot resurrect an older connected account
+PASS future metadata schema cannot silently fall back to an older recovery copy
+PASS corrupt primary and recovery metadata cannot become a fake empty success
+PASS restored metadata requires fresh verification even while an injected credential exists
+PASS restored metadata alone cannot start authenticated retrieval
+PASS restore without verification makes zero provider reads
+PASS successful identity and unchanged-schema recheck restores read readiness
+PASS verified gateway returns only the synthetic provider result
+PASS fresh account generation validates its own result
+PASS cancellation retires completed result authority
+PASS ambiguous, write, or out-of-scope URL cannot dispatch
+PASS ambiguous, write, or out-of-scope URL cannot dispatch
+PASS ambiguous, write, or out-of-scope URL cannot dispatch
+PASS ambiguous, write, or out-of-scope URL cannot dispatch
+PASS invalid scope makes zero provider calls
+PASS same request replacement reaches credential await
+PASS older continuation cannot dispatch through reused request ID
+PASS older cleanup cannot remove newer context authority
+PASS request replacement makes one provider read
+PASS read reaches provider before account configuration
+PASS verification suspends in a configuration transaction
+PASS configuration transaction rejects a new concurrent read
+PASS configuration retires a previously dispatched read
+PASS configuration race cannot dispatch or retry another read
+PASS configuration finishes with freshly owned account states
+PASS cancel race reaches the credential suspension
+PASS cancel invalidates a read suspended before dispatch
+PASS cancel before dispatch makes zero provider reads
+PASS default race reaches the credential suspension
+PASS default invalidates a read suspended before dispatch
+PASS default before dispatch makes zero provider reads
+PASS a later explicit default selection reads with the newly chosen account
+PASS disconnect race reaches the credential suspension
+PASS disconnect invalidates a read suspended before dispatch
+PASS disconnect before dispatch makes zero provider reads
+PASS successful disconnect removes only its account metadata
+PASS revoke race reaches the credential suspension
+PASS provider revocation during native recheck expires the account
+PASS revoke invalidates a read suspended before dispatch
+PASS revoke before dispatch makes zero provider reads
+PASS revoked account remains expired after the stale read returns
+PASS disconnect after dispatch reaches an active provider request
+PASS disconnect prevents an in-flight result from regaining authority
+PASS disconnect after dispatch causes no retry
+PASS disconnected account cannot retrieve another result
+PASS a disconnected read never reaches the provider
+PASS credential deletion failure is surfaced
+PASS failed credential deletion leaves the native account disabled
+PASS retained credential cannot revive a disabled account
+PASS disabled safety state survives restart after deletion failure
+PASS deletion failure grants no future provider reads
+PASS native UI projects verified account before a provider failure
+PASS provider authExpired response rejects the result
+PASS provider authExpired response retires native account readiness
+PASS native UI refresh projects provider authExpired failure
+PASS provider authExpired requires recovery before another read
+PASS provider authExpired cannot cause another dispatch through stale readiness
+PASS native UI projects verified account before a provider failure
+PASS provider unavailable response rejects the result
+PASS provider unavailable response retires native account readiness
+PASS native UI refresh projects provider unavailable failure
+PASS provider unavailable requires recovery before another read
+PASS provider unavailable cannot cause another dispatch through stale readiness
+PASS explicit reconnect preserves account ID and every unrelated account
+PASS reconnect preserves verified provider identity and explicit default selection
+PASS reconnected account receives a new ready generation
+PASS reconnect applies the explicitly reviewed label and normalized repository scope
+PASS explicit reconnect reviews changed live schemas rather than silently retaining old policy
+PASS successful reconnect replaces the credential under the same Keychain account ID
+PASS reconnect commits matching identity and policy metadata
+PASS reconnect retires authority of a previously completed resource result
+PASS removed repository scope cannot dispatch after reconnect
+PASS newly authorized repository reads retain the original provider identity
+PASS connect cannot implicitly replace an existing account
+PASS duplicate connection attempt cannot overwrite the reconnected credential
+PASS reconnect rejects a token belonging to another provider account
+PASS wrong account verification never replaces the previous credential
+PASS wrong account verification preserves the previous repository policy
+PASS failed reconnect still retires stale read generations
+PASS invalid replacement credential is surfaced without changing an account
+PASS failed replacement verification preserves the old usable credential
+PASS failed replacement verification permits only the original authorized policy
+PASS unknown saved account cannot be reauthorized
+PASS invalid replacement repository policy cannot begin reauthorization
+PASS explicit reconnect repairs a missing local credential
+PASS empty reconnect label uses the freshly verified account login
+PASS an active provider read exists before reconnect
+PASS reconnect pauses during live verification
+PASS UI projects reauthorization rather than stale connected readiness
+PASS reauthorization blocks new resource reads
+PASS a repeated reconnect cannot overwrite an active attempt
+PASS account selection cannot race a reconnect transaction
+PASS reconnect invalidates a response dispatched under the previous generation
+PASS reconnect races make no duplicate resource dispatch
+PASS cancelled reconnect reaches live verification
+PASS cancelled verification cannot commit replacement
+PASS verification cancellation preserves the previous credential
+PASS cancellation fixture reaches the credential replacement boundary
+PASS commit cancellation exercises an actually replaced credential
+PASS cancelled commit returns cancellation
+PASS uncancelled rollback restores the previous credential after commit cancellation
+PASS commit cancellation restores the original persisted policy
+PASS safe rollback restores only the previous authorized read route
+PASS failed metadata commit is surfaced
+PASS metadata failure restores the original credential
+PASS unprovable metadata rollback leaves the account disabled
+PASS failed metadata rollback grants no provider read
+PASS failed metadata commit cannot dispatch with either credential
+PASS replacement and credential rollback failure is surfaced
+PASS credential rollback uncertainty disables the account
+PASS credential rollback failure persists a disabled safety state
+PASS restart cannot revive an account with uncertain rollback
+Integration domain checks: 190 passed, 0 failed. No account or network acceptance performed.

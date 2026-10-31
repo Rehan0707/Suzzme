@@ -1,0 +1,48 @@
+Window: "History", App: Suzzme.
+0 standard window History, ID: main, Secondary Actions: Raise
+	1 split group main, SidebarNavigationSplitView
+		2 scroll area Secondary Actions: Scroll Up, Scroll Down
+			3 list Sidebar
+				4 row (selectable)
+				5 row (selectable) Suzzme, Your personal companion
+				6 row (selectable) Your day
+				7 row (selectable) Home
+				8 row (selectable) Today
+				9 row (selectable) Daily Summary
+				10 row (selectable) Your information
+				11 row (selectable) Personal Memory
+				12 row (selectable) Sources
+				13 row (selected) History
+				14 row (selectable)
+				15 row (selectable) Settings
+			16 scroll bar (settable, float) 0
+				17 value indicator (settable, float) 0
+				18 increment arrow button
+				19 decrement arrow button
+				20 increment page button
+				21 decrement page button
+		22 splitter (disabled, settable, float) 232
+		23 scroll area Secondary Actions: Cancel
+			24 container
+				25 heading Saved with Suzzme
+				26 text Structured information you chose to keep, stored on this device.
+			27 button Description: University coding competition registration deadline, Registrations close at 5 PM., Help: View the saved item and its source
+			28 button Description: Submit registration form, Submit the registration form before the deadline., Help: View the saved item and its source
+	29 toolbar
+		30 button Description: Hide Sidebar, Secondary Actions: Increment, Decrement, Delete, Cancel
+		31 button Description: Ask Suzzme, Help: Ask Suzzme (⌘K), ID: suzzme-ask-open, Secondary Actions: Increment, Decrement, Delete, Cancel, Move previous, Move next, Remove from toolbar
+		32 search text field (settable) Search saved items
+			33 button Search
+	34 close button
+	35 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	36 minimize button
+	37 text History
+38 menu bar
+	39 Suzzme
+	40 Edit
+	41 View
+	42 Companion
+	43 Window
+	44 Help
+
+The focused UI element is 0 standard window History, ID: main, Secondary Actions: Raise

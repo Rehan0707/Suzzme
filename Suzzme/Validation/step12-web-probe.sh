@@ -9,6 +9,8 @@ xcrun swiftc -swift-version 6 -parse-as-library -framework SwiftData -framework 
   Suzzme/Core/Models/SuzzmeAssistantState.swift \
   Suzzme/Core/Context/SuzzmeContextItem.swift \
   Suzzme/Core/Context/SuzzmeContextQuery.swift \
+  Suzzme/Core/Context/ScreenContext.swift \
+  Suzzme/Core/Context/ScreenContextPolicy.swift \
   Suzzme/Core/Context/ContextEngine.swift \
   Suzzme/Core/Connectors/AppleContextSources.swift \
   Suzzme/Core/Connectors/AppleContextPermissions.swift \

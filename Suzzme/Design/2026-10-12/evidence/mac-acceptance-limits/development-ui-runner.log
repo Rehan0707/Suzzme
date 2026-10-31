@@ -1,0 +1,30 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -xctestrun /tmp/SuzzmeNativePlatformMacAcceptanceBuild/Build/Products/NativePlatformAcceptance_macosx27.0-arm64.xctestrun -destination platform=macOS,arch=arm64 -parallel-testing-enabled NO -resultBundlePath /tmp/SuzzmeNativePlatformMacAcceptance-20261012-development-runner.xcresult "-only-testing:NativePlatformUITests/NativePlatformUITests/test02RealTextConversationAndFollowUp" test-without-building
+
+Writing result bundle at path:
+	/tmp/SuzzmeNativePlatformMacAcceptance-20261012-development-runner.xcresult
+
+--- xcodebuild: WARNING: Using the first of multiple matching destinations:
+{ platform:macOS, arch:arm64, id:00008112-001C2994146A201E, name:My Mac }
+{ platform:macOS, arch:arm64, variant:Mac Catalyst, id:00008112-001C2994146A201E, name:My Mac }
+{ platform:macOS, arch:arm64, variant:DriverKit, id:00008112-001C2994146A201E, name:My Mac }
+{ platform:macOS, arch:arm64, variant:Designed for [iPad,iPhone], id:00008112-001C2994146A201E, name:My Mac }
+2026-10-12 20:20:30.347725+0530 NativePlatformUITests-Runner[45472:1092128] [Default] Running tests...
+2026-10-12 20:21:30.555383+0530 NativePlatformUITests-Runner[45472:1092128] [Default] Failed to initialize for UI testing: Error Domain=com.apple.dt.XCTest.XCTFuture Code=1000 "Timed out while enabling automation mode." UserInfo={NSLocalizedDescription=Timed out while enabling automation mode.}
+
+
+*** If you believe this error represents a bug, please attach the result bundle at /tmp/SuzzmeNativePlatformMacAcceptance-20261012-development-runner.xcresult
+
+2026-10-12 20:21:37.585 xcodebuild[45464:1091923] [MT] IDETestOperationsObserverDebug: 67.585 elapsed -- Testing started completed.
+2026-10-12 20:21:37.585 xcodebuild[45464:1091923] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start
+2026-10-12 20:21:37.585 xcodebuild[45464:1091923] [MT] IDETestOperationsObserverDebug: 67.585 sec, +67.585 sec -- end
+
+Test session results, code coverage, and logs:
+	/tmp/SuzzmeNativePlatformMacAcceptance-20261012-development-runner.xcresult
+
+Testing failed:
+	NativePlatformUITests-Runner (45472) encountered an error (The test runner failed to initialize for UI testing. (Underlying Error: Timed out while enabling automation mode.))
+
+** TEST EXECUTE FAILED **
+
+Testing started

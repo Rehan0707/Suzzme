@@ -16,10 +16,8 @@ struct PresenceMotionLabView: View {
     @State private var previewInteraction = "Tap the compact Presence to verify interaction."
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.large) {
-                Text("Presence Motion Lab").font(.largeTitle.bold())
-                Text("Development-only inspection of the shared assistant state. Values here are never saved.").foregroundStyle(SuzzmeTheme.textSecondary)
+        SuzzmePage {
+                SuzzmeScreenIntroduction(title: "Presence Motion Lab", message: "Development-only inspection of the shared assistant state. Values here are never saved.")
                 preview
                 SuzzmeCard {
                     Picker("Assistant state", selection: $state) { ForEach(SuzzmeAssistantState.allCases, id: \.self) { Text(label($0)).tag($0) } }
@@ -40,8 +38,6 @@ struct PresenceMotionLabView: View {
                         Button(transition.title) { run(transition) }.buttonStyle(.bordered)
                     }
                 }
-            }
-            .padding(SuzzmeTheme.Spacing.large).frame(maxWidth: 760).frame(maxWidth: .infinity)
         }
         .navigationTitle("Motion Lab")
         .onDisappear { transitionTask?.cancel() }
@@ -49,23 +45,28 @@ struct PresenceMotionLabView: View {
 
     @ViewBuilder private var preview: some View {
         #if os(macOS)
+        let cutoutHeight: CGFloat = 28
         let compactSize = MacAssistantSurfaceMetrics.size(
             state: state,
             signal: signal,
             notchWidth: 180,
             review: nil,
-            response: nil
+            response: nil,
+            notchHeight: cutoutHeight
         )
         VStack(spacing: 0) {
             Text("Simulated notch · not physical alignment evidence").font(.caption).foregroundStyle(.secondary).padding(.bottom, 12)
-            UnevenRoundedRectangle(bottomLeadingRadius: 8, bottomTrailingRadius: 8).fill(.black).frame(width: 180, height: 28)
-            MacAssistantNotchSurface(state: state, theme: environment.invocation.presenceTheme, animation: environment.invocation.presenceAnimation, signal: signal, hasNotch: true, notchWidth: 180, edgeGlow: glow, onCancel: {}, onInvoke: { previewInteraction = "Presence responded." })
-                .frame(
-                    width: expanded ? max(compactSize.width, 360) : compactSize.width,
-                    height: expanded ? max(compactSize.height, 132) : compactSize.height
-                )
-                .animation(reduceMotion ? nil : .easeInOut(duration: duration), value: state)
-                .animation(reduceMotion ? nil : .spring(response: response, dampingFraction: damping).delay(delay), value: expanded)
+            ZStack(alignment: .top) {
+                UnevenRoundedRectangle(bottomLeadingRadius: 8, bottomTrailingRadius: 8)
+                    .fill(.black).frame(width: 180, height: cutoutHeight)
+                MacAssistantNotchSurface(state: state, theme: environment.invocation.presenceTheme, animation: environment.invocation.presenceAnimation, signal: signal, hasNotch: true, notchWidth: 180, notchHeight: cutoutHeight, edgeGlow: glow, onCancel: {}, onInvoke: { previewInteraction = "Presence responded." })
+                    .frame(
+                        width: expanded ? max(compactSize.width, 360) : compactSize.width,
+                        height: expanded ? max(compactSize.height, 132 + cutoutHeight) : compactSize.height
+                    )
+                    .animation(reduceMotion ? nil : .easeInOut(duration: duration), value: state)
+                    .animation(reduceMotion ? nil : .spring(response: response, dampingFraction: damping).delay(delay), value: expanded)
+            }
             Text(previewInteraction)
                 .font(.caption)
                 .foregroundStyle(.secondary)

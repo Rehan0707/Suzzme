@@ -1,0 +1,24 @@
+PASS quality never outranks correct response language
+PASS ranking deterministic regardless of inventory order
+PASS compatible quality order Premium Enhanced Standard
+PASS ordinary automatic voices exclude novelty and personal traits
+PASS English production answer retains Settings regional voice
+PASS explicit voice beats automatic ranking and language detection
+PASS audition choice persists after controller restart
+PASS production and preview factory preserves natural rate pitch volume
+PASS no artificial pre or post pauses
+PASS production factory uses the resolved installed voice
+PASS markdown bullets and links never read literally
+PASS timeline and link labels retain stated facts without guessed meridiem
+PASS table facts stay readable while internal metadata is omitted
+PASS code and URL only output has no spoken payload
+PASS checkbox completion meaning survives formatting cleanup
+PASS explicit ISO instant uses readable native local formatting
+PASS ordinary long answer uses a concise factual prefix
+PASS explicit summary and confirmation modes retain complete narration
+PASS confirmation facts risks and quantity remain intact
+PASS bounded complete sentences stay intact across native utterances
+PASS oversized single token cannot defeat queue chunk bound
+PASS failed audio preparation still completes readable response
+PASS failed audio preparation preserves explicit confirmation
+Voice quality checks: 23 passed / 0 failed

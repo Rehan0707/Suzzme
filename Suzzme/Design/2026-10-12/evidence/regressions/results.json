@@ -1,0 +1,345 @@
+{
+  "browser-bridge-check.sh": {
+    "exit": 0,
+    "seconds": 10.64,
+    "summary": [
+      "Browser bridge checks: 57 passed, 0 failed. Transport fixtures, not signed installation acceptance."
+    ]
+  },
+  "browser-github-handoff-check.sh": {
+    "exit": 0,
+    "seconds": 8.15,
+    "summary": [
+      "GitHub Browser Handoff Swift: 131 passed / 0 failed (no provider calls)",
+      "GitHub Browser Handoff JS: 94 passed / 0 failed (test double; browser installation unverified)",
+      "GitHub Browser Handoff JS total: 98 passed / 0 failed (includes production popup handler)"
+    ]
+  },
+  "check.sh": {
+    "exit": 0,
+    "seconds": 8.47,
+    "summary": [
+      "PASS: briefing, conversion, fingerprint, priority order, empty input, date parsing, fallback extraction, hallucination guard, and duplicate protection"
+    ]
+  },
+  "browser-github-controller-check.sh": {
+    "exit": 0,
+    "seconds": 29.49,
+    "summary": [
+      "GitHub Browser Handoff Controller: 18 passed / 0 failed (production controller/gateway, synthetic store/provider)",
+      "Browser native controller checks: 21 passed / 0 failed. Disposable controller copy; no signed IPC acceptance."
+    ]
+  },
+  "companion-presence-check.sh": {
+    "exit": 0,
+    "seconds": 13.31,
+    "summary": [
+      "Companion Presence checks: 66 passed / 0 failed"
+    ]
+  },
+  "connector-acceptance-check.sh": {
+    "exit": 1,
+    "seconds": 13.61,
+    "summary": [
+      "SwiftData.DefaultStore save failed with error: Error Domain=NSCocoaErrorDomain Code=513 \"The file couldn\u2019t be saved because you don\u2019t have permission.\" UserInfo={NSPersistentStoreOptions={",
+      "Connector acceptance: 57 passed / 3 failed"
+    ]
+  },
+  "final-extraction-grounding-check.sh": {
+    "exit": 0,
+    "seconds": 13.59,
+    "summary": [
+      "Final extraction and Calendar routing: 33 passed / 0 failed. Controlled boundary tests, not physical acceptance."
+    ]
+  },
+  "companion3-intelligence-check.sh": {
+    "exit": 0,
+    "seconds": 69.36,
+    "summary": [
+      "Companion 3 intelligence: 38 passed / 0 failed"
+    ]
+  },
+  "global-shortcut-check.sh": {
+    "exit": 0,
+    "seconds": 14.81,
+    "summary": [
+      "Global shortcut reducer checks passed: 29"
+    ]
+  },
+  "global-screen-check.sh": {
+    "exit": 0,
+    "seconds": 59.38,
+    "summary": [
+      "Global screen checks: 68 passed / 0 failed"
+    ]
+  },
+  "global-voice-check.sh": {
+    "exit": 0,
+    "seconds": 20.43,
+    "summary": [
+      "Global voice acceptance: 86 passed / 0 failed"
+    ]
+  },
+  "integration-mcp-check.sh": {
+    "exit": 1,
+    "seconds": 0.03,
+    "summary": []
+  },
+  "integration-presentation-check.sh": {
+    "exit": 0,
+    "seconds": 7.54,
+    "summary": [
+      "Integration Presentation: 117 passed / 0 failed"
+    ]
+  },
+  "integration-safety-check.sh": {
+    "exit": 0,
+    "seconds": 24.52,
+    "summary": [
+      "Integration domain checks: 190 passed, 0 failed. No account or network acceptance performed."
+    ]
+  },
+  "live-activity-check.sh": {
+    "exit": 0,
+    "seconds": 2.59,
+    "summary": [
+      "Live Activity checks: 36 passed / 0 failed"
+    ]
+  },
+  "integration-core-check.sh": {
+    "exit": 0,
+    "seconds": 43.59,
+    "summary": [
+      "Integration Core checks: 18 passed, 0 failed. No real-account acceptance."
+    ]
+  },
+  "notion-client-check.sh": {
+    "exit": 0,
+    "seconds": 13.42,
+    "summary": [
+      "Notion client checks: 100 passed, 0 failed. Synthetic HTTP only; live account acceptance pending."
+    ]
+  },
+  "notion-gateway-check.sh": {
+    "exit": 0,
+    "seconds": 29.44,
+    "summary": [
+      "Notion Gateway: 78 passed / 0 failed. Synthetic provider only."
+    ]
+  },
+  "p0-blocker-check.sh": {
+    "exit": 0,
+    "seconds": 60.39,
+    "summary": [
+      "P0 regression checks: 71 passed / 0 failed"
+    ]
+  },
+  "notion-core-check.sh": {
+    "exit": 0,
+    "seconds": 106.88,
+    "summary": [
+      "Notion Core checks: 89 passed, 0 failed. Synthetic HTTP; no live account or hardware acceptance."
+    ]
+  },
+  "persistence-check.sh": {
+    "exit": 0,
+    "seconds": 14.64,
+    "summary": [
+      "PASS: raw text \u2192 fallback pipeline \u2192 SuzzmeItem \u2192 in-memory SwiftData \u2192 Home briefing"
+    ]
+  },
+  "premium-presence-check.sh": {
+    "exit": 0,
+    "seconds": 15.35,
+    "summary": [
+      "Premium Presence layout checks: 20 passed / 0 failed"
+    ]
+  },
+  "provider-read-check.sh": {
+    "exit": 0,
+    "seconds": 7.71,
+    "summary": [
+      "Provider adapters: 413 passed / 0 failed. Fixtures only; live acceptance pending."
+    ]
+  },
+  "product-flow-check.sh": {
+    "exit": 0,
+    "seconds": 50.86,
+    "summary": [
+      "Product flow checks passed: 39",
+      "Product flow checks failed: 0"
+    ]
+  },
+  "step10-check.sh": {
+    "exit": 1,
+    "seconds": 43.63,
+    "summary": [
+      "Step 10 behavioral checks passed: 191",
+      "Step 10 behavioral checks failed: 3"
+    ]
+  },
+  "step11-check.sh": {
+    "exit": 0,
+    "seconds": 28.9,
+    "summary": [
+      "Step 11 behavioral checks passed: 223",
+      "Step 11 behavioral checks failed: 0",
+      "Step 11 production behavioral checks passed: 223",
+      "Step 11 production behavioral checks failed: 0"
+    ]
+  },
+  "step12-check.sh": {
+    "exit": 0,
+    "seconds": 51.35,
+    "summary": [
+      "Step 12 behavioral checks passed: 410",
+      "Step 12 behavioral checks failed: 0"
+    ]
+  },
+  "step12-recovery-check.sh": {
+    "exit": 1,
+    "seconds": 31.22,
+    "summary": []
+  },
+  "step15-google-check.sh": {
+    "exit": 0,
+    "seconds": 41.27,
+    "summary": [
+      "Step 15 Google: 77 passed / 0 failed. SDK ownership and HTTP fixtures only; live acceptance pending."
+    ]
+  },
+  "step15-mcp-check.sh": {
+    "exit": 1,
+    "seconds": 0.01,
+    "summary": []
+  },
+  "step15-oauth-check.sh": {
+    "exit": 1,
+    "seconds": 0.01,
+    "summary": []
+  },
+  "step12-presence-check.sh": {
+    "exit": 0,
+    "seconds": 107.24,
+    "summary": [
+      "Presence runtime checks passed: 51",
+      "Presence runtime checks failed: 0"
+    ]
+  },
+  "step16-actual-pipeline-check.sh": {
+    "exit": 0,
+    "seconds": 22.4,
+    "summary": [
+      "Step 16 actual-pipeline regressions: 12 passed / 0 failed. Synthetic sources, shipping engines and SwiftData."
+    ]
+  },
+  "step17-summary-follow-up-check.sh": {
+    "exit": 0,
+    "seconds": 25.02,
+    "summary": [
+      "Step 17 summary follow-up: 26 passed / 0 failed"
+    ]
+  },
+  "step4-check.sh": {
+    "exit": 0,
+    "seconds": 5.62,
+    "summary": [
+      "PASS: Step 4 query windows, grounded calendar/reminder/contact context, timezone-safe dates, and cross-source reasoning"
+    ]
+  },
+  "step5-check.sh": {
+    "exit": 0,
+    "seconds": 1.2,
+    "summary": [
+      "PASS: voice final transcript gating and unified voice state lifecycle"
+    ]
+  },
+  "step6-check.sh": {
+    "exit": 0,
+    "seconds": 6.32,
+    "summary": [
+      "Behavioral tests passed: 53",
+      "Behavioral tests failed: 0"
+    ]
+  },
+  "step7-check.sh": {
+    "exit": 1,
+    "seconds": 2.9,
+    "summary": [
+      "Behavioral tests passed: 90",
+      "Behavioral tests failed: 0"
+    ]
+  },
+  "step3-check.sh": {
+    "exit": 133,
+    "seconds": 37.48,
+    "summary": [
+      "Step3Checks/Step3Checks.swift:129: Precondition failed"
+    ]
+  },
+  "step8-core-check.sh": {
+    "exit": 0,
+    "seconds": 77.34,
+    "summary": [
+      "Core integration checks passed: 22",
+      "Core integration checks failed: 0"
+    ]
+  },
+  "step8-check.sh": {
+    "exit": 0,
+    "seconds": 90.67,
+    "summary": [
+      "Behavioral tests passed: 176",
+      "Behavioral tests failed: 0",
+      "Core integration checks passed: 22",
+      "Core integration checks failed: 0",
+      "Step 8 total checks passed: 198",
+      "Step 8 total checks failed: 0"
+    ]
+  },
+  "ui-recovery-check.sh": {
+    "exit": 1,
+    "seconds": 0.69,
+    "summary": [
+      "PASS: UI Foundation skill exists",
+      "PASS: Screen Patterns skill exists",
+      "PASS: Presence skill exists",
+      "PASS: UI Validation skill exists",
+      "UI recovery checks passed: 43",
+      "UI recovery checks failed: 3"
+    ]
+  },
+  "voice-lifecycle-acceptance-check.sh": {
+    "exit": 0,
+    "seconds": 19.67,
+    "summary": [
+      "Voice lifecycle acceptance: 31 passed / 0 failed"
+    ]
+  },
+  "voice-quality-check.sh": {
+    "exit": 0,
+    "seconds": 7.76,
+    "summary": [
+      "Voice quality checks: 23 passed / 0 failed"
+    ]
+  },
+  "step9-check.sh": {
+    "exit": 0,
+    "seconds": 53.62,
+    "summary": [
+      "Step 9 behavioral checks: 132 passed / 0 failed",
+      "Step 9 behavioral checks: 2 passed / 0 failed",
+      "Step 9 behavioral checks: 4 passed / 0 failed",
+      "Step 9 behavioral checks: 6 passed / 0 failed",
+      "Step 9 behavioral checks: 7 passed / 0 failed",
+      "Step 9 behavioral checks: 5 passed / 0 failed"
+    ]
+  },
+  "watched-transport-check.sh": {
+    "exit": 0,
+    "seconds": 27.76,
+    "summary": [
+      "Watched transport checks: 30 passed, 0 failed. Isolated; arbitrary network intake deliberately disabled."
+    ]
+  }
+}

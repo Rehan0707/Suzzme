@@ -1,0 +1,33 @@
+{
+  "changedFiles": {
+    "Suzzme/App/LaunchExperience.swift": {
+      "before": "cbd9a7622e28d0ae22355ffa0615260edc5ef85780362609e6987cf696908917",
+      "after": "7e8436897f1aca425274dee43d5d715eb0df3b4900dbdbb4bc018517529101c4"
+    },
+    "Suzzme/Features/Settings/VoiceSettingsView.swift": {
+      "before": "bd11a79c7d7b7770a59302df748fe793d5316f862adeb97f16966820e5c515ea",
+      "after": "d52be3a9f7b4a431bea1fcfdc2050e0c936bab879c44eeedd33ec7e67ebb0067"
+    },
+    "Suzzme/Features/Settings/IntegrationsView.swift": {
+      "before": "657f383a65afbc5a050401960afd9cc156e67abf99308806d600db775db43e1f",
+      "after": "8ead678998b4f25990415f0a48e0a660bad3902a5eb5ac33623cfcc5f0081fcd"
+    },
+    "Suzzme/Features/Home/AskSuzzmeView.swift": {
+      "before": "3cfc3316d0cfa882da51c49e04f357c699542a7fb99fb5cb2c8521c177bbb579",
+      "after": "f4878d8ec73c45ced3377e8511b44ed4a470f7f4d26ef6d6df9b5a76a64f7b68"
+    },
+    "Suzzme/DesignSystem/Components/SuzzmeInteractionFeedback.swift": {
+      "before": "62a8d8d185d26d081764bdfe6101b808ab013173aaa38d1a931a170be0373609",
+      "after": "d4c75a831a32835c2938752b364691bb9b009f33611958105d6e8c5e3cc68553"
+    },
+    "Suzzme/DesignSystem/Theme/SuzzmeTheme.swift": {
+      "before": "7932d15d45a254c361623abfe30dea61475a5bbfee47c4df5d5f6e636bff7853",
+      "after": "0972de9dcf1b7b604dad12b555b49c78171b017f8440e50b67fabc5d5d05fd5f"
+    }
+  },
+  "changedCount": 6,
+  "unchangedCount": 344,
+  "brandAssetsChanged": false,
+  "coreSourcesChanged": false,
+  "entitlementsChanged": false
+}

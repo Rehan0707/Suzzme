@@ -1,0 +1,8 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -project /Users/rehan/Documents/Projects/Suzzme/Suzzme.xcodeproj -scheme Suzzme -configuration Release -clonedSourcePackagesDirPath /Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages -disableAutomaticPackageResolution -skipPackageUpdates COMPILER_INDEX_STORE_ENABLE=NO -jobs 1 -destination platform=macOS,arch=arm64 -derivedDataPath /tmp/SuzzmeFullApp20261016/mac build
+
+Build settings from command line:
+    COMPILER_INDEX_STORE_ENABLE = NO
+
+2026-10-16 22:38:45.733 xcodebuild[58847:351462] Writing error result bundle to /var/folders/tp/gdnfpld55dj76lq6wbsnlml40000gn/T/ResultBundle_2026-16-10_22-38-0045.xcresult
+xcodebuild: error: '/Users/rehan/Documents/Projects/Suzzme/Suzzme.xcodeproj' does not exist.

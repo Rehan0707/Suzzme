@@ -1,0 +1,22 @@
+{
+  "step7-check.sh": {
+    "exit": 0,
+    "seconds": 3.61,
+    "log": "step7-check-final.log"
+  },
+  "ui-recovery-check.sh": {
+    "exit": 0,
+    "seconds": 0.18,
+    "log": "ui-recovery-check-final.log"
+  },
+  "step10-check.sh": {
+    "exit": 0,
+    "seconds": 25.25,
+    "log": "step10-check-final.log"
+  },
+  "step12-recovery-check.sh": {
+    "exit": 0,
+    "seconds": 31.57,
+    "log": "step12-recovery-check-final.log"
+  }
+}

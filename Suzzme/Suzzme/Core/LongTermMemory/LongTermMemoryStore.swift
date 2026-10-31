@@ -86,9 +86,13 @@ actor LongTermMemoryStore {
 
     func memories(limit: Int = 500, now: Date = .now) throws -> [SuzzmeMemoryRecord] {
         guard isEnabled(), limit > 0 else { return [] }
-        var descriptor = FetchDescriptor<StoredSuzzmeMemory>(sortBy: [SortDescriptor(\.updatedAt, order: .reverse)])
-        descriptor.fetchLimit = max(0, min(limit, maximumActiveMemories))
-        return try modelContext.fetch(descriptor).filter(Self.validRecord).map(Self.record).filter { $0.isActive(at: now) }
+        let descriptor = FetchDescriptor<StoredSuzzmeMemory>(sortBy: [SortDescriptor(\.updatedAt, order: .reverse)])
+        return try modelContext.fetch(descriptor)
+            .filter(Self.validRecord)
+            .map(Self.record)
+            .filter { $0.isActive(at: now) }
+            .prefix(min(limit, maximumActiveMemories))
+            .map { $0 }
     }
 
     func allMemories(now: Date = .now) throws -> [SuzzmeMemoryRecord] {
@@ -126,7 +130,11 @@ actor LongTermMemoryStore {
             if let semanticSlot { existing.semanticSlotRaw = semanticSlot.rawValue }
             return existing
         }
-        guard try modelContext.fetchCount(FetchDescriptor<StoredSuzzmeMemory>()) < maximumActiveMemories else { throw LongTermMemoryError.limitExceeded }
+        let activeCount = try modelContext.fetch(FetchDescriptor<StoredSuzzmeMemory>()).lazy
+            .filter(Self.validRecord)
+            .filter { $0.isActive(at: now) }
+            .count
+        guard activeCount < maximumActiveMemories else { throw LongTermMemoryError.limitExceeded }
         let memory = StoredSuzzmeMemory(
             type: type,
             name: name,

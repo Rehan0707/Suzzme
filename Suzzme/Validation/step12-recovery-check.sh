@@ -4,7 +4,7 @@ cd "${0:A:h}/.."
 output=$(mktemp -d)
 trap 'rm -rf "$output"' EXIT
 
-xcrun swiftc -swift-version 6 -parse-as-library -framework SwiftData -framework SwiftUI -framework EventKit -framework AVFoundation -framework Speech -framework Contacts \
+xcrun swiftc -disable-sandbox -swift-version 6 -enable-upcoming-feature NonisolatedNonsendingByDefault -module-cache-path "$output/cache" -parse-as-library -framework SwiftData -framework SwiftUI -framework EventKit -framework AVFoundation -framework Speech -framework Contacts \
   Suzzme/Core/Models/SuzzmeItem.swift \
   Suzzme/Core/Models/SuzzmeAssistantState.swift \
   Suzzme/Core/Context/SuzzmeContextItem.swift \
@@ -34,10 +34,14 @@ xcrun swiftc -swift-version 6 -parse-as-library -framework SwiftData -framework 
   Suzzme/Core/Actions/EventKitCapabilities.swift \
   Suzzme/Core/Actions/ActionMutation.swift \
   Suzzme/Core/Actions/SettingsCapability.swift \
+  Suzzme/DesignSystem/Components/SuzzmeMascotArtwork.swift \
   Suzzme/DesignSystem/Theme/SuzzmeTheme.swift \
   Suzzme/Core/Invocation/SuzzmePresenceTheme.swift \
   Suzzme/Core/Invocation/AssistantPresentation.swift \
   Suzzme/Core/Voice/VoiceTranscriptFinalizer.swift \
+  Suzzme/Core/Voice/SuzzmeAssemblyAITranscription.swift \
+  Suzzme/Core/Voice/SuzzmePCM16AudioConverter.swift \
+  Validation/VoiceTestCloudStub.swift \
   Suzzme/Core/Voice/VoiceSessionController.swift \
   Suzzme/Core/Models/ExtractedSuzzmeItem.swift \
   Suzzme/Core/Models/DailyBriefing.swift \
@@ -46,6 +50,8 @@ xcrun swiftc -swift-version 6 -parse-as-library -framework SwiftData -framework 
   Suzzme/Core/Actions/SuzzmeAction.swift \
   Suzzme/Core/Actions/ActionPlanner.swift \
   Suzzme/Core/Intelligence/IntelligenceCapability.swift \
+  Suzzme/Core/Context/ScreenContext.swift \
+  Suzzme/Core/Context/ScreenContextPolicy.swift \
   Suzzme/Core/Intelligence/IntelligenceService.swift \
   Suzzme/Core/Intelligence/BasicIntelligenceService.swift \
   Suzzme/Core/Intelligence/SuzzmeUnderstandingPipeline.swift \

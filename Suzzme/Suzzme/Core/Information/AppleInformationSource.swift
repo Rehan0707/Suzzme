@@ -29,8 +29,12 @@ struct AppleInformationSource: InformationSource {
                                    modifiedAt: item.timestamp,
                                    effectiveAt: item.metadata[id == .calendar ? "start" : "due"].flatMap { formatter.date(from: $0) },
                                    effectiveUntil: item.metadata["end"].flatMap { formatter.date(from: $0) },
-                                   state: item.metadata["cancelled"] == "true" ? .cancelled : item.metadata["completed"] == "true" ? .completed : .active)
+                                   state: item.metadata["cancelled"] == "true" ? .cancelled : item.metadata["completed"] == "true" ? .completed : .active,
+                                   isAllDay: item.metadata["allDay"].flatMap(Bool.init))
         }
-        return .init(observations: observations, complete: snapshot.complete, window: window)
+        // Complete open-reminder snapshots can prove completion/deletion of
+        // previously seen old or undated commitments without reading old completed history.
+        return .init(observations: observations, complete: snapshot.complete, window: window,
+                     coversUndated: id == .reminders, coversOpenReminders: id == .reminders)
     }
 }

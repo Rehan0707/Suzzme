@@ -1,0 +1,293 @@
+--- Suzzme/App/LaunchExperience.swift
++++ /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/App/LaunchExperience.swift
+@@ -26,7 +26,7 @@
+ 
+     var body: some View {
+         ZStack {
+-            SuzzmeTheme.launchGradient.ignoresSafeArea()
++            SuzzmeTheme.pageBackground.ignoresSafeArea()
+             VStack(spacing: 0) {
+                 header
+                 ScrollView {
+@@ -225,12 +225,12 @@
+ 
+     @ViewBuilder private var navigationButtons: some View {
+         if step > 0 {
+-            Button("Back") { withAnimation(reduceMotion ? nil : .easeInOut(duration: SuzzmeTheme.Motion.standard)) { step -= 1 } }
++            Button("Back") { withAnimation(SuzzmeTheme.Motion.disclosure(reduceMotion: reduceMotion)) { step -= 1 } }
+                 .buttonStyle(.bordered).controlSize(.large)
+         }
+         Button(step == pages.count - 1 ? "Start using Suzzme" : "Continue") {
+             if step == pages.count - 1 { onComplete() }
+-            else { withAnimation(reduceMotion ? nil : .easeInOut(duration: SuzzmeTheme.Motion.standard)) { step += 1 } }
++            else { withAnimation(SuzzmeTheme.Motion.disclosure(reduceMotion: reduceMotion)) { step += 1 } }
+         }
+         .buttonStyle(.borderedProminent)
+         .controlSize(.large)
+--- Suzzme/DesignSystem/Components/SuzzmeInteractionFeedback.swift
++++ /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/DesignSystem/Components/SuzzmeInteractionFeedback.swift
+@@ -3,6 +3,8 @@
+ #if os(iOS)
+ import UIKit
+ import CoreHaptics
++#elseif os(macOS)
++import AppKit
+ #endif
+ 
+ /// Discrete feedback from real interactions, never from animation frames.
+@@ -20,9 +22,9 @@
+     }
+ 
+     static func play(_ event: Event) {
+-        guard isSupported,
+-              UserDefaults.standard.object(forKey: preferenceKey) as? Bool ?? true else { return }
++        guard UserDefaults.standard.object(forKey: preferenceKey) as? Bool ?? true else { return }
+         #if os(iOS)
++        guard isSupported else { return }
+         // UIKit observes the device's system feedback settings. No custom engine,
+         // audio session or simulated hardware feedback is created.
+         switch event {
+@@ -38,6 +40,17 @@
+             UINotificationFeedbackGenerator().notificationOccurred(.warning)
+         case .selection:
+             UISelectionFeedbackGenerator().selectionChanged()
++        }
++        #elseif os(macOS)
++        // AppKit routes this best-effort request to eligible hardware. A Mac
++        // without a haptic trackpad still receives the existing visual status.
++        switch event {
++        case .confirmation:
++            NSHapticFeedbackManager.defaultPerformer.perform(.alignment, performanceTime: .now)
++        case .success, .completion:
++            NSHapticFeedbackManager.defaultPerformer.perform(.generic, performanceTime: .now)
++        default:
++            break
+         }
+         #endif
+     }
+--- Suzzme/DesignSystem/Theme/SuzzmeTheme.swift
++++ /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/DesignSystem/Theme/SuzzmeTheme.swift
+@@ -73,6 +73,7 @@
+         static let companionFace: CGFloat = 80
+         static let menuBarWidth: CGFloat = 320
+         static let readingWidth: CGFloat = 680
++        static let assistantMinimumWidth: CGFloat = 600
+         static let workspaceWidth: CGFloat = 920
+         static let primaryColumnMinimum: CGFloat = 420
+         static let secondaryColumnMinimum: CGFloat = 280
+@@ -100,6 +101,10 @@
+         /// Immediate control feedback; native keyboard actions stay instantaneous.
+         static func feedback(reduceMotion: Bool) -> Animation? {
+             reduceMotion ? nil : .easeOut(duration: quick)
++        }
++
++        static func disclosure(reduceMotion: Bool) -> Animation? {
++            reduceMotion ? nil : .smooth(duration: standard, extraBounce: 0)
+         }
+ 
+         /// Finite changes between readable interface states.
+--- Suzzme/Features/Home/AskSuzzmeView.swift
++++ /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Features/Home/AskSuzzmeView.swift
+@@ -1,4 +1,16 @@
+ import SwiftUI
++
++#if os(macOS)
++private struct SuzzmeAssistantSheetSizing: ViewModifier {
++    @ViewBuilder func body(content: Content) -> some View {
++        if #available(macOS 15.0, *) {
++            content.presentationSizing(.fitted)
++        } else {
++            content
++        }
++    }
++}
++#endif
+ 
+ /// One presentation for typed and spoken requests through the existing core.
+ struct AskSuzzmeView: View {
+@@ -114,8 +126,12 @@
+                 }
+                 ToolbarItem(placement: .primaryAction) {
+                     NavigationLink { SourcesView().navigationTitle("Sources") } label: {
+-                        Image(systemName: "tray.2")
+-                    }.accessibilityLabel("Manage sources")
++                        Label("Sources", systemImage: "tray.2")
++                    }
++                    .labelStyle(.titleAndIcon)
++                    .buttonStyle(.borderless)
++                    .accessibilityLabel("Manage sources")
++                    .help("Manage sources")
+                 }
+                 #if os(iOS)
+                 ToolbarItemGroup(placement: .keyboard) {
+@@ -127,6 +143,9 @@
+         }
+         #if os(macOS)
+         .focusedSceneValue(\.assistantPresentation, .constant(true))
++        .frame(minWidth: SuzzmeTheme.Layout.assistantMinimumWidth,
++               idealWidth: SuzzmeTheme.Layout.readingWidth, minHeight: 560)
++        .modifier(SuzzmeAssistantSheetSizing())
+         #endif
+         .sheet(isPresented: $showsGitHubConnection) {
+             GitHubConnectionSheet(suggestedRepository: connectionSuggestion?.repository ?? "")
+@@ -279,7 +298,7 @@
+             }
+         }
+         .padding(.horizontal, dynamicTypeSize.isAccessibilitySize ? 0 : SuzzmeTheme.Layout.compactInset)
+-        .padding(.vertical, SuzzmeTheme.Spacing.medium)
++        .padding(.vertical, SuzzmeTheme.Spacing.small)
+         .frame(maxWidth: SuzzmeTheme.Layout.readingWidth, alignment: .leading)
+         .frame(maxWidth: .infinity)
+         .background { composerBackground }
+@@ -331,7 +350,11 @@
+             Label(voiceButtonTitle, systemImage: environment.voice.isListening ? "checkmark" : "mic")
+                 .frame(minHeight: SuzzmeTheme.Layout.touchTarget)
+         }
++        #if os(macOS)
++        .buttonStyle(.borderless)
++        #else
+         .buttonStyle(.bordered)
++        #endif
+         .disabled(!(canCompose || ownsCurrentInteraction && (environment.voice.isListening || environment.voice.isSpeaking || awaitsAction)))
+         .accessibilityLabel(environment.voice.isListening ? "Finish speaking and send" : environment.voice.isSpeaking ? "Interrupt the answer and start listening" : "Start voice conversation")
+     }
+--- Suzzme/Features/Settings/IntegrationsView.swift
++++ /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Features/Settings/IntegrationsView.swift
+@@ -5,7 +5,10 @@
+ struct IntegrationsView: View {
+     var receivesBrowserSetup = false
+     @Environment(AppEnvironment.self) private var environment
++    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+     @State private var search = ""
++    @State private var showsCatalog = false
++    @State private var showsDataFlow = false
+     @State private var connectingService: IntegrationID?
+     @State private var suggestedGitHubRepository = ""
+     private var controller: IntegrationController { environment.integrations }
+@@ -24,6 +27,18 @@
+ 
+     private var matchesCustomConnector: Bool {
+         matches("Custom MCP server") || matches("Custom connectors")
++    }
++
++    private var hasSearch: Bool {
++        !search.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
++    }
++
++    private func isVisible(_ item: IntegrationDirectoryItem) -> Bool {
++        matches(item) && (item.availability != .listedOnly || showsCatalog || hasSearch)
++    }
++
++    private var catalogOnlyCount: Int {
++        IntegrationDirectoryItem.catalog.filter { $0.availability == .listedOnly }.count
+     }
+ 
+     var body: some View {
+@@ -31,18 +46,9 @@
+             VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.xs) {
+                 Text("Apps and integrations")
+                     .font(.title.weight(.semibold)).accessibilityAddTraits(.isHeader)
+-                Text("\(IntegrationDirectoryItem.catalog.count) services shown. Status reflects what Suzzme can actually connect to in this build.")
++                Text("Choose a connection and review its access. Status reflects what is available in this build.")
+                     .foregroundStyle(SuzzmeTheme.textSecondary).fixedSize(horizontal: false, vertical: true)
+             }
+-            #if os(macOS)
+-            NavigationLink { BrowserPairingView() } label: {
+-                Label("Browser pairing", systemImage: "link.badge.plus")
+-            }
+-            #endif
+-            IntegrationDataFlowCard()
+-            Text("\(controller.accounts.count) of \(IntegrationAccountPolicy.maximumAccounts) stored provider accounts. Google authorization is managed separately. Connecting does not enable automatic intake or actions.")
+-                .font(.footnote).foregroundStyle(SuzzmeTheme.textSecondary)
+-                .fixedSize(horizontal: false, vertical: true)
+             HStack(spacing: SuzzmeTheme.Spacing.xs) {
+                 Image(systemName: "magnifyingglass").foregroundStyle(SuzzmeTheme.textSecondary).accessibilityHidden(true)
+                 TextField("Search apps", text: $search).textFieldStyle(.plain)
+@@ -57,8 +63,37 @@
+             .frame(minHeight: SuzzmeTheme.Layout.touchTarget)
+             .background(SuzzmeTheme.surface, in: RoundedRectangle(cornerRadius: SuzzmeTheme.Radius.control))
+ 
++            VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.small) {
++                DisclosureGroup(isExpanded: $showsDataFlow) {
++                    IntegrationDataFlowCard()
++                    Text("\(controller.accounts.count) of \(IntegrationAccountPolicy.maximumAccounts) stored provider accounts. Google authorization is managed separately.")
++                        .font(.footnote).foregroundStyle(SuzzmeTheme.textSecondary)
++                        .fixedSize(horizontal: false, vertical: true)
++                } label: {
++                    Label("How access works", systemImage: "lock.shield")
++                        .font(.subheadline.weight(.medium))
++                        .frame(minHeight: SuzzmeTheme.Layout.touchTarget)
++                }
++                .animation(SuzzmeTheme.Motion.disclosure(reduceMotion: reduceMotion), value: showsDataFlow)
++                Text("Connecting does not enable automatic intake or actions.")
++                    .font(.footnote).foregroundStyle(SuzzmeTheme.textSecondary)
++                    .fixedSize(horizontal: false, vertical: true)
++                Toggle("Include catalog-only apps (\(catalogOnlyCount))", isOn: $showsCatalog)
++                    .font(.subheadline)
++                    .frame(minHeight: SuzzmeTheme.Layout.touchTarget)
++                    .accessibilityIdentifier("suzzme-integration-catalog-toggle")
++                    .accessibilityHint("Shows reference entries that cannot connect in this build. Search always includes them.")
++                #if os(macOS)
++                NavigationLink { BrowserPairingView() } label: {
++                    Label("Browser pairing", systemImage: "link.badge.plus")
++                        .frame(minHeight: SuzzmeTheme.Layout.touchTarget)
++                }
++                .buttonStyle(.borderless)
++                #endif
++            }
++
+             ForEach(IntegrationDirectorySection.allCases) { section in
+-                let entries = IntegrationDirectoryItem.catalog.filter { $0.section == section && matches($0) }
++                let entries = IntegrationDirectoryItem.catalog.filter { $0.section == section && isVisible($0) }
+                 if !entries.isEmpty {
+                     VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.small) {
+                         HStack(alignment: .firstTextBaseline) {
+@@ -66,7 +101,7 @@
+                             Spacer()
+                             Text("\(entries.count)")
+                                 .font(.caption.weight(.medium)).foregroundStyle(SuzzmeTheme.textSecondary)
+-                                .accessibilityLabel("\(entries.count) apps")
++                                .accessibilityLabel(entries.count == 1 ? "1 app" : "\(entries.count) apps")
+                         }
+                         LazyVGrid(columns: columns, alignment: .leading, spacing: SuzzmeTheme.Spacing.small) {
+                             ForEach(entries) { item in directoryCard(item) }
+--- Suzzme/Features/Settings/VoiceSettingsView.swift
++++ /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Features/Settings/VoiceSettingsView.swift
+@@ -32,11 +32,19 @@
+                 Text(voice.voiceSelectionDescription).fixedSize(horizontal: false, vertical: true)
+             }
+             Section {
+-                LabeledContent("Speaking pace", value: paceDescription)
+-                Slider(value: Binding(get: { voice.speechRate }, set: { voice.speechRate = $0 }), in: VoiceSessionController.speechRateRange, step: 0.01) {
+-                    Text("Speaking pace")
+-                } minimumValueLabel: { Text("Slow") } maximumValueLabel: { Text("Fast") }
+-                .accessibilityValue(paceDescription)
++                VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.xs) {
++                    LabeledContent("Speaking pace", value: paceDescription)
++                    Slider(value: Binding(get: { voice.speechRate }, set: { voice.speechRate = $0 }),
++                           in: VoiceSessionController.speechRateRange, step: 0.01,
++                           label: { Text("Speaking pace") },
++                           minimumValueLabel: { Text("Slow") },
++                           maximumValueLabel: { Text("Fast") },
++                           onEditingChanged: { editing in
++                               if !editing { SuzzmeHaptics.play(.selection) }
++                           })
++                    .labelsHidden()
++                    .accessibilityValue(paceDescription)
++                }
+                 if abs(voice.speechRate - AVSpeechUtteranceDefaultSpeechRate) > 0.005 {
+                     Button("Use natural pace") { voice.speechRate = AVSpeechUtteranceDefaultSpeechRate }
+                 }
+@@ -73,6 +81,12 @@
+                 Text(SuzzmeHaptics.isSupported
+                     ? "Gentle feedback marks listening, confirmations and completion. Suzzme also shows every state on screen."
+                     : "Haptic feedback is available on supported iPhones. Every state is also shown on screen.")
++            }
++            #elseif os(macOS)
++            Section {
++                Toggle("Trackpad feedback", isOn: $hapticsEnabled)
++            } header: { Text("Haptics") } footer: {
++                Text("Brief feedback marks confirmations and completion on supported trackpads. Every state is also shown on screen.")
+             }
+             #endif
+         }

@@ -1,0 +1,22 @@
+<module-includes>:1:9: note: in file included from <module-includes>:1:
+1 | #import "/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/GoogleSignIn-iOS/GoogleSignIn/Sources/Public/GoogleSignIn/GoogleSignIn.h"
+  |         `- note: in file included from <module-includes>:1:
+2 | 
+
+/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/GoogleSignIn-iOS/GoogleSignIn/Sources/Public/GoogleSignIn/GoogleSignIn.h:18:9: note: in file included from /Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/GoogleSignIn-iOS/GoogleSignIn/Sources/Public/GoogleSignIn/GoogleSignIn.h:18:
+16 | #import "GIDAppCheckError.h"
+17 | #import "GIDConfiguration.h"
+18 | #import "GIDGoogleUser.h"
+   |         `- note: in file included from /Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/GoogleSignIn-iOS/GoogleSignIn/Sources/Public/GoogleSignIn/GoogleSignIn.h:18:
+19 | #import "GIDProfileData.h"
+20 | #import "GIDSignIn.h"
+
+/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/GoogleSignIn-iOS/GoogleSignIn/Sources/Public/GoogleSignIn/GIDGoogleUser.h:26:9: error: 'GTMSessionFetcher/GTMSessionFetcher.h' file not found
+ 24 | #endif
+ 25 | 
+ 26 | #import <GTMSessionFetcher/GTMSessionFetcher.h>
+    |         `- error: 'GTMSessionFetcher/GTMSessionFetcher.h' file not found
+ 27 | 
+ 28 | @class GIDConfiguration;
+
+<unknown>:0: error: could not build Objective-C module 'GoogleSignIn'

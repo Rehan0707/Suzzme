@@ -1,0 +1,953 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -project /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme.xcodeproj -scheme Suzzme -configuration Release -clonedSourcePackagesDirPath /Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages -disableAutomaticPackageResolution -skipPackageUpdates COMPILER_INDEX_STORE_ENABLE=NO -jobs 1 -destination platform=macOS,arch=arm64 -derivedDataPath /tmp/SuzzmeFullApp20261016/mac build
+
+Build settings from command line:
+    COMPILER_INDEX_STORE_ENABLE = NO
+
+Resolve Package Graph
+
+
+Resolved source packages:
+  mcp-swift-sdk: https://github.com/modelcontextprotocol/swift-sdk @ 0.12.1
+  swift-log: https://github.com/apple/swift-log.git @ 1.6.2
+  GoogleUtilities: https://github.com/google/GoogleUtilities.git @ 8.1.4
+  swift-collections: https://github.com/apple/swift-collections.git @ 1.7.2
+  AppCheck: https://github.com/google/app-check.git @ 11.3.2
+  swift-nio: https://github.com/apple/swift-nio.git @ 2.104.0
+  GoogleSignIn: https://github.com/google/GoogleSignIn-iOS @ 10.0.0
+  InteropForGoogle: https://github.com/google/interop-ios-for-google-sdks.git @ 101.0.0
+  GTMAppAuth: https://github.com/google/GTMAppAuth.git @ 6.0.0
+  swift-atomics: https://github.com/apple/swift-atomics.git @ 1.3.1
+  AppAuth: https://github.com/openid/AppAuth-iOS.git @ 3.0.0
+  GTMSessionFetcher: https://github.com/google/gtm-session-fetcher.git @ 5.3.1
+  swift-system: https://github.com/apple/swift-system.git @ 1.8.1
+  Promises: https://github.com/google/promises.git @ 2.4.1
+  EventSource: https://github.com/mattt/eventsource.git @ 1.5.1
+
+2026-10-16 23:22:52.982 xcodebuild[71391:421786] [MT] IDERunDestination: Supported platforms for the buildables in the current scheme is empty.
+Build Preparation
+Build task concurrency set to 1 via user default IDEBuildOperationMaxNumberOfConcurrentCompileTasks
+
+ComputePackagePrebuildTargetDependencyGraph
+
+Prepare packages
+
+CreateBuildRequest
+
+SendProjectDescription
+
+CreateBuildOperation
+
+ComputeTargetDependencyGraph
+note: Building targets in dependency order
+note: Target dependency graph (42 targets)
+    Target 'Suzzme' in project 'Suzzme'
+        ➜ Explicit dependency on target 'MCP-product' in project 'mcp-swift-sdk'
+        ➜ Explicit dependency on target 'Logging-product' in project 'swift-log'
+        ➜ Explicit dependency on target 'GoogleSignIn-product' in project 'GoogleSignIn'
+        ➜ Explicit dependency on target 'GoogleSignInSwift-product' in project 'GoogleSignIn'
+    Target 'GoogleSignInSwift-product' in project 'GoogleSignIn'
+        ➜ Explicit dependency on target 'GoogleSignInSwift' in project 'GoogleSignIn'
+        ➜ Explicit dependency on target 'GoogleSignIn_GoogleSignInSwift' in project 'GoogleSignIn'
+        ➜ Explicit dependency on target 'GoogleSignIn' in project 'GoogleSignIn'
+        ➜ Explicit dependency on target 'AppAuth-product' in project 'AppAuth'
+        ➜ Explicit dependency on target 'AppAuthCore-product' in project 'AppAuth'
+        ➜ Explicit dependency on target 'AppCheckCore-product' in project 'AppCheck'
+        ➜ Explicit dependency on target 'GTMAppAuth-product' in project 'GTMAppAuth'
+        ➜ Explicit dependency on target 'GTMSessionFetcherCore-product' in project 'GTMSessionFetcher'
+    Target 'GoogleSignInSwift' in project 'GoogleSignIn'
+        ➜ Explicit dependency on target 'GoogleSignIn_GoogleSignInSwift' in project 'GoogleSignIn'
+        ➜ Explicit dependency on target 'GoogleSignIn' in project 'GoogleSignIn'
+        ➜ Explicit dependency on target 'AppAuth-product' in project 'AppAuth'
+        ➜ Explicit dependency on target 'AppAuthCore-product' in project 'AppAuth'
+        ➜ Explicit dependency on target 'AppCheckCore-product' in project 'AppCheck'
+        ➜ Explicit dependency on target 'GTMAppAuth-product' in project 'GTMAppAuth'
+        ➜ Explicit dependency on target 'GTMSessionFetcherCore-product' in project 'GTMSessionFetcher'
+    Target 'GoogleSignIn_GoogleSignInSwift' in project 'GoogleSignIn' (no dependencies)
+    Target 'GoogleSignIn-product' in project 'GoogleSignIn'
+        ➜ Explicit dependency on target 'GoogleSignIn' in project 'GoogleSignIn'
+        ➜ Explicit dependency on target 'GoogleSignIn_GoogleSignIn' in project 'GoogleSignIn'
+        ➜ Explicit dependency on target 'AppAuth-product' in project 'AppAuth'
+        ➜ Explicit dependency on target 'AppAuthCore-product' in project 'AppAuth'
+        ➜ Explicit dependency on target 'AppCheckCore-product' in project 'AppCheck'
+        ➜ Explicit dependency on target 'GTMAppAuth-product' in project 'GTMAppAuth'
+        ➜ Explicit dependency on target 'GTMSessionFetcherCore-product' in project 'GTMSessionFetcher'
+    Target 'GoogleSignIn' in project 'GoogleSignIn'
+        ➜ Explicit dependency on target 'GoogleSignIn_GoogleSignIn' in project 'GoogleSignIn'
+        ➜ Explicit dependency on target 'AppAuth-product' in project 'AppAuth'
+        ➜ Explicit dependency on target 'AppAuthCore-product' in project 'AppAuth'
+        ➜ Explicit dependency on target 'AppCheckCore-product' in project 'AppCheck'
+        ➜ Explicit dependency on target 'GTMAppAuth-product' in project 'GTMAppAuth'
+        ➜ Explicit dependency on target 'GTMSessionFetcherCore-product' in project 'GTMSessionFetcher'
+    Target 'GTMAppAuth-product' in project 'GTMAppAuth'
+        ➜ Explicit dependency on target 'GTMAppAuth' in project 'GTMAppAuth'
+        ➜ Explicit dependency on target 'GTMAppAuth_GTMAppAuth' in project 'GTMAppAuth'
+        ➜ Explicit dependency on target 'GTMSessionFetcherCore-product' in project 'GTMSessionFetcher'
+        ➜ Explicit dependency on target 'AppAuthCore-product' in project 'AppAuth'
+    Target 'GTMAppAuth' in project 'GTMAppAuth'
+        ➜ Explicit dependency on target 'GTMAppAuth_GTMAppAuth' in project 'GTMAppAuth'
+        ➜ Explicit dependency on target 'GTMSessionFetcherCore-product' in project 'GTMSessionFetcher'
+        ➜ Explicit dependency on target 'AppAuthCore-product' in project 'AppAuth'
+    Target 'GTMSessionFetcherCore-product' in project 'GTMSessionFetcher'
+        ➜ Explicit dependency on target 'GTMSessionFetcherCore' in project 'GTMSessionFetcher'
+        ➜ Explicit dependency on target 'GTMSessionFetcher_GTMSessionFetcherCore' in project 'GTMSessionFetcher'
+    Target 'GTMSessionFetcherCore' in project 'GTMSessionFetcher'
+        ➜ Explicit dependency on target 'GTMSessionFetcher_GTMSessionFetcherCore' in project 'GTMSessionFetcher'
+    Target 'GTMSessionFetcher_GTMSessionFetcherCore' in project 'GTMSessionFetcher' (no dependencies)
+    Target 'GTMAppAuth_GTMAppAuth' in project 'GTMAppAuth' (no dependencies)
+    Target 'AppCheckCore-product' in project 'AppCheck'
+        ➜ Explicit dependency on target 'AppCheckCore' in project 'AppCheck'
+        ➜ Explicit dependency on target 'FBLPromises-product' in project 'Promises'
+        ➜ Explicit dependency on target 'GULEnvironment-product' in project 'GoogleUtilities'
+        ➜ Explicit dependency on target 'GULUserDefaults-product' in project 'GoogleUtilities'
+    Target 'AppCheckCore' in project 'AppCheck'
+        ➜ Explicit dependency on target 'FBLPromises-product' in project 'Promises'
+        ➜ Explicit dependency on target 'GULEnvironment-product' in project 'GoogleUtilities'
+        ➜ Explicit dependency on target 'GULUserDefaults-product' in project 'GoogleUtilities'
+    Target 'GULUserDefaults-product' in project 'GoogleUtilities'
+        ➜ Explicit dependency on target 'GoogleUtilities-UserDefaults' in project 'GoogleUtilities'
+        ➜ Explicit dependency on target 'GoogleUtilities_GoogleUtilities-UserDefaults' in project 'GoogleUtilities'
+        ➜ Explicit dependency on target 'third-party-IsAppEncrypted' in project 'GoogleUtilities'
+        ➜ Explicit dependency on target 'GoogleUtilities-Environment' in project 'GoogleUtilities'
+        ➜ Explicit dependency on target 'GoogleUtilities-Logger' in project 'GoogleUtilities'
+    Target 'GoogleUtilities-UserDefaults' in project 'GoogleUtilities'
+        ➜ Explicit dependency on target 'GoogleUtilities_GoogleUtilities-UserDefaults' in project 'GoogleUtilities'
+        ➜ Explicit dependency on target 'third-party-IsAppEncrypted' in project 'GoogleUtilities'
+        ➜ Explicit dependency on target 'GoogleUtilities-Environment' in project 'GoogleUtilities'
+        ➜ Explicit dependency on target 'GoogleUtilities-Logger' in project 'GoogleUtilities'
+    Target 'GoogleUtilities-Logger' in project 'GoogleUtilities'
+        ➜ Explicit dependency on target 'GoogleUtilities_GoogleUtilities-Logger' in project 'GoogleUtilities'
+        ➜ Explicit dependency on target 'third-party-IsAppEncrypted' in project 'GoogleUtilities'
+        ➜ Explicit dependency on target 'GoogleUtilities-Environment' in project 'GoogleUtilities'
+    Target 'GoogleUtilities_GoogleUtilities-Logger' in project 'GoogleUtilities' (no dependencies)
+    Target 'GoogleUtilities_GoogleUtilities-UserDefaults' in project 'GoogleUtilities' (no dependencies)
+    Target 'GULEnvironment-product' in project 'GoogleUtilities'
+        ➜ Explicit dependency on target 'GoogleUtilities-Environment' in project 'GoogleUtilities'
+        ➜ Explicit dependency on target 'GoogleUtilities_GoogleUtilities-Environment' in project 'GoogleUtilities'
+        ➜ Explicit dependency on target 'third-party-IsAppEncrypted' in project 'GoogleUtilities'
+    Target 'GoogleUtilities-Environment' in project 'GoogleUtilities'
+        ➜ Explicit dependency on target 'GoogleUtilities_GoogleUtilities-Environment' in project 'GoogleUtilities'
+        ➜ Explicit dependency on target 'third-party-IsAppEncrypted' in project 'GoogleUtilities'
+    Target 'third-party-IsAppEncrypted' in project 'GoogleUtilities' (no dependencies)
+    Target 'GoogleUtilities_GoogleUtilities-Environment' in project 'GoogleUtilities' (no dependencies)
+    Target 'FBLPromises-product' in project 'Promises'
+        ➜ Explicit dependency on target 'FBLPromises' in project 'Promises'
+        ➜ Explicit dependency on target 'Promises_FBLPromises' in project 'Promises'
+    Target 'FBLPromises' in project 'Promises'
+        ➜ Explicit dependency on target 'Promises_FBLPromises' in project 'Promises'
+    Target 'Promises_FBLPromises' in project 'Promises' (no dependencies)
+    Target 'AppAuthCore-product' in project 'AppAuth'
+        ➜ Explicit dependency on target 'AppAuthCore' in project 'AppAuth'
+        ➜ Explicit dependency on target 'AppAuth_AppAuthCore' in project 'AppAuth'
+    Target 'AppAuth-product' in project 'AppAuth'
+        ➜ Explicit dependency on target 'AppAuth' in project 'AppAuth'
+        ➜ Explicit dependency on target 'AppAuth_AppAuth' in project 'AppAuth'
+        ➜ Explicit dependency on target 'AppAuthCore' in project 'AppAuth'
+    Target 'AppAuth' in project 'AppAuth'
+        ➜ Explicit dependency on target 'AppAuth_AppAuth' in project 'AppAuth'
+        ➜ Explicit dependency on target 'AppAuthCore' in project 'AppAuth'
+    Target 'AppAuthCore' in project 'AppAuth'
+        ➜ Explicit dependency on target 'AppAuth_AppAuthCore' in project 'AppAuth'
+    Target 'AppAuth_AppAuthCore' in project 'AppAuth' (no dependencies)
+    Target 'AppAuth_AppAuth' in project 'AppAuth' (no dependencies)
+    Target 'GoogleSignIn_GoogleSignIn' in project 'GoogleSignIn' (no dependencies)
+    Target 'MCP-product' in project 'mcp-swift-sdk'
+        ➜ Explicit dependency on target 'MCP' in project 'mcp-swift-sdk'
+        ➜ Explicit dependency on target 'SystemPackage-product' in project 'swift-system'
+        ➜ Explicit dependency on target 'Logging-product' in project 'swift-log'
+        ➜ Explicit dependency on target 'EventSource-product' in project 'EventSource'
+    Target 'MCP' in project 'mcp-swift-sdk'
+        ➜ Explicit dependency on target 'SystemPackage-product' in project 'swift-system'
+        ➜ Explicit dependency on target 'Logging-product' in project 'swift-log'
+        ➜ Explicit dependency on target 'EventSource-product' in project 'EventSource'
+    Target 'EventSource-product' in project 'EventSource'
+        ➜ Explicit dependency on target 'EventSource' in project 'EventSource'
+    Target 'EventSource' in project 'EventSource' (no dependencies)
+    Target 'Logging-product' in project 'swift-log'
+        ➜ Explicit dependency on target 'Logging' in project 'swift-log'
+    Target 'Logging' in project 'swift-log' (no dependencies)
+    Target 'SystemPackage-product' in project 'swift-system'
+        ➜ Explicit dependency on target 'SystemPackage' in project 'swift-system'
+        ➜ Explicit dependency on target 'CSystem' in project 'swift-system'
+    Target 'SystemPackage' in project 'swift-system'
+        ➜ Explicit dependency on target 'CSystem' in project 'swift-system'
+    Target 'CSystem' in project 'swift-system' (no dependencies)
+
+GatherProvisioningInputs
+
+CreateBuildDescription
+
+ClangStatCache /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk /tmp/SuzzmeFullApp20261016/mac/SDKStatCaches.noindex/macosx27.0-26A425-7231f6df4def33e022ae2eb8f782df1a.sdkstatcache
+    cd /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme.xcodeproj
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -o /tmp/SuzzmeFullApp20261016/mac/SDKStatCaches.noindex/macosx27.0-26A425-7231f6df4def33e022ae2eb8f782df1a.sdkstatcache
+
+ProcessInfoPlistFile /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Promises_FBLPromises.bundle/Contents/Info.plist /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Promises.build/Release/Promises_FBLPromises-b.build/empty-Promises_FBLPromises.plist (in target 'Promises_FBLPromises' from project 'Promises')
+    cd /Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/promises
+    builtin-infoPlistUtility /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Promises.build/Release/Promises_FBLPromises-b.build/empty-Promises_FBLPromises.plist -producttype com.apple.product-type.bundle -expandbuildsettings -platform macosx -o /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Promises_FBLPromises.bundle/Contents/Info.plist
+
+note: Run script build phase 'Browser native components' will be run during every build because the option to run the script phase "Based on dependency analysis" is unchecked. (in target 'Suzzme' from project 'Suzzme')
+SwiftDriver Suzzme normal arm64 com.apple.xcode.tools.swift.compiler (in target 'Suzzme' from project 'Suzzme')
+    cd /Users/rehan/Documents/Projects/Suzzme/Suzzme
+    builtin-SwiftDriver -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name Suzzme -O -whole-module-optimization @/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Objects-normal/arm64/Suzzme.SwiftFileList -Xcc -fmodule-map-file\=/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/swift-system/Sources/CSystem/include/module.modulemap -Xcc -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/AppAuth.modulemap -Xcc -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/AppAuthCore.modulemap -Xcc -fmodule-map-file\=/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/promises/Sources/FBLPromises/include/module.modulemap -Xcc -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/GoogleUtilities-Logger.modulemap -Xcc -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/GoogleUtilities-Environment.modulemap -Xcc -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/third-party-IsAppEncrypted.modulemap -Xcc -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/GoogleUtilities-UserDefaults.modulemap -Xcc -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/AppCheckCore.modulemap -Xcc -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/GTMSessionFetcherCore.modulemap -Xcc -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/GoogleSignIn.modulemap -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature InferIsolatedConformances -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -target arm64-apple-macos14.0 -g -module-cache-path /tmp/SuzzmeFullApp20261016/mac/ModuleCache.noindex -Xfrontend -serialize-debugging-options -swift-version 6 -I /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release -F /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/PackageFrameworks -F /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release -emit-localized-strings -emit-localized-strings-path /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Objects-normal/arm64 -c -num-threads 8 -Xcc -ivfsstatcache -Xcc /tmp/SuzzmeFullApp20261016/mac/SDKStatCaches.noindex/macosx27.0-26A425-7231f6df4def33e022ae2eb8f782df1a.sdkstatcache -output-file-map /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Objects-normal/arm64/Suzzme-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /tmp/SuzzmeFullApp20261016/mac/ModuleCache.noindex -sdk-module-cache-path /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Objects-normal/arm64/Suzzme.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Objects-normal/arm64/Suzzme-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /tmp/SuzzmeFullApp20261016/mac/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Objects-normal/arm64/Suzzme_const_extract_protocols.json -Xcc -iquote -Xcc /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Suzzme-generated-files.hmap -Xcc -I/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Suzzme-own-target-headers.hmap -Xcc -I/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Suzzme-all-non-framework-target-headers.hmap -Xcc -ivfsoverlay -Xcc /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme-44913edf133eeb185aeca876fd34349c-VFS/all-product-headers.yaml -Xcc -iquote -Xcc /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Suzzme-project-headers.hmap -Xcc -I/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/swift-system/Sources/CSystem/include -Xcc -I/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/AppAuth-iOS/Sources/AppAuth -Xcc -I/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/AppAuth-iOS/Sources/AppAuthCore -Xcc -I/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/promises/Sources/FBLPromises/include -Xcc -I/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/GoogleUtilities/GoogleUtilities/Logger/Public -Xcc -I/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/GoogleUtilities/GoogleUtilities/Environment/Public -Xcc -I/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/GoogleUtilities/third_party/IsAppEncrypted/Public -Xcc -I/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/GoogleUtilities/GoogleUtilities/UserDefaults/Public -Xcc -I/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/app-check/AppCheckCore/Sources/Public -Xcc -I/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/gtm-session-fetcher/Sources/Core/Public -Xcc -I/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/GoogleSignIn-iOS/GoogleSignIn/Sources/Public -Xcc -I/tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/include -Xcc -I/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/DerivedSources-normal/arm64 -Xcc -I/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/DerivedSources/arm64 -Xcc -I/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/DerivedSources -emit-objc-header -emit-objc-header-path /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Objects-normal/arm64/Suzzme-Swift.h -working-directory /Users/rehan/Documents/Projects/Suzzme/Suzzme -no-emit-module-separately-wmo
+
+ProcessInfoPlistFile /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/GoogleUtilities_GoogleUtilities-UserDefaults.bundle/Contents/Info.plist /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GoogleUtilities.build/Release/GoogleUtilities_GoogleUtilities-UserDefaults-b.build/empty-GoogleUtilities_GoogleUtilities-UserDefaults.plist (in target 'GoogleUtilities_GoogleUtilities-UserDefaults' from project 'GoogleUtilities')
+    cd /Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/GoogleUtilities
+    builtin-infoPlistUtility /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GoogleUtilities.build/Release/GoogleUtilities_GoogleUtilities-UserDefaults-b.build/empty-GoogleUtilities_GoogleUtilities-UserDefaults.plist -producttype com.apple.product-type.bundle -expandbuildsettings -platform macosx -o /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/GoogleUtilities_GoogleUtilities-UserDefaults.bundle/Contents/Info.plist
+
+SwiftCompile normal arm64 Compiling\ AppEnvironment.swift,\ AppRouter.swift,\ ContentView.swift,\ LaunchExperience.swift,\ SignInView.swift,\ SuzzmeApp.swift,\ SuzzmeAppStartup.swift,\ ActionExecutionCoordinator.swift,\ ActionMutation.swift,\ ActionPlanner.swift,\ ActionPolicy.swift,\ CapabilityActionModels.swift,\ EventKitCapabilities.swift,\ SettingsCapability.swift,\ SuzzmeAction.swift,\ BrowserBridgeEngine.swift,\ BrowserBridgeIPC.swift,\ BrowserPairingKeychain.swift,\ NativeMessagingFrame.swift,\ AppleContextPermissions.swift,\ AppleContextSources.swift,\ ContextEngine.swift,\ ScreenContext.swift,\ ScreenContextPolicy.swift,\ SuzzmeContextItem.swift,\ SuzzmeContextQuery.swift,\ WatchedLinkModels.swift,\ WatchedLinkStore.swift,\ WatchedWebSource.swift,\ WebContentExtractor.swift,\ WebURLPolicy.swift,\ AppleInformationSource.swift,\ GmailAccessGrant.swift,\ GmailAccountController.swift,\ GmailInformationSource.swift,\ GmailMessageMetadata.swift,\ GmailSelection.swift,\ InformationEngine.swift,\ InformationModels.swift,\ InformationPersistence.swift,\ InformationRequest.swift,\ InformationStore.swift,\ UserSelectedMessageSource.swift,\ CustomMCPClient.swift,\ CustomMCPModels.swift,\ GitHubIntegrationClient.swift,\ GitHubMCPClient.swift,\ GoogleConnectedInformationSource.swift,\ GoogleProviderRecipes.swift,\ GoogleProviderScopeStore.swift,\ GoogleSelectedAccountReads.swift,\ GoogleSelectedReadClient.swift,\ GoogleSelectedResources.swift,\ IntegrationConnectionSuggestion.swift,\ IntegrationController.swift,\ IntegrationCredentials.swift,\ IntegrationDirectory.swift,\ IntegrationGateway.swift,\ IntegrationHTTPTransport.swift,\ IntegrationInformationSource.swift,\ IntegrationModels.swift,\ IntegrationResource.swift,\ IntegrationStore.swift,\ IntegrationTransportSecurity.swift,\ LinearIntegrationClient.swift,\ NotionIntegrationClient.swift,\ PinnedMCPHTTPClient.swift,\ ProviderReadClient.swift,\ ProviderReadRecipe.swift,\ AppleIntelligenceService.swift,\ BasicIntelligenceService.swift,\ DailyBriefingBuilder.swift,\ IntelligenceCapability.swift,\ IntelligenceRouter.swift,\ IntelligenceService.swift,\ MockIntelligenceService.swift,\ SuzzmeCore.swift,\ SuzzmeUnderstandingPipeline.swift,\ AssistantPresentation.swift,\ SuzzmePresenceTheme.swift,\ LongTermMemoryEngine.swift,\ LongTermMemoryModels.swift,\ LongTermMemoryStore.swift,\ SessionMemoryEngine.swift,\ DailyBriefing.swift,\ ExtractedSuzzmeItem.swift,\ SuzzmeAssistantState.swift,\ SuzzmeFaceGlyph.swift,\ SuzzmeLiveActivityAttributes.swift,\ SuzzmeLiveActivityPhase.swift,\ SuzzmeItem.swift,\ RecoverableJSONFile.swift,\ StoredSuzzmeItem.swift,\ SuzzmeItemStore.swift,\ CrossDevicePolicy.swift,\ PrivacyEngine.swift,\ ProactiveIntelligenceEngine.swift,\ ProactiveIntelligenceStore.swift,\ ProactiveModels.swift,\ VoiceSessionController.swift,\ VoiceTranscriptFinalizer.swift,\ IntegrationBrandMark.swift,\ SuzzmeAssistantComponents.swift,\ SuzzmeAssistantPresenceView.swift,\ SuzzmeComponents.swift,\ SuzzmeFace.swift,\ SuzzmeInteractionFeedback.swift,\ SuzzmeItemRow.swift,\ SuzzmeMark.swift,\ SuzzmeHalo.swift,\ SuzzmePage.swift,\ SuzzmeTheme.swift,\ BriefingView.swift,\ ApprovedAssistantDesignGallery.swift,\ AssistantDesignConcepts.swift,\ AssistantPreviewFixtures.swift,\ AssistantResponsiveDesignLab.swift,\ HistoryView.swift,\ AskSuzzmeView.swift,\ CompanionHomeView.swift,\ HomeView.swift,\ ItemDetailView.swift,\ SuzzmeConversationPresentation.swift,\ InvocationSettingsView.swift,\ PresenceMotionLabView.swift,\ PresenceSettingsView.swift,\ MemoryView.swift,\ CustomMCPConnectionView.swift,\ GoogleProviderConnectionView.swift,\ IntegrationsView.swift,\ NotionConnectionSheet.swift,\ ProactiveIntelligenceSettingsView.swift,\ ProviderConnectionView.swift,\ SettingsDetailViews.swift,\ SettingsView.swift,\ SuzzmeBrainLabView.swift,\ VoiceSettingsView.swift,\ GmailConnectionView.swift,\ InformationInspectionView.swift,\ SelectedMessageImportView.swift,\ SourcesView.swift,\ WatchedLinksView.swift,\ StartSuzzmeIntent.swift,\ MobileRootView.swift,\ SuzzmeLiveActivityController.swift,\ BrowserPairingView.swift,\ MacAppLifetime.swift,\ MacAssistantPresence.swift,\ MacBrowserBridgeController.swift,\ MacCompanionCommands.swift,\ MacCompanionMenuController.swift,\ MacCursorCompanion.swift,\ MacGlobalInvocationController.swift,\ MacGlobalInvocationSettings.swift,\ MacGuidanceOverlay.swift,\ MacMenuBarView.swift,\ MacRootView.swift,\ MacScreenContextSource.swift,\ MacSettingsView.swift,\ MacWorkspaceEscapeBridge.swift,\ ProactiveNotificationDelivery.swift,\ GeneratedAssetSymbols.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/App/AppEnvironment.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/App/AppRouter.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/App/ContentView.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/App/LaunchExperience.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/App/SignInView.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/App/SuzzmeApp.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/App/SuzzmeAppStartup.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Actions/ActionExecutionCoordinator.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Actions/ActionMutation.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Actions/ActionPlanner.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Actions/ActionPolicy.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Actions/CapabilityActionModels.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Actions/EventKitCapabilities.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Actions/SettingsCapability.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Actions/SuzzmeAction.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/BrowserBridge/BrowserBridgeEngine.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/BrowserBridge/BrowserBridgeIPC.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/BrowserBridge/BrowserPairingKeychain.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/BrowserBridge/NativeMessagingFrame.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Connectors/AppleContextPermissions.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Connectors/AppleContextSources.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Context/ContextEngine.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Context/ScreenContext.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Context/ScreenContextPolicy.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Context/SuzzmeContextItem.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Context/SuzzmeContextQuery.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Information/WatchedLinks/WatchedLinkModels.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Information/WatchedLinks/WatchedLinkStore.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Information/WatchedLinks/WatchedWebSource.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Information/WatchedLinks/WebContentExtractor.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Information/WatchedLinks/WebURLPolicy.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Information/AppleInformationSource.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Information/GmailAccessGrant.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Information/GmailAccountController.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Information/GmailInformationSource.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Information/GmailMessageMetadata.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Information/GmailSelection.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Information/InformationEngine.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Information/InformationModels.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Information/InformationPersistence.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Information/InformationRequest.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Information/InformationStore.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Information/UserSelectedMessageSource.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Integrations/CustomMCPClient.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Integrations/CustomMCPModels.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Integrations/GitHubIntegrationClient.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Integrations/GitHubMCPClient.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Integrations/GoogleConnectedInformationSource.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Integrations/GoogleProviderRecipes.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Integrations/GoogleProviderScopeStore.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Integrations/GoogleSelectedAccountReads.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Integrations/GoogleSelectedReadClient.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Integrations/GoogleSelectedResources.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Integrations/IntegrationConnectionSuggestion.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Integrations/IntegrationController.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Integrations/IntegrationCredentials.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Integrations/IntegrationDirectory.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Integrations/IntegrationGateway.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Integrations/IntegrationHTTPTransport.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Integrations/IntegrationInformationSource.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Integrations/IntegrationModels.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Integrations/IntegrationResource.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Integrations/IntegrationStore.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Integrations/IntegrationTransportSecurity.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Integrations/LinearIntegrationClient.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Integrations/NotionIntegrationClient.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Integrations/PinnedMCPHTTPClient.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Integrations/ProviderReadClient.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Integrations/ProviderReadRecipe.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Intelligence/AppleIntelligenceService.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Intelligence/BasicIntelligenceService.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Intelligence/DailyBriefingBuilder.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Intelligence/IntelligenceCapability.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Intelligence/IntelligenceRouter.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Intelligence/IntelligenceService.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Intelligence/MockIntelligenceService.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Intelligence/SuzzmeCore.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Intelligence/SuzzmeUnderstandingPipeline.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Invocation/AssistantPresentation.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Invocation/SuzzmePresenceTheme.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/LongTermMemory/LongTermMemoryEngine.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/LongTermMemory/LongTermMemoryModels.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/LongTermMemory/LongTermMemoryStore.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Memory/SessionMemoryEngine.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Models/DailyBriefing.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Models/ExtractedSuzzmeItem.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Models/SuzzmeAssistantState.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/PresenceShared/SuzzmeFaceGlyph.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/PresenceShared/SuzzmeLiveActivityAttributes.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/PresenceShared/SuzzmeLiveActivityPhase.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Models/SuzzmeItem.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Persistence/RecoverableJSONFile.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Persistence/StoredSuzzmeItem.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Persistence/SuzzmeItemStore.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Privacy/CrossDevicePolicy.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Privacy/PrivacyEngine.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Proactive/ProactiveIntelligenceEngine.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Proactive/ProactiveIntelligenceStore.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Proactive/ProactiveModels.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Voice/VoiceSessionController.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/Voice/VoiceTranscriptFinalizer.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/DesignSystem/Components/IntegrationBrandMark.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/DesignSystem/Components/SuzzmeAssistantComponents.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/DesignSystem/Components/SuzzmeAssistantPresenceView.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/DesignSystem/Components/SuzzmeComponents.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/DesignSystem/Components/SuzzmeFace.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/DesignSystem/Components/SuzzmeInteractionFeedback.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/DesignSystem/Components/SuzzmeItemRow.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/DesignSystem/Components/SuzzmeMark.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/DesignSystem/Effects/SuzzmeHalo.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/DesignSystem/Layout/SuzzmePage.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/DesignSystem/Theme/SuzzmeTheme.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Features/Briefing/BriefingView.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Features/DesignLab/ApprovedAssistantDesignGallery.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Features/DesignLab/AssistantDesignConcepts.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Features/DesignLab/AssistantPreviewFixtures.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Features/DesignLab/AssistantResponsiveDesignLab.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Features/History/HistoryView.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Features/Home/AskSuzzmeView.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Features/Home/CompanionHomeView.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Features/Home/HomeView.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Features/Home/ItemDetailView.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Features/Home/SuzzmeConversationPresentation.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Features/Invocation/InvocationSettingsView.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Features/Invocation/PresenceMotionLabView.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Features/Invocation/PresenceSettingsView.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Features/Memory/MemoryView.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Features/Settings/CustomMCPConnectionView.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Features/Settings/GoogleProviderConnectionView.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Features/Settings/IntegrationsView.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Features/Settings/NotionConnectionSheet.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Features/Settings/ProactiveIntelligenceSettingsView.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Features/Settings/ProviderConnectionView.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Features/Settings/SettingsDetailViews.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Features/Settings/SettingsView.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Features/Settings/SuzzmeBrainLabView.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Features/Settings/VoiceSettingsView.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Features/Sources/GmailConnectionView.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Features/Sources/InformationInspectionView.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Features/Sources/SelectedMessageImportView.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Features/Sources/SourcesView.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Features/Sources/WatchedLinksView.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Intents/StartSuzzmeIntent.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Platform/iOS/MobileRootView.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Platform/iOS/SuzzmeLiveActivityController.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Platform/macOS/BrowserPairingView.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Platform/macOS/MacAppLifetime.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Platform/macOS/MacAssistantPresence.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Platform/macOS/MacBrowserBridgeController.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Platform/macOS/MacCompanionCommands.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Platform/macOS/MacCompanionMenuController.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Platform/macOS/MacCursorCompanion.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Platform/macOS/MacGlobalInvocationController.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Platform/macOS/MacGlobalInvocationSettings.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Platform/macOS/MacGuidanceOverlay.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Platform/macOS/MacMenuBarView.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Platform/macOS/MacRootView.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Platform/macOS/MacScreenContextSource.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Platform/macOS/MacSettingsView.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Platform/macOS/MacWorkspaceEscapeBridge.swift /Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Platform/Shared/ProactiveNotificationDelivery.swift /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/DerivedSources/GeneratedAssetSymbols.swift /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/ImageIO.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/Foundation.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/CoreGraphics.swiftmodule/arm64e-apple-macos.swiftmodule /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/Vision-1IC61F07R7OT8.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/AppIntents.swiftmodule/arm64e-apple-macos.swiftmodule /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/GoogleSignInSwift.swiftmodule/arm64-apple-macos.swiftmodule /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/AVFoundation-1SX7TS63SYORI.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/_DarwinFoundation1.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/Distributed.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/Combine.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/Compression.swiftmodule/arm64e-apple-macos.swiftmodule /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/AppKit-WTRM3L7MS3E4.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/ObjectiveC.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/System.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/AppIntentsTypeSupport.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/_Builtin_float.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/Swift.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/Network.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/LocalAuthentication.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/os.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/ExtensionFoundation.swiftmodule/arm64e-apple-macos.swiftmodule /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/SwiftUICore-3T55ONCNHA6X7.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/CoreTransferable.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/Accelerate.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/Dispatch.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/RelevanceKit.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/Symbols.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/CoreVideo.swiftmodule/arm64e-apple-macos.swiftmodule /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Logging.swiftmodule/arm64-apple-macos.swiftmodule /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/SwiftUI-9M6H2A24CMAD.swiftmodule /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/EventSource.swiftmodule/arm64-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/Metal.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/CoreMedia.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/CoreText.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/_DarwinFoundation2.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/CoreFoundation.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/simd.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/Synchronization.swiftmodule/arm64e-apple-macos.swiftmodule /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/FoundationModels-3BHO5O4KSM0AC.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/QuartzCore.swiftmodule/arm64e-apple-macos.swiftmodule /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/MCP.swiftmodule/arm64-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/DeveloperToolsSupport.swiftmodule/arm64e-apple-macos.swiftmodule /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/MediaToolbox-3PBQ9A607MFPD.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/VideoToolbox.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/CoreMIDI.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/_StringProcessing.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/Contacts.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/LightweightCodeRequirements.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/NaturalLanguage.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/IOKit.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/DataDetection.swiftmodule/arm64e-apple-macos.swiftmodule /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/_SwiftData_SwiftUI-3SRFAVK497H1L.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/RegexBuilder.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/_Concurrency.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/CoreLocation.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/CoreAudio.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/Spatial.swiftmodule/arm64e-apple-macos.swiftmodule /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/Speech-7GWF33P2BQM1.swiftmodule /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/AudioToolbox-1KRP1LLXEC8KY.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/CoreImage.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/CoreData.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/Observation.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/Accessibility.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/CoreML.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/_DarwinFoundation3.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/ColorSync.swiftmodule/arm64e-apple-macos.swiftmodule /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/ScreenCaptureKit-1I4GSID57TBZL.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/SwiftData.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/OSLog.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/UniformTypeIdentifiers.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/CoreSpotlight.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/XPC.swiftmodule/arm64e-apple-macos.swiftmodule /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/AVFAudio-2HICOI2GTHJF4.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/EventKit.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/Darwin.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/27.0/CryptoKit.swiftmodule/arm64e-apple-macos.swiftmodule /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/CoreGraphics-50PF8EN03ETH0QZ96V7VCMWCF.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/CUPS-6CKWXWVKHJC31K9WC4E7E4TQ.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/_Builtin_stdarg-23IUWUWXE6U2GE1I0C1C08XVX.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/UserNotifications-DNN5PJMVBW03RT5KQ71DFH39L.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/SwiftUICore-C8PTMAZSK69VPEDCDNS9PJGGW.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/ExtensionFoundation-4GKAV1M9N936EVFP3HJSSOLUM.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/_Builtin_stddef-C4GB169M3Q6DSA6E9907X7OXA.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/_Builtin_stdint-4PTCAYEZV29AN6PNKEVCC4QZ8.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/VideoToolbox-9O61228OHADQ8OC3R0E33NZSV.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/simd-7FZP0WM0EWG006YC5VJP205F0.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/Accelerate-2EK0SYEM6H82OZ6YZC79RMO4O.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/Security-E44HRD2R21TP2EHGYTFXWSPWY.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/CoreAudioTypes-66PX8TF25EF5WQO9RYM8DLIGY.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/NaturalLanguage-BQNJSCB3Q0C6RP4VUZZNGFSGZ.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/os_workgroup-1GG4Y4MFVG1AP5IZ4GZAAY6N8.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/Foundation-3TNMJNAYPOBIUGOC9CXNJQ5RQ.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/MediaToolbox-CPH96P7Y7LMBRMRHGXJD4LCY8.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/ptrcheck-AYT1AC09VJZOBVWOB1NFUROG.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/IOKit-DYWBPVK0H2ZO73IX1IYLOCJHA.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/dnssd-4X1S638PP0PS3JIJ7PD4JNNBU.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/ColorSync-42XMYAACYUQDA34HILN4SQO20.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/XPC-1DNRAY54HHNRPPV01XH2OJWDW.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/ObjectiveC-4JTDUB2BZGVPCZH3I7SMW1P6I.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/CoreSpotlight-DB2QF1KV22Z2MH1TDROOW8T3I.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/Spatial-BF4E956DDYDWBPRS39CW5R9Z9.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/Dispatch-1F2BT844KRYCQADM4UF2S6BME.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/CoreML-A7DS2ESM9CADWF1AFVPJWIWL8.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/CoreMIDI-685HVCLXVQJ04DGF6SY1E9BH1.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/Compression-CZ0TDNGRYWZZGOGYKG1FIN5WS.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/AVFoundation-DNJ6MTW3WUOBOJGWYU56FW0F3.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/AppIntentsTypeSupport-4UJG9VE8VW5DSIOQ6VBZ2WNFR.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/ptrauth-579QP4M2P0VIXKWNRIDR3XU8B.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/SwiftShims-D63L7B8AH1CTSF09X1M2L51B8.pcm /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules/GoogleSignIn-5Z3TKHBRJS8J5MEOITU0SA8GL.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/CoreTransferable-4WHJPCR90HQQNGLYWFN2QZNY0.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/Contacts-39TAOOJ6JY52KLAQIN9OMECSF.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/string_h-F4U0P08YW8R3HC6P1ULJ3LSWO.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/_LocationEssentials-22V7Y0YEL7ZP7N4N6DJQD0WMR.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/_Builtin_tgmath-TL0IPGQUU321C1FG43ZHL2XN.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/os-2K07BUCS1G2TLOIFDYFMC9MYD.pcm /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules/GTMSessionFetcherCore-7FA906QQOVX12O37HQDFQ0G6X.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/ServiceManagement-3ZTCQAN8DJCZIFKRS194PXBKK.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/Symbols-CPGW7HQAWPTFXS1VAFAW0SYH.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/DeveloperToolsSupport-6V0SRGAVO0Q8I94YCLSTJG7LV.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/CFNetwork-EF1CSWSGTGUJRUZ4BOB6UTDR5.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/MachO-6O29FZQDSZAKFUHAXSZEHDJDC.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/Network-48F76IDOTKF02LOLQ0JDOPNXJ.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/DataDetection-7P2AAR4P298PG443CE6F57AQB.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/launch-HR7M27JAWDQWGU7RQSTQGZQE.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/libDER-1DW15K0XTC9GA69ARNPNX41XT.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/sys_types-2XNCV97BGPZW44O7X6P2C0TD7.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/ImageIO-EUKBZ4MQ2VRUX93C2KE34CG68.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/ScreenCaptureKit-C6BDQVGJ7JPCFQ2SRYJH8VHMX.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/_Builtin_stdatomic-88F2JQ4VKSGEIWYILYPIRBPD9.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/RelevanceKit-1OU4LOIXRKI1RQUDHFJW6COYG.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/CoreMedia-58R7C6VA28I5P2TCOCBFK75RB.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/_Builtin_inttypes-B064SJYRPV4VHVQDWFO490D8U.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/EventKit-6GT9NDSRD4S3PXGQIZI2IWYXH.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/Speech-2DCZHX26RKS689Q96G1QCBFID.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/Darwin-BAXUIXP2R4J6ZAOLM2GQQL314.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/CoreFoundation-D6ITZ2GF4S8X7289974HF82OC.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/AppIntents-4AJIEFKGTJ003BGDEY05KDGP4.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/_Builtin_intrinsics-75Q9C31C1DUUP3XX7ON0Z2JUE.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/ApplicationServices-CSNPII2VBKOOQ0K1O9GQGH3SW.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/UniformTypeIdentifiers-CBBCON0OY0OTZ9N5QY9OQ8MBH.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/CoreImage-XOKHO26H7HIRVO4Q5WAXGNWT.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/DiskArbitration-739CFCIQO69GKGOGF4EYD39IZ.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/CoreLocation-3GPD7VZTTTY2KW4RG9IIW9HKD.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/CoreVideo-996SDF81EMY5BNJ6GJD7X043J.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/OpenGL-8SCBDFLR2OA33T8IG6WA26TKB.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/CoreData-ANM8UQ3UXLXEQXNM9SFJL5DJA.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/Accessibility-F1382Y8GXU9EY9M8SXHN035TV.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/AppKit-KH6NCEDGM4BR9H4LAGGRE7P4.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/AudioToolbox-9ZO524J4IANUPI80CVI1KK0CQ.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/CoreServices-2ULZOZB33X1YGEIZ7FTP1MBJR.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/os_object-B8KTYDDIK6MA6Z5EU8BKXWWX8.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/_DarwinFoundation1-BF2XDSQZ0N0G4EQ7SCLQ1C478.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/CoreAudio-2NGR0E4MJ14RV3K8IKRJ3FWZQ.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/AVFAudio-DU5752TLAOD9PCG267JBYQVKM.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/_SwiftConcurrencyShims-3BWSXDXIN7S819KP63UGGG56A.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/_Builtin_limits-6WA9EH46T9GDZRMPILQ5ZLRCE.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/_DarwinFoundation3-CXX1GHOG76E9KIKV3W7RUWN87.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/OSLog-B37UMTYFNMMF365I7VVGRF1QC.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/QuartzCore-3OCB4X47EVAEYMMR5497Y6MGP.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/Vision-5P2YJG7VGPFC3OGULSERZP247.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/_Builtin_stdbool-3XSVTKA9SHSFDKAX8LGKLGPME.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/IOSurface-50SBWUHOW8C8ZTZZH4XSLK90V.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/LocalAuthentication-8VDUMQ6SMTA3EM5GD7UO9OF6J.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/CoreText-6F98YRGAFY66XGU9L32UJ1SUW.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/_DarwinFoundation2-DPWSTOH0FPIECJS6MPKKE1CO1.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/_Builtin_float-4KI5D5N3ABDVUI5Z9NWOQK2V2.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/_AvailabilityInternal-492H4XUTMF20QE446N3DEVJ4S.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/SwiftUI-304SSR20F3SG3EU36LJHXPQ6K.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/Carbon-59USRHK43Z05PH5YKXOFK2QLS.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/Metal-2ZDUVQA47ENZ0CH8BXHRR5TD7.pcm /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules/libkern-B71LJWWW26BLJDNNKAGF2UGB5.pcm /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Objects-normal/arm64/Suzzme-dependencies-1.json (in target 'Suzzme' from project 'Suzzme')
+
+SwiftCompile normal arm64 (in target 'Suzzme' from project 'Suzzme')
+    cd /Users/rehan/Documents/Projects/Suzzme/Suzzme
+    
+
+SwiftDriverJobDiscovery normal arm64 Compiling AppEnvironment.swift, AppRouter.swift, ContentView.swift, LaunchExperience.swift, SignInView.swift, SuzzmeApp.swift, SuzzmeAppStartup.swift, ActionExecutionCoordinator.swift, ActionMutation.swift, ActionPlanner.swift, ActionPolicy.swift, CapabilityActionModels.swift, EventKitCapabilities.swift, SettingsCapability.swift, SuzzmeAction.swift, BrowserBridgeEngine.swift, BrowserBridgeIPC.swift, BrowserPairingKeychain.swift, NativeMessagingFrame.swift, AppleContextPermissions.swift, AppleContextSources.swift, ContextEngine.swift, ScreenContext.swift, ScreenContextPolicy.swift, SuzzmeContextItem.swift, SuzzmeContextQuery.swift, WatchedLinkModels.swift, WatchedLinkStore.swift, WatchedWebSource.swift, WebContentExtractor.swift, WebURLPolicy.swift, AppleInformationSource.swift, GmailAccessGrant.swift, GmailAccountController.swift, GmailInformationSource.swift, GmailMessageMetadata.swift, GmailSelection.swift, InformationEngine.swift, InformationModels.swift, InformationPersistence.swift, InformationRequest.swift, InformationStore.swift, UserSelectedMessageSource.swift, CustomMCPClient.swift, CustomMCPModels.swift, GitHubIntegrationClient.swift, GitHubMCPClient.swift, GoogleConnectedInformationSource.swift, GoogleProviderRecipes.swift, GoogleProviderScopeStore.swift, GoogleSelectedAccountReads.swift, GoogleSelectedReadClient.swift, GoogleSelectedResources.swift, IntegrationConnectionSuggestion.swift, IntegrationController.swift, IntegrationCredentials.swift, IntegrationDirectory.swift, IntegrationGateway.swift, IntegrationHTTPTransport.swift, IntegrationInformationSource.swift, IntegrationModels.swift, IntegrationResource.swift, IntegrationStore.swift, IntegrationTransportSecurity.swift, LinearIntegrationClient.swift, NotionIntegrationClient.swift, PinnedMCPHTTPClient.swift, ProviderReadClient.swift, ProviderReadRecipe.swift, AppleIntelligenceService.swift, BasicIntelligenceService.swift, DailyBriefingBuilder.swift, IntelligenceCapability.swift, IntelligenceRouter.swift, IntelligenceService.swift, MockIntelligenceService.swift, SuzzmeCore.swift, SuzzmeUnderstandingPipeline.swift, AssistantPresentation.swift, SuzzmePresenceTheme.swift, LongTermMemoryEngine.swift, LongTermMemoryModels.swift, LongTermMemoryStore.swift, SessionMemoryEngine.swift, DailyBriefing.swift, ExtractedSuzzmeItem.swift, SuzzmeAssistantState.swift, SuzzmeFaceGlyph.swift, SuzzmeLiveActivityAttributes.swift, SuzzmeLiveActivityPhase.swift, SuzzmeItem.swift, RecoverableJSONFile.swift, StoredSuzzmeItem.swift, SuzzmeItemStore.swift, CrossDevicePolicy.swift, PrivacyEngine.swift, ProactiveIntelligenceEngine.swift, ProactiveIntelligenceStore.swift, ProactiveModels.swift, VoiceSessionController.swift, VoiceTranscriptFinalizer.swift, IntegrationBrandMark.swift, SuzzmeAssistantComponents.swift, SuzzmeAssistantPresenceView.swift, SuzzmeComponents.swift, SuzzmeFace.swift, SuzzmeInteractionFeedback.swift, SuzzmeItemRow.swift, SuzzmeMark.swift, SuzzmeHalo.swift, SuzzmePage.swift, SuzzmeTheme.swift, BriefingView.swift, ApprovedAssistantDesignGallery.swift, AssistantDesignConcepts.swift, AssistantPreviewFixtures.swift, AssistantResponsiveDesignLab.swift, HistoryView.swift, AskSuzzmeView.swift, CompanionHomeView.swift, HomeView.swift, ItemDetailView.swift, SuzzmeConversationPresentation.swift, InvocationSettingsView.swift, PresenceMotionLabView.swift, PresenceSettingsView.swift, MemoryView.swift, CustomMCPConnectionView.swift, GoogleProviderConnectionView.swift, IntegrationsView.swift, NotionConnectionSheet.swift, ProactiveIntelligenceSettingsView.swift, ProviderConnectionView.swift, SettingsDetailViews.swift, SettingsView.swift, SuzzmeBrainLabView.swift, VoiceSettingsView.swift, GmailConnectionView.swift, InformationInspectionView.swift, SelectedMessageImportView.swift, SourcesView.swift, WatchedLinksView.swift, StartSuzzmeIntent.swift, MobileRootView.swift, SuzzmeLiveActivityController.swift, BrowserPairingView.swift, MacAppLifetime.swift, MacAssistantPresence.swift, MacBrowserBridgeController.swift, MacCompanionCommands.swift, MacCompanionMenuController.swift, MacCursorCompanion.swift, MacGlobalInvocationController.swift, MacGlobalInvocationSettings.swift, MacGuidanceOverlay.swift, MacMenuBarView.swift, MacRootView.swift, MacScreenContextSource.swift, MacSettingsView.swift, MacWorkspaceEscapeBridge.swift, ProactiveNotificationDelivery.swift, GeneratedAssetSymbols.swift (in target 'Suzzme' from project 'Suzzme')
+
+SwiftDriver\ Compilation\ Requirements Suzzme normal arm64 com.apple.xcode.tools.swift.compiler (in target 'Suzzme' from project 'Suzzme')
+    cd /Users/rehan/Documents/Projects/Suzzme/Suzzme
+    builtin-Swift-Compilation-Requirements -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name Suzzme -O -whole-module-optimization @/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Objects-normal/arm64/Suzzme.SwiftFileList -Xcc -fmodule-map-file\=/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/swift-system/Sources/CSystem/include/module.modulemap -Xcc -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/AppAuth.modulemap -Xcc -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/AppAuthCore.modulemap -Xcc -fmodule-map-file\=/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/promises/Sources/FBLPromises/include/module.modulemap -Xcc -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/GoogleUtilities-Logger.modulemap -Xcc -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/GoogleUtilities-Environment.modulemap -Xcc -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/third-party-IsAppEncrypted.modulemap -Xcc -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/GoogleUtilities-UserDefaults.modulemap -Xcc -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/AppCheckCore.modulemap -Xcc -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/GTMSessionFetcherCore.modulemap -Xcc -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/GoogleSignIn.modulemap -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature InferIsolatedConformances -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -target arm64-apple-macos14.0 -g -module-cache-path /tmp/SuzzmeFullApp20261016/mac/ModuleCache.noindex -Xfrontend -serialize-debugging-options -swift-version 6 -I /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release -F /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/PackageFrameworks -F /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release -emit-localized-strings -emit-localized-strings-path /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Objects-normal/arm64 -c -num-threads 8 -Xcc -ivfsstatcache -Xcc /tmp/SuzzmeFullApp20261016/mac/SDKStatCaches.noindex/macosx27.0-26A425-7231f6df4def33e022ae2eb8f782df1a.sdkstatcache -output-file-map /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Objects-normal/arm64/Suzzme-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /tmp/SuzzmeFullApp20261016/mac/ModuleCache.noindex -sdk-module-cache-path /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Objects-normal/arm64/Suzzme.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Objects-normal/arm64/Suzzme-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /tmp/SuzzmeFullApp20261016/mac/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Objects-normal/arm64/Suzzme_const_extract_protocols.json -Xcc -iquote -Xcc /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Suzzme-generated-files.hmap -Xcc -I/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Suzzme-own-target-headers.hmap -Xcc -I/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Suzzme-all-non-framework-target-headers.hmap -Xcc -ivfsoverlay -Xcc /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme-44913edf133eeb185aeca876fd34349c-VFS/all-product-headers.yaml -Xcc -iquote -Xcc /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Suzzme-project-headers.hmap -Xcc -I/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/swift-system/Sources/CSystem/include -Xcc -I/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/AppAuth-iOS/Sources/AppAuth -Xcc -I/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/AppAuth-iOS/Sources/AppAuthCore -Xcc -I/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/promises/Sources/FBLPromises/include -Xcc -I/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/GoogleUtilities/GoogleUtilities/Logger/Public -Xcc -I/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/GoogleUtilities/GoogleUtilities/Environment/Public -Xcc -I/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/GoogleUtilities/third_party/IsAppEncrypted/Public -Xcc -I/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/GoogleUtilities/GoogleUtilities/UserDefaults/Public -Xcc -I/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/app-check/AppCheckCore/Sources/Public -Xcc -I/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/gtm-session-fetcher/Sources/Core/Public -Xcc -I/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/GoogleSignIn-iOS/GoogleSignIn/Sources/Public -Xcc -I/tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/include -Xcc -I/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/DerivedSources-normal/arm64 -Xcc -I/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/DerivedSources/arm64 -Xcc -I/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/DerivedSources -emit-objc-header -emit-objc-header-path /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Objects-normal/arm64/Suzzme-Swift.h -working-directory /Users/rehan/Documents/Projects/Suzzme/Suzzme -no-emit-module-separately-wmo
+
+ProcessInfoPlistFile /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/GoogleUtilities_GoogleUtilities-Logger.bundle/Contents/Info.plist /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GoogleUtilities.build/Release/GoogleUtilities_GoogleUtilities-Logger-b.build/empty-GoogleUtilities_GoogleUtilities-Logger.plist (in target 'GoogleUtilities_GoogleUtilities-Logger' from project 'GoogleUtilities')
+    cd /Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/GoogleUtilities
+    builtin-infoPlistUtility /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GoogleUtilities.build/Release/GoogleUtilities_GoogleUtilities-Logger-b.build/empty-GoogleUtilities_GoogleUtilities-Logger.plist -producttype com.apple.product-type.bundle -expandbuildsettings -platform macosx -o /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/GoogleUtilities_GoogleUtilities-Logger.bundle/Contents/Info.plist
+
+ProcessInfoPlistFile /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/GoogleUtilities_GoogleUtilities-Environment.bundle/Contents/Info.plist /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GoogleUtilities.build/Release/GoogleUtilities_GoogleUtilities-Environment-b.build/empty-GoogleUtilities_GoogleUtilities-Environment.plist (in target 'GoogleUtilities_GoogleUtilities-Environment' from project 'GoogleUtilities')
+    cd /Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/GoogleUtilities
+    builtin-infoPlistUtility /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GoogleUtilities.build/Release/GoogleUtilities_GoogleUtilities-Environment-b.build/empty-GoogleUtilities_GoogleUtilities-Environment.plist -producttype com.apple.product-type.bundle -expandbuildsettings -platform macosx -o /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/GoogleUtilities_GoogleUtilities-Environment.bundle/Contents/Info.plist
+
+ProcessInfoPlistFile /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/GoogleSignIn_GoogleSignInSwift.bundle/Contents/Info.plist /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GoogleSignIn.build/Release/GoogleSignIn_GoogleSignInSwift-b.build/empty-GoogleSignIn_GoogleSignInSwift.plist (in target 'GoogleSignIn_GoogleSignInSwift' from project 'GoogleSignIn')
+    cd /Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/GoogleSignIn-iOS
+    builtin-infoPlistUtility /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GoogleSignIn.build/Release/GoogleSignIn_GoogleSignInSwift-b.build/empty-GoogleSignIn_GoogleSignInSwift.plist -producttype com.apple.product-type.bundle -expandbuildsettings -platform macosx -o /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/GoogleSignIn_GoogleSignInSwift.bundle/Contents/Info.plist
+
+ProcessInfoPlistFile /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/GoogleSignIn_GoogleSignIn.bundle/Contents/Info.plist /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GoogleSignIn.build/Release/GoogleSignIn_GoogleSignIn-b.build/empty-GoogleSignIn_GoogleSignIn.plist (in target 'GoogleSignIn_GoogleSignIn' from project 'GoogleSignIn')
+    cd /Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/GoogleSignIn-iOS
+    builtin-infoPlistUtility /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GoogleSignIn.build/Release/GoogleSignIn_GoogleSignIn-b.build/empty-GoogleSignIn_GoogleSignIn.plist -producttype com.apple.product-type.bundle -expandbuildsettings -platform macosx -o /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/GoogleSignIn_GoogleSignIn.bundle/Contents/Info.plist
+
+Copy /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.swiftmodule/Project/arm64-apple-macos.swiftsourceinfo /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Objects-normal/arm64/Suzzme.swiftsourceinfo (in target 'Suzzme' from project 'Suzzme')
+    cd /Users/rehan/Documents/Projects/Suzzme/Suzzme
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Objects-normal/arm64/Suzzme.swiftsourceinfo /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.swiftmodule/Project/arm64-apple-macos.swiftsourceinfo
+
+ProcessInfoPlistFile /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/GTMSessionFetcher_GTMSessionFetcherCore.bundle/Contents/Info.plist /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GTMSessionFetcher.build/Release/GTMSessionFetcher_GTMSessionFetcherCore-b.build/empty-GTMSessionFetcher_GTMSessionFetcherCore.plist (in target 'GTMSessionFetcher_GTMSessionFetcherCore' from project 'GTMSessionFetcher')
+    cd /Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/gtm-session-fetcher
+    builtin-infoPlistUtility /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GTMSessionFetcher.build/Release/GTMSessionFetcher_GTMSessionFetcherCore-b.build/empty-GTMSessionFetcher_GTMSessionFetcherCore.plist -producttype com.apple.product-type.bundle -expandbuildsettings -platform macosx -o /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/GTMSessionFetcher_GTMSessionFetcherCore.bundle/Contents/Info.plist
+
+Copy /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.swiftmodule/arm64-apple-macos.swiftmodule /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Objects-normal/arm64/Suzzme.swiftmodule (in target 'Suzzme' from project 'Suzzme')
+    cd /Users/rehan/Documents/Projects/Suzzme/Suzzme
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Objects-normal/arm64/Suzzme.swiftmodule /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.swiftmodule/arm64-apple-macos.swiftmodule
+
+Copy /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.swiftmodule/arm64-apple-macos.abi.json /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Objects-normal/arm64/Suzzme.abi.json (in target 'Suzzme' from project 'Suzzme')
+    cd /Users/rehan/Documents/Projects/Suzzme/Suzzme
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Objects-normal/arm64/Suzzme.abi.json /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.swiftmodule/arm64-apple-macos.abi.json
+
+ProcessInfoPlistFile /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/GTMAppAuth_GTMAppAuth.bundle/Contents/Info.plist /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GTMAppAuth.build/Release/GTMAppAuth_GTMAppAuth-b.build/empty-GTMAppAuth_GTMAppAuth.plist (in target 'GTMAppAuth_GTMAppAuth' from project 'GTMAppAuth')
+    cd /Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/GTMAppAuth
+    builtin-infoPlistUtility /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GTMAppAuth.build/Release/GTMAppAuth_GTMAppAuth-b.build/empty-GTMAppAuth_GTMAppAuth.plist -producttype com.apple.product-type.bundle -expandbuildsettings -platform macosx -o /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/GTMAppAuth_GTMAppAuth.bundle/Contents/Info.plist
+
+ProcessInfoPlistFile /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/AppAuth_AppAuthCore.bundle/Contents/Info.plist /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/AppAuth.build/Release/AppAuth_AppAuthCore-b.build/empty-AppAuth_AppAuthCore.plist (in target 'AppAuth_AppAuthCore' from project 'AppAuth')
+    cd /Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/AppAuth-iOS
+    builtin-infoPlistUtility /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/AppAuth.build/Release/AppAuth_AppAuthCore-b.build/empty-AppAuth_AppAuthCore.plist -producttype com.apple.product-type.bundle -expandbuildsettings -platform macosx -o /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/AppAuth_AppAuthCore.bundle/Contents/Info.plist
+
+ProcessInfoPlistFile /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/AppAuth_AppAuth.bundle/Contents/Info.plist /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/AppAuth.build/Release/AppAuth_AppAuth-b.build/empty-AppAuth_AppAuth.plist (in target 'AppAuth_AppAuth' from project 'AppAuth')
+    cd /Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/AppAuth-iOS
+    builtin-infoPlistUtility /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/AppAuth.build/Release/AppAuth_AppAuth-b.build/empty-AppAuth_AppAuth.plist -producttype com.apple.product-type.bundle -expandbuildsettings -platform macosx -o /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/AppAuth_AppAuth.bundle/Contents/Info.plist
+
+ProcessInfoPlistFile /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.app/Contents/Info.plist /Users/rehan/Documents/Projects/Suzzme/Suzzme/GmailOAuthInfo.plist (in target 'Suzzme' from project 'Suzzme')
+    cd /Users/rehan/Documents/Projects/Suzzme/Suzzme
+    builtin-infoPlistUtility /Users/rehan/Documents/Projects/Suzzme/Suzzme/GmailOAuthInfo.plist -producttype com.apple.product-type.application -genpkginfo /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.app/Contents/PkgInfo -expandbuildsettings -platform macosx -additionalcontentfile /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/assetcatalog_generated_info.plist -scanforprivacyfile /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.app/Contents/Resources/AppAuth_AppAuth.bundle -scanforprivacyfile /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.app/Contents/Resources/AppAuth_AppAuthCore.bundle -scanforprivacyfile /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.app/Contents/Resources/GTMAppAuth_GTMAppAuth.bundle -scanforprivacyfile /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.app/Contents/Resources/GTMSessionFetcher_GTMSessionFetcherCore.bundle -scanforprivacyfile /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.app/Contents/Resources/GoogleSignIn_GoogleSignIn.bundle -scanforprivacyfile /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.app/Contents/Resources/GoogleSignIn_GoogleSignInSwift.bundle -scanforprivacyfile /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.app/Contents/Resources/GoogleUtilities_GoogleUtilities-Environment.bundle -scanforprivacyfile /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.app/Contents/Resources/GoogleUtilities_GoogleUtilities-Logger.bundle -scanforprivacyfile /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.app/Contents/Resources/GoogleUtilities_GoogleUtilities-UserDefaults.bundle -scanforprivacyfile /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.app/Contents/Resources/Promises_FBLPromises.bundle -o /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.app/Contents/Info.plist
+
+Ld /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.app/Contents/MacOS/Suzzme normal (in target 'Suzzme' from project 'Suzzme')
+    cd /Users/rehan/Documents/Projects/Suzzme/Suzzme
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-macos14.0 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -Os -Xlinker -no_warn_duplicate_libraries -L/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/EagerLinkingTBDs/Release -L/tmp/SuzzmeFullApp20261016/mac/Build/Products/Release -F/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/EagerLinkingTBDs/Release -F/tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/PackageFrameworks -F/tmp/SuzzmeFullApp20261016/mac/Build/Products/Release -filelist /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Objects-normal/arm64/Suzzme.LinkFileList -Xlinker -rpath -Xlinker /usr/lib/swift -Xlinker -rpath -Xlinker @executable_path/../Frameworks -Xlinker -object_path_lto -Xlinker /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Objects-normal/arm64/Suzzme_lto.o -Xlinker -dependency_info -Xlinker /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Objects-normal/arm64/Suzzme_dependency_info.dat -fobjc-link-runtime -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Objects-normal/arm64/Suzzme.swiftmodule -framework CoreGraphics -framework CoreText -framework Foundation -framework LocalAuthentication -framework Security -framework AppKit -framework Security -framework DeviceCheck -Xlinker -no_adhoc_codesign -o /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.app/Contents/MacOS/Suzzme
+
+SwiftDriver\ Compilation Suzzme normal arm64 com.apple.xcode.tools.swift.compiler (in target 'Suzzme' from project 'Suzzme')
+    cd /Users/rehan/Documents/Projects/Suzzme/Suzzme
+    builtin-Swift-Compilation -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name Suzzme -O -whole-module-optimization @/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Objects-normal/arm64/Suzzme.SwiftFileList -Xcc -fmodule-map-file\=/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/swift-system/Sources/CSystem/include/module.modulemap -Xcc -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/AppAuth.modulemap -Xcc -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/AppAuthCore.modulemap -Xcc -fmodule-map-file\=/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/promises/Sources/FBLPromises/include/module.modulemap -Xcc -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/GoogleUtilities-Logger.modulemap -Xcc -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/GoogleUtilities-Environment.modulemap -Xcc -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/third-party-IsAppEncrypted.modulemap -Xcc -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/GoogleUtilities-UserDefaults.modulemap -Xcc -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/AppCheckCore.modulemap -Xcc -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/GTMSessionFetcherCore.modulemap -Xcc -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/GoogleSignIn.modulemap -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature InferIsolatedConformances -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -target arm64-apple-macos14.0 -g -module-cache-path /tmp/SuzzmeFullApp20261016/mac/ModuleCache.noindex -Xfrontend -serialize-debugging-options -swift-version 6 -I /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release -F /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/PackageFrameworks -F /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release -emit-localized-strings -emit-localized-strings-path /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Objects-normal/arm64 -c -num-threads 8 -Xcc -ivfsstatcache -Xcc /tmp/SuzzmeFullApp20261016/mac/SDKStatCaches.noindex/macosx27.0-26A425-7231f6df4def33e022ae2eb8f782df1a.sdkstatcache -output-file-map /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Objects-normal/arm64/Suzzme-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /tmp/SuzzmeFullApp20261016/mac/ModuleCache.noindex -sdk-module-cache-path /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Objects-normal/arm64/Suzzme.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Objects-normal/arm64/Suzzme-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /tmp/SuzzmeFullApp20261016/mac/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Objects-normal/arm64/Suzzme_const_extract_protocols.json -Xcc -iquote -Xcc /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Suzzme-generated-files.hmap -Xcc -I/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Suzzme-own-target-headers.hmap -Xcc -I/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Suzzme-all-non-framework-target-headers.hmap -Xcc -ivfsoverlay -Xcc /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme-44913edf133eeb185aeca876fd34349c-VFS/all-product-headers.yaml -Xcc -iquote -Xcc /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Suzzme-project-headers.hmap -Xcc -I/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/swift-system/Sources/CSystem/include -Xcc -I/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/AppAuth-iOS/Sources/AppAuth -Xcc -I/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/AppAuth-iOS/Sources/AppAuthCore -Xcc -I/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/promises/Sources/FBLPromises/include -Xcc -I/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/GoogleUtilities/GoogleUtilities/Logger/Public -Xcc -I/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/GoogleUtilities/GoogleUtilities/Environment/Public -Xcc -I/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/GoogleUtilities/third_party/IsAppEncrypted/Public -Xcc -I/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/GoogleUtilities/GoogleUtilities/UserDefaults/Public -Xcc -I/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/app-check/AppCheckCore/Sources/Public -Xcc -I/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/gtm-session-fetcher/Sources/Core/Public -Xcc -I/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/GoogleSignIn-iOS/GoogleSignIn/Sources/Public -Xcc -I/tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/include -Xcc -I/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/DerivedSources-normal/arm64 -Xcc -I/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/DerivedSources/arm64 -Xcc -I/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/DerivedSources -emit-objc-header -emit-objc-header-path /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Objects-normal/arm64/Suzzme-Swift.h -working-directory /Users/rehan/Documents/Projects/Suzzme/Suzzme -no-emit-module-separately-wmo
+
+PhaseScriptExecution Browser\ native\ components /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Script-B14000000000000000000001.sh (in target 'Suzzme' from project 'Suzzme')
+    cd /Users/rehan/Documents/Projects/Suzzme/Suzzme
+    export ACTION\=build
+    export AD_HOC_CODE_SIGNING_ALLOWED\=YES
+    export AGGREGATE_TRACKED_DOMAINS\=YES
+    export ALLOW_BUILD_REQUEST_OVERRIDES\=NO
+    export ALLOW_TARGET_PLATFORM_SPECIALIZATION\=NO
+    export ALTERNATE_GROUP\=staff
+    export ALTERNATE_MODE\=u+w,go-w,a+rX
+    export ALTERNATE_OWNER\=rehan
+    export ALTERNATIVE_DISTRIBUTION_WEB\=NO
+    export ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES\=NO
+    export ALWAYS_SEARCH_USER_PATHS\=NO
+    export ALWAYS_USE_SEPARATE_HEADERMAPS\=NO
+    export APPLICATION_EXTENSION_API_ONLY\=NO
+    export APPLY_RULES_IN_COPY_FILES\=NO
+    export APPLY_RULES_IN_COPY_HEADERS\=NO
+    export APP_SHORTCUTS_ENABLE_FLEXIBLE_MATCHING\=YES
+    export ARCHS\=arm64
+    export ARCHS_BASE\=arm64
+    export ARCHS_STANDARD\=arm64\ x86_64
+    export ARCHS_STANDARD_32_64_BIT\=arm64\ x86_64\ i386
+    export ARCHS_STANDARD_32_BIT\=i386
+    export ARCHS_STANDARD_64_BIT\=arm64\ x86_64
+    export ARCHS_STANDARD_INCLUDING_64_BIT\=arm64\ x86_64
+    export ARCH_COHORT_arm64e\=arm64e\ arm64e.x1
+    export ASSETCATALOG_COMPILER_APPICON_NAME\=AppIcon
+    export ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS\=YES
+    export ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME\=AccentColor
+    export AUTOMATICALLY_MERGE_DEPENDENCIES\=NO
+    export AUTOMATION_APPLE_EVENTS\=NO
+    export AVAILABLE_PLATFORMS\=android\ appletvos\ appletvsimulator\ driverkit\ freebsd\ iphoneos\ iphonesimulator\ linux\ macosx\ none\ openbsd\ qnx\ staticlinux\ watchos\ watchsimulator\ webassembly\ xros\ xrsimulator
+    export AppIdentifierPrefix\=VA9D6XP354.
+    export BUILD_ACTIVE_RESOURCES_ONLY\=NO
+    export BUILD_COMPONENTS\=headers\ build
+    export BUILD_DIR\=/tmp/SuzzmeFullApp20261016/mac/Build/Products
+    export BUILD_LIBRARY_FOR_DISTRIBUTION\=NO
+    export BUILD_ONLY_KNOWN_LOCALIZATIONS\=NO
+    export BUILD_ROOT\=/tmp/SuzzmeFullApp20261016/mac/Build/Products
+    export BUILD_STYLE\=
+    export BUILD_VARIANTS\=normal
+    export BUILT_PRODUCTS_DIR\=/tmp/SuzzmeFullApp20261016/mac/Build/Products/Release
+    export BUNDLE_CONTENTS_FOLDER_PATH\=Contents/
+    export BUNDLE_CONTENTS_FOLDER_PATH_deep\=Contents/
+    export BUNDLE_EXECUTABLE_FOLDER_NAME_deep\=MacOS
+    export BUNDLE_EXECUTABLE_FOLDER_PATH\=Contents/MacOS
+    export BUNDLE_EXTENSIONS_FOLDER_PATH\=Contents/Extensions
+    export BUNDLE_FORMAT\=deep
+    export BUNDLE_FRAMEWORKS_FOLDER_PATH\=Contents/Frameworks
+    export BUNDLE_PLUGINS_FOLDER_PATH\=Contents/PlugIns
+    export BUNDLE_PRIVATE_HEADERS_FOLDER_PATH\=Contents/PrivateHeaders
+    export BUNDLE_PUBLIC_HEADERS_FOLDER_PATH\=Contents/Headers
+    export CACHE_ROOT\=/var/folders/tp/gdnfpld55dj76lq6wbsnlml40000gn/C/com.apple.DeveloperTools/27.1-27A9275/Xcode
+    export CCHROOT\=/var/folders/tp/gdnfpld55dj76lq6wbsnlml40000gn/C/com.apple.DeveloperTools/27.1-27A9275/Xcode
+    export CHMOD\=/bin/chmod
+    export CHOWN\=chown
+    export CLANG_ANALYZER_NONNULL\=YES
+    export CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION\=YES_AGGRESSIVE
+    export CLANG_CACHE_FINE_GRAINED_OUTPUTS\=YES
+    export CLANG_CXX_LANGUAGE_STANDARD\=gnu++20
+    export CLANG_ENABLE_EXPLICIT_MODULES\=YES
+    export CLANG_ENABLE_MODULES\=YES
+    export CLANG_ENABLE_OBJC_ARC\=YES
+    export CLANG_ENABLE_OBJC_WEAK\=YES
+    export CLANG_MODULES_BUILD_SESSION_FILE\=/tmp/SuzzmeFullApp20261016/mac/ModuleCache.noindex/Session.modulevalidation
+    export CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING\=YES
+    export CLANG_WARN_BOOL_CONVERSION\=YES
+    export CLANG_WARN_COMMA\=YES
+    export CLANG_WARN_CONSTANT_CONVERSION\=YES
+    export CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS\=YES
+    export CLANG_WARN_DIRECT_OBJC_ISA_USAGE\=YES_ERROR
+    export CLANG_WARN_DOCUMENTATION_COMMENTS\=YES
+    export CLANG_WARN_EMPTY_BODY\=YES
+    export CLANG_WARN_ENUM_CONVERSION\=YES
+    export CLANG_WARN_INFINITE_RECURSION\=YES
+    export CLANG_WARN_INT_CONVERSION\=YES
+    export CLANG_WARN_NON_LITERAL_NULL_CONVERSION\=YES
+    export CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF\=YES
+    export CLANG_WARN_OBJC_LITERAL_CONVERSION\=YES
+    export CLANG_WARN_OBJC_ROOT_CLASS\=YES_ERROR
+    export CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER\=YES
+    export CLANG_WARN_RANGE_LOOP_ANALYSIS\=YES
+    export CLANG_WARN_STRICT_PROTOTYPES\=YES
+    export CLANG_WARN_SUSPICIOUS_MOVE\=YES
+    export CLANG_WARN_UNGUARDED_AVAILABILITY\=YES_AGGRESSIVE
+    export CLANG_WARN_UNREACHABLE_CODE\=YES
+    export CLANG_WARN__DUPLICATE_METHOD_MATCH\=YES
+    export CLASS_FILE_DIR\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/JavaClasses
+    export CLEAN_PRECOMPS\=YES
+    export CLONE_HEADERS\=NO
+    export CODESIGNING_FOLDER_PATH\=/tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.app
+    export CODE_SIGNING_ALLOWED\=YES
+    export CODE_SIGNING_REQUIRED\=YES
+    export CODE_SIGN_ENTITLEMENTS\=Suzzme/SuzzmeRelease.entitlements
+    export CODE_SIGN_IDENTITY\=Apple\ Development
+    export CODE_SIGN_IDENTITY_NO\=Apple\ Development
+    export CODE_SIGN_IDENTITY_YES\=-
+    export CODE_SIGN_INJECT_BASE_ENTITLEMENTS\=NO
+    export CODE_SIGN_STYLE\=Automatic
+    export COLOR_DIAGNOSTICS\=NO
+    export COMBINE_HIDPI_IMAGES\=NO
+    export COMPILATION_CACHE_CAS_PATH\=/tmp/SuzzmeFullApp20261016/mac/CompilationCache.noindex
+    export COMPILATION_CACHE_KEEP_CAS_DIRECTORY\=YES
+    export COMPILER_INDEX_STORE_ENABLE\=NO
+    export COMPOSITE_SDK_DIRS\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/CompositeSDKs
+    export COMPRESS_PNG_FILES\=NO
+    export CONFIGURATION\=Release
+    export CONFIGURATION_BUILD_DIR\=/tmp/SuzzmeFullApp20261016/mac/Build/Products/Release
+    export CONFIGURATION_TEMP_DIR\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release
+    export CONTENTS_FOLDER_PATH\=Suzzme.app/Contents
+    export CONTENTS_FOLDER_PATH_SHALLOW_BUNDLE_NO\=Suzzme.app/Contents
+    export CONTENTS_FOLDER_PATH_SHALLOW_BUNDLE_YES\=Suzzme.app
+    export COPYING_PRESERVES_HFS_DATA\=NO
+    export COPY_HEADERS_RUN_UNIFDEF\=NO
+    export COPY_PHASE_STRIP\=NO
+    export CP\=/bin/cp
+    export CREATE_INFOPLIST_SECTION_IN_BINARY\=NO
+    export CURRENT_ARCH\=undefined_arch
+    export CURRENT_PROJECT_VERSION\=1
+    export CURRENT_VARIANT\=normal
+    export DEAD_CODE_STRIPPING\=NO
+    export DEBUGGING_SYMBOLS\=YES
+    export DEBUG_INFORMATION_FORMAT\=dwarf-with-dsym
+    export DEBUG_INFORMATION_VERSION\=compiler-default
+    export DEFAULT_COMPILER\=com.apple.compilers.llvm.clang.1_0
+    export DEFAULT_DEXT_INSTALL_PATH\=/System/Library/DriverExtensions
+    export DEFAULT_KEXT_INSTALL_PATH\=/System/Library/Extensions
+    export DEFINES_MODULE\=NO
+    export DEPLOYMENT_LOCATION\=NO
+    export DEPLOYMENT_POSTPROCESSING\=NO
+    export DEPLOYMENT_TARGET_SETTING_NAME\=MACOSX_DEPLOYMENT_TARGET
+    export DEPLOYMENT_TARGET_SUGGESTED_VALUES\=12.0\ 12.2\ 12.3\ 12.4\ 13.0\ 13.1\ 13.2\ 13.3\ 13.4\ 13.5\ 14.0\ 14.1\ 14.2\ 14.3\ 14.4\ 14.5\ 14.6\ 15.0\ 15.1\ 15.2\ 15.3\ 15.4\ 15.5\ 15.6\ 26.0\ 26.1\ 26.2\ 26.3\ 26.4\ 26.5\ 26.6\ 27.0
+    export DERIVED_FILES_DIR\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/DerivedSources
+    export DERIVED_FILE_DIR\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/DerivedSources
+    export DERIVED_SOURCES_DIR\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/DerivedSources
+    export DEVELOPER_APPLICATIONS_DIR\=/Applications/Xcode.app/Contents/Developer/Applications
+    export DEVELOPER_BIN_DIR\=/Applications/Xcode.app/Contents/Developer/usr/bin
+    export DEVELOPER_DIR\=/Applications/Xcode.app/Contents/Developer
+    export DEVELOPER_FRAMEWORKS_DIR\=/Applications/Xcode.app/Contents/Developer/Library/Frameworks
+    export DEVELOPER_FRAMEWORKS_DIR_QUOTED\=/Applications/Xcode.app/Contents/Developer/Library/Frameworks
+    export DEVELOPER_LIBRARY_DIR\=/Applications/Xcode.app/Contents/Developer/Library
+    export DEVELOPER_SDK_DIR\=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs
+    export DEVELOPER_TOOLS_DIR\=/Applications/Xcode.app/Contents/Developer/Tools
+    export DEVELOPER_USR_DIR\=/Applications/Xcode.app/Contents/Developer/usr
+    export DEVELOPMENT_LANGUAGE\=en
+    export DEVELOPMENT_TEAM\=VA9D6XP354
+    export DIAGNOSE_MISSING_TARGET_DEPENDENCIES\=YES
+    export DIFF\=/usr/bin/diff
+    export DOCUMENTATION_FOLDER_PATH\=Suzzme.app/Contents/Resources/en.lproj/Documentation
+    export DONT_GENERATE_INFOPLIST_FILE\=NO
+    export DSTROOT\=/tmp/Suzzme.dst
+    export DT_TOOLCHAIN_DIR\=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain
+    export DWARF_DSYM_FILE_NAME\=Suzzme.app.dSYM
+    export DWARF_DSYM_FILE_SHOULD_ACCOMPANY_PRODUCT\=NO
+    export DWARF_DSYM_FOLDER_PATH\=/tmp/SuzzmeFullApp20261016/mac/Build/Products/Release
+    export DYNAMIC_LIBRARY_EXTENSION\=dylib
+    export EAGER_COMPILATION_ALLOW_SCRIPTS\=YES
+    export EAGER_LINKING\=NO
+    export EFFECTIVE_SWIFT_VERSION\=6
+    export EMBEDDED_CONTENT_CONTAINS_SWIFT\=NO
+    export EMBEDDED_PROFILE_NAME\=embedded.provisionprofile
+    export EMBED_ASSET_PACKS_IN_PRODUCT_BUNDLE\=NO
+    export EMBED_PACKAGE_RESOURCE_BUNDLE_NAMES\=\ GoogleSignIn_GoogleSignInSwift\ GoogleSignIn_GoogleSignIn\ GTMSessionFetcher_GTMSessionFetcherCore\ GTMAppAuth_GTMAppAuth\ GoogleUtilities_GoogleUtilities-UserDefaults\ GoogleUtilities_GoogleUtilities-Environment\ GoogleUtilities_GoogleUtilities-Logger\ Promises_FBLPromises\ AppAuth_AppAuthCore\ AppAuth_AppAuth
+    export ENABLE_APP_SANDBOX\=YES
+    export ENABLE_CODE_COVERAGE\=YES
+    export ENABLE_COHORT_ARCHS\=YES
+    export ENABLE_CPLUSPLUS_BOUNDS_SAFE_BUFFERS\=NO
+    export ENABLE_C_BOUNDS_SAFETY\=NO
+    export ENABLE_DEBUG_DYLIB\=NO
+    export ENABLE_DEFAULT_HEADER_SEARCH_PATHS\=YES
+    export ENABLE_DEFAULT_SEARCH_PATHS\=YES
+    export ENABLE_ENHANCED_SECURITY\=NO
+    export ENABLE_HARDENED_RUNTIME\=YES
+    export ENABLE_HARDWARE_CHECKED_POINTER_ARITHMETIC_SLICE\=NO
+    export ENABLE_HEADER_DEPENDENCIES\=YES
+    export ENABLE_INCOMING_NETWORK_CONNECTIONS\=NO
+    export ENABLE_NS_ASSERTIONS\=NO
+    export ENABLE_ON_DEMAND_RESOURCES\=NO
+    export ENABLE_OUTGOING_NETWORK_CONNECTIONS\=YES
+    export ENABLE_POINTER_AUTHENTICATION\=NO
+    export ENABLE_PREVIEWS\=NO
+    export ENABLE_RESOURCE_ACCESS_AUDIO_INPUT\=YES
+    export ENABLE_RESOURCE_ACCESS_BLUETOOTH\=NO
+    export ENABLE_RESOURCE_ACCESS_CALENDARS\=YES
+    export ENABLE_RESOURCE_ACCESS_CAMERA\=NO
+    export ENABLE_RESOURCE_ACCESS_CONTACTS\=YES
+    export ENABLE_RESOURCE_ACCESS_LOCATION\=NO
+    export ENABLE_RESOURCE_ACCESS_PHOTO_LIBRARY\=NO
+    export ENABLE_RESOURCE_ACCESS_PRINTING\=NO
+    export ENABLE_RESOURCE_ACCESS_USB\=NO
+    export ENABLE_SDK_IMPORTS\=NO
+    export ENABLE_SECURITY_COMPILER_WARNINGS\=NO
+    export ENABLE_STRICT_OBJC_MSGSEND\=YES
+    export ENABLE_TESTABILITY\=NO
+    export ENABLE_TESTING_SEARCH_PATHS\=NO
+    export ENABLE_USER_SCRIPT_SANDBOXING\=YES
+    export ENABLE_XOJIT_PREVIEWS\=NO
+    export ENFORCE_VALID_ARCHS\=YES
+    export ENTITLEMENTS_ALLOWED\=YES
+    export ENTITLEMENTS_DESTINATION\=Signature
+    export ENTITLEMENTS_REQUIRED\=NO
+    export EXCLUDED_INSTALLSRC_SUBDIRECTORY_PATTERNS\=.DS_Store\ .svn\ .git\ .hg\ CVS
+    export EXCLUDED_RECURSIVE_SEARCH_PATH_SUBDIRECTORIES\=\*.nib\ \*.lproj\ \*.framework\ \*.gch\ \*.xcode\*\ \*.xcassets\ \*.icon\ \(\*\)\ .DS_Store\ CVS\ .svn\ .git\ .hg\ \*.pbproj\ \*.pbxproj
+    export EXECUTABLES_FOLDER_PATH\=Suzzme.app/Contents/Executables
+    export EXECUTABLE_FOLDER_PATH\=Suzzme.app/Contents/MacOS
+    export EXECUTABLE_FOLDER_PATH_SHALLOW_BUNDLE_NO\=Suzzme.app/Contents/MacOS
+    export EXECUTABLE_FOLDER_PATH_SHALLOW_BUNDLE_YES\=Suzzme.app/Contents
+    export EXECUTABLE_NAME\=Suzzme
+    export EXECUTABLE_PATH\=Suzzme.app/Contents/MacOS/Suzzme
+    export EXPANDED_CODE_SIGN_IDENTITY\=B36F0284847A366A75E066D3F17B85EB3D608CE5
+    export EXPANDED_CODE_SIGN_IDENTITY_NAME\=Apple\ Development:\ rehansanadi0707@gmail.com\ \(2Y8942C3V2\)
+    export EXPANDED_PROVISIONING_PROFILE\=1b7a834e-a07e-4799-852e-adc5e06047ac
+    export EXTENSIONS_FOLDER_PATH\=Suzzme.app/Contents/Extensions
+    export FILE_LIST\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Objects/LinkFileList
+    export FIXED_FILES_DIR\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/FixedFiles
+    export FRAMEWORKS_FOLDER_PATH\=Suzzme.app/Contents/Frameworks
+    export FRAMEWORK_FLAG_PREFIX\=-framework
+    export FRAMEWORK_SEARCH_PATHS\=/tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/PackageFrameworks\ /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/PackageFrameworks\ /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/PackageFrameworks\ /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/PackageFrameworks\ /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/PackageFrameworks\ /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/PackageFrameworks\ /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/PackageFrameworks\ /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/PackageFrameworks\ /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/PackageFrameworks\ /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/PackageFrameworks\ /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/PackageFrameworks\ /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/PackageFrameworks\ /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/PackageFrameworks\ /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/PackageFrameworks\ /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/PackageFrameworks\ /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/PackageFrameworks\ /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/PackageFrameworks\ /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release\ 
+    export FRAMEWORK_VERSION\=A
+    export FULL_PRODUCT_NAME\=Suzzme.app
+    export FUSE_BUILD_PHASES\=YES
+    export FUSE_BUILD_SCRIPT_PHASES\=NO
+    export GCC3_VERSION\=3.3
+    export GCC_C_LANGUAGE_STANDARD\=gnu17
+    export GCC_DYNAMIC_NO_PIC\=NO
+    export GCC_INLINES_ARE_PRIVATE_EXTERN\=YES
+    export GCC_NO_COMMON_BLOCKS\=YES
+    export GCC_PFE_FILE_C_DIALECTS\=c\ objective-c\ c++\ objective-c++
+    export GCC_SYMBOLS_PRIVATE_EXTERN\=YES
+    export GCC_TREAT_WARNINGS_AS_ERRORS\=NO
+    export GCC_VERSION\=com.apple.compilers.llvm.clang.1_0
+    export GCC_VERSION_IDENTIFIER\=com_apple_compilers_llvm_clang_1_0
+    export GCC_WARN_64_TO_32_BIT_CONVERSION\=YES
+    export GCC_WARN_ABOUT_RETURN_TYPE\=YES_ERROR
+    export GCC_WARN_UNDECLARED_SELECTOR\=YES
+    export GCC_WARN_UNINITIALIZED_AUTOS\=YES_AGGRESSIVE
+    export GCC_WARN_UNUSED_FUNCTION\=YES
+    export GCC_WARN_UNUSED_VARIABLE\=YES
+    export GENERATED_MODULEMAP_DIR\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps
+    export GENERATE_INFOPLIST_FILE\=YES
+    export GENERATE_INTERMEDIATE_TEXT_BASED_STUBS\=YES
+    export GENERATE_PKGINFO_FILE\=YES
+    export GENERATE_PRELINK_OBJECT_FILE\=NO
+    export GENERATE_PROFILING_CODE\=NO
+    export GENERATE_TEXT_BASED_STUBS\=NO
+    export GID\=20
+    export GOOGLE_IOS_CLIENT_ID\=YOUR_IOS_CLIENT_ID.apps.googleusercontent.com
+    export GOOGLE_IOS_REVERSED_CLIENT_ID\=com.googleusercontent.apps.YOUR_IOS_CLIENT_ID
+    export GOOGLE_MACOS_CLIENT_ID\=YOUR_MACOS_CLIENT_ID.apps.googleusercontent.com
+    export GOOGLE_MACOS_REVERSED_CLIENT_ID\=com.googleusercontent.apps.YOUR_MACOS_CLIENT_ID
+    export GOOGLE_OAUTH_CLIENT_ID\=YOUR_MACOS_CLIENT_ID.apps.googleusercontent.com
+    export GOOGLE_OAUTH_REVERSED_CLIENT_ID\=com.googleusercontent.apps.YOUR_MACOS_CLIENT_ID
+    export GROUP\=staff
+    export HEADERMAP_INCLUDES_FLAT_ENTRIES_FOR_TARGET_BEING_BUILT\=YES
+    export HEADERMAP_INCLUDES_FRAMEWORK_ENTRIES_FOR_ALL_PRODUCT_TYPES\=YES
+    export HEADERMAP_INCLUDES_FRAMEWORK_ENTRIES_FOR_TARGETS_NOT_BEING_BUILT\=YES
+    export HEADERMAP_INCLUDES_NONPUBLIC_NONPRIVATE_HEADERS\=YES
+    export HEADERMAP_INCLUDES_PROJECT_HEADERS\=YES
+    export HEADERMAP_USES_FRAMEWORK_PREFIX_ENTRIES\=YES
+    export HEADERMAP_USES_VFS\=NO
+    export HEADER_SEARCH_PATHS\=/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/swift-system/Sources/CSystem/include\ /Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/AppAuth-iOS/Sources/AppAuth\ /Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/AppAuth-iOS/Sources/AppAuthCore\ /Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/promises/Sources/FBLPromises/include\ /Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/GoogleUtilities/GoogleUtilities/Logger/Public\ /Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/GoogleUtilities/GoogleUtilities/Environment/Public\ /Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/GoogleUtilities/third_party/IsAppEncrypted/Public\ /Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/GoogleUtilities/GoogleUtilities/UserDefaults/Public\ /Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/app-check/AppCheckCore/Sources/Public\ /Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/gtm-session-fetcher/Sources/Core/Public\ /Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/GoogleSignIn-iOS/GoogleSignIn/Sources/Public\ /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/include\ 
+    export HOME\=/Users/rehan
+    export HOST_ARCH\=arm64
+    export HOST_PLATFORM\=macosx
+    export ICONV\=/usr/bin/iconv
+    export IMPLICIT_DEPENDENCY_DOMAIN\=default
+    export INDEX_ENABLE_OPTIMIZATION_LEVEL_OVERRIDE\=YES
+    export INDEX_STORE_COMPRESS\=NO
+    export INDEX_STORE_ONLY_PROJECT_FILES\=NO
+    export INFOPLIST_ENABLE_CFBUNDLEICONS_MERGE\=YES
+    export INFOPLIST_EXPAND_BUILD_SETTINGS\=YES
+    export INFOPLIST_FILE\=GmailOAuthInfo.plist
+    export INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription\=Suzzme\ reads\ your\ schedule\ to\ answer\ questions\ and\ summarize\ your\ day.\ Calendar\ changes\ require\ your\ confirmation.
+    export INFOPLIST_KEY_NSContactsUsageDescription\=Let\ Suzzme\ identify\ contacts\ you\ ask\ about.
+    export INFOPLIST_KEY_NSMicrophoneUsageDescription\=Microphone\ access\ lets\ Suzzme\ hear\ you\ when\ you\ choose\ to\ speak.
+    export INFOPLIST_KEY_NSRemindersFullAccessUsageDescription\=Suzzme\ reads\ reminders\ to\ help\ plan\ your\ day.\ Creating,\ changing,\ completing,\ or\ deleting\ reminders\ requires\ your\ confirmation.
+    export INFOPLIST_KEY_NSSpeechRecognitionUsageDescription\=Speech\ recognition\ lets\ Suzzme\ understand\ your\ spoken\ requests.
+    export INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad\=UIInterfaceOrientationPortrait\ UIInterfaceOrientationPortraitUpsideDown\ UIInterfaceOrientationLandscapeLeft\ UIInterfaceOrientationLandscapeRight
+    export INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone\=UIInterfaceOrientationPortrait\ UIInterfaceOrientationLandscapeLeft\ UIInterfaceOrientationLandscapeRight
+    export INFOPLIST_OUTPUT_FORMAT\=same-as-input
+    export INFOPLIST_PATH\=Suzzme.app/Contents/Info.plist
+    export INFOPLIST_PREPROCESS\=NO
+    export INFOSTRINGS_PATH\=Suzzme.app/Contents/Resources/en.lproj/InfoPlist.strings
+    export INLINE_PRIVATE_FRAMEWORKS\=NO
+    export INSTALLAPI_IGNORE_SKIP_INSTALL\=YES
+    export INSTALLHDRS_COPY_PHASE\=NO
+    export INSTALLHDRS_SCRIPT_PHASE\=NO
+    export INSTALL_DIR\=/tmp/Suzzme.dst/Applications
+    export INSTALL_GROUP\=staff
+    export INSTALL_MODE_FLAG\=u+w,go-w,a+rX
+    export INSTALL_OWNER\=rehan
+    export INSTALL_PATH\=/Applications
+    export INSTALL_ROOT\=/tmp/Suzzme.dst
+    export IOS_UNZIPPERED_TWIN_PREFIX_PATH\=/System/iOSSupport
+    export IS_MACCATALYST\=NO
+    export IS_UNOPTIMIZED_BUILD\=NO
+    export JAVAC_DEFAULT_FLAGS\=-J-Xms64m\ -J-XX:NewSize\=4M\ -J-Dfile.encoding\=UTF8
+    export JAVA_APP_STUB\=/System/Library/Frameworks/JavaVM.framework/Resources/MacOS/JavaApplicationStub
+    export JAVA_ARCHIVE_CLASSES\=YES
+    export JAVA_ARCHIVE_TYPE\=JAR
+    export JAVA_COMPILER\=/usr/bin/javac
+    export JAVA_FOLDER_PATH\=Suzzme.app/Contents/Resources/Java
+    export JAVA_FRAMEWORK_RESOURCES_DIRS\=Resources
+    export JAVA_JAR_FLAGS\=cv
+    export JAVA_SOURCE_SUBDIR\=.
+    export JAVA_USE_DEPENDENCIES\=YES
+    export JAVA_ZIP_FLAGS\=-urg
+    export JIKES_DEFAULT_FLAGS\=+E\ +OLDCSO
+    export KASAN_CFLAGS_CLASSIC\=-DKASAN\=1\ -DKASAN_CLASSIC\=1\ -fsanitize\=address\ -mllvm\ -asan-globals-live-support\ -mllvm\ -asan-force-dynamic-shadow
+    export KASAN_CFLAGS_TBI\=-DKASAN\=1\ -DKASAN_TBI\=1\ -fsanitize\=kernel-hwaddress\ -mllvm\ -hwasan-recover\=0\ -mllvm\ -hwasan-instrument-atomics\=0\ -mllvm\ -hwasan-instrument-stack\=1\ -mllvm\ -hwasan-generate-tags-with-calls\=1\ -mllvm\ -hwasan-instrument-with-calls\=1\ -mllvm\ -hwasan-use-short-granules\=0\ -mllvm\ -hwasan-memory-access-callback-prefix\=__asan_
+    export KASAN_DEFAULT_CFLAGS\=-DKASAN\=1\ -DKASAN_CLASSIC\=1\ -fsanitize\=address\ -mllvm\ -asan-globals-live-support\ -mllvm\ -asan-force-dynamic-shadow
+    export KEEP_PRIVATE_EXTERNS\=NO
+    export LD_DEPENDENCY_INFO_FILE\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Objects-normal/undefined_arch/Suzzme_dependency_info.dat
+    export LD_EXPORT_SYMBOLS\=YES
+    export LD_GENERATE_MAP_FILE\=NO
+    export LD_MAP_FILE_PATH\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Suzzme-LinkMap-normal-undefined_arch.txt
+    export LD_NO_PIE\=NO
+    export LD_QUOTE_LINKER_ARGUMENTS_FOR_COMPILER_DRIVER\=YES
+    export LD_RUNPATH_SEARCH_PATHS\=@executable_path/../Frameworks
+    export LD_RUNPATH_SEARCH_PATHS_YES\=@loader_path/../Frameworks
+    export LD_SHARED_CACHE_ELIGIBLE\=Automatic
+    export LD_WARN_DUPLICATE_LIBRARIES\=NO
+    export LD_WARN_UNUSED_DYLIBS\=NO
+    export LEGACY_DEVELOPER_DIR\=/Applications/Xcode.app/Contents/PlugIns/Xcode3Core.ideplugin/Contents/SharedSupport/Developer
+    export LEX\=lex
+    export LIBRARY_DEXT_INSTALL_PATH\=/Library/DriverExtensions
+    export LIBRARY_FLAG_NOSPACE\=YES
+    export LIBRARY_FLAG_PREFIX\=-l
+    export LIBRARY_KEXT_INSTALL_PATH\=/Library/Extensions
+    export LIBRARY_SEARCH_PATHS\=/tmp/SuzzmeFullApp20261016/mac/Build/Products/Release\ 
+    export LINKER_DISPLAYS_MANGLED_NAMES\=NO
+    export LINK_FILE_LIST_normal_arm64\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Objects-normal/arm64/Suzzme.LinkFileList
+    export LINK_OBJC_RUNTIME\=YES
+    export LINK_WITH_STANDARD_LIBRARIES\=YES
+    export LLVM_TARGET_TRIPLE_OS_VERSION\=macos14.0
+    export LLVM_TARGET_TRIPLE_OS_VERSION_NO\=macos14.0
+    export LLVM_TARGET_TRIPLE_OS_VERSION_YES\=macos27.0
+    export LLVM_TARGET_TRIPLE_VENDOR\=apple
+    export LM_AUX_CONST_METADATA_LIST_PATH_normal_arm64\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Objects-normal/arm64/Suzzme.SwiftConstValuesFileList
+    export LOCALIZATION_EXPORT_SUPPORTED\=YES
+    export LOCALIZATION_PREFERS_STRING_CATALOGS\=YES
+    export LOCALIZED_RESOURCES_FOLDER_PATH\=Suzzme.app/Contents/Resources/en.lproj
+    export LOCALIZED_STRING_CODE_COMMENTS\=NO
+    export LOCALIZED_STRING_MACRO_NAMES\=NSLocalizedString\ CFCopyLocalizedString
+    export LOCALIZED_STRING_SWIFTUI_SUPPORT\=YES
+    export LOCAL_ADMIN_APPS_DIR\=/Applications/Utilities
+    export LOCAL_APPS_DIR\=/Applications
+    export LOCAL_DEVELOPER_DIR\=/Library/Developer
+    export LOCAL_LIBRARY_DIR\=/Library
+    export LOCROOT\=/Users/rehan/Documents/Projects/Suzzme/Suzzme
+    export LOCSYMROOT\=/Users/rehan/Documents/Projects/Suzzme/Suzzme
+    export MACH_O_TYPE\=mh_execute
+    export MACOSX_DEPLOYMENT_TARGET\=14.0
+    export MAC_OS_X_PRODUCT_BUILD_VERSION\=26A434
+    export MAC_OS_X_VERSION_ACTUAL\=270001
+    export MAC_OS_X_VERSION_MAJOR\=270000
+    export MAC_OS_X_VERSION_MINOR\=270000
+    export MAKE_MERGEABLE\=NO
+    export MARKETING_VERSION\=1.0
+    export MERGEABLE_LIBRARY\=NO
+    export MERGED_BINARY_TYPE\=none
+    export MERGE_LINKED_LIBRARIES\=NO
+    export METAL_LIBRARY_FILE_BASE\=default
+    export METAL_LIBRARY_OUTPUT_DIR\=/tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.app/Contents/Resources
+    export MODULES_FOLDER_PATH\=Suzzme.app/Contents/Modules
+    export MODULE_CACHE_DIR\=/tmp/SuzzmeFullApp20261016/mac/ModuleCache.noindex
+    export MTL_ENABLE_DEBUG_INFO\=NO
+    export MTL_FAST_MATH\=YES
+    export NATIVE_ARCH\=arm64
+    export NATIVE_ARCH_32_BIT\=arm
+    export NATIVE_ARCH_64_BIT\=arm64
+    export NATIVE_ARCH_ACTUAL\=arm64
+    export NO_COMMON\=YES
+    export OBJECT_FILE_DIR\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Objects
+    export OBJECT_FILE_DIR_normal\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Objects-normal
+    export OBJROOT\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex
+    export ONLY_ACTIVE_ARCH\=YES
+    export ONLY_ARCH\=arm64
+    export OS\=MACOS
+    export OSAC\=/usr/bin/osacompile
+    export OTHER_CFLAGS\=-fmodule-map-file\=/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/swift-system/Sources/CSystem/include/module.modulemap\ -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/SystemPackage.modulemap\ -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/EventSource.modulemap\ -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/MCP.modulemap\ -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/Logging.modulemap\ -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/AppAuth.modulemap\ -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/AppAuthCore.modulemap\ -fmodule-map-file\=/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/promises/Sources/FBLPromises/include/module.modulemap\ -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/GoogleUtilities-Logger.modulemap\ -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/GoogleUtilities-Environment.modulemap\ -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/third-party-IsAppEncrypted.modulemap\ -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/GoogleUtilities-UserDefaults.modulemap\ -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/AppCheckCore.modulemap\ -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/GTMAppAuth.modulemap\ -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/GTMSessionFetcherCore.modulemap\ -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/GoogleSignIn.modulemap\ -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/GoogleSignInSwift.modulemap\ 
+    export OTHER_CPLUSPLUSFLAGS\=-fmodule-map-file\=/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/swift-system/Sources/CSystem/include/module.modulemap\ -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/SystemPackage.modulemap\ -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/EventSource.modulemap\ -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/MCP.modulemap\ -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/Logging.modulemap\ -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/AppAuth.modulemap\ -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/AppAuthCore.modulemap\ -fmodule-map-file\=/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/promises/Sources/FBLPromises/include/module.modulemap\ -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/GoogleUtilities-Logger.modulemap\ -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/GoogleUtilities-Environment.modulemap\ -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/third-party-IsAppEncrypted.modulemap\ -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/GoogleUtilities-UserDefaults.modulemap\ -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/AppCheckCore.modulemap\ -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/GTMAppAuth.modulemap\ -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/GTMSessionFetcherCore.modulemap\ -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/GoogleSignIn.modulemap\ -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/GoogleSignInSwift.modulemap\ 
+    export OTHER_LDFLAGS\=\ -framework\ CoreGraphics\ -framework\ CoreText\ -framework\ Foundation\ -framework\ LocalAuthentication\ -framework\ Security\ -framework\ AppKit\ -framework\ Security\ -framework\ DeviceCheck
+    export OTHER_SWIFT_FLAGS\=-Xcc\ -fmodule-map-file\=/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/swift-system/Sources/CSystem/include/module.modulemap\ -Xcc\ -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/AppAuth.modulemap\ -Xcc\ -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/AppAuthCore.modulemap\ -Xcc\ -fmodule-map-file\=/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/promises/Sources/FBLPromises/include/module.modulemap\ -Xcc\ -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/GoogleUtilities-Logger.modulemap\ -Xcc\ -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/GoogleUtilities-Environment.modulemap\ -Xcc\ -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/third-party-IsAppEncrypted.modulemap\ -Xcc\ -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/GoogleUtilities-UserDefaults.modulemap\ -Xcc\ -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/AppCheckCore.modulemap\ -Xcc\ -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/GTMSessionFetcherCore.modulemap\ -Xcc\ -fmodule-map-file\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/GeneratedModuleMaps/GoogleSignIn.modulemap\ 
+    export PACKAGE_TYPE\=com.apple.package-type.wrapper.application
+    export PASCAL_STRINGS\=YES
+    export PATH\=/Applications/Xcode.app/Contents/SharedFrameworks/SwiftBuild.framework/Versions/A/PlugIns/SWBBuildService.bundle/Contents/PlugIns/SWBUniversalPlatformPlugin.bundle/Contents/Frameworks/SWBUniversalPlatform.framework/Resources:/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin:/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/local/bin:/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/libexec:/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/usr/bin:/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/usr/local/bin:/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/local/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/local/bin:/Applications/ChatGPT.app/Contents/Resources/codex-cli/codex-path:/Users/rehan/.nvm/versions/node/v24.21.0/bin:/Users/rehan/.kimi-code/bin:/Users/rehan/.antigravity-ide/antigravity-ide/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin:/usr/local/share/dotnet:/Users/rehan/.codex/tmp/arg0/codex-arg0p0PCeG:/Users/rehan/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/override:/Users/rehan/.local/bin:/Users/rehan/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/fallback:/Applications/ChatGPT.app/Contents/Resources:/Applications/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS
+    export PATH_PREFIXES_EXCLUDED_FROM_HEADER_DEPENDENCIES\=/usr/include\ /usr/local/include\ /System/Library/Frameworks\ /System/Library/PrivateFrameworks\ /Applications/Xcode.app/Contents/Developer/Headers\ /Applications/Xcode.app/Contents/Developer/SDKs\ /Applications/Xcode.app/Contents/Developer/Platforms
+    export PBDEVELOPMENTPLIST_PATH\=Suzzme.app/Contents/pbdevelopment.plist
+    export PER_ARCH_MODULE_FILE_DIR\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Objects-normal/undefined_arch
+    export PER_ARCH_OBJECT_FILE_DIR\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Objects-normal/undefined_arch
+    export PER_VARIANT_OBJECT_FILE_DIR\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Objects-normal
+    export PKGINFO_FILE_PATH\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/PkgInfo
+    export PKGINFO_PATH\=Suzzme.app/Contents/PkgInfo
+    export PLATFORM_DEVELOPER_APPLICATIONS_DIR\=/Applications/Xcode.app/Contents/Developer/Applications
+    export PLATFORM_DEVELOPER_BIN_DIR\=/Applications/Xcode.app/Contents/Developer/usr/bin
+    export PLATFORM_DEVELOPER_LIBRARY_DIR\=/Applications/Xcode.app/Contents/Developer/Library
+    export PLATFORM_DEVELOPER_SDK_DIR\=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs
+    export PLATFORM_DEVELOPER_TOOLS_DIR\=/Applications/Xcode.app/Contents/Developer/Tools
+    export PLATFORM_DEVELOPER_USR_DIR\=/Applications/Xcode.app/Contents/Developer/usr
+    export PLATFORM_DIR\=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform
+    export PLATFORM_DISPLAY_NAME\=macOS
+    export PLATFORM_FAMILY_NAME\=macOS
+    export PLATFORM_NAME\=macosx
+    export PLATFORM_PREFERRED_ARCH\=x86_64
+    export PLATFORM_PRODUCT_BUILD_VERSION\=26A425
+    export PLATFORM_REQUIRES_SWIFT_AUTOLINK_EXTRACT\=NO
+    export PLATFORM_REQUIRES_SWIFT_MODULEWRAP\=NO
+    export PLATFORM_USES_DSYMS\=YES
+    export PLIST_FILE_OUTPUT_FORMAT\=same-as-input
+    export PLUGINS_FOLDER_PATH\=Suzzme.app/Contents/PlugIns
+    export PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR\=YES
+    export PRECOMP_DESTINATION_DIR\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/PrefixHeaders
+    export PRELINK_DEPENDENCY_INFO_FILE\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Objects-normal/undefined_arch/Suzzme_prelink_dependency_info.dat
+    export PRIVATE_HEADERS_FOLDER_PATH\=Suzzme.app/Contents/PrivateHeaders
+    export PROCESSED_INFOPLIST_PATH\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Objects-normal/undefined_arch/Processed-Info.plist
+    export PRODUCT_BUNDLE_IDENTIFIER\=rehan.Suzzme
+    export PRODUCT_BUNDLE_PACKAGE_TYPE\=APPL
+    export PRODUCT_MODULE_NAME\=Suzzme
+    export PRODUCT_NAME\=Suzzme
+    export PRODUCT_SETTINGS_PATH\=/Users/rehan/Documents/Projects/Suzzme/Suzzme/GmailOAuthInfo.plist
+    export PRODUCT_TYPE\=com.apple.product-type.application
+    export PROFILING_CODE\=NO
+    export PROJECT\=Suzzme
+    export PROJECT_DERIVED_FILE_DIR\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/DerivedSources
+    export PROJECT_DIR\=/Users/rehan/Documents/Projects/Suzzme/Suzzme
+    export PROJECT_FILE_PATH\=/Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme.xcodeproj
+    export PROJECT_GUID\=44913edf133eeb185aeca876fd34349c
+    export PROJECT_NAME\=Suzzme
+    export PROJECT_TEMP_DIR\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build
+    export PROJECT_TEMP_ROOT\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex
+    export PROVISIONING_PROFILE_REQUIRED\=NO
+    export PROVISIONING_PROFILE_REQUIRED_YES_YES\=YES
+    export PROVISIONING_PROFILE_SUPPORTED\=YES
+    export PUBLIC_HEADERS_FOLDER_PATH\=Suzzme.app/Contents/Headers
+    export RECOMMENDED_MACOSX_DEPLOYMENT_TARGET\=14.0
+    export RECURSIVE_SEARCH_PATHS_FOLLOW_SYMLINKS\=YES
+    export REGISTER_APP_GROUPS\=YES
+    export REMOVE_CVS_FROM_RESOURCES\=YES
+    export REMOVE_GIT_FROM_RESOURCES\=YES
+    export REMOVE_HEADERS_FROM_EMBEDDED_BUNDLES\=YES
+    export REMOVE_HG_FROM_RESOURCES\=YES
+    export REMOVE_STATIC_EXECUTABLES_FROM_EMBEDDED_BUNDLES\=YES
+    export REMOVE_SVN_FROM_RESOURCES\=YES
+    export RESCHEDULE_INDEPENDENT_HEADERS_PHASES\=YES
+    export REZ_COLLECTOR_DIR\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/ResourceManagerResources
+    export REZ_OBJECTS_DIR\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/ResourceManagerResources/Objects
+    export REZ_SEARCH_PATHS\=/tmp/SuzzmeFullApp20261016/mac/Build/Products/Release\ 
+    export RPATH_ORIGIN\=@loader_path
+    export RUNTIME_EXCEPTION_ALLOW_DYLD_ENVIRONMENT_VARIABLES\=NO
+    export RUNTIME_EXCEPTION_ALLOW_JIT\=NO
+    export RUNTIME_EXCEPTION_ALLOW_UNSIGNED_EXECUTABLE_MEMORY\=NO
+    export RUNTIME_EXCEPTION_DEBUGGING_TOOL\=NO
+    export RUNTIME_EXCEPTION_DISABLE_EXECUTABLE_PAGE_PROTECTION\=NO
+    export RUNTIME_EXCEPTION_DISABLE_LIBRARY_VALIDATION\=NO
+    export SCANNING_PCM_KEEP_CACHE_DIRECTORY\=YES
+    export SCAN_ALL_SOURCE_FILES_FOR_INCLUDES\=NO
+    export SCRIPTS_FOLDER_PATH\=Suzzme.app/Contents/Resources/Scripts
+    export SCRIPT_INPUT_FILE_0\=/Users/rehan/Documents/Projects/Suzzme/Suzzme/BrowserNativeHost/build-components.py
+    export SCRIPT_INPUT_FILE_1\=/Users/rehan/Documents/Projects/Suzzme/Suzzme/BrowserNativeHost/NativeMessagingHost.swift
+    export SCRIPT_INPUT_FILE_2\=/Users/rehan/Documents/Projects/Suzzme/Suzzme/BrowserNativeHost/BrowserBroker.swift
+    export SCRIPT_INPUT_FILE_3\=/Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/BrowserBridge/BrowserBridgeIPC.swift
+    export SCRIPT_INPUT_FILE_4\=/Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/BrowserBridge/BrowserBridgeEngine.swift
+    export SCRIPT_INPUT_FILE_5\=/Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/BrowserBridge/NativeMessagingFrame.swift
+    export SCRIPT_INPUT_FILE_6\=/Users/rehan/Documents/Projects/Suzzme/Suzzme/BrowserNativeHost/BrowserBridge.json
+    export SCRIPT_INPUT_FILE_COUNT\=7
+    export SCRIPT_INPUT_FILE_LIST_COUNT\=0
+    export SCRIPT_OUTPUT_FILE_0\=/tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.app/Contents/MacOS/SuzzmeBrowserHost
+    export SCRIPT_OUTPUT_FILE_1\=/tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.app/Contents/MacOS/SuzzmeBrowserBroker
+    export SCRIPT_OUTPUT_FILE_2\=/tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.app/Contents/Resources/BrowserBridge.json
+    export SCRIPT_OUTPUT_FILE_3\=/tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.app/Contents/Library/LaunchAgents/rehan.Suzzme.BrowserBroker.plist
+    export SCRIPT_OUTPUT_FILE_4\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/DerivedSources/BrowserNativeComponents
+    export SCRIPT_OUTPUT_FILE_COUNT\=5
+    export SCRIPT_OUTPUT_FILE_LIST_COUNT\=0
+    export SDKROOT\=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk
+    export SDK_DIR\=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk
+    export SDK_DIR_macosx\=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk
+    export SDK_DIR_macosx27_0\=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk
+    export SDK_NAME\=macosx27.0
+    export SDK_NAMES\=macosx27.0
+    export SDK_PRODUCT_BUILD_VERSION\=26A425
+    export SDK_STAT_CACHE_DIR\=/tmp/SuzzmeFullApp20261016/mac
+    export SDK_STAT_CACHE_ENABLE\=YES
+    export SDK_STAT_CACHE_PATH\=/tmp/SuzzmeFullApp20261016/mac/SDKStatCaches.noindex/macosx27.0-26A425-7231f6df4def33e022ae2eb8f782df1a.sdkstatcache
+    export SDK_VERSION\=27.0
+    export SDK_VERSION_ACTUAL\=270000
+    export SDK_VERSION_MAJOR\=270000
+    export SDK_VERSION_MINOR\=270000
+    export SED\=/usr/bin/sed
+    export SEPARATE_STRIP\=NO
+    export SEPARATE_SYMBOL_EDIT\=NO
+    export SET_DIR_MODE_OWNER_GROUP\=YES
+    export SET_FILE_MODE_OWNER_GROUP\=NO
+    export SHALLOW_BUNDLE\=NO
+    export SHALLOW_BUNDLE_PLATFORM\=NO
+    export SHALLOW_BUNDLE_TRIPLE\=macos
+    export SHALLOW_BUNDLE_ios_macabi\=NO
+    export SHALLOW_BUNDLE_macos\=NO
+    export SHARED_DERIVED_FILE_DIR\=/tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/DerivedSources
+    export SHARED_FRAMEWORKS_FOLDER_PATH\=Suzzme.app/Contents/SharedFrameworks
+    export SHARED_PRECOMPS_DIR\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/PrecompiledHeaders
+    export SHARED_SUPPORT_FOLDER_PATH\=Suzzme.app/Contents/SharedSupport
+    export SKIP_COPYING_TEST_FRAMEWORKS\=YES
+    export SKIP_INSTALL\=NO
+    export SKIP_MERGEABLE_LIBRARY_BUNDLE_HOOK\=NO
+    export SOURCE_ROOT\=/Users/rehan/Documents/Projects/Suzzme/Suzzme
+    export SRCROOT\=/Users/rehan/Documents/Projects/Suzzme/Suzzme
+    export STRINGSDATA_DIR\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Objects-normal/undefined_arch
+    export STRINGSDATA_ROOT\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build
+    export STRINGS_FILE_INFOPLIST_RENAME\=YES
+    export STRINGS_FILE_OUTPUT_ENCODING\=UTF-16
+    export STRING_CATALOG_GENERATE_SYMBOLS\=YES
+    export STRIP_BITCODE_FROM_COPIED_FILES\=NO
+    export STRIP_INSTALLED_PRODUCT\=YES
+    export STRIP_PNG_TEXT\=NO
+    export STRIP_STYLE\=all
+    export STRIP_SWIFT_SYMBOLS\=YES
+    export SUPPORTED_PLATFORMS\=iphoneos\ iphonesimulator\ macosx
+    export SUPPORTS_MACCATALYST\=NO
+    export SUPPORTS_ON_DEMAND_RESOURCES\=NO
+    export SUPPORTS_TEXT_BASED_API\=NO
+    export SUPPRESS_WARNINGS\=NO
+    export SUZZME_BROWSER_CONFIG\=/Users/rehan/Documents/Projects/Suzzme/Suzzme/BrowserNativeHost/BrowserBridge.json
+    export SUZZME_BROWSER_OUTPUT_ROOT\=/tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.app/Contents
+    export SWIFTC_PASS_SDKROOT\=YES
+    export SWIFTC_PASS_SYSROOT\=NO
+    export SWIFT_APPROACHABLE_CONCURRENCY\=YES
+    export SWIFT_COLOR_DIAGNOSTICS\=NO
+    export SWIFT_COMPILATION_MODE\=wholemodule
+    export SWIFT_EMIT_CONST_VALUE_PROTOCOLS\=AnyResolverProviding\ AppEntity\ AppEnum\ AppExtension\ AppIntent\ AppIntentsPackage\ AppShortcutProviding\ AppShortcutsProvider\ AppUnionValue\ AppUnionValueCasesProviding\ DynamicOptionsProvider\ EntityQuery\ ExtensionPointDefining\ IntentValueQuery\ Resolver\ TransientEntity\ _AssistantIntentsProvider\ _GenerativeFunctionExtractable\ _IntentValueRepresentable
+    export SWIFT_EMIT_LOC_STRINGS\=YES
+    export SWIFT_ENABLE_EXPLICIT_MODULES\=YES
+    export SWIFT_PLATFORM_TARGET_PREFIX\=macos
+    export SWIFT_RESPONSE_FILE_PATH_normal_arm64\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Objects-normal/arm64/Suzzme.SwiftFileList
+    export SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY\=YES
+    export SWIFT_VERSION\=6.0
+    export SYMROOT\=/tmp/SuzzmeFullApp20261016/mac/Build/Products
+    export SYSROOT\=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk
+    export SYSTEM_ADMIN_APPS_DIR\=/Applications/Utilities
+    export SYSTEM_APPS_DIR\=/Applications
+    export SYSTEM_CORE_SERVICES_DIR\=/System/Library/CoreServices
+    export SYSTEM_DEMOS_DIR\=/Applications/Extras
+    export SYSTEM_DEVELOPER_APPS_DIR\=/Applications/Xcode.app/Contents/Developer/Applications
+    export SYSTEM_DEVELOPER_BIN_DIR\=/Applications/Xcode.app/Contents/Developer/usr/bin
+    export SYSTEM_DEVELOPER_DEMOS_DIR\=/Applications/Xcode.app/Contents/Developer/Applications/Utilities/Built\ Examples
+    export SYSTEM_DEVELOPER_DIR\=/Applications/Xcode.app/Contents/Developer
+    export SYSTEM_DEVELOPER_DOC_DIR\=/Applications/Xcode.app/Contents/Developer/ADC\ Reference\ Library
+    export SYSTEM_DEVELOPER_GRAPHICS_TOOLS_DIR\=/Applications/Xcode.app/Contents/Developer/Applications/Graphics\ Tools
+    export SYSTEM_DEVELOPER_JAVA_TOOLS_DIR\=/Applications/Xcode.app/Contents/Developer/Applications/Java\ Tools
+    export SYSTEM_DEVELOPER_PERFORMANCE_TOOLS_DIR\=/Applications/Xcode.app/Contents/Developer/Applications/Performance\ Tools
+    export SYSTEM_DEVELOPER_RELEASENOTES_DIR\=/Applications/Xcode.app/Contents/Developer/ADC\ Reference\ Library/releasenotes
+    export SYSTEM_DEVELOPER_TOOLS\=/Applications/Xcode.app/Contents/Developer/Tools
+    export SYSTEM_DEVELOPER_TOOLS_DOC_DIR\=/Applications/Xcode.app/Contents/Developer/ADC\ Reference\ Library/documentation/DeveloperTools
+    export SYSTEM_DEVELOPER_TOOLS_RELEASENOTES_DIR\=/Applications/Xcode.app/Contents/Developer/ADC\ Reference\ Library/releasenotes/DeveloperTools
+    export SYSTEM_DEVELOPER_USR_DIR\=/Applications/Xcode.app/Contents/Developer/usr
+    export SYSTEM_DEVELOPER_UTILITIES_DIR\=/Applications/Xcode.app/Contents/Developer/Applications/Utilities
+    export SYSTEM_DEXT_INSTALL_PATH\=/System/Library/DriverExtensions
+    export SYSTEM_DOCUMENTATION_DIR\=/Library/Documentation
+    export SYSTEM_EXTENSIONS_FOLDER_PATH\=Suzzme.app/Contents/Library/SystemExtensions
+    export SYSTEM_EXTENSIONS_FOLDER_PATH_SHALLOW_BUNDLE_NO\=Suzzme.app/Contents/Library/SystemExtensions
+    export SYSTEM_EXTENSIONS_FOLDER_PATH_SHALLOW_BUNDLE_YES\=Suzzme.app/Contents/SystemExtensions
+    export SYSTEM_KEXT_INSTALL_PATH\=/System/Library/Extensions
+    export SYSTEM_LIBRARY_DIR\=/System/Library
+    export TAPI_DEMANGLE\=YES
+    export TAPI_ENABLE_PROJECT_HEADERS\=NO
+    export TAPI_LANGUAGE\=objective-c
+    export TAPI_LANGUAGE_STANDARD\=compiler-default
+    export TAPI_USE_SRCROOT\=YES
+    export TAPI_VERIFY_MODE\=Pedantic
+    export TARGETED_DEVICE_FAMILY\=1,2
+    export TARGETNAME\=Suzzme
+    export TARGET_BUILD_DIR\=/tmp/SuzzmeFullApp20261016/mac/Build/Products/Release
+    export TARGET_NAME\=Suzzme
+    export TARGET_TEMP_DIR\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build
+    export TEMP_DIR\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build
+    export TEMP_FILES_DIR\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build
+    export TEMP_FILE_DIR\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build
+    export TEMP_ROOT\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex
+    export TEMP_SANDBOX_DIR\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/TemporaryTaskSandboxes
+    export TEST_FRAMEWORK_SEARCH_PATHS\=\ /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks
+    export TEST_LIBRARY_SEARCH_PATHS\=\ /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib
+    export TOOLCHAINS\=com.apple.dt.toolchain.XcodeDefault
+    export TOOLCHAIN_DIR\=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain
+    export TREAT_MISSING_BASELINES_AS_TEST_FAILURES\=NO
+    export TREAT_MISSING_SCRIPT_PHASE_OUTPUTS_AS_ERRORS\=NO
+    export TeamIdentifierPrefix\=VA9D6XP354.
+    export UID\=501
+    export UNINSTALLED_PRODUCTS_DIR\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/UninstalledProducts
+    export UNLOCALIZED_RESOURCES_FOLDER_PATH\=Suzzme.app/Contents/Resources
+    export UNLOCALIZED_RESOURCES_FOLDER_PATH_SHALLOW_BUNDLE_NO\=Suzzme.app/Contents/Resources
+    export UNLOCALIZED_RESOURCES_FOLDER_PATH_SHALLOW_BUNDLE_YES\=Suzzme.app/Contents
+    export UNSTRIPPED_PRODUCT\=NO
+    export USER\=rehan
+    export USER_APPS_DIR\=/Users/rehan/Applications
+    export USER_LIBRARY_DIR\=/Users/rehan/Library
+    export USE_DYNAMIC_NO_PIC\=YES
+    export USE_HEADERMAP\=YES
+    export USE_HEADER_SYMLINKS\=NO
+    export VALIDATE_DEVELOPMENT_ASSET_PATHS\=YES_ERROR
+    export VALIDATE_PRODUCT\=NO
+    export VALID_ARCHS\=arm64\ arm64e\ arm64e.x1\ i386\ x86_64
+    export VERBOSE_PBXCP\=NO
+    export VERSIONPLIST_PATH\=Suzzme.app/Contents/version.plist
+    export VERSION_INFO_BUILDER\=rehan
+    export VERSION_INFO_FILE\=Suzzme_vers.c
+    export VERSION_INFO_STRING\=\"@\(\#\)PROGRAM:Suzzme\ \ PROJECT:Suzzme-1\"
+    export WORKSPACE_DIR\=/Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme.xcodeproj
+    export WRAPPER_EXTENSION\=app
+    export WRAPPER_NAME\=Suzzme.app
+    export WRAPPER_SUFFIX\=.app
+    export WRAP_ASSET_PACKS_IN_SEPARATE_DIRECTORIES\=NO
+    export XCODE_APP_SUPPORT_DIR\=/Applications/Xcode.app/Contents/Developer/Library/Xcode
+    export XCODE_PRODUCT_BUILD_VERSION\=27A9275
+    export XCODE_VERSION_ACTUAL\=2710
+    export XCODE_VERSION_MAJOR\=2700
+    export XCODE_VERSION_MINOR\=2710
+    export XPCSERVICES_FOLDER_PATH\=Suzzme.app/Contents/XPCServices
+    export YACC\=yacc
+    export _BOOL_\=NO
+    export _BOOL_NO\=NO
+    export _BOOL_YES\=YES
+    export _DEVELOPMENT_TEAM_IS_EMPTY\=NO
+    export _DISCOVER_COMMAND_LINE_LINKER_INPUTS\=YES
+    export _DISCOVER_COMMAND_LINE_LINKER_INPUTS_INCLUDE_WL\=YES
+    export _IS_EMPTY_\=YES
+    export _LD_MULTIARCH\=YES
+    export _MACOSX_DEPLOYMENT_TARGET_IS_EMPTY\=NO
+    export _SWIFT_EXPLICIT_MODULES_ALLOW_CXX_INTEROP\=YES
+    export _WRAPPER_CONTENTS_DIR\=/Contents
+    export _WRAPPER_CONTENTS_DIR_SHALLOW_BUNDLE_NO\=/Contents
+    export _WRAPPER_PARENT_PATH\=/..
+    export _WRAPPER_PARENT_PATH_SHALLOW_BUNDLE_NO\=/..
+    export _WRAPPER_RESOURCES_DIR\=/Resources
+    export _WRAPPER_RESOURCES_DIR_SHALLOW_BUNDLE_NO\=/Resources
+    export __ARCHS__\=arm64\ x86_64
+    export __DIAGNOSE_DEPRECATED_ARCHS\=YES
+    export __DIAGNOSE_INVALID_DEPLOYMENT_TARGET_AS_ERROR\=YES
+    export __IS_NOT_MACOS\=NO
+    export __IS_NOT_MACOS_macosx\=NO
+    export __IS_NOT_SIMULATOR\=YES
+    export __IS_NOT_SIMULATOR_simulator\=NO
+    export __ORIGINAL_SDK_DEFINED_LLVM_TARGET_TRIPLE_SYS\=macos
+    export arch\=undefined_arch
+    export variant\=normal
+    /usr/bin/sandbox-exec -D SCRIPT_OUTPUT_FILE_0\=/tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.app/Contents/MacOS/SuzzmeBrowserHost -D SCRIPT_OUTPUT_FILE_1\=/tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.app/Contents/MacOS/SuzzmeBrowserBroker -D SCRIPT_OUTPUT_FILE_2\=/tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.app/Contents/Resources/BrowserBridge.json -D SCRIPT_OUTPUT_FILE_3\=/tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.app/Contents/Library/LaunchAgents/rehan.Suzzme.BrowserBroker.plist -D SCRIPT_OUTPUT_FILE_4\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/DerivedSources/BrowserNativeComponents -D SCRIPT_INPUT_FILE_0\=/Users/rehan/Documents/Projects/Suzzme/Suzzme/BrowserNativeHost/build-components.py -D SCRIPT_INPUT_FILE_1\=/Users/rehan/Documents/Projects/Suzzme/Suzzme/BrowserNativeHost/NativeMessagingHost.swift -D SCRIPT_INPUT_FILE_2\=/Users/rehan/Documents/Projects/Suzzme/Suzzme/BrowserNativeHost/BrowserBroker.swift -D SCRIPT_INPUT_FILE_3\=/Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/BrowserBridge/BrowserBridgeIPC.swift -D SCRIPT_INPUT_FILE_4\=/Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/BrowserBridge/BrowserBridgeEngine.swift -D SCRIPT_INPUT_FILE_5\=/Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/BrowserBridge/NativeMessagingFrame.swift -D SCRIPT_INPUT_FILE_6\=/Users/rehan/Documents/Projects/Suzzme/Suzzme/BrowserNativeHost/BrowserBridge.json -D SCRIPT_INPUT_FILE_7\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Script-B14000000000000000000001.sh -D SCRIPT_INPUT_ANCESTOR_0\=/ -D SCRIPT_INPUT_ANCESTOR_1\=/Users -D SCRIPT_INPUT_ANCESTOR_2\=/Users/rehan -D SCRIPT_INPUT_ANCESTOR_3\=/Users/rehan/Documents -D SCRIPT_INPUT_ANCESTOR_4\=/Users/rehan/Documents/Projects -D SCRIPT_INPUT_ANCESTOR_5\=/Users/rehan/Documents/Projects/Suzzme -D SCRIPT_INPUT_ANCESTOR_6\=/Users/rehan/Documents/Projects/Suzzme/Suzzme -D SCRIPT_INPUT_ANCESTOR_7\=/Users/rehan/Documents/Projects/Suzzme/Suzzme/BrowserNativeHost -D SCRIPT_INPUT_ANCESTOR_8\=/Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme -D SCRIPT_INPUT_ANCESTOR_9\=/Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core -D SCRIPT_INPUT_ANCESTOR_10\=/Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme/Core/BrowserBridge -D SCRIPT_INPUT_ANCESTOR_11\=/tmp -D SCRIPT_INPUT_ANCESTOR_12\=/tmp/SuzzmeFullApp20261016 -D SCRIPT_INPUT_ANCESTOR_13\=/tmp/SuzzmeFullApp20261016/mac -D SCRIPT_INPUT_ANCESTOR_14\=/tmp/SuzzmeFullApp20261016/mac/Build -D SCRIPT_INPUT_ANCESTOR_15\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex -D SCRIPT_INPUT_ANCESTOR_16\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build -D SCRIPT_INPUT_ANCESTOR_17\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release -D SCRIPT_INPUT_ANCESTOR_18\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build -D SCRIPT_OUTPUT_ANCESTOR_0\=/ -D SCRIPT_OUTPUT_ANCESTOR_1\=/tmp -D SCRIPT_OUTPUT_ANCESTOR_2\=/tmp/SuzzmeFullApp20261016 -D SCRIPT_OUTPUT_ANCESTOR_3\=/tmp/SuzzmeFullApp20261016/mac -D SCRIPT_OUTPUT_ANCESTOR_4\=/tmp/SuzzmeFullApp20261016/mac/Build -D SCRIPT_OUTPUT_ANCESTOR_5\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex -D SCRIPT_OUTPUT_ANCESTOR_6\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build -D SCRIPT_OUTPUT_ANCESTOR_7\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release -D SCRIPT_OUTPUT_ANCESTOR_8\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build -D SCRIPT_OUTPUT_ANCESTOR_9\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/DerivedSources -D SCRIPT_OUTPUT_ANCESTOR_10\=/tmp/SuzzmeFullApp20261016/mac/Build/Products -D SCRIPT_OUTPUT_ANCESTOR_11\=/tmp/SuzzmeFullApp20261016/mac/Build/Products/Release -D SCRIPT_OUTPUT_ANCESTOR_12\=/tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.app -D SCRIPT_OUTPUT_ANCESTOR_13\=/tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.app/Contents -D SCRIPT_OUTPUT_ANCESTOR_14\=/tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.app/Contents/Library -D SCRIPT_OUTPUT_ANCESTOR_15\=/tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.app/Contents/Library/LaunchAgents -D SCRIPT_OUTPUT_ANCESTOR_16\=/tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.app/Contents/MacOS -D SCRIPT_OUTPUT_ANCESTOR_17\=/tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.app/Contents/Resources -D SRCROOT\=/Users/rehan/Documents/Projects/Suzzme/Suzzme -D PROJECT_DIR\=/Users/rehan/Documents/Projects/Suzzme/Suzzme -D OBJROOT\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex -D SYMROOT\=/tmp/SuzzmeFullApp20261016/mac/Build/Products -D DSTROOT\=/tmp/Suzzme.dst -D SHARED_PRECOMPS_DIR\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/PrecompiledHeaders -D CACHE_ROOT\=/var/folders/tp/gdnfpld55dj76lq6wbsnlml40000gn/C/com.apple.DeveloperTools/27.1-27A9275/Xcode -D CONFIGURATION_BUILD_DIR\=/tmp/SuzzmeFullApp20261016/mac/Build/Products/Release -D CONFIGURATION_TEMP_DIR\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release -D LOCROOT\=/Users/rehan/Documents/Projects/Suzzme/Suzzme -D LOCSYMROOT\=/Users/rehan/Documents/Projects/Suzzme/Suzzme -D INDEX_PRECOMPS_DIR\=/tmp/SuzzmeFullApp20261016/mac/Index.noindex/PrecompiledHeaders -D INDEX_DATA_STORE_DIR\=/tmp/SuzzmeFullApp20261016/mac/Index.noindex/DataStore -D TEMP_DIR\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build -D TARGET_TEMP_DIR\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build -D DERIVED_FILE_DIR\=/tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/DerivedSources -f /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/a1f275e65224e81b6e1e14953d7aaaf1.sb /bin/sh -c /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Script-B14000000000000000000001.sh
+/var/folders/tp/gdnfpld55dj76lq6wbsnlml40000gn/T/SuzzmeBrowserNativeComponents/SuzzmeBrowserHost: replacing existing signature
+/var/folders/tp/gdnfpld55dj76lq6wbsnlml40000gn/T/SuzzmeBrowserNativeComponents/SuzzmeBrowserBroker: replacing existing signature
+
+ExtractAppIntentsMetadata (in target 'Suzzme' from project 'Suzzme')
+    cd /Users/rehan/Documents/Projects/Suzzme/Suzzme
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsmetadataprocessor --toolchain-dir /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --module-name Suzzme --sdk-root /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk --xcode-version 27A9275 --platform-family macOS --deployment-target 14.0 --bundle-identifier rehan.Suzzme --output /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.app/Contents/Resources --target-triple arm64-apple-macos14.0 --binary-file /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.app/Contents/MacOS/Suzzme --dependency-file /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Objects-normal/arm64/Suzzme_dependency_info.dat --stringsdata-file /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Objects-normal/arm64/ExtractedAppShortcutsMetadata.stringsdata --source-file-list /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Objects-normal/arm64/Suzzme.SwiftFileList --metadata-file-list /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Suzzme.DependencyMetadataFileList --static-metadata-file-list /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Suzzme.DependencyStaticMetadataFileList --swift-const-vals-list /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Objects-normal/arm64/Suzzme.SwiftConstValuesFileList --compile-time-extraction --deployment-aware-processing --no-app-shortcuts-localization
+2026-10-16 23:24:02.616 appintentsmetadataprocessor[71709:423477] Starting appintentsmetadataprocessor export
+2026-10-16 23:24:02.697 appintentsmetadataprocessor[71709:423477] Writing Metadata.appintents
+2026-10-16 23:24:02.697 appintentsmetadataprocessor[71709:423477] Metadata root: /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.app/Contents/Resources/Metadata.appintents
+
+CopySwiftLibs /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.app (in target 'Suzzme' from project 'Suzzme')
+    cd /Users/rehan/Documents/Projects/Suzzme/Suzzme
+    builtin-swiftStdLibTool --copy --verbose --sign B36F0284847A366A75E066D3F17B85EB3D608CE5 --scan-executable /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.app/Contents/MacOS/Suzzme --scan-folder /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.app/Contents/Frameworks --scan-folder /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.app/Contents/PlugIns --scan-folder /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.app/Contents/Library/SystemExtensions --scan-folder /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.app/Contents/Extensions --platform macosx --toolchain /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --destination /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.app/Contents/Frameworks --strip-bitcode --strip-bitcode-tool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip --emit-dependency-info /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/SwiftStdLibToolInputDependencies.dep --filter-for-swift-os --back-deploy-swift-span
+
+GenerateDSYMFile /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.app.dSYM /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.app/Contents/MacOS/Suzzme (in target 'Suzzme' from project 'Suzzme')
+    cd /Users/rehan/Documents/Projects/Suzzme/Suzzme
+    export PATH\=/Applications/Xcode.app/Contents/SharedFrameworks/SwiftBuild.framework/Versions/A/PlugIns/SWBBuildService.bundle/Contents/PlugIns/SWBUniversalPlatformPlugin.bundle/Contents/Frameworks/SWBUniversalPlatform.framework/Resources:/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin:/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/local/bin:/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/libexec:/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/usr/bin:/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/usr/local/bin:/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/local/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/local/bin:/Applications/ChatGPT.app/Contents/Resources/codex-cli/codex-path:/Users/rehan/.nvm/versions/node/v24.21.0/bin:/Users/rehan/.kimi-code/bin:/Users/rehan/.antigravity-ide/antigravity-ide/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin:/usr/local/share/dotnet:/Users/rehan/.codex/tmp/arg0/codex-arg0p0PCeG:/Users/rehan/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/override:/Users/rehan/.local/bin:/Users/rehan/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/fallback:/Applications/ChatGPT.app/Contents/Resources:/Applications/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/dsymutil /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.app/Contents/MacOS/Suzzme -o /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.app.dSYM
+
+CodeSign /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.app (in target 'Suzzme' from project 'Suzzme')
+    cd /Users/rehan/Documents/Projects/Suzzme/Suzzme
+    
+    Signing Identity:     "Apple Development: rehansanadi0707@gmail.com (2Y8942C3V2)"
+    Provisioning Profile: "Mac Team Provisioning Profile: rehan.Suzzme"
+                          (1b7a834e-a07e-4799-852e-adc5e06047ac)
+    
+    /usr/bin/codesign --force --sign B36F0284847A366A75E066D3F17B85EB3D608CE5 -o runtime --entitlements /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/Suzzme.build/Release/Suzzme.build/Suzzme.app.xcent --timestamp\=none --generate-entitlement-der /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.app
+
+Validate /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.app (in target 'Suzzme' from project 'Suzzme')
+    cd /Users/rehan/Documents/Projects/Suzzme/Suzzme
+    builtin-validationUtility /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.app -no-validate-extension -infoplist-subpath Contents/Info.plist
+
+RegisterWithLaunchServices /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.app (in target 'Suzzme' from project 'Suzzme')
+    cd /Users/rehan/Documents/Projects/Suzzme/Suzzme
+    builtin-lsregisterurl --record-path /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/XCBuildData/registered-launchservices.txt -- /System/Library/Frameworks/CoreServices.framework/Versions/Current/Frameworks/LaunchServices.framework/Versions/Current/Support/lsregister -f -R -trusted /tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.app
+
+PruneExplicitPrecompiledModules /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
+
+PruneExplicitPrecompiledModules /tmp/SuzzmeFullApp20261016/mac/SDKExplicitPrecompiledModules
+
+PruneExplicitPrecompiledModules /tmp/SuzzmeFullApp20261016/mac/Build/Intermediates.noindex/ExplicitPrecompiledModules
+
+** BUILD SUCCEEDED **
+

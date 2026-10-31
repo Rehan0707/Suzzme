@@ -1,0 +1,137 @@
+[
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "BF97982B-6BF2-4C6D-B647-2CC5A387A30B",
+        "deviceName" : "iPhone 18 Pro",
+        "exportedFileName" : "F7726E4A-5ACF-4389-95ED-BA688147D95A.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "05-follow-up-and-real-availability_0_9F1B2C8A-B49D-4623-AD53-EE140B7A8D73.png",
+        "timestamp" : 1791817019.591
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "BF97982B-6BF2-4C6D-B647-2CC5A387A30B",
+        "deviceName" : "iPhone 18 Pro",
+        "exportedFileName" : "9971433A-20EE-4C5A-8803-FC5BB988F7A2.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "04-real-core-conversation_0_713F5A33-FD80-4722-9078-0544567897B9.png",
+        "timestamp" : 1791816962.382
+      }
+    ],
+    "testIdentifier" : "NativePlatformUITests/test02RealTextConversationAndFollowUp()",
+    "testIdentifierURL" : "test://com.apple.xcode/Suzzme/NativePlatformUITests/NativePlatformUITests/test02RealTextConversationAndFollowUp"
+  },
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "BF97982B-6BF2-4C6D-B647-2CC5A387A30B",
+        "deviceName" : "iPhone 18 Pro",
+        "exportedFileName" : "BF51FFC9-2305-4CFF-B4C8-FD980C7E9D67.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "08-settings-dark_0_D73AE7B0-27D9-4BD4-9B25-BFF7EA1E4A41.png",
+        "timestamp" : 1791817072.257
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "BF97982B-6BF2-4C6D-B647-2CC5A387A30B",
+        "deviceName" : "iPhone 18 Pro",
+        "exportedFileName" : "D633D71E-5793-45AD-A6DB-6434243D4E40.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "07-route-History_0_AEBA5205-38D9-4868-9AE6-DBF71605412A.png",
+        "timestamp" : 1791817068.306
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "BF97982B-6BF2-4C6D-B647-2CC5A387A30B",
+        "deviceName" : "iPhone 18 Pro",
+        "exportedFileName" : "1B4685E5-EA39-4D22-B551-5924BAC3E4EA.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "07-route-Sources_0_73EE5D5B-A573-4014-8063-324BF43E0426.png",
+        "timestamp" : 1791817062.566
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "BF97982B-6BF2-4C6D-B647-2CC5A387A30B",
+        "deviceName" : "iPhone 18 Pro",
+        "exportedFileName" : "087F25AD-0F8A-4B02-B4EF-81B499FFD481.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "07-route-Personal Memory_0_86530D30-E523-46AE-950F-1E3010C95783.png",
+        "timestamp" : 1791817056.877
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "BF97982B-6BF2-4C6D-B647-2CC5A387A30B",
+        "deviceName" : "iPhone 18 Pro",
+        "exportedFileName" : "8FE0A4A4-CE3C-4B8E-B6EC-E631D8179367.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "07-route-Daily Summary_0_78556BD8-B1E5-4C5A-8B98-2ACEADBB0FC3.png",
+        "timestamp" : 1791817050.831
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "BF97982B-6BF2-4C6D-B647-2CC5A387A30B",
+        "deviceName" : "iPhone 18 Pro",
+        "exportedFileName" : "14BE7543-54C0-4DFB-B1B9-75327EC02CE8.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "07-route-Today_0_5553FA4D-EB5F-4A79-95FC-A9A42BC7BE29.png",
+        "timestamp" : 1791817045.848
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "BF97982B-6BF2-4C6D-B647-2CC5A387A30B",
+        "deviceName" : "iPhone 18 Pro",
+        "exportedFileName" : "E4AA1330-104F-4F0D-87D9-09BCF1B5406F.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "06-production-home-dark_0_C561F857-42A6-4EF3-AFF8-7F578EE06248.png",
+        "timestamp" : 1791817040.323
+      }
+    ],
+    "testIdentifier" : "NativePlatformUITests/test03NativeRoutesAndDarkAppearance()",
+    "testIdentifierURL" : "test://com.apple.xcode/Suzzme/NativePlatformUITests/NativePlatformUITests/test03NativeRoutesAndDarkAppearance"
+  },
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "BF97982B-6BF2-4C6D-B647-2CC5A387A30B",
+        "deviceName" : "iPhone 18 Pro",
+        "exportedFileName" : "CD79AC41-7651-4756-B2AD-FCAB2D47283F.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "10-colored-integrations-dark_0_8B5C1D76-1EB9-4301-9904-602C046BE0A0.png",
+        "timestamp" : 1791817132.724
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "BF97982B-6BF2-4C6D-B647-2CC5A387A30B",
+        "deviceName" : "iPhone 18 Pro",
+        "exportedFileName" : "545AB6A3-08ED-48AA-ACFC-01AAE506C842.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "09-voice-settings-dark_0_FAC44DC0-DD38-4749-BFFB-1CFBEEC6F4FF.png",
+        "timestamp" : 1791817130.023
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "BF97982B-6BF2-4C6D-B647-2CC5A387A30B",
+        "deviceName" : "iPhone 18 Pro",
+        "exportedFileName" : "3C7981C4-F4A0-4976-B5F7-43BC83C4C2E4.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "10-colored-integrations-light_0_111005C8-83F3-4E3B-8825-2EF7678039A4.png",
+        "timestamp" : 1791817114.062
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "BF97982B-6BF2-4C6D-B647-2CC5A387A30B",
+        "deviceName" : "iPhone 18 Pro",
+        "exportedFileName" : "A06074D2-9FC8-4FA7-9332-A8D32AF77BFA.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "09-voice-settings-light_0_1AE5F3CD-6E49-4CD6-815E-EA34E3C69125.png",
+        "timestamp" : 1791817111.175
+      }
+    ],
+    "testIdentifier" : "NativePlatformUITests/test04VoiceSettingsAndColoredIntegrations()",
+    "testIdentifierURL" : "test://com.apple.xcode/Suzzme/NativePlatformUITests/NativePlatformUITests/test04VoiceSettingsAndColoredIntegrations"
+  }
+]

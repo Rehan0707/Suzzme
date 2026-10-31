@@ -1,0 +1,582 @@
+{
+  "browser-bridge-check.sh": {
+    "exit": 0,
+    "seconds": 10.64,
+    "summary": [
+      "Browser bridge checks: 57 passed, 0 failed. Transport fixtures, not signed installation acceptance."
+    ],
+    "log": "browser-bridge-check.log",
+    "result_source": "initial-results.json",
+    "log_sha256": "c63555cbe317514de5a44e65b9cd77157c29a58a6644d610e56d7d469effe7cd",
+    "success_summary_verified": true
+  },
+  "browser-github-controller-check.sh": {
+    "exit": 0,
+    "seconds": 29.49,
+    "summary": [
+      "GitHub Browser Handoff Controller: 18 passed / 0 failed (production controller/gateway, synthetic store/provider)",
+      "Browser native controller checks: 21 passed / 0 failed. Disposable controller copy; no signed IPC acceptance."
+    ],
+    "log": "browser-github-controller-check.log",
+    "result_source": "initial-results.json",
+    "log_sha256": "a24fd91f81b54de5eb358205624572bf0f29002434ab7b658e65c82e6a9d0bd3",
+    "success_summary_verified": true
+  },
+  "browser-github-handoff-check.sh": {
+    "exit": 0,
+    "seconds": 8.15,
+    "summary": [
+      "GitHub Browser Handoff Swift: 131 passed / 0 failed (no provider calls)",
+      "GitHub Browser Handoff JS: 94 passed / 0 failed (test double; browser installation unverified)",
+      "GitHub Browser Handoff JS total: 98 passed / 0 failed (includes production popup handler)"
+    ],
+    "log": "browser-github-handoff-check.log",
+    "result_source": "initial-results.json",
+    "log_sha256": "4c4390769cd13f38a4de2e61ba468a3a10a85563691d44a190872e83900d5267",
+    "success_summary_verified": true
+  },
+  "check.sh": {
+    "exit": 0,
+    "seconds": 8.47,
+    "summary": [
+      "PASS: briefing, conversion, fingerprint, priority order, empty input, date parsing, fallback extraction, hallucination guard, and duplicate protection"
+    ],
+    "log": "check.log",
+    "result_source": "initial-results.json",
+    "log_sha256": "f88797b047487105302e2b469db403aa2b0c24a263a42db8ea9f1e8464b3ee30",
+    "success_summary_verified": true
+  },
+  "companion-presence-check.sh": {
+    "exit": 0,
+    "seconds": 13.31,
+    "summary": [
+      "Companion Presence checks: 66 passed / 0 failed"
+    ],
+    "log": "companion-presence-check.log",
+    "result_source": "initial-results.json",
+    "log_sha256": "8771b7ccc6bea626962477f498ea53922059927af9ed5248763e85a9766d8b2d",
+    "success_summary_verified": true
+  },
+  "companion3-intelligence-check.sh": {
+    "exit": 0,
+    "seconds": 69.36,
+    "summary": [
+      "Companion 3 intelligence: 38 passed / 0 failed"
+    ],
+    "log": "companion3-intelligence-check.log",
+    "result_source": "initial-results.json",
+    "log_sha256": "296c544b5d0a5e71b615a96bc45308b07f02a0d7d7d2c342fc32145ccfead4c5",
+    "success_summary_verified": true
+  },
+  "connector-acceptance-check.sh": {
+    "exit": 0,
+    "seconds": null,
+    "summary": [
+      "SwiftData.DefaultStore save failed with error: Error Domain=NSCocoaErrorDomain Code=513 \"The file couldn\u2019t be saved because you don\u2019t have permission.\" UserInfo={NSPersistentStoreOptions={",
+      "PASS failed deletion propagates persistence error",
+      "PASS failed deletion preserves persisted data",
+      "Connector acceptance: 60 passed / 0 failed"
+    ],
+    "log": "connector-acceptance-final.log",
+    "result_source": "parent-coordinated final command; final success summary corroborated",
+    "passed": 60,
+    "failed": 0,
+    "initial_exit": 1,
+    "initial_log": "connector-acceptance-check.log",
+    "log_sha256": "a2966d751c573bb9b7d9940b0d1d7f7a36941459bf57c88a3184280874fed1a6",
+    "success_summary_verified": true
+  },
+  "final-extraction-grounding-check.sh": {
+    "exit": 0,
+    "seconds": null,
+    "summary": [
+      "Final extraction and Calendar routing: 45 passed / 0 failed. Controlled boundary tests, not physical acceptance."
+    ],
+    "log": "final-extraction-grounding-check-quote-fix.log",
+    "result_source": "subagent observed scoped grounding command exit 0",
+    "passed": 45,
+    "failed": 0,
+    "initial_exit": 0,
+    "initial_log": "final-extraction-grounding-check.log",
+    "log_sha256": "3fcad20408f2573c05e35dd9b1ba995011dc314cafcdaaee45b1bfed59bd5de4",
+    "success_summary_verified": true
+  },
+  "global-screen-check.sh": {
+    "exit": 0,
+    "seconds": 59.38,
+    "summary": [
+      "Global screen checks: 68 passed / 0 failed"
+    ],
+    "log": "global-screen-check.log",
+    "result_source": "initial-results.json",
+    "log_sha256": "929519fdb8b51610e3300cba3f2840a8244d55d6dc08e668e4db0e14d80a58e4",
+    "success_summary_verified": true
+  },
+  "global-shortcut-check.sh": {
+    "exit": 0,
+    "seconds": 14.81,
+    "summary": [
+      "Global shortcut reducer checks passed: 29"
+    ],
+    "log": "global-shortcut-check.log",
+    "result_source": "initial-results.json",
+    "log_sha256": "3152c3a1e990f09760dbb24fdb44237bccb5998f264eba70b6cbd7e20492bb50",
+    "success_summary_verified": true
+  },
+  "global-voice-check.sh": {
+    "exit": 0,
+    "seconds": 20.43,
+    "summary": [
+      "Global voice acceptance: 86 passed / 0 failed"
+    ],
+    "log": "global-voice-check.log",
+    "result_source": "initial-results.json",
+    "log_sha256": "f820b3a6c7d25bc43dedb9a3ac8010eee14a55d8dbe99da53889cb1d654b7684",
+    "success_summary_verified": true
+  },
+  "integration-core-check.sh": {
+    "exit": 0,
+    "seconds": 43.59,
+    "summary": [
+      "Integration Core checks: 18 passed, 0 failed. No real-account acceptance."
+    ],
+    "log": "integration-core-check.log",
+    "result_source": "initial-results.json",
+    "log_sha256": "3cfff3025adaf2b16551205f9a240f2620b829941985b8643d93eebdc67932e6",
+    "success_summary_verified": true
+  },
+  "integration-mcp-check.sh": {
+    "exit": 0,
+    "seconds": null,
+    "summary": [
+      "MCP SDK behavioral checks: 28 passed, 0 failed. No network or real-account acceptance."
+    ],
+    "log": "integration-mcp-check-configured.log",
+    "result_source": "sdk-configured-results.json",
+    "passed": 28,
+    "failed": 0,
+    "scope": "Actual pinned MCP/AppAuth SDK implementations with controlled transport/authorization boundary fixtures. No provider traffic, token exchange, live account or hardware acceptance.",
+    "initial_exit": 1,
+    "initial_log": "integration-mcp-check.log",
+    "log_sha256": "48ebbcbf4332e9aec1a267880a373146586f81c13f5009ee019d519a8c47c79c",
+    "success_summary_verified": true
+  },
+  "integration-presentation-check.sh": {
+    "exit": 0,
+    "seconds": 7.54,
+    "summary": [
+      "Integration Presentation: 117 passed / 0 failed"
+    ],
+    "log": "integration-presentation-check.log",
+    "result_source": "initial-results.json",
+    "log_sha256": "aab969bdc026bec877ddee5f4afceab241774c0a5ecd009d70c0e2aaed15310e",
+    "success_summary_verified": true
+  },
+  "integration-safety-check.sh": {
+    "exit": 0,
+    "seconds": 24.52,
+    "summary": [
+      "Integration domain checks: 190 passed, 0 failed. No account or network acceptance performed."
+    ],
+    "log": "integration-safety-check.log",
+    "result_source": "initial-results.json",
+    "log_sha256": "767927a0a73ff72c5a9e9d88f4d0d66169e0daf6b78a63d4624e1bec4ac261aa",
+    "success_summary_verified": true
+  },
+  "live-activity-check.sh": {
+    "exit": 0,
+    "seconds": 2.59,
+    "summary": [
+      "Live Activity checks: 36 passed / 0 failed"
+    ],
+    "log": "live-activity-check.log",
+    "result_source": "initial-results.json",
+    "log_sha256": "5d03aee1ae6fd3bd301dc25cd660cf2af95bc84f263b527f10b8c5e2dcf10f94",
+    "success_summary_verified": true
+  },
+  "notion-client-check.sh": {
+    "exit": 0,
+    "seconds": 13.42,
+    "summary": [
+      "Notion client checks: 100 passed, 0 failed. Synthetic HTTP only; live account acceptance pending."
+    ],
+    "log": "notion-client-check.log",
+    "result_source": "initial-results.json",
+    "log_sha256": "eabf0ba5b0333702575ae5af40d0df2aaa1eda73c096a9cf0219d00739a08f10",
+    "success_summary_verified": true
+  },
+  "notion-core-check.sh": {
+    "exit": 0,
+    "seconds": 106.88,
+    "summary": [
+      "Notion Core checks: 89 passed, 0 failed. Synthetic HTTP; no live account or hardware acceptance."
+    ],
+    "log": "notion-core-check.log",
+    "result_source": "initial-results.json",
+    "log_sha256": "7d5cf5e518ecd178ab2cf480d2b3c3c4cd3d62dd7d5df2ae9ad819f71c3dfb36",
+    "success_summary_verified": true
+  },
+  "notion-gateway-check.sh": {
+    "exit": 0,
+    "seconds": 29.44,
+    "summary": [
+      "Notion Gateway: 78 passed / 0 failed. Synthetic provider only."
+    ],
+    "log": "notion-gateway-check.log",
+    "result_source": "initial-results.json",
+    "log_sha256": "d1fa9707848899438514942049263896f64570f28d06259b6e4c9de90ec01006",
+    "success_summary_verified": true
+  },
+  "p0-blocker-check.sh": {
+    "exit": 0,
+    "seconds": 60.39,
+    "summary": [
+      "P0 regression checks: 71 passed / 0 failed"
+    ],
+    "log": "p0-blocker-check.log",
+    "result_source": "initial-results.json",
+    "log_sha256": "8b73be845deac8a4b7e7325f9863c001a387b5258206aad28ce0903d080a2e03",
+    "success_summary_verified": true
+  },
+  "persistence-check.sh": {
+    "exit": 0,
+    "seconds": 14.64,
+    "summary": [
+      "PASS: raw text \u2192 fallback pipeline \u2192 SuzzmeItem \u2192 in-memory SwiftData \u2192 Home briefing"
+    ],
+    "log": "persistence-check.log",
+    "result_source": "initial-results.json",
+    "log_sha256": "812e69a1183b33d8332196cf0137afbc0918b87a6aee141e11d75432a0af87ec",
+    "success_summary_verified": true
+  },
+  "premium-presence-check.sh": {
+    "exit": 0,
+    "seconds": 15.35,
+    "summary": [
+      "Premium Presence layout checks: 20 passed / 0 failed"
+    ],
+    "log": "premium-presence-check.log",
+    "result_source": "initial-results.json",
+    "log_sha256": "d8d1bf2dc0bf64f214918d2c026cb70a6121cc20fefac56d8bdc43968f5c8f59",
+    "success_summary_verified": true
+  },
+  "product-flow-check.sh": {
+    "exit": 0,
+    "seconds": 50.86,
+    "summary": [
+      "Product flow checks passed: 39",
+      "Product flow checks failed: 0"
+    ],
+    "log": "product-flow-check.log",
+    "result_source": "initial-results.json",
+    "log_sha256": "d9f2ce3f89c11fcb8e6791a6ea3b6075ea307f0d7eb3599f51d8c49011bb7aa3",
+    "success_summary_verified": true
+  },
+  "provider-read-check.sh": {
+    "exit": 0,
+    "seconds": 7.71,
+    "summary": [
+      "Provider adapters: 413 passed / 0 failed. Fixtures only; live acceptance pending."
+    ],
+    "log": "provider-read-check.log",
+    "result_source": "initial-results.json",
+    "log_sha256": "6407e14002ad593f2e9f60454cd8f3f4c0ba2b13112df82f32b7b2257e2df8b8",
+    "success_summary_verified": true
+  },
+  "step10-check.sh": {
+    "exit": 0,
+    "seconds": 25.25,
+    "summary": [
+      "Step 10 behavioral checks passed: 194",
+      "Step 10 behavioral checks failed: 0",
+      "Step 10 production behavioral checks passed: 194",
+      "Step 10 production behavioral checks failed: 0"
+    ],
+    "log": "step10-check-final.log",
+    "result_source": "recheck-results.json",
+    "initial_exit": 1,
+    "initial_log": "step10-check.log",
+    "log_sha256": "61d776d1a1916a805d17edc03555d76650a91b6d2ddc0bd526a7791c227d8c98",
+    "success_summary_verified": true
+  },
+  "step11-check.sh": {
+    "exit": 0,
+    "seconds": 28.9,
+    "summary": [
+      "Step 11 behavioral checks passed: 223",
+      "Step 11 behavioral checks failed: 0",
+      "Step 11 production behavioral checks passed: 223",
+      "Step 11 production behavioral checks failed: 0"
+    ],
+    "log": "step11-check.log",
+    "result_source": "initial-results.json",
+    "log_sha256": "76044d28174f98244fd8a39487e173b849f5ad9872479993c67b1b42d49ae127",
+    "success_summary_verified": true
+  },
+  "step12-check.sh": {
+    "exit": 0,
+    "seconds": 51.35,
+    "summary": [
+      "Step 12 behavioral checks passed: 410",
+      "Step 12 behavioral checks failed: 0"
+    ],
+    "log": "step12-check.log",
+    "result_source": "initial-results.json",
+    "log_sha256": "95b21fcf2ca9f2b4775e1867907363f28cc7aefa5547f51f84dd00d3377fa08a",
+    "success_summary_verified": true
+  },
+  "step12-presence-check.sh": {
+    "exit": 0,
+    "seconds": 107.24,
+    "summary": [
+      "Presence runtime checks passed: 51",
+      "Presence runtime checks failed: 0"
+    ],
+    "log": "step12-presence-check.log",
+    "result_source": "initial-results.json",
+    "log_sha256": "9f1766b62253a21aa11995c64f1138f6f1464c995685301d3ff452a3638d0229",
+    "success_summary_verified": true
+  },
+  "step12-recovery-check.sh": {
+    "exit": 0,
+    "seconds": 31.57,
+    "summary": [
+      "PASS Watched failed refresh reopen 1 preserves backoff and last verified success",
+      "PASS Watched failed refresh reopen 2 preserves backoff and last verified success",
+      "Remediation recovery checks passed: 164",
+      "Remediation recovery checks failed: 0"
+    ],
+    "log": "step12-recovery-check-final.log",
+    "result_source": "recheck-results.json",
+    "initial_exit": 1,
+    "initial_log": "step12-recovery-check.log",
+    "log_sha256": "dc2477a37e630ae5b73cfcff189b3caf3fc78c714b3d9c97c885df39b5e8a029",
+    "success_summary_verified": true
+  },
+  "step15-google-check.sh": {
+    "exit": 0,
+    "seconds": 41.27,
+    "summary": [
+      "Step 15 Google: 77 passed / 0 failed. SDK ownership and HTTP fixtures only; live acceptance pending."
+    ],
+    "log": "step15-google-check.log",
+    "result_source": "initial-results.json",
+    "log_sha256": "cf3edbef76957c904186ed1bdf2357407aa56e392c513f55cb7acf59f300ca91",
+    "success_summary_verified": true
+  },
+  "step15-mcp-check.sh": {
+    "exit": 0,
+    "seconds": null,
+    "summary": [
+      "Step 15 MCP: 66 passed / 0 failed. Controlled HTTP boundary fixtures; live TLS/server acceptance pending."
+    ],
+    "log": "step15-mcp-check-configured-host.log",
+    "result_source": "sdk-configured-results.json",
+    "passed": 66,
+    "failed": 0,
+    "scope": "Actual pinned MCP/AppAuth SDK implementations with controlled transport/authorization boundary fixtures. No provider traffic, token exchange, live account or hardware acceptance.",
+    "initial_exit": 1,
+    "initial_log": "step15-mcp-check.log",
+    "log_sha256": "69216cf6236d2f11983087a104a94099ed7f49b3532e295c9bf023f949223e95",
+    "success_summary_verified": true
+  },
+  "step15-oauth-check.sh": {
+    "exit": 0,
+    "seconds": null,
+    "summary": [
+      "Step 15 OAuth SDK: 19 passed / 0 failed. No Google sign-in, token exchange or live account acceptance."
+    ],
+    "log": "step15-oauth-check-configured.log",
+    "result_source": "sdk-configured-results.json",
+    "passed": 19,
+    "failed": 0,
+    "scope": "Actual pinned MCP/AppAuth SDK implementations with controlled transport/authorization boundary fixtures. No provider traffic, token exchange, live account or hardware acceptance.",
+    "initial_exit": 1,
+    "initial_log": "step15-oauth-check.log",
+    "log_sha256": "f87cda73423316c97d7953c4eb4e1fb4c3935231fb86ff759333c06f2d1f36a6",
+    "success_summary_verified": true
+  },
+  "step16-actual-pipeline-check.sh": {
+    "exit": 0,
+    "seconds": 22.4,
+    "summary": [
+      "Step 16 actual-pipeline regressions: 12 passed / 0 failed. Synthetic sources, shipping engines and SwiftData."
+    ],
+    "log": "step16-actual-pipeline-check.log",
+    "result_source": "initial-results.json",
+    "log_sha256": "12370e0aeedcbc0c0d8a3d9f1ad14a315b8a1cd565c7aa6b0f4b9e17d9a84c52",
+    "success_summary_verified": true
+  },
+  "step17-summary-follow-up-check.sh": {
+    "exit": 0,
+    "seconds": 25.02,
+    "summary": [
+      "Step 17 summary follow-up: 26 passed / 0 failed"
+    ],
+    "log": "step17-summary-follow-up-check.log",
+    "result_source": "initial-results.json",
+    "log_sha256": "967beee89963eebfe67428d11b28a983c0444f83c8136a36f67fc3da250a17b5",
+    "success_summary_verified": true
+  },
+  "step3-check.sh": {
+    "exit": 0,
+    "seconds": null,
+    "summary": [
+      "PASS: on-device Foundation Models extraction and daily summary",
+      "PASS: context normalization, privacy, session expiry, assistant state, routing, and action confirmation"
+    ],
+    "log": "step3-check-quote-fix.log",
+    "result_source": "subagent observed unchanged command exit 0 after grounding repair",
+    "actual_on_device_extraction_and_summary": true,
+    "initial_exit": 133,
+    "initial_log": "step3-check.log",
+    "log_sha256": "55d8023728d7a8727709034da26818a5eaab0610ec30cfa651efe441e64c6a09",
+    "success_summary_verified": true
+  },
+  "step4-check.sh": {
+    "exit": 0,
+    "seconds": 5.62,
+    "summary": [
+      "PASS: Step 4 query windows, grounded calendar/reminder/contact context, timezone-safe dates, and cross-source reasoning"
+    ],
+    "log": "step4-check.log",
+    "result_source": "initial-results.json",
+    "log_sha256": "56d9298a4920a4628c8002d0c676dbd73cb517a5e07eb76d0807f774e5f68417",
+    "success_summary_verified": true
+  },
+  "step5-check.sh": {
+    "exit": 0,
+    "seconds": 1.2,
+    "summary": [
+      "PASS: voice final transcript gating and unified voice state lifecycle"
+    ],
+    "log": "step5-check.log",
+    "result_source": "initial-results.json",
+    "log_sha256": "a4b1ccdf40d650c257df921408c83863225da70318829d7962c9261d34081f9a",
+    "success_summary_verified": true
+  },
+  "step6-check.sh": {
+    "exit": 0,
+    "seconds": 6.32,
+    "summary": [
+      "Behavioral tests passed: 53",
+      "Behavioral tests failed: 0"
+    ],
+    "log": "step6-check.log",
+    "result_source": "initial-results.json",
+    "log_sha256": "987eaffb2d975e4a6980f30dcc285ed11051b4ac8c3ecc7cb143b8c0c1a9941d",
+    "success_summary_verified": true
+  },
+  "step7-check.sh": {
+    "exit": 0,
+    "seconds": 3.61,
+    "summary": [
+      "Behavioral tests passed: 90",
+      "Behavioral tests failed: 0",
+      "Required coverage status: PASS"
+    ],
+    "log": "step7-check-final.log",
+    "result_source": "recheck-results.json",
+    "initial_exit": 1,
+    "initial_log": "step7-check.log",
+    "log_sha256": "70e9f20bafc6a3ff6808a995c51d6e13f2bbf30801c2059edc6becb29fbac8d6",
+    "success_summary_verified": true
+  },
+  "step8-check.sh": {
+    "exit": 0,
+    "seconds": 90.67,
+    "summary": [
+      "Behavioral tests passed: 176",
+      "Behavioral tests failed: 0",
+      "Core integration checks passed: 22",
+      "Core integration checks failed: 0",
+      "Step 8 total checks passed: 198",
+      "Step 8 total checks failed: 0"
+    ],
+    "log": "step8-check.log",
+    "result_source": "initial-results.json",
+    "log_sha256": "c13e117d24910cbc0e613523b99eb6784d879a5553eae451ea9407ac88461bc4",
+    "success_summary_verified": true
+  },
+  "step8-core-check.sh": {
+    "exit": 0,
+    "seconds": 77.34,
+    "summary": [
+      "Core integration checks passed: 22",
+      "Core integration checks failed: 0"
+    ],
+    "log": "step8-core-check.log",
+    "result_source": "initial-results.json",
+    "log_sha256": "277fccf19a876cf0df1f0ee87c7f71b7aec9d58e35f304df95e61cd5cf173bd8",
+    "success_summary_verified": true
+  },
+  "step9-check.sh": {
+    "exit": 0,
+    "seconds": 53.62,
+    "summary": [
+      "Step 9 behavioral checks: 132 passed / 0 failed",
+      "Step 9 behavioral checks: 2 passed / 0 failed",
+      "Step 9 behavioral checks: 4 passed / 0 failed",
+      "Step 9 behavioral checks: 6 passed / 0 failed",
+      "Step 9 behavioral checks: 7 passed / 0 failed",
+      "Step 9 behavioral checks: 5 passed / 0 failed"
+    ],
+    "log": "step9-check.log",
+    "result_source": "initial-results.json",
+    "log_sha256": "1d09dfde1152d7b63ea59c99d91dea434002ad993967e6451463a2929f745712",
+    "success_summary_verified": true
+  },
+  "ui-recovery-check.sh": {
+    "exit": 0,
+    "seconds": 0.18,
+    "summary": [
+      "PASS: Mac preserves non-notch policy",
+      "PASS: no fake Dynamic Island implementation",
+      "PASS: UI Foundation skill exists",
+      "PASS: Screen Patterns skill exists",
+      "PASS: Presence skill exists",
+      "PASS: UI Validation skill exists",
+      "UI recovery checks passed: 46",
+      "UI recovery checks failed: 0"
+    ],
+    "log": "ui-recovery-check-final.log",
+    "result_source": "recheck-results.json",
+    "initial_exit": 1,
+    "initial_log": "ui-recovery-check.log",
+    "log_sha256": "80ade61d4cddd5295bfd72a7a22656a3fe690aaf234e463301f3ad268b34d1f7",
+    "success_summary_verified": true
+  },
+  "voice-lifecycle-acceptance-check.sh": {
+    "exit": 0,
+    "seconds": 19.67,
+    "summary": [
+      "Voice lifecycle acceptance: 31 passed / 0 failed"
+    ],
+    "log": "voice-lifecycle-acceptance-check.log",
+    "result_source": "initial-results.json",
+    "log_sha256": "451b0e809092c24866b74f7702484d0cc82949b2b6156461603a801a028aa2f3",
+    "success_summary_verified": true
+  },
+  "voice-quality-check.sh": {
+    "exit": 0,
+    "seconds": 7.76,
+    "summary": [
+      "Voice quality checks: 23 passed / 0 failed"
+    ],
+    "log": "voice-quality-check.log",
+    "result_source": "initial-results.json",
+    "log_sha256": "933521f0441b6583360c6f493b6a21ad387a2657fae2f287407f5fbd0932459d",
+    "success_summary_verified": true
+  },
+  "watched-transport-check.sh": {
+    "exit": 0,
+    "seconds": 27.76,
+    "summary": [
+      "Watched transport checks: 30 passed, 0 failed. Isolated; arbitrary network intake deliberately disabled."
+    ],
+    "log": "watched-transport-check.log",
+    "result_source": "initial-results.json",
+    "log_sha256": "efdb46b4de297905c2138b5290d85266adc95471b6d1cbf80a893211290e5592",
+    "success_summary_verified": true
+  }
+}

@@ -1,4 +1,5 @@
 import Foundation
+import SwiftData
 
 private struct ProductContextSource: ContextSource {
     let identifier: String
@@ -6,6 +7,14 @@ private struct ProductContextSource: ContextSource {
     func fetchContext(for request: SuzzmeContextRequest) async throws -> [SuzzmeContextItem] {
         try Task.checkCancellation()
         return items
+    }
+}
+
+private struct ProductInformationSource: InformationSource {
+    let id: InformationSourceID = .calendar
+    func authorization() async -> InformationHealthState { .healthy }
+    func fetch(now: Date, checkpoint: Date?) async throws -> InformationBatch {
+        .init(observations: [], complete: false, window: DateInterval(start: now, duration: 86400))
     }
 }
 
@@ -63,13 +72,25 @@ struct ProductFlowChecks {
         expect(daily.text.contains("Operating Systems"), "daily answer includes calendar")
         expect(daily.text.contains("project report"), "daily answer includes reminders")
         expect(daily.contextCount == 2, "daily answer reports grounded context")
-
         let ambiguous = try await core.respond(
             to: "What time is it?", sources: [calendar, reminders],
             query: SuzzmeContextQuery.infer(from: "What time is it?", now: now),
             existingFingerprints: [], progress: { _ in }
         )
         expect(ambiguous.text.contains("Which event or reminder"), "ambiguous follow-up asks for clarification")
+
+        let locatedEvent = SuzzmeContextItem(sourceIdentifier: "event-1", content: "Operating Systems lecture", timestamp: now,
+            intent: .event, importance: .important,
+            metadata: ["source": "calendar", "title": "Operating Systems lecture", "location": "Lab 2",
+                       "start": ISO8601DateFormatter().string(from: eventTime)])
+        let locationFollowUp = try await core.respond(to: "Where is the Operating Systems lecture?",
+            sources: [ProductContextSource(identifier: "calendar", items: [locatedEvent])],
+            query: SuzzmeContextQuery.infer(from: "Where is the Operating Systems lecture?", now: now),
+            existingFingerprints: [], progress: { _ in })
+        expect(locationFollowUp.text.contains("Lab 2"), "fresh source location replaces the same event's summary projection")
+        expect(!locationFollowUp.text.contains("Which event"), "same source object does not become an ambiguous duplicate")
+
+
 
         let tomorrowTime = Calendar.current.date(byAdding: .day, value: 1, to: eventTime)!
         let tomorrowEvent = SuzzmeContextItem(
@@ -184,6 +205,66 @@ struct ProductFlowChecks {
         let reopened = ProactiveIntelligenceEngine(store: ProactiveIntelligenceStore(fileURL: root.appendingPathComponent("proactive.json")))
         let restored = try await reopened.preferences()
         expect(restored.briefingHour == 17 && restored.briefingMinute == 35, "daily summary time survives restart")
+
+        let futureDay = Calendar.current.date(byAdding: .day, value: 7, to: Calendar.current.startOfDay(for: now)) ?? now
+        let allDay = SuzzmeContextItem(
+            sourceIdentifier: "all-day-acceptance", content: "Acceptance all-day event", timestamp: now,
+            intent: .event, importance: .normal,
+            metadata: ["source": "calendar", "title": "Acceptance all-day event", "allDay": "true",
+                       "start": ISO8601DateFormatter().string(from: futureDay),
+                       "end": ISO8601DateFormatter().string(from: futureDay.addingTimeInterval(86_400))],
+            expiration: futureDay.addingTimeInterval(86_400)
+        )
+        let allDaySnapshot = try await core.prepareProactiveBriefing(from: [ProductContextSource(identifier: "calendar", items: [allDay])])
+        expect(allDaySnapshot.briefing?.items.first?.isAllDay == true, "live Calendar all-day flag survives summary conversion")
+        expect(allDaySnapshot.dailyContext?.activeEntries.first?.isAllDay == true, "Today context preserves all-day semantics")
+        let dateFormatter = DateFormatter(); dateFormatter.dateStyle = .medium; dateFormatter.timeStyle = .none
+        expect(allDaySnapshot.briefing?.narration.contains(dateFormatter.string(from: futureDay)) == true,
+               "future summary narration includes the actual date")
+        expect(allDaySnapshot.briefing?.narration.contains("all-day event") == true,
+               "all-day narration does not claim a midnight appointment")
+        expect(allDaySnapshot.briefing?.sections.contains(where: { $0.kind == .today }) == false,
+               "future Calendar event is not placed in Today section")
+        if let item = allDaySnapshot.briefing?.items.first {
+            var legacy = try JSONSerialization.jsonObject(with: JSONEncoder().encode(item)) as? [String: Any] ?? [:]
+            legacy.removeValue(forKey: "isAllDay")
+            let decoded = try JSONDecoder().decode(ProactiveBriefingItem.self, from: JSONSerialization.data(withJSONObject: legacy))
+            expect(decoded.isAllDay == nil, "pre-existing summary JSON still decodes without all-day field")
+        } else { expect(false, "pre-existing summary JSON still decodes without all-day field") }
+
+        let observed = InformationObservation(externalID: "all-day-information", title: "All-day information event", modifiedAt: now,
+                                              effectiveAt: futureDay, effectiveUntil: futureDay.addingTimeInterval(86_400), isAllDay: true)
+        if let normalized = InformationNormalizer.normalize(observed, source: .calendar, now: now) {
+            expect(StoredInformationEvent(normalized).value?.isAllDay == true, "information persistence conversion retains authoritative all-day flag")
+            var timed = observed; timed.isAllDay = false
+            let timedValue = InformationNormalizer.normalize(timed, source: .calendar, now: now)
+            expect(timedValue?.fingerprint != normalized.fingerprint, "all-day change invalidates semantic fingerprint")
+            expect(timedValue?.isAllDay == false, "midnight timed event is not inferred to be all-day")
+            let database = root.appendingPathComponent("all-day.sqlite")
+            let configuration = ModelConfiguration("AllDayAcceptance", url: database, cloudKitDatabase: .none)
+            do {
+                let container = try ModelContainer(for: StoredInformationEvent.self, StoredInformationSource.self, configurations: configuration)
+                let context = ModelContext(container)
+                context.insert(StoredInformationEvent(normalized)); try context.save()
+            }
+            let reopenedDatabase = try ModelContainer(for: StoredInformationEvent.self, StoredInformationSource.self, configurations: configuration)
+            let reopenedRows = try ModelContext(reopenedDatabase).fetch(FetchDescriptor<StoredInformationEvent>())
+            expect(reopenedRows.first?.value?.isAllDay == true, "all-day flag survives disk store reopen")
+            let intakeStore = InformationStore(modelContainer: reopenedDatabase)
+            try await intakeStore.setEnabled(.calendar, enabled: true)
+            let cycle = try await intakeStore.begin(.calendar, now: now)
+            try await intakeStore.commit(.init(observations: [observed], complete: false,
+                                               window: DateInterval(start: now, duration: 14 * 86400)), cycle: cycle, now: now)
+            let information = InformationEngine(registry: .init([ProductInformationSource()]), store: intakeStore)
+            let informationProactive = ProactiveIntelligenceEngine(
+                store: ProactiveIntelligenceStore(fileURL: root.appendingPathComponent("information-proactive.json")), information: information)
+            let informationSummary = try await informationProactive.prepare(from: [], now: now)
+            expect(informationSummary.briefing?.items.first?.isAllDay == true, "persisted information reaches summary with all-day semantics")
+            expect(informationSummary.briefing?.narration.contains("all-day event") == true,
+                   "information-backed summary does not narrate midnight")
+
+
+        } else { expect(false, "all-day information normalization succeeds") }
 
         print("Product flow checks passed: \(passed)")
         print("Product flow checks failed: \(failed)")

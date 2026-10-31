@@ -1,0 +1,773 @@
+--- before/App/LaunchExperience.swift
++++ after/App/LaunchExperience.swift
+@@ -38,8 +38,8 @@
+                     SuzzmeFace(color: .primary, lineWidth: 5)
+                         .frame(width: 112, height: 112)
+                     VStack(spacing: SuzzmeTheme.Spacing.small) {
+-                        Text("Meet Suzzme").font(.largeTitle.weight(.bold))
+-                        Text("A quiet intelligence layer for the things that matter in your day.")
++                        Text("Meet Suzzme").font(.largeTitle.weight(.semibold))
++                        Text("Your private personal companion, designed to help across your Apple devices.")
+                             .font(.title3)
+                             .foregroundStyle(SuzzmeTheme.textSecondary)
+                             .multilineTextAlignment(.center)
+@@ -48,6 +48,8 @@
+                     Button("Get Started", action: onGuestContinue)
+                         .buttonStyle(.borderedProminent)
+                         .controlSize(.large)
++                        .tint(SuzzmeTheme.intelligencePrimary)
++                        .suzzmeProminentContrast()
+                         .frame(maxWidth: 360)
+                         .accessibilityHint("Continues with local, on-device setup")
+                     Label("No account needed. Your information stays on this device.", systemImage: "lock.shield")
+@@ -116,7 +118,7 @@
+                     .font(.caption.weight(.semibold))
+                     .foregroundStyle(SuzzmeTheme.intelligencePrimary)
+                 Text(page.title)
+-                    .font(.largeTitle.weight(.bold))
++                    .font(.largeTitle.weight(.semibold))
+                     .multilineTextAlignment(.center)
+                     .accessibilityAddTraits(.isHeader)
+                 Text(page.message)
+@@ -205,6 +207,7 @@
+             VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.xxs) {
+                 Text(source.title).font(.headline)
+                 Text(source.permissionPurpose).font(.caption).foregroundStyle(SuzzmeTheme.textSecondary)
++                    .fixedSize(horizontal: false, vertical: true)
+             }
+             Spacer()
+             if state == .notDetermined || state == .writeOnly {
+--- before/DesignSystem/Components/SuzzmeAssistantPresenceView.swift
++++ after/DesignSystem/Components/SuzzmeAssistantPresenceView.swift
+@@ -198,7 +198,7 @@
+ 
+     private var signalColor: Color {
+         switch presentation.emphasis {
+-        case .error: .red
++        case .error: SuzzmeTheme.warning
+         case .success: .green
+         case .ambient, .active, .confirmation: theme.colors(for: colorScheme).highlight
+         }
+@@ -279,7 +279,7 @@
+                 .foregroundStyle(systemSurface ? Color.white : SuzzmeTheme.textPrimary)
+             if let detail = parts.detail, !detail.isEmpty {
+                 Text(detail).font(.body)
+-                    .foregroundStyle(systemSurface ? Color.white.opacity(0.82) : SuzzmeTheme.textSecondary)
++                    .foregroundStyle(systemSurface ? Color.white.opacity(0.88) : SuzzmeTheme.textPrimary)
+             }
+         }
+         .frame(maxWidth: .infinity, alignment: .leading)
+--- before/DesignSystem/Components/SuzzmeComponents.swift
++++ after/DesignSystem/Components/SuzzmeComponents.swift
+@@ -7,7 +7,8 @@
+     @ViewBuilder var content: Content
+ 
+     private var outline: Color {
+-        highlighted
++        if contrast == .increased { return SuzzmeTheme.textSecondary }
++        return highlighted
+             ? SuzzmeTheme.intelligencePrimary.opacity(0.18)
+             : SuzzmeTheme.separator.opacity(contrast == .increased ? 1 : colorScheme == .dark ? 0.55 : 0.42)
+     }
+@@ -39,6 +40,24 @@
+     }
+ }
+ 
++struct SuzzmeScreenIntroduction: View {
++    let title: String
++    let message: String
++
++    var body: some View {
++        VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.small) {
++            Text(title)
++                .font(.title2.weight(.semibold))
++                .accessibilityAddTraits(.isHeader)
++            Text(message)
++                .font(.subheadline)
++                .foregroundStyle(SuzzmeTheme.textSecondary)
++                .fixedSize(horizontal: false, vertical: true)
++        }
++        .accessibilityElement(children: .contain)
++    }
++}
++
+ struct SuzzmeEyebrow: View {
+     let title: LocalizedStringResource
+     let symbol: String
+@@ -58,12 +77,12 @@
+     var body: some View {
+         Label(priority.rawValue.capitalized, systemImage: priority == .urgent ? "exclamationmark.circle" : "circle.fill")
+             .font(.caption.weight(.semibold))
+-            .foregroundStyle(SuzzmeTheme.accent)
+-            .padding(.horizontal, 10)
+-            .padding(.vertical, 6)
++            .foregroundStyle(priority == .urgent ? SuzzmeTheme.warning : SuzzmeTheme.textSecondary)
++            .padding(.horizontal, SuzzmeTheme.Spacing.small)
++            .padding(.vertical, SuzzmeTheme.Spacing.xs)
+             .background(SuzzmeTheme.background, in: Capsule())
+             .overlay {
+-                Capsule().strokeBorder(SuzzmeTheme.accent.opacity(0.18), lineWidth: SuzzmeTheme.hairline)
++                Capsule().strokeBorder(SuzzmeTheme.separator, lineWidth: SuzzmeTheme.hairline)
+             }
+     }
+ }
+@@ -86,7 +105,8 @@
+ 
+     var body: some View {
+         Image(systemName: symbol)
+-            .foregroundStyle(SuzzmeTheme.accent)
++            .symbolRenderingMode(.hierarchical)
++            .foregroundStyle(SuzzmeTheme.textSecondary)
+             .accessibilityLabel(source.rawValue.capitalized)
+     }
+ }
+@@ -179,18 +199,18 @@
+     let count: Int
+ 
+     var body: some View {
+-        VStack(alignment: .leading, spacing: 12) {
+-            SuzzmeEyebrow(title: "YOUR DAY", symbol: "sparkles")
++        VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.small) {
++            SuzzmeEyebrow(title: "Your day", symbol: "sun.max")
+             Text(greeting)
+-                .font(.largeTitle.weight(.bold))
++                .font(.largeTitle.weight(.semibold))
+                 .accessibilityAddTraits(.isHeader)
+             Text("Here’s what matters today.")
+                 .font(.title3)
+                 .foregroundStyle(.secondary)
+             Text("\(count) things to give a little attention.")
+                 .font(.subheadline.weight(.medium))
+-                .foregroundStyle(SuzzmeTheme.accent)
+-                .padding(.top, 4)
++                .foregroundStyle(SuzzmeTheme.textSecondary)
++                .padding(.top, SuzzmeTheme.Spacing.xxs)
+         }
+     }
+ }
+--- before/DesignSystem/Components/SuzzmeItemRow.swift
++++ after/DesignSystem/Components/SuzzmeItemRow.swift
+@@ -5,22 +5,27 @@
+     var showTime = false
+     @Environment(\.dynamicTypeSize) private var typeSize
+     var body: some View {
+-        let layout = typeSize.isAccessibilitySize ? AnyLayout(VStackLayout(alignment: .leading, spacing: 8)) : AnyLayout(HStackLayout(alignment: .top, spacing: 16))
++        let layout = typeSize.isAccessibilitySize ? AnyLayout(VStackLayout(alignment: .leading, spacing: SuzzmeTheme.Spacing.xs)) : AnyLayout(HStackLayout(alignment: .top, spacing: SuzzmeTheme.Spacing.medium))
+         layout {
+             if showTime, let date = item.dueDate {
+                 Text(date, style: .time).font(.subheadline.monospacedDigit())
+-                    .foregroundStyle(SuzzmeTheme.accent)
++                    .foregroundStyle(SuzzmeTheme.textSecondary)
+                     .frame(minWidth: 80, alignment: .leading)
+             } else {
+                 SuzzmeSourceIcon(source: item.source).accessibilityHidden(true)
+             }
+-            VStack(alignment: .leading, spacing: 5) {
++            VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.xxs) {
+                 Text(item.title).font(.headline)
+-                Text(item.summary).font(.subheadline).foregroundStyle(.secondary)
++                    .fixedSize(horizontal: false, vertical: true)
++                if !item.summary.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
++                   item.summary.localizedCaseInsensitiveCompare(item.title) != .orderedSame {
++                    Text(item.summary).font(.subheadline).foregroundStyle(SuzzmeTheme.textSecondary)
++                        .fixedSize(horizontal: false, vertical: true)
++                }
+             }
+             Spacer(minLength: 0)
+         }
+-        .padding(.vertical, 8)
++        .padding(.vertical, SuzzmeTheme.Spacing.xs)
+         .accessibilityElement(children: .combine)
+     }
+ }
+--- before/DesignSystem/Layout/SuzzmePage.swift
++++ after/DesignSystem/Layout/SuzzmePage.swift
+@@ -1,4 +1,25 @@
+ import SwiftUI
++
++/// One readable rhythm for native lists and forms, including secondary screens.
++private struct SuzzmeNativeCollection: ViewModifier {
++    func body(content: Content) -> some View {
++        #if os(macOS)
++        content
++            .environment(\.defaultMinListRowHeight, SuzzmeTheme.Layout.touchTarget)
++            .scrollContentBackground(.hidden)
++            .tint(SuzzmeTheme.textPrimary)
++            .frame(maxWidth: SuzzmeTheme.Layout.readingWidth)
++            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
++            .background(SuzzmeTheme.pageBackground)
++        #else
++        content
++            .environment(\.defaultMinListRowHeight, SuzzmeTheme.Layout.rowMinimum)
++            .scrollContentBackground(.hidden)
++            .tint(SuzzmeTheme.textPrimary)
++            .background(SuzzmeTheme.pageBackground)
++        #endif
++    }
++}
+ 
+ struct SuzzmePage<Content: View>: View {
+     var contentWidth = SuzzmeTheme.Layout.readingWidth
+@@ -16,18 +37,18 @@
+             .frame(maxWidth: .infinity)
+         }
+         .scrollContentBackground(.hidden)
++        .scrollBounceBehavior(.basedOnSize)
+         .background(SuzzmeTheme.pageBackground.ignoresSafeArea())
+     }
+ }
+ 
+ extension View {
++    func suzzmeSettingsForm() -> some View {
++        formStyle(.grouped).modifier(SuzzmeNativeCollection())
++    }
++
+     /// Keep native list behavior while giving desktop content a readable measure.
+     @ViewBuilder func suzzmeReadableList() -> some View {
+-        #if os(macOS)
+-        self.frame(maxWidth: SuzzmeTheme.Layout.readingWidth).frame(maxWidth: .infinity)
+-            .background(SuzzmeTheme.pageBackground)
+-        #else
+-        self
+-        #endif
++        modifier(SuzzmeNativeCollection())
+     }
+ }
+--- before/DesignSystem/Theme/SuzzmeTheme.swift
++++ after/DesignSystem/Theme/SuzzmeTheme.swift
+@@ -74,6 +74,9 @@
+         static let secondaryColumnMinimum: CGFloat = 280
+         static let pageInset: CGFloat = 24
+         static let compactInset: CGFloat = 20
++        static let touchTarget: CGFloat = 44
++        static let rowMinimum: CGFloat = 52
++        static let symbolColumn: CGFloat = 28
+         static let sidebarMin: CGFloat = 200
+         static let sidebarIdeal: CGFloat = 232
+         static let sidebarMax: CGFloat = 280
+--- before/Features/Briefing/BriefingView.swift
++++ after/Features/Briefing/BriefingView.swift
+@@ -94,7 +94,7 @@
+                     .font(.subheadline)
+                     .foregroundStyle(SuzzmeTheme.textSecondary)
+                 Text(briefing.narration)
+-                    .font(.title3)
++                    .font(.body)
+                     .lineSpacing(SuzzmeTheme.Spacing.xxs)
+                     .fixedSize(horizontal: false, vertical: true)
+                     .textSelection(.enabled)
+--- before/Features/History/HistoryView.swift
++++ after/Features/History/HistoryView.swift
+@@ -2,30 +2,39 @@
+ 
+ struct HistoryView: View {
+     @Environment(AppEnvironment.self) private var environment
++    @State private var searchText = ""
++
++    private var savedItems: [SuzzmeItem] {
++        let query = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
++        return environment.activityItems.filter {
++            query.isEmpty || $0.title.localizedStandardContains(query) || $0.summary.localizedStandardContains(query)
++        }
++    }
++
+     var body: some View {
+         SuzzmePage {
+-            SuzzmeEmptyState(symbol: "clock.arrow.circlepath", title: "A quiet record of what Suzzme noticed.",
+-                             message: "Structured information you chose to save stays on this device.")
+-            if !environment.activityItems.isEmpty {
+-                SuzzmeSectionHeader(title: "Saved to Suzzme")
+-                ForEach(environment.activityItems) { item in
+-                    SuzzmeCard {
+-                        Label(item.source.rawValue.capitalized, systemImage: "tray.and.arrow.down")
+-                            .font(.caption).foregroundStyle(SuzzmeTheme.accent)
+-                        SuzzmeItemRow(item: item)
+-                    }
+-                }
+-            } else if let items = environment.briefing?.completedItems {
+-                SuzzmeSectionHeader(title: "A sample small win")
+-                ForEach(items) { item in
+-                    SuzzmeCard {
+-                        Label("Completed · Demo", systemImage: "checkmark.circle").font(.caption).foregroundStyle(SuzzmeTheme.accent)
+-                        SuzzmeItemRow(item: item)
++            SuzzmeScreenIntroduction(title: "Saved with Suzzme", message: "Structured information you chose to keep, stored on this device.")
++            if environment.activityItems.isEmpty {
++                SuzzmeEmptyState(symbol: "clock.arrow.circlepath", title: "Nothing saved yet", message: "Ask Suzzme to understand something, then choose what to keep.")
++            } else if savedItems.isEmpty {
++                SuzzmeEmptyState(symbol: "magnifyingglass", title: "No matching items", message: "Try another phrase or clear your search.")
++                Button("Clear Search") { searchText = "" }.buttonStyle(.bordered)
++            } else {
++                VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.medium) {
++                    ForEach(savedItems) { item in
++                        NavigationLink { ItemDetailView(item: item) } label: {
++                            SuzzmeItemRow(item: item)
++                                .frame(maxWidth: .infinity, alignment: .leading)
++                                .contentShape(Rectangle())
++                        }
++                        .buttonStyle(.plain)
++                        .accessibilityHint("View the saved item and its source")
++                        if item.id != savedItems.last?.id { Divider() }
+                     }
+                 }
+             }
+-            Text(environment.activityItems.isEmpty ? "Saved items will appear here after Suzzme understands something you choose to keep." : "Items are stored locally on this device.")
+-                .foregroundStyle(.secondary)
+         }
++        .navigationTitle("Saved Activity")
++        .searchable(text: $searchText, prompt: "Search saved items")
+     }
+ }
+--- before/Features/Home/AskSuzzmeView.swift
++++ after/Features/Home/AskSuzzmeView.swift
+@@ -46,6 +46,9 @@
+                             .fixedSize(horizontal: false, vertical: true)
+                             .textSelection(.enabled)
+                     }
++                    .padding(SuzzmeTheme.Spacing.medium)
++                    .background(SuzzmeTheme.backgroundSecondary, in: RoundedRectangle(cornerRadius: SuzzmeTheme.Radius.card, style: .continuous))
++                    .frame(maxWidth: .infinity, alignment: .trailing)
+                 }
+                 if isListeningPresentation || !environment.voice.partialTranscript.isEmpty && isProcessing {
+                     VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.small) {
+@@ -69,6 +72,14 @@
+                             .accessibilityAddTraits(.isHeader)
+                         SuzzmeAnswerCard(text: response.text)
+                             .lineSpacing(SuzzmeTheme.Spacing.xxs)
++                        ShareLink(item: response.text) {
++                            Label("Share Answer", systemImage: "square.and.arrow.up")
++                                .frame(minHeight: SuzzmeTheme.Layout.touchTarget)
++                        }
++                        .font(.subheadline)
++                        .buttonStyle(.plain)
++                        .foregroundStyle(SuzzmeTheme.textSecondary)
++                        .accessibilityHint("Opens the system share sheet for this answer")
+                         if response.contextCount > 0 {
+                             Label("Based on your local context", systemImage: "checkmark.shield")
+                                 .font(.caption).foregroundStyle(SuzzmeTheme.textSecondary)
+@@ -265,7 +276,7 @@
+             else { Task { await environment.startVoiceSession() } }
+         } label: {
+             Label(voiceButtonTitle, systemImage: isListeningPresentation ? "checkmark" : "mic")
+-                .frame(minHeight: 28)
++                .frame(minHeight: SuzzmeTheme.Layout.touchTarget)
+         }
+         .buttonStyle(.bordered)
+         .accessibilityLabel(isListeningPresentation ? "Finish speaking and send" : environment.presenceState == .speaking ? "Interrupt the answer and start listening" : "Start voice conversation")
+--- before/Features/Home/HomeView.swift
++++ after/Features/Home/HomeView.swift
+@@ -109,7 +109,7 @@
+         VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.large) {
+             if let today {
+                 if hasDayContent, let limitation { sourceLimitation(limitation) }
+-                if activeEntries.isEmpty && changes.isEmpty { SuzzmeCard { dayEmptyState } }
++                if activeEntries.isEmpty && changes.isEmpty { dayEmptyState }
+                 if let nextEntry {
+                     VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.medium) {
+                         SuzzmeSectionHeader(title: "Up next")
+@@ -133,7 +133,7 @@
+                 Label("Checking your day…", systemImage: "clock")
+                     .font(.subheadline).foregroundStyle(SuzzmeTheme.textSecondary)
+             } else {
+-                SuzzmeCard { dayEmptyState }
++                dayEmptyState
+             }
+         }
+         .frame(maxWidth: .infinity, alignment: .leading)
+@@ -175,8 +175,8 @@
+                 }
+                 Spacer(minLength: 0)
+             }
+-            Text("Here’s what matters today.")
+-                .font(.title3).foregroundStyle(SuzzmeTheme.textSecondary)
++            Text("A little space for your day.")
++                .font(.body).foregroundStyle(SuzzmeTheme.textSecondary)
+             SuzzmeActionControls {
+                 Button {
+                     question = ""
+--- before/Features/Home/ItemDetailView.swift
++++ after/Features/Home/ItemDetailView.swift
+@@ -5,8 +5,12 @@
+     var body: some View {
+         SuzzmePage {
+             SuzzmePriorityBadge(priority: item.priority)
+-            Text(item.title).font(.largeTitle.weight(.semibold))
+-            Text(item.summary).font(.title3).foregroundStyle(.secondary)
++            Text(item.title).font(.title.weight(.semibold))
++                .fixedSize(horizontal: false, vertical: true)
++                .accessibilityAddTraits(.isHeader)
++            Text(item.summary).font(.body).foregroundStyle(SuzzmeTheme.textSecondary)
++                .fixedSize(horizontal: false, vertical: true)
++                .textSelection(.enabled)
+             SuzzmeCard {
+                 Label { Text(item.source.rawValue.capitalized) } icon: { SuzzmeSourceIcon(source: item.source) }
+                 LabeledContent("Type", value: item.category.rawValue.capitalized)
+--- before/Features/Invocation/InvocationSettingsView.swift
++++ after/Features/Invocation/InvocationSettingsView.swift
+@@ -5,13 +5,7 @@
+ 
+     var body: some View {
+         SuzzmePage {
+-            SuzzmeCard {
+-                Label("Call Suzzme", systemImage: "mic.fill")
+-                    .font(.headline)
+-                Text("Suzzme starts listening only when you invoke it. Your conversation stays on this device.")
+-                    .font(.subheadline)
+-                    .foregroundStyle(.secondary)
+-            }
++            SuzzmeScreenIntroduction(title: "Ready when you are", message: "Suzzme starts listening only when you invoke it. Your conversation stays on this device.")
+ 
+             #if os(iOS)
+             SuzzmeSectionHeader(title: "iPhone")
+--- before/Features/Invocation/PresenceMotionLabView.swift
++++ after/Features/Invocation/PresenceMotionLabView.swift
+@@ -16,10 +16,8 @@
+     @State private var previewInteraction = "Tap the compact Presence to verify interaction."
+ 
+     var body: some View {
+-        ScrollView {
+-            VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.large) {
+-                Text("Presence Motion Lab").font(.largeTitle.bold())
+-                Text("Development-only inspection of the shared assistant state. Values here are never saved.").foregroundStyle(SuzzmeTheme.textSecondary)
++        SuzzmePage {
++                SuzzmeScreenIntroduction(title: "Presence Motion Lab", message: "Development-only inspection of the shared assistant state. Values here are never saved.")
+                 preview
+                 SuzzmeCard {
+                     Picker("Assistant state", selection: $state) { ForEach(SuzzmeAssistantState.allCases, id: \.self) { Text(label($0)).tag($0) } }
+@@ -40,8 +38,6 @@
+                         Button(transition.title) { run(transition) }.buttonStyle(.bordered)
+                     }
+                 }
+-            }
+-            .padding(SuzzmeTheme.Spacing.large).frame(maxWidth: 760).frame(maxWidth: .infinity)
+         }
+         .navigationTitle("Motion Lab")
+         .onDisappear { transitionTask?.cancel() }
+--- before/Features/Invocation/PresenceSettingsView.swift
++++ after/Features/Invocation/PresenceSettingsView.swift
+@@ -38,6 +38,7 @@
+                     .foregroundStyle(.secondary)
+             }
+         }
++        .suzzmeSettingsForm()
+         .navigationTitle("Suzzme Presence")
+     }
+ }
+@@ -64,13 +65,14 @@
+                     .opacity(0.85)
+                     .scaleEffect(x: animated ? 1.1 : 0.92)
+             }
+-            VStack(spacing: 8) {
++            VStack(spacing: SuzzmeTheme.Spacing.xs) {
+                 SuzzmeFace(state: .listening, color: colors.face, lineWidth: 4, animation: animation)
+                     .frame(width: 52, height: 52)
+                 Text("Listening…").font(.subheadline.weight(.medium)).foregroundStyle(SuzzmeTheme.textPrimary)
+             }
+         }
+-        .frame(height: 150)
++        .frame(minHeight: 150)
++        .padding(.vertical, SuzzmeTheme.Spacing.medium)
+         .overlay(RoundedRectangle(cornerRadius: SuzzmeTheme.Radius.largeSurface, style: .continuous).stroke(colors.primary.opacity(0.5), lineWidth: 1))
+         .task(id: "\(theme.rawValue)-\(animation.rawValue)-\(reduceMotion)-\(reduceTransparency)-\(scenePhase == .active)") {
+             animated = false
+--- before/Features/Memory/MemoryView.swift
++++ after/Features/Memory/MemoryView.swift
+@@ -28,13 +28,7 @@
+         List {
+             Section {
+                 VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.small) {
+-                    Text("The details that stay with you")
+-                        .font(.title2.weight(.semibold))
+-                        .accessibilityAddTraits(.isHeader)
+-                    Text("Useful details you choose to share, kept on this device.")
+-                        .font(.subheadline)
+-                        .foregroundStyle(SuzzmeTheme.textSecondary)
+-                        .fixedSize(horizontal: false, vertical: true)
++                    SuzzmeScreenIntroduction(title: "The details that stay with you", message: "Useful details you choose to share, kept on this device.")
+                     if !isLoading && !memories.isEmpty {
+                         Text("\(memories.count) saved \(memories.count == 1 ? "detail" : "details")")
+                             .font(.caption)
+--- before/Features/Settings/ProactiveIntelligenceSettingsView.swift
++++ after/Features/Settings/ProactiveIntelligenceSettingsView.swift
+@@ -29,12 +29,12 @@
+             }
+ 
+             Section("Helpful Moments") {
+-                Toggle("Time-Critical Intelligence", isOn: $timeCriticalEnabled)
++                Toggle("Time-Sensitive Help", isOn: $timeCriticalEnabled)
+                 Text("Allows rare, privacy-preserving alerts when waiting would make useful information less useful.")
+                     .font(.caption)
+                     .foregroundStyle(SuzzmeTheme.textSecondary)
+ 
+-                Toggle("Prepared Assistance", isOn: $preparedAssistanceEnabled)
++                Toggle("Prepare Suggestions", isOn: $preparedAssistanceEnabled)
+                 Text("Suzzme may prepare a suggestion for you to review. It never authorizes or performs an action.")
+                     .font(.caption)
+                     .foregroundStyle(SuzzmeTheme.textSecondary)
+@@ -57,7 +57,8 @@
+                 }
+             }
+         }
+-        .navigationTitle("Proactive Intelligence")
++        .suzzmeReadableList()
++        .navigationTitle("Daily Summary & Suggestions")
+         .confirmationDialog("Reset proactive data and preferences?", isPresented: $confirmsReset, titleVisibility: .visible) {
+             Button("Reset Proactive Data", role: .destructive) { Task { await environment.resetProactiveData(); load() } }
+             Button("Cancel", role: .cancel) { }
+--- before/Features/Settings/SettingsDetailViews.swift
++++ after/Features/Settings/SettingsDetailViews.swift
+@@ -23,6 +23,7 @@
+                 Text("This build does not create an account or sync personal information.")
+             }
+         }
++        .suzzmeSettingsForm()
+         .navigationTitle("Profile")
+         .onAppear { draftName = profileName }
+     }
+@@ -55,6 +56,7 @@
+                     .fixedSize(horizontal: false, vertical: true)
+             } header: { Text("Your controls") }
+         }
++        .suzzmeReadableList()
+         .navigationTitle("Privacy")
+     }
+ }
+@@ -85,6 +87,7 @@
+                 Label("Actions require your approval", systemImage: "checkmark.shield")
+             }
+         }
++        .suzzmeReadableList()
+         .navigationTitle("About Suzzme")
+     }
+ }
+--- before/Features/Settings/SettingsView.swift
++++ after/Features/Settings/SettingsView.swift
+@@ -74,7 +74,7 @@
+             }
+             #endif
+         }
+-        .formStyle(.grouped).navigationTitle("Settings")
++        .suzzmeSettingsForm().navigationTitle("Settings")
+         .task { await environment.loadProactiveState() }
+     }
+ }
+@@ -117,6 +117,7 @@
+                 Text("Rare alerts for useful information that should not wait. Suzzme never performs an action from a notification.")
+             }
+         }
++        .suzzmeReadableList()
+         .navigationTitle("Notifications")
+         .task { await environment.loadProactiveState() }
+     }
+@@ -139,6 +140,7 @@
+             } header: { Text("Reading and presence") } footer: {
+                 Text("Text follows your preferred size. Suzzme’s state is described in words as well as motion and color.")
+             }
+-        }.navigationTitle("Accessibility")
++        }.suzzmeReadableList()
++        .navigationTitle("Accessibility")
+     }
+ }
+--- before/Features/Settings/SuzzmeBrainLabView.swift
++++ after/Features/Settings/SuzzmeBrainLabView.swift
+@@ -21,8 +21,7 @@
+ 
+     var body: some View {
+         SuzzmePage {
+-            SuzzmeEmptyState(
+-                symbol: "brain",
++            SuzzmeScreenIntroduction(
+                 title: "Suzzme Brain Lab",
+                 message: "Paste something Suzzme should understand. This debug tool keeps input in memory and saves only the structured items you choose."
+             )
+@@ -37,7 +36,7 @@
+             TextEditor(text: $text)
+                 .font(.body)
+                 .frame(minHeight: 160)
+-                .padding(12)
++                .padding(SuzzmeTheme.Spacing.small)
+                 .background(SuzzmeTheme.surface, in: RoundedRectangle(cornerRadius: SuzzmeTheme.cornerRadius))
+                 .accessibilityLabel("Text for Suzzme to understand")
+ 
+--- before/Features/Settings/VoiceSettingsView.swift
++++ after/Features/Settings/VoiceSettingsView.swift
+@@ -52,7 +52,7 @@
+                 Text("Suzzme requests access when you start a conversation. Speech is processed on this device.")
+             }
+         }
+-        .formStyle(.grouped)
++        .suzzmeSettingsForm()
+         .navigationTitle("Voice")
+         .onDisappear { voice.stopPreview() }
+     }
+@@ -124,7 +124,7 @@
+                 Text(downloadGuidance).font(.footnote).foregroundStyle(SuzzmeTheme.textSecondary)
+             } header: { Text("More voice options") }
+         }
+-        .formStyle(.grouped)
++        .suzzmeSettingsForm()
+         .navigationTitle("Suzzme Voice")
+         .onDisappear { voice.stopPreview() }
+     }
+--- before/Features/Sources/GmailConnectionView.swift
++++ after/Features/Sources/GmailConnectionView.swift
+@@ -22,6 +22,7 @@
+                     Text("Gmail").font(.headline)
+                     Text("Read-only access to up to 30 recent inbox message headers. Suzzme reads sender, subject, and date only; it never downloads message bodies or attachments, or changes mail.")
+                         .font(.subheadline).foregroundStyle(SuzzmeTheme.textSecondary)
++                        .fixedSize(horizontal: false, vertical: true)
+                 }
+             }
+ 
+@@ -51,6 +52,11 @@
+                 }
+             }
+ 
++            Label("Connected service · Uses Google’s network", systemImage: "network")
++                .font(.caption)
++                .foregroundStyle(SuzzmeTheme.textSecondary)
++                .fixedSize(horizontal: false, vertical: true)
++
+             if let message = account.errorMessage {
+                 Text(message).font(.caption).foregroundStyle(SuzzmeTheme.warning)
+             }
+--- before/Features/Sources/InformationInspectionView.swift
++++ after/Features/Sources/InformationInspectionView.swift
+@@ -46,7 +46,7 @@
+ 
+     var body: some View {
+         SuzzmePage {
+-            SuzzmeEmptyState(symbol: "clock.arrow.circlepath", title: "Recent information", message: "A calm, local history of recent observations from sources you enabled.")
++            SuzzmeScreenIntroduction(title: "Recent information", message: "Updates from the sources you enabled, kept on this device.")
+ 
+             Button { Task { await environment.refreshInformation(force: true) } } label: {
+                 Label(environment.isRefreshingInformation ? "Refreshing…" : "Refresh Updates", systemImage: "arrow.clockwise")
+@@ -66,7 +66,7 @@
+             ForEach(environment.informationEvents) { event in
+                 VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.xs) {
+                     Label(event.source.title, systemImage: symbol(for: event.source))
+-                        .font(.caption.weight(.semibold)).foregroundStyle(SuzzmeTheme.intelligencePrimary)
++                        .font(.caption.weight(.semibold)).foregroundStyle(SuzzmeTheme.textSecondary)
+                     Text(event.summary).font(.headline)
+                     Text("Observed \(event.observedAt.formatted(date: .abbreviated, time: .shortened))")
+                         .font(.caption).foregroundStyle(SuzzmeTheme.textSecondary)
+--- before/Features/Sources/SelectedMessageImportView.swift
++++ after/Features/Sources/SelectedMessageImportView.swift
+@@ -20,10 +20,10 @@
+ 
+                 TextEditor(text: $selectedText)
+                     .frame(minHeight: 110)
+-                    .padding(6)
++                    .padding(SuzzmeTheme.Spacing.xs)
+                     .overlay {
+-                        RoundedRectangle(cornerRadius: 12, style: .continuous)
+-                            .stroke(SuzzmeTheme.separator, lineWidth: 1)
++                        RoundedRectangle(cornerRadius: SuzzmeTheme.Radius.control, style: .continuous)
++                            .stroke(SuzzmeTheme.separator, lineWidth: SuzzmeTheme.hairline)
+                     }
+                     .accessibilityLabel("Selected message text")
+                     .onChange(of: selectedText) { _, value in
+@@ -32,15 +32,16 @@
+                         }
+                     }
+ 
+-                HStack {
++                SuzzmeActionControls {
+                     Text("\(selectedText.count)/\(InformationLimits.selectedMessageCharacters)")
+                         .font(.caption.monospacedDigit())
+                         .foregroundStyle(SuzzmeTheme.textSecondary)
+-                    Spacer()
+                     Button(isImporting ? "Importing…" : "Import selected text") {
+                         importMessage()
+                     }
+                     .buttonStyle(.borderedProminent)
++                    .tint(SuzzmeTheme.intelligencePrimary)
++                    .suzzmeProminentContrast()
+                     .disabled(selectedText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || isImporting)
+                 }
+ 
+--- before/Features/Sources/SourcesView.swift
++++ after/Features/Sources/SourcesView.swift
+@@ -34,14 +34,14 @@
+                     Text(error).font(.footnote).foregroundStyle(SuzzmeTheme.textSecondary)
+                 }
+             }
+-            Section("Mail and messages") {
++            Section("Connected accounts and shared text") {
+                 NavigationLink {
+-                    List { Section { GmailConnectionView() } }.navigationTitle("Gmail")
++                    List { Section { GmailConnectionView() } }.suzzmeReadableList().navigationTitle("Gmail")
+                 } label: {
+-                    overview(symbol: "envelope", title: "Gmail", purpose: "Recent inbox senders, subjects, and dates", status: environment.gmailAccount.isConnected ? "Account connected" : environment.gmailAccount.isConfigured ? "Not connected" : "Unavailable in this build", health: health(for: .gmail))
++                    overview(symbol: "envelope", title: "Gmail", purpose: "Recent inbox headers · Uses Google services", status: environment.gmailAccount.isConnected ? "Account connected" : environment.gmailAccount.isConfigured ? "Not connected" : "Unavailable in this build", health: health(for: .gmail))
+                 }
+                 NavigationLink {
+-                    List { SelectedMessageImportView() }.navigationTitle("Shared messages")
++                    List { SelectedMessageImportView() }.suzzmeReadableList().navigationTitle("Shared messages")
+                 } label: {
+                     overview(symbol: "message", title: "Shared messages", purpose: "Only the text you choose to paste", status: "You choose the text", health: health(for: .messages))
+                 }
+--- before/Features/Sources/WatchedLinksView.swift
++++ after/Features/Sources/WatchedLinksView.swift
+@@ -35,6 +35,7 @@
+                     .font(.footnote)
+             } header: { Text("Safety") }
+         }
++        .suzzmeReadableList()
+         .navigationTitle("Watched Links")
+         .toolbar { Button("Add", systemImage: "plus") { presentsAdd = true }.accessibilityLabel("Add Watched Link") }
+         .sheet(isPresented: $presentsAdd) { AddWatchedLinkView() }
+@@ -153,7 +154,8 @@
+                 }
+                 Section { Text("Suzzme checks this exact public page only. Sign-in pages, local addresses, file URLs, and private networks are not supported.") }
+             }
+-            .navigationTitle("Add Watched Link")
++            .suzzmeSettingsForm()
++        .navigationTitle("Add Watched Link")
+             .toolbar {
+                 ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } }
+                 ToolbarItem(placement: .confirmationAction) {
+--- before/Platform/iOS/MobileRootView.swift
++++ after/Platform/iOS/MobileRootView.swift
+@@ -43,7 +43,7 @@
+             } detail: {
+                 NavigationStack {
+                     DestinationView(destination: router.selection)
+-                        .tint(SuzzmeTheme.intelligencePrimary)
++                        .tint(SuzzmeTheme.textPrimary)
+                         .navigationBarTitleDisplayMode(.inline)
+                 }
+             }
+@@ -54,11 +54,11 @@
+                 ForEach(primaryDestinations) { destination in
+                     NavigationStack {
+                         DestinationView(destination: destination)
+-                            .tint(SuzzmeTheme.intelligencePrimary)
++                            .tint(SuzzmeTheme.textPrimary)
+                             .navigationBarTitleDisplayMode(.inline)
+                             .navigationDestination(isPresented: secondaryPresentation(for: destination)) {
+                                 DestinationView(destination: router.selection)
+-                                    .tint(SuzzmeTheme.intelligencePrimary)
++                                    .tint(SuzzmeTheme.textPrimary)
+                                     .navigationBarTitleDisplayMode(.inline)
+                             }
+                     }
+--- before/Platform/macOS/MacRootView.swift
++++ after/Platform/macOS/MacRootView.swift
+@@ -50,7 +50,7 @@
+         } detail: {
+             NavigationStack {
+                 DestinationView(destination: router.selection)
+-                    .tint(SuzzmeTheme.intelligencePrimary)
++                    .tint(SuzzmeTheme.textPrimary)
+                     .frame(maxWidth: .infinity, maxHeight: .infinity)
+                     .background(SuzzmeTheme.pageBackground)
+             }
+@@ -76,7 +76,7 @@
+         }
+         .sheet(isPresented: $showsAssistant) {
+             AskSuzzmeView()
+-                .tint(SuzzmeTheme.intelligencePrimary)
++                .tint(SuzzmeTheme.textPrimary)
+                 .frame(minWidth: 420, minHeight: 500)
+         }
+     }

@@ -1,0 +1,82 @@
+Production monitor SHA256: 8fae1ffa06c54aba37ccd896cf78649419188a719eebef716b7522ae4075234b
+Acceptance scope: real monitor and reducer; system event-tap and permission calls doubled; no physical acceptance
+PASS tap registration stores the actual C callback and unretained monitor context
+PASS C callback translates modifier press and returns the same unconsumed event
+PASS C callback translates modifier release and returns the same event
+PASS C callback preserves autorepeat and primary key fields without invoking
+PASS C callback invokes a fresh primary key once and suppresses held autorepeat
+PASS C callback translates the matching primary key release exactly once
+PASS C callback preserves Escape and autorepeat fields for owned cancellation
+PASS resource retirement clears the callback and stale raw monitor context
+PASS successful creation reports a genuinely enabled tap
+PASS one tap and one source own monitoring
+PASS a physical chord begins one owned invocation
+PASS healthy same-configuration refresh preserves a held request and tap
+PASS healthy refresh preserves the original release callback owner
+PASS duplicate start and release callbacks cannot create or finalize a duplicate invocation
+PASS healthy refresh rechecks permission without replacing availability ownership
+PASS stop retires both owned syscall resources
+PASS denied permission stays explicit without requesting access
+PASS denial creates no monitoring resource
+PASS denied monitoring cannot invoke
+PASS permission grant cannot invoke an already-held chord
+PASS fresh press works after granted permission and physical release
+PASS permission refresh cancels a revoked held request once
+PASS revocation retires the tap and source
+PASS revoked monitor ignores later key events
+PASS regrant cannot resurrect the retired held request
+PASS regrant accepts only a new press and one release
+PASS tap-disabled notifications cannot cancel an unrelated typed request
+PASS disabled tap cancels its own held capture and recovers
+PASS duplicate disable callbacks neither cancel twice nor restart held keys
+PASS a recovered tap accepts a fresh press after release
+PASS tap-disabled rechecks revoked permission
+PASS needsPermission cannot dispatch ordinary key events through an old tap
+PASS renewed permission still requires physical release
+PASS renewed permission restores a new owned invocation
+PASS invalid tap refresh recreates monitoring and retires prior ownership
+PASS invalid tap recovery leaves only the new tap and source
+PASS invalid tap recovery suppresses the already-held chord
+PASS invalid tap recovery accepts a fresh press exactly once
+PASS invalid source refresh recreates monitoring and retires prior ownership
+PASS invalid source recovery leaves only the new tap and source
+PASS invalid source recovery suppresses the already-held chord
+PASS invalid source recovery accepts a fresh press exactly once
+PASS disabled tap refresh recreates monitoring and retires prior ownership
+PASS disabled tap recovery leaves only the new tap and source
+PASS disabled tap recovery suppresses the already-held chord
+PASS disabled tap recovery accepts a fresh press exactly once
+PASS a true shortcut change cancels the old owner once
+PASS changed shortcut invokes its new owner without autorepeat duplication
+PASS disabling a held shortcut cancels its new owner once
+PASS duplicate disable and stale release cannot finalize retired ownership
+PASS enabled=false cancels a held request and cleans resources
+PASS failed creation never reports ready
+PASS failed creation immediately cleans partial resources
+PASS failed creation cannot dispatch voice
+PASS failed creation retries safely without reviving an already-held chord
+PASS failed source never reports ready
+PASS failed source immediately cleans partial resources
+PASS failed source cannot dispatch voice
+PASS failed source retries safely without reviving an already-held chord
+PASS failed enable never reports ready
+PASS failed enable immediately cleans partial resources
+PASS failed enable cannot dispatch voice
+PASS failed enable retries safely without reviving an already-held chord
+PASS failed tap recovery retires the held owner and reports unavailable
+PASS failed recovery enable immediately removes both resources
+PASS failed recovery ignores duplicate disables and subsequent key events
+PASS retry after failed recovery requires release of the original chord
+PASS retry after failed recovery accepts one new press and release
+PASS recovery failure and successful retry publish truthful availability
+PASS Escape without an active request is quiet
+PASS Escape autorepeat does not cancel
+PASS Escape cancels an active typed request once
+PASS Escape retires held ownership and blocks its stale chord
+PASS fresh physical press works after Escape and release
+PASS 100 complete monitor cycles never leak or duplicate tap/source resources
+PASS 100 healthy refresh cycles preserve exactly-once press/release ownership
+PASS healthy duplicate starts do not allocate additional resources across 100 cycles
+PASS every created resource retires once across repeated cycles
+PASS owner destruction retires held capture and resource ownership
+Global shortcut monitor checks passed: 79

@@ -1,6 +1,7 @@
 #if os(macOS)
 import AppKit
-import Carbon.HIToolbox
+import CoreGraphics
+import Observation
 import SwiftUI
 
 /// A system-adjacent surface must respond to the first click even when the
@@ -8,16 +9,40 @@ import SwiftUI
 /// public AppKit behavior.
 private final class MacAssistantHostingView<Content: View>: NSHostingView<Content> {
     override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
+    // Only a deliberate click gives this nonactivating surface keyboard focus.
+    // Confirmation and Escape remain usable with Input Monitoring disabled.
+    override var needsPanelToBecomeKey: Bool { true }
+}
+
+enum MacGitHubConnectionDecision: Sendable { case decline, later, connect }
+
+struct MacBrowserConnectionRequest: Equatable, Sendable {
+    let service: IntegrationID
+    let repository: String?
+    var id = UUID()
+    var alreadyAllowed = false
+    var serviceName: String { IntegrationDescriptor.catalog.first(where: { $0.id == service })?.displayName ?? service.rawValue.capitalized }
+}
+
+typealias MacGitHubConnectionRequest = MacBrowserConnectionRequest
+
+private final class MacAssistantPanel: NSPanel {
+    var onEscape: (() -> Void)?
+    override var canBecomeKey: Bool { true }
+    override var canBecomeMain: Bool { false }
+    override func cancelOperation(_ sender: Any?) { onEscape?() }
 }
 
 @MainActor
 final class MacAssistantPanelController {
-    private var panel: NSPanel?
+    private let observesPointer: Bool
+    private var panel: MacAssistantPanel?
     private var autoHideTask: Task<Void, Never>?
     private var collapseTask: Task<Void, Never>?
     private var mouseMonitors: [Any] = []
     private var notchEntryRect: NSRect = .null
     private var pointerWasInNotch = false
+    private var pointerHovering = false
     private struct PresentationIdentity: Equatable {
         let state: SuzzmeAssistantState
         let theme: SuzzmePresenceTheme
@@ -25,31 +50,79 @@ final class MacAssistantPanelController {
         let signal: SuzzmeProactivePresenceSignal
         let hasNotch: Bool
         let notchWidth: CGFloat
+        let notchHeight: CGFloat
         let review: SuzzmePresenceReview?
+        let connectionRequest: MacGitHubConnectionRequest?
         let response: String?
+        let contextLabels: [String]
+        let interactionID: UUID?
+        let backgroundActivity: ScheduledBriefingActivity?
+        let isHovered: Bool
     }
     private var renderedIdentity: PresentationIdentity?
     private var suppressedIdentity: PresentationIdentity?
+    // Keep this dismissal across a foreground conversation. Returning to idle
+    // must not announce the unchanged background run a second time.
+    private var suppressedBackgroundActivity: ScheduledBriefingActivity?
     private var currentState: SuzzmeAssistantState = .idle
     private var currentTheme: SuzzmePresenceTheme = .suzzmePurple
     private var currentAnimation: SuzzmePresenceAnimation = .gentle
     private var currentSignal: SuzzmeProactivePresenceSignal = .none
     private var currentCancel: (() -> Void)?
     private var currentInvoke: (() -> Void)?
+    private var currentPushToTalkPress: (() -> Void)?
+    private var currentPushToTalkRelease: (() -> Void)?
+    private var currentFinish: (() -> Void)?
     private var currentResponse: String?
+    private var currentContextLabels: [String] = []
+    private var currentAudioLevel: Double = 0
+    private var renderedAudioLevel: Double = 0
+    private var currentSpeechProgress: Double = 0
+    private var renderedSpeechProgress: Double = 0
+    private var currentInteractionID: UUID?
+    private var displayOwnership = MacPresenceDisplayOwnership()
     private var currentReview: SuzzmePresenceReview?
+    private var currentConnectionRequest: MacGitHubConnectionRequest?
+    private var currentConnectionDecision: ((MacGitHubConnectionDecision) -> Void)?
     private var currentConfirmation: ((Bool) -> Void)?
+    private var currentBackgroundActivity: ScheduledBriefingActivity?
+    private var currentBackgroundStop: ((UUID) -> Void)?
+    private var currentOpenBackgroundTasks: (() -> Void)?
+    private var currentOpenDailySummary: (() -> Void)?
 
-    func update(state: SuzzmeAssistantState, theme: SuzzmePresenceTheme, animation: SuzzmePresenceAnimation, signal: SuzzmeProactivePresenceSignal = .none, review: SuzzmePresenceReview? = nil, response: String? = nil, onConfirmation: ((Bool) -> Void)? = nil, onCancel: @escaping () -> Void, onInvoke: @escaping () -> Void) {
-        currentResponse = state == .speaking ? response.map { String($0.prefix(2_000)) } : nil
+    init(observesPointer: Bool = true) {
+        self.observesPointer = observesPointer
+    }
+
+    func update(state: SuzzmeAssistantState, theme: SuzzmePresenceTheme, animation: SuzzmePresenceAnimation, signal: SuzzmeProactivePresenceSignal = .none, review: SuzzmePresenceReview? = nil, connectionRequest: MacGitHubConnectionRequest? = nil, response: String? = nil, audioLevel: Double = 0, speechProgress: Double = 0, interactionID: UUID? = nil, contextLabels: [String] = [], backgroundActivity: ScheduledBriefingActivity? = nil, onConfirmation: ((Bool) -> Void)? = nil, onConnectionDecision: ((MacGitHubConnectionDecision) -> Void)? = nil, onBackgroundStop: ((UUID) -> Void)? = nil, onOpenBackgroundTasks: (() -> Void)? = nil, onOpenDailySummary: (() -> Void)? = nil, onCancel: @escaping () -> Void, onFinish: @escaping () -> Void = {}, onInvoke: @escaping () -> Void, onPushToTalkPress: (() -> Void)? = nil, onPushToTalkRelease: (() -> Void)? = nil) {
+        // Completion can return the core to idle before the UI reading deadline.
+        // Keep only the current environment-owned answer through that deadline.
+        currentResponse = [.idle, .understanding, .speaking, .success, .error].contains(state) ? response : nil
+        currentAudioLevel = state == .listening && audioLevel.isFinite ? min(max(audioLevel, 0), 1) : 0
+        currentSpeechProgress = state == .speaking && speechProgress.isFinite ? min(max(speechProgress, 0), 1) : 0
+        currentInteractionID = interactionID
+        currentContextLabels = Array(contextLabels.prefix(2)).map { String($0.prefix(40)) }
         currentState = state
         currentTheme = theme
         currentAnimation = animation
         currentSignal = signal
         currentCancel = onCancel
         currentInvoke = onInvoke
+        currentPushToTalkPress = onPushToTalkPress
+        currentPushToTalkRelease = onPushToTalkRelease
+        currentFinish = onFinish
         currentReview = state == .awaitingConfirmation ? review : nil
+        currentConnectionRequest = connectionRequest
+        currentConnectionDecision = connectionRequest == nil ? nil : onConnectionDecision
         currentConfirmation = onConfirmation
+        currentBackgroundActivity = backgroundActivity
+        currentBackgroundStop = onBackgroundStop
+        currentOpenBackgroundTasks = onOpenBackgroundTasks
+        currentOpenDailySummary = onOpenDailySummary
+        if state != .idle || signal != .none || currentResponse != nil
+            || currentReview != nil || connectionRequest != nil || backgroundActivity != nil {
+            pointerHovering = false
+        }
         refreshPresentation()
     }
 
@@ -61,33 +134,68 @@ final class MacAssistantPanelController {
         autoHideTask = nil
         panel?.orderOut(nil)
         panel?.contentView = nil
+        panel?.onEscape = nil
         renderedIdentity = nil
         suppressedIdentity = nil
+        suppressedBackgroundActivity = nil
         currentCancel = nil
         currentInvoke = nil
+        currentPushToTalkPress = nil
+        currentPushToTalkRelease = nil
+        currentFinish = nil
         currentReview = nil
+        currentConnectionRequest = nil
+        currentConnectionDecision = nil
         currentResponse = nil
         currentConfirmation = nil
+        currentBackgroundActivity = nil
+        currentBackgroundStop = nil
+        currentOpenBackgroundTasks = nil
+        currentOpenDailySummary = nil
+        displayOwnership.reset()
+    }
+
+    private func escapeCurrentPresentation() {
+        // Cancel through the captured owner, never by manufacturing an action
+        // or confirming whatever happens to be current after an actor hop.
+        if currentConnectionRequest != nil {
+            currentConnectionDecision?(.later)
+        } else if currentReview != nil {
+            currentConfirmation?(false)
+        } else if [.idle, .success, .error].contains(currentState) {
+            hideCurrentPresentation()
+        } else {
+            currentCancel?()
+        }
     }
 
     /// Suppresses only the presentation the user pressed. A subsequent state,
     /// signal, response, or confirmation is allowed to become visible again.
     func hideCurrentPresentation() {
+        if currentConnectionRequest != nil {
+            currentConnectionDecision?(.later)
+            return
+        }
         autoHideTask?.cancel()
         autoHideTask = nil
         guard let renderedIdentity else { return }
         suppressedIdentity = renderedIdentity
+        if let activity = renderedIdentity.backgroundActivity {
+            suppressedBackgroundActivity = activity
+        }
         guard collapseTask == nil, let panel else { return }
         panel.ignoresMouseEvents = true
         guard panel.isVisible, currentAnimation != .minimal,
               !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion else {
             panel.orderOut(nil)
+            panel.contentView = nil
             return
         }
         let frame = panel.frame
         let collapsed = NSRect(x: frame.minX, y: frame.maxY - 1, width: frame.width, height: 1)
         NSAnimationContext.runAnimationGroup { context in
             context.duration = SuzzmeTheme.Motion.presenceExpansion
+            context.timingFunction = CAMediaTimingFunction(name: .easeIn)
             panel.animator().setFrame(collapsed, display: true)
             panel.animator().alphaValue = 0
         }
@@ -96,6 +204,7 @@ final class MacAssistantPanelController {
             catch { return }
             guard let self, self.suppressedIdentity == renderedIdentity else { return }
             self.panel?.orderOut(nil)
+            self.panel?.contentView = nil
             self.collapseTask = nil
         }
     }
@@ -111,16 +220,34 @@ final class MacAssistantPanelController {
     /// Event-driven reveal: no idle polling, keyboard capture, or permission prompt.
     /// Re-entry is required after a hold-to-hide so the same pointer cannot undo it.
     func pointerMoved(to point: NSPoint) {
-        let isInside = notchEntryRect.contains(point)
+        updatePointerCapture(to: point)
+        let isInside = MacPresencePointerRegion.contains(point, in: notchEntryRect)
+        let quietIdle = currentState == .idle && currentSignal == .none
+            && currentResponse == nil && currentReview == nil
+            && currentConnectionRequest == nil && visibleBackgroundActivity == nil
+        let staysInExpandedSurface = pointerHovering && panel.map {
+            MacPresencePointerRegion.contains(point, in: $0.frame.insetBy(dx: -4, dy: -4))
+        } == true
+        let shouldHover = quietIdle && !notchEntryRect.isNull && (isInside || staysInExpandedSurface)
+        if shouldHover != pointerHovering {
+            pointerHovering = shouldHover
+            if shouldHover {
+                NSHapticFeedbackManager.defaultPerformer.perform(.alignment, performanceTime: .now)
+            }
+            refreshPresentation()
+        }
         defer { pointerWasInNotch = isInside }
-        guard isInside, !pointerWasInNotch, currentState == .idle,
-              currentSignal == .none, suppressedIdentity != nil else { return }
+        guard isInside, !pointerWasInNotch,
+              Self.autoHideDelay(for: currentState, signal: currentSignal, backgroundActivity: visibleBackgroundActivity) != nil,
+              suppressedIdentity != nil || (visibleBackgroundActivity != nil && suppressedBackgroundActivity == visibleBackgroundActivity) else { return }
         suppressedIdentity = nil
+        suppressedBackgroundActivity = nil
         renderedIdentity = nil
         refreshPresentation()
     }
 
     private func installMouseMonitors() {
+        guard observesPointer else { return }
         guard mouseMonitors.isEmpty else { return }
         if let monitor = NSEvent.addGlobalMonitorForEvents(matching: .mouseMoved, handler: { [weak self] _ in
             Task { @MainActor [weak self] in self?.pointerMoved(to: NSEvent.mouseLocation) }
@@ -136,68 +263,135 @@ final class MacAssistantPanelController {
         mouseMonitors.removeAll()
         notchEntryRect = .null
         pointerWasInNotch = false
+        pointerHovering = false
     }
 
     private func refreshPresentation() {
         let presentation = SuzzmeAssistantPresentation.make(for: currentState)
+        let backgroundActivity = visibleBackgroundActivity
         guard currentCancel != nil, currentInvoke != nil else {
             dismiss()
             return
         }
-        guard let screen = NSApp.keyWindow?.screen ?? NSApp.mainWindow?.screen ?? NSScreen.main ?? NSScreen.screens.first else { return }
-        let hasNotch = screen.safeAreaInsets.top > 0 && screen.auxiliaryTopRightArea != nil && screen.auxiliaryTopLeftArea != nil
+        let screens = NSScreen.screens
+        let notchScreen = screens.first(where: Self.hasNotch)
+        // The built-in notch remains an invocation affordance when an external
+        // monitor is primary. Its entry listener is independent of an answer's
+        // owned display, which must remain stable throughout the interaction.
+        notchEntryRect = notchScreen.map(Self.notchEntryRect(for:)) ?? .null
+        let hasInteraction = currentState != .idle || currentResponse != nil || currentReview != nil || currentConnectionRequest != nil || currentSignal != .none || backgroundActivity != nil
+        let preferredNotch = hasInteraction ? nil : notchScreen
+        guard let preferred = preferredNotch ?? screens.first(where: { $0.frame.contains(NSEvent.mouseLocation) }) ?? NSApp.keyWindow?.screen ?? NSApp.mainWindow?.screen ?? NSScreen.main ?? screens.first else { return }
+        let displayID = displayOwnership.resolve(
+            interactionID: backgroundActivity?.id ?? currentInteractionID,
+            retainsInteraction: currentState != .idle || currentResponse != nil || currentReview != nil || currentConnectionRequest != nil || backgroundActivity != nil,
+            preferredID: Self.displayID(for: preferred),
+            availableIDs: Set(screens.map(Self.displayID(for:)))
+        )
+        let screen = screens.first(where: { Self.displayID(for: $0) == displayID }) ?? preferred
+        let hasNotch = Self.hasNotch(screen)
         // A physical notch is Suzzme's persistent invocation affordance. The
         // top-center fallback appears only while there is real assistant or
         // proactive activity, avoiding a permanent floating control on Macs
         // without a notch.
-        guard hasNotch || presentation.isVisible || currentSignal != .none else {
+        guard hasNotch || presentation.isVisible || currentSignal != .none || currentResponse != nil || currentConnectionRequest != nil || backgroundActivity != nil else {
             dismiss()
             return
         }
         let notchWidth: CGFloat
         if hasNotch, let right = screen.auxiliaryTopRightArea, let left = screen.auxiliaryTopLeftArea {
             notchWidth = max(0, right.minX - left.maxX)
-            notchEntryRect = NSRect(x: left.maxX, y: screen.frame.maxY - screen.safeAreaInsets.top,
-                                    width: notchWidth, height: screen.safeAreaInsets.top)
-            installMouseMonitors()
         } else {
             notchWidth = 0
-            removeMouseMonitors()
         }
+        // Mouse movement is event-driven, including on non-notched displays.
+        // Never install a cursor polling loop or another keyboard monitor.
+        installMouseMonitors()
+        let notchHeight = hasNotch ? screen.safeAreaInsets.top : 0
+        let isHovered = hasNotch && pointerHovering && currentState == .idle
+            && currentSignal == .none && currentResponse == nil
+            && currentReview == nil && currentConnectionRequest == nil
+            && backgroundActivity == nil
         let size = MacAssistantSurfaceMetrics.size(
             state: currentState,
             signal: currentSignal,
             notchWidth: notchWidth,
             review: currentReview,
-            response: currentResponse
+            response: currentResponse,
+            connectionRequest: currentConnectionRequest,
+            notchHeight: notchHeight,
+            contextLabels: backgroundActivity == nil ? currentContextLabels : [],
+            backgroundActivity: backgroundActivity,
+            isHovered: isHovered
         )
         let panel = panel ?? makePanel()
         self.panel = panel
-        let identity = PresentationIdentity(state: currentState, theme: currentTheme, animation: currentAnimation, signal: currentSignal, hasNotch: hasNotch, notchWidth: notchWidth, review: currentReview, response: currentResponse)
-        if suppressedIdentity == identity {
-            if collapseTask == nil { panel.orderOut(nil) }
+        panel.onEscape = { [weak self] in self?.escapeCurrentPresentation() }
+        panel.setAccessibilityLabel(backgroundActivity.map { "Suzzme. Daily Summary. \($0.title)" } ?? "Suzzme. \(presentation.title)")
+        panel.level = hasNotch ? .statusBar : .floating
+        let identity = PresentationIdentity(state: currentState, theme: currentTheme, animation: currentAnimation, signal: currentSignal, hasNotch: hasNotch, notchWidth: notchWidth, notchHeight: notchHeight, review: currentReview, connectionRequest: currentConnectionRequest, response: currentResponse, contextLabels: backgroundActivity == nil ? currentContextLabels : [], interactionID: currentInteractionID, backgroundActivity: backgroundActivity, isHovered: isHovered)
+        let retainsDismissedAnswer = currentState == .idle && currentResponse != nil
+            && suppressedIdentity?.response == currentResponse
+            && suppressedIdentity?.signal == currentSignal
+            && (currentInteractionID == nil || suppressedIdentity?.interactionID == currentInteractionID)
+        let retainsDismissedBackground = backgroundActivity != nil && suppressedBackgroundActivity == backgroundActivity
+        if suppressedIdentity == identity || retainsDismissedAnswer || retainsDismissedBackground {
+            // Returning to idle is the end of the same interaction, not new
+            // activity. Never resurrect an answer the user already dismissed.
+            if collapseTask == nil {
+                panel.orderOut(nil)
+                panel.contentView = nil
+            }
             return
         }
         collapseTask?.cancel()
         collapseTask = nil
         panel.alphaValue = 1
-        panel.ignoresMouseEvents = false
         suppressedIdentity = nil
-        if renderedIdentity != identity {
-            autoHideTask?.cancel()
-            autoHideTask = nil
-            panel.contentView = MacAssistantHostingView(rootView: MacAssistantNotchSurface(
+        let identityChanged = renderedIdentity != identity
+        if panel.contentView == nil || identityChanged || renderedAudioLevel != currentAudioLevel || renderedSpeechProgress != currentSpeechProgress {
+            if identityChanged {
+                autoHideTask?.cancel()
+                autoHideTask = nil
+            }
+            let surface = MacAssistantNotchSurface(
                 state: currentState, theme: currentTheme, animation: currentAnimation,
-                signal: currentSignal, hasNotch: hasNotch, notchWidth: notchWidth, review: currentReview, response: currentResponse,
+                signal: currentSignal, hasNotch: hasNotch, notchWidth: notchWidth, notchHeight: notchHeight, isHovered: isHovered, review: currentReview, connectionRequest: currentConnectionRequest, response: currentResponse, audioLevel: currentAudioLevel, speechProgress: currentSpeechProgress, contextLabels: identity.contextLabels,
+                backgroundActivity: backgroundActivity,
                 onConfirmation: currentConfirmation,
+                onConnectionDecision: currentConnectionDecision,
+                onBackgroundStop: { [weak self] id in
+                    guard let self, self.acceptsBackgroundAction(for: identity),
+                          identity.backgroundActivity?.id == id else { return }
+                    self.currentBackgroundStop?(id)
+                },
+                onOpenBackgroundTasks: { [weak self] in
+                    guard let self, self.acceptsBackgroundAction(for: identity) else { return }
+                    self.currentOpenBackgroundTasks?()
+                },
+                onOpenDailySummary: { [weak self] in
+                    guard let self, self.acceptsBackgroundAction(for: identity) else { return }
+                    self.currentOpenDailySummary?()
+                },
                 onCancel: { [weak self] in self?.currentCancel?() },
+                onFinish: { [weak self] in self?.currentFinish?() },
                 onInvoke: { [weak self] in self?.currentInvoke?() },
+                onPushToTalkPress: currentPushToTalkPress,
+                onPushToTalkRelease: currentPushToTalkRelease,
                 onDismiss: { [weak self] in self?.hideCurrentPresentation() }
-            ))
+            )
+            if let host = panel.contentView as? MacAssistantHostingView<MacAssistantNotchSurface> {
+                host.rootView = surface
+            } else {
+                panel.contentView = MacAssistantHostingView(rootView: surface)
+            }
             renderedIdentity = identity
-            if currentState == .idle && currentSignal == .none {
+            renderedAudioLevel = currentAudioLevel
+            renderedSpeechProgress = currentSpeechProgress
+            if identityChanged, currentConnectionRequest == nil,
+               let delay = Self.autoHideDelay(for: currentState == .idle && currentResponse != nil ? .success : currentState, signal: currentSignal, backgroundActivity: backgroundActivity, isHovered: isHovered) {
                 autoHideTask = Task { @MainActor [weak self] in
-                    do { try await Task.sleep(for: .seconds(8)) }
+                    do { try await Task.sleep(for: .seconds(delay)) }
                     catch { return }
                     guard let self, self.renderedIdentity == identity else { return }
                     self.hideCurrentPresentation()
@@ -205,17 +399,13 @@ final class MacAssistantPanelController {
             }
         }
         let visible = screen.visibleFrame
-        // The top edge stays fixed at the physical cutout's lower edge.
-        // All pixels belong to this app, below the hardware cutout.
-        // A one-point overlap removes the bright seam that some display scales
-        // reveal between the physical cutout and the app-owned surface.
-        let anchor = hasNotch ? screen.frame.maxY - screen.safeAreaInsets.top + 1 : visible.maxY - 8
-        let y = anchor - size.height
-        // A side Dock changes visibleFrame's center, not the hardware cutout.
-        let centerX = hasNotch ? notchEntryRect.midX : visible.midX
-        let frame = NSRect(x: max(visible.minX, centerX - size.width / 2),
-                           y: max(visible.minY, y), width: min(size.width, visible.width),
-                           height: min(size.height, visible.height))
+        let frame = MacAssistantPanelPlacement.frame(
+            size: size,
+            screenFrame: screen.frame,
+            visibleFrame: visible,
+            hasNotch: hasNotch,
+            notchCenterX: hasNotch ? Self.notchEntryRect(for: screen).midX : screen.frame.midX
+        )
         if panel.frame != frame {
             let shouldAnimate = currentAnimation != .minimal && !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion
             if !panel.isVisible {
@@ -224,15 +414,77 @@ final class MacAssistantPanelController {
             if shouldAnimate {
                 NSAnimationContext.runAnimationGroup { context in
                     context.duration = SuzzmeTheme.Motion.presenceExpansion
+                    context.timingFunction = CAMediaTimingFunction(controlPoints: 0.16, 1, 0.3, 1)
                     panel.animator().setFrame(frame, display: true)
+                } completionHandler: { [weak self] in
+                    Task { @MainActor [weak self] in
+                        guard let self, self.renderedIdentity == identity,
+                              self.suppressedIdentity == nil, self.collapseTask == nil else { return }
+                        self.updatePointerCapture(to: NSEvent.mouseLocation)
+                    }
                 }
             } else { panel.setFrame(frame, display: true) }
         }
+        // Public window behavior can be reset when macOS reorders a panel.
+        panel.collectionBehavior = Self.collectionBehavior
         panel.orderFrontRegardless()
+        updatePointerCapture(to: NSEvent.mouseLocation)
     }
 
-    private func makePanel() -> NSPanel {
-        let panel = NSPanel(
+    private func updatePointerCapture(to point: NSPoint) {
+        guard let panel else { return }
+        guard panel.isVisible, collapseTask == nil, let identity = renderedIdentity else {
+            panel.ignoresMouseEvents = true
+            return
+        }
+        let radii = MacAssistantSurfaceMetrics.cornerRadii(state: identity.state, signal: identity.signal,
+                                                         hasDetail: identity.review != nil || identity.connectionRequest != nil || identity.response != nil || identity.backgroundActivity != nil)
+        let shape = SuzzmeNotchSurfaceShape(attached: identity.hasNotch, neckWidth: identity.notchWidth,
+                                           topCornerRadius: radii.top, bottomCornerRadius: radii.bottom)
+        panel.ignoresMouseEvents = !MacPresencePointerRegion.contains(point, in: panel.frame, shape: shape)
+    }
+
+    private func acceptsBackgroundAction(for identity: PresentationIdentity) -> Bool {
+        identity.backgroundActivity != nil && renderedIdentity == identity
+            && suppressedIdentity == nil && collapseTask == nil
+    }
+
+    private static func hasNotch(_ screen: NSScreen) -> Bool {
+        screen.safeAreaInsets.top > 0 && screen.auxiliaryTopLeftArea != nil && screen.auxiliaryTopRightArea != nil
+    }
+
+    private static func notchEntryRect(for screen: NSScreen) -> NSRect {
+        guard hasNotch(screen), let left = screen.auxiliaryTopLeftArea, let right = screen.auxiliaryTopRightArea else { return .null }
+        return NSRect(x: left.maxX, y: screen.frame.maxY - screen.safeAreaInsets.top,
+                      width: max(0, right.minX - left.maxX), height: screen.safeAreaInsets.top)
+    }
+
+    private static let collectionBehavior: NSWindow.CollectionBehavior =
+        [.canJoinAllSpaces, .stationary, .ignoresCycle, .fullScreenAuxiliary]
+
+    static func autoHideDelay(for state: SuzzmeAssistantState, signal: SuzzmeProactivePresenceSignal, backgroundActivity: ScheduledBriefingActivity? = nil, isHovered: Bool = false) -> Double? {
+        if isHovered && state == .idle && signal == .none && backgroundActivity == nil { return nil }
+        if state == .idle, backgroundActivity != nil { return 8 }
+        return switch state {
+        case .idle: signal == .none ? 3 : 8
+        case .success: 5
+        case .error: 8
+        default: nil
+        }
+    }
+
+    private var visibleBackgroundActivity: ScheduledBriefingActivity? {
+        guard currentState == .idle, currentResponse == nil, currentReview == nil,
+              currentConnectionRequest == nil, currentInteractionID == nil else { return nil }
+        return currentBackgroundActivity
+    }
+
+    private static func displayID(for screen: NSScreen) -> UInt32 {
+        (screen.deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")] as? NSNumber)?.uint32Value ?? 0
+    }
+
+    private func makePanel() -> MacAssistantPanel {
+        let panel = MacAssistantPanel(
             contentRect: .zero,
             styleMask: [.borderless, .nonactivatingPanel],
             backing: .buffered,
@@ -245,10 +497,72 @@ final class MacAssistantPanelController {
         panel.hasShadow = false
         panel.level = .floating
         panel.hidesOnDeactivate = false
-        panel.collectionBehavior = [.moveToActiveSpace, .fullScreenAuxiliary]
+        panel.collectionBehavior = Self.collectionBehavior
         panel.becomesKeyOnlyIfNeeded = true
         panel.isMovable = false
         return panel
+    }
+}
+
+/// Shared geometry for bezel entry and native window click-through.
+enum MacPresencePointerRegion {
+    /// NSRect.contains excludes the maximum edge. A cursor at the physical
+    /// bezel reports exactly maxY, which must remain an accessible target.
+    static func contains(_ point: NSPoint, in rect: NSRect) -> Bool {
+        guard !rect.isNull, !rect.isInfinite, rect.size.width > 0, rect.size.height > 0,
+              rect.origin.x.isFinite, rect.origin.y.isFinite, rect.size.width.isFinite, rect.size.height.isFinite,
+              point.x.isFinite, point.y.isFinite else { return false }
+        return point.x >= rect.minX && point.x <= rect.maxX && point.y >= rect.minY && point.y <= rect.maxY
+    }
+
+    /// Test the shared visual silhouette in top-origin SwiftUI coordinates.
+    /// Transparent corners and the edge bloom belong to the app underneath.
+    static func contains(_ point: NSPoint, in frame: NSRect, shape: SuzzmeNotchSurfaceShape) -> Bool {
+        guard contains(point, in: frame) else { return false }
+        let local = CGPoint(x: point.x - frame.minX,
+                            y: min(max(frame.maxY - point.y, 0.5), max(0.5, frame.height - 0.5)))
+        return shape.path(in: CGRect(origin: .zero, size: frame.size)).contains(local)
+    }
+}
+
+/// Pins one interaction to its display. Cursor movement and audio updates are
+/// presentation inputs, never reasons to migrate an ongoing answer or review.
+struct MacPresenceDisplayOwnership {
+    private(set) var displayID: UInt32?
+    private var ownerID: UUID?
+
+    mutating func resolve(interactionID: UUID?, retainsInteraction: Bool,
+                          preferredID: UInt32, availableIDs: Set<UInt32>) -> UInt32 {
+        guard retainsInteraction else { reset(); return preferredID }
+        if let displayID, availableIDs.contains(displayID),
+           interactionID == nil || interactionID == ownerID {
+            return displayID
+        }
+        ownerID = interactionID
+        displayID = preferredID
+        return preferredID
+    }
+
+    mutating func reset() { displayID = nil; ownerID = nil }
+}
+
+enum MacAssistantPanelPlacement {
+    static func frame(
+        size: CGSize,
+        screenFrame: NSRect,
+        visibleFrame: NSRect,
+        hasNotch: Bool,
+        notchCenterX: CGFloat
+    ) -> NSRect {
+        let width = min(size.width, visibleFrame.width)
+        let height = min(size.height, hasNotch ? screenFrame.height : visibleFrame.height)
+        let centerX = hasNotch ? notchCenterX : visibleFrame.midX
+        let x = min(max(visibleFrame.minX, centerX - width / 2), visibleFrame.maxX - width)
+        let topEdge = hasNotch ? screenFrame.maxY : visibleFrame.maxY - 8
+        let minimumY = hasNotch ? screenFrame.minY : visibleFrame.minY
+        let maximumY = hasNotch ? screenFrame.maxY : visibleFrame.maxY
+        let y = min(max(minimumY, topEdge - height), maximumY - height)
+        return NSRect(x: x, y: y, width: width, height: height)
     }
 }
 
@@ -259,169 +573,433 @@ struct MacAssistantNotchSurface: View {
     let signal: SuzzmeProactivePresenceSignal
     let hasNotch: Bool
     var notchWidth: CGFloat = 180
+    var notchHeight: CGFloat = 0
+    var isHovered = false
     var edgeGlow = SuzzmeTheme.Motion.presenceGlow
     var review: SuzzmePresenceReview?
+    var connectionRequest: MacGitHubConnectionRequest?
     var response: String?
+    var audioLevel: Double = 0
+    var speechProgress: Double = 0
+    var contextLabels: [String] = []
+    var backgroundActivity: ScheduledBriefingActivity?
     var onConfirmation: ((Bool) -> Void)?
+    var onConnectionDecision: ((MacGitHubConnectionDecision) -> Void)?
+    var onBackgroundStop: ((UUID) -> Void)?
+    var onOpenBackgroundTasks: (() -> Void)?
+    var onOpenDailySummary: (() -> Void)?
     let onCancel: () -> Void
+    var onFinish: () -> Void = {}
     let onInvoke: () -> Void
+    var onPushToTalkPress: (() -> Void)?
+    var onPushToTalkRelease: (() -> Void)?
     var onDismiss: () -> Void = {}
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.scenePhase) private var scenePhase
 
     private var presentation: SuzzmeAssistantPresentation { .make(for: state) }
 
-    @ViewBuilder var body: some View {
-        let colors = theme.colors(for: .dark)
-        let shape = SuzzmeNotchSurfaceShape(attached: hasNotch, neckWidth: notchWidth)
-        if surfaceTapInvokes {
+    var body: some View {
+        let colors = SuzzmePresenceColors.mascot(for: .dark)
+        let radii = MacAssistantSurfaceMetrics.cornerRadii(state: state, signal: signal, hasDetail: review != nil || connectionRequest != nil || response != nil || visibleBackgroundActivity != nil)
+        let shape = SuzzmeNotchSurfaceShape(
+            attached: hasNotch, neckWidth: notchWidth,
+            topCornerRadius: radii.top, bottomCornerRadius: radii.bottom
+        )
+        // The quiet notch is a native control. A button gives the mascot,
+        // label, microphone cue, keyboard activation and VoiceOver one action.
+        // Active panels keep their own buttons and gestures independent.
+        if isQuietIdle && hasNotch && isHovered {
             surface(colors: colors, shape: shape)
-                .contentShape(shape)
-                .gesture(
-                    LongPressGesture(minimumDuration: 0.7)
-                        .onEnded { _ in onDismiss() }
-                        .exclusively(before: TapGesture().onEnded { onInvoke() })
-                )
-                .accessibilityAddTraits(.isButton)
-                .accessibilityAction { onInvoke() }
-                .accessibilityAction(named: "Hide Suzzme") { onDismiss() }
-                .accessibilityHint("Click to open Suzzme. Press and hold to hide.")
+                .contextMenu { Button("Hide Suzzme", action: onDismiss) }
+                .accessibilityAction(named: "Hide Suzzme", onDismiss)
+        } else if surfaceTapInvokes {
+            Button(action: onInvoke) {
+                surface(colors: colors, shape: shape)
+                    .contentShape(Rectangle().inset(by: -0.5))
+            }
+            .buttonStyle(.plain)
+            .keyboardShortcut(.defaultAction)
+            .accessibilityIdentifier("suzzme-notch-wake")
+            .accessibilityLabel("Talk to Suzzme")
+            .accessibilityHint("Starts a voice conversation. Right-click for Hide Suzzme.")
+            .accessibilityAction(named: "Hide Suzzme", onDismiss)
+            .contextMenu { Button("Hide Suzzme", action: onDismiss) }
         } else {
             surface(colors: colors, shape: shape)
+                .contentShape(Rectangle().inset(by: -0.5))
                 .simultaneousGesture(
                     LongPressGesture(minimumDuration: 0.7).onEnded { _ in onDismiss() }
                 )
-                .accessibilityAction(named: "Hide Suzzme") { onDismiss() }
+                .accessibilityAction(named: "Hide Suzzme", onDismiss)
+                .contextMenu { Button("Hide Suzzme", action: onDismiss) }
                 .accessibilityHint("Press and hold to hide Suzzme")
         }
     }
 
     private func surface(colors: SuzzmePresenceColors, shape: SuzzmeNotchSurfaceShape) -> some View {
         VStack(spacing: 8) {
-            SuzzmeAssistantPresenceView(
-                state: state,
-                theme: theme,
-                animation: animation,
-                proactiveSignal: signal,
-                systemSurface: true,
-                onCancel: onCancel
-            )
-            if let response {
-                Text(response)
-                    .font(.body)
-                    .foregroundStyle(.white.opacity(0.88))
-                    .lineLimit(4)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, 18)
-                .padding(.bottom, 14)
-            }
-            if let review {
-                Text(review.title)
-                    .font(.headline)
-                    .foregroundStyle(.white)
-                    .lineLimit(3)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, 18)
-                HStack {
-                    Button("Cancel", role: .cancel) { onConfirmation?(false) }
-                    Spacer()
-                    Button(review.confirmationLabel, role: review.isDestructive ? .destructive : nil) { onConfirmation?(true) }
-                        .tint(review.isDestructive ? .red : .accentColor)
-                        .foregroundStyle(review.isDestructive ? Color.red : Color.primary)
+            if isQuietIdle && hasNotch {
+                if isHovered {
+                    hoverControls
                 }
-                .buttonStyle(.bordered)
-                .padding(.horizontal, 18)
-                .padding(.bottom, 14)
+            } else if let activity = visibleBackgroundActivity {
+                ScrollView {
+                    MacBackgroundPreparationView(
+                        activity: activity,
+                        systemSurface: true,
+                        onStop: { onBackgroundStop?($0) },
+                        onOpenTasks: { onOpenBackgroundTasks?() },
+                        onOpenSummary: { onOpenDailySummary?() }
+                    )
+                    .padding(.horizontal, SuzzmeTheme.Spacing.medium)
+                    .padding(.vertical, SuzzmeTheme.Spacing.small)
+                }
+                .scrollBounceBehavior(.basedOnSize)
+            } else {
+                SuzzmeAssistantPresenceView(
+                    state: state,
+                    theme: theme,
+                    animation: animation,
+                    proactiveSignal: signal,
+                    systemSurface: true,
+                    audioLevel: audioLevel,
+                    speechProgress: speechProgress,
+                    contextTitle: !contextLabels.isEmpty && [.understanding, .gatheringContext, .reasoning].contains(state) ? "Looking at this…" : nil,
+                    onCancel: onCancel
+                )
+                if state == .listening {
+                    HStack {
+                        Spacer(minLength: 0)
+                        Button("Done", action: onFinish)
+                            .buttonStyle(.borderedProminent)
+                            .tint(colors.primary)
+                            .keyboardShortcut(.defaultAction)
+                            .accessibilityHint("Finish recording and send the words to Suzzme")
+                    }
+                    .padding(.horizontal, SuzzmeTheme.Spacing.medium)
+                    .padding(.bottom, SuzzmeTheme.Spacing.small)
+                }
+                if !contextLabels.isEmpty {
+                    HStack(spacing: 6) { contextChips }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, SuzzmeTheme.Spacing.medium)
+                }
+                if let response {
+                    ScrollView {
+                        SuzzmeAnswerCard(text: response, systemSurface: true)
+                    }
+                    .scrollBounceBehavior(.basedOnSize)
+                    .padding(.horizontal, SuzzmeTheme.Spacing.medium)
+                    HStack(spacing: SuzzmeTheme.Spacing.small) {
+                        ShareLink(item: response) {
+                            Label("Share", systemImage: "square.and.arrow.up")
+                                .frame(minHeight: SuzzmeTheme.Layout.touchTarget)
+                        }
+                        .help("Share this answer")
+                        Spacer()
+                        Button("Reply", action: onInvoke)
+                            .frame(minHeight: SuzzmeTheme.Layout.touchTarget)
+                            .keyboardShortcut(.defaultAction)
+                            .help("Ask a follow-up without closing the answer")
+                    }
+                    .buttonStyle(.bordered)
+                    .tint(.white)
+                    .padding(.horizontal, SuzzmeTheme.Spacing.medium)
+                    .padding(.bottom, SuzzmeTheme.Spacing.small)
+                }
+                if let review {
+                    ScrollView {
+                        Text(review.title)
+                            .font(.headline)
+                            .foregroundStyle(.white)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .textSelection(.enabled)
+                    }
+                    .scrollBounceBehavior(.basedOnSize)
+                    .padding(.horizontal, SuzzmeTheme.Spacing.medium)
+                    let layout = dynamicTypeSize.isAccessibilitySize
+                        ? AnyLayout(VStackLayout(alignment: .leading, spacing: 8))
+                        : AnyLayout(HStackLayout(spacing: 8))
+                    layout {
+                        Button("Cancel", role: .cancel) { onConfirmation?(false) }
+                            .frame(minHeight: 44)
+                            .keyboardShortcut(.cancelAction)
+                        if !dynamicTypeSize.isAccessibilitySize { Spacer() }
+                        Button(review.confirmationLabel, role: review.isDestructive ? .destructive : nil) { onConfirmation?(true) }
+                            .frame(minHeight: 44)
+                            .keyboardShortcut(.defaultAction)
+                            .tint(review.isDestructive ? .red : .accentColor)
+                            .foregroundStyle(review.isDestructive ? Color.red : Color.primary)
+                    }
+                    .buttonStyle(.bordered)
+                    .padding(.horizontal, 18)
+                    .padding(.bottom, 14)
+                }
+                if let connectionRequest {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Label("\(connectionRequest.serviceName) connection request", systemImage: "puzzlepiece.extension")
+                            .font(.caption.weight(.semibold)).foregroundStyle(.white.opacity(0.82))
+                        Text(connectionRequest.alreadyAllowed ? "Repository already allowed" : "Connect \(connectionRequest.serviceName) to Suzzme?")
+                            .font(.headline).foregroundStyle(.white)
+                        Text(connectionRequest.alreadyAllowed
+                             ? "\(connectionRequest.repository ?? "This repository") is allowed by your recently verified GitHub connection. This request did not read repository content."
+                             : (connectionRequest.repository.map { "Detected \($0). Yes opens GitHub setup with this repository prefilled. Suzzme reads nothing until you choose access and verify it." }
+                                ?? "Detected an active \(connectionRequest.serviceName) tab. Yes opens its connection setup. Suzzme has not read the page or signed in.") )
+                            .font(.caption).foregroundStyle(.white.opacity(0.72))
+                            .fixedSize(horizontal: false, vertical: true)
+                        HStack(spacing: 8) {
+                            if connectionRequest.alreadyAllowed {
+                                Button { onConnectionDecision?(.later) } label: {
+                                    Text("Done").frame(minHeight: SuzzmeTheme.Layout.touchTarget)
+                                }
+                                    .accessibilityIdentifier("suzzme-github-request-already-allowed")
+                                    .keyboardShortcut(.defaultAction)
+                            } else {
+                            Button { onConnectionDecision?(.decline) } label: {
+                                Text("No").frame(minHeight: SuzzmeTheme.Layout.touchTarget)
+                            }
+                                .accessibilityIdentifier("suzzme-github-request-no")
+                            Button { onConnectionDecision?(.later) } label: {
+                                Text("Not now").frame(minHeight: SuzzmeTheme.Layout.touchTarget)
+                            }
+                                .accessibilityIdentifier("suzzme-github-request-later")
+                            Spacer(minLength: 0)
+                            Button { onConnectionDecision?(.connect) } label: {
+                                Text("Yes").frame(minHeight: SuzzmeTheme.Layout.touchTarget)
+                            }
+                                .buttonStyle(.borderedProminent)
+                                .tint(colors.primary)
+                                .accessibilityIdentifier("suzzme-github-request-yes")
+                                .keyboardShortcut(.defaultAction)
+                            }
+                        }
+                        .buttonStyle(.bordered)
+                        .tint(.white)
+                    }
+                    .padding(.horizontal, SuzzmeTheme.Spacing.medium)
+                    .padding(.bottom, SuzzmeTheme.Spacing.small)
+                }
             }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding(.top, hasNotch ? notchHeight : 0)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .background(.black, in: shape)
+        .clipShape(shape)
         .overlay {
             SuzzmeNotchEdgeTrace(
-                attached: hasNotch,
-                primary: colors.primary,
-                secondary: colors.secondary,
-                highlight: colors.highlight,
+                shape: shape,
+                glow: edgeGlow,
+                primary: statusAccent ?? colors.primary,
+                secondary: statusAccent ?? colors.secondary,
+                highlight: statusAccent ?? colors.highlight,
+                state: state,
                 isActive: presentation.emphasis != .ambient,
                 animation: animation
             )
         }
-        .shadow(color: reduceTransparency ? .clear : colors.glow.opacity(state == .idle ? 0 : edgeGlow), radius: 5, y: 3)
+        .animation(surfaceTransition, value: state)
+        .animation(surfaceTransition, value: review?.id)
+        .animation(surfaceTransition, value: response != nil)
+        .animation(surfaceTransition, value: signal)
+        .animation(surfaceTransition, value: visibleBackgroundActivity)
         .environment(\.colorScheme, .dark)
         .accessibilityElement(children: .contain)
-        .accessibilityLabel(presentation.systemStatus)
+        .accessibilityLabel(isQuietIdle && hasNotch ? "Suzzme. Talk to Suzzme" : (visibleBackgroundActivity.map { "Suzzme. Daily Summary. \($0.title)" } ?? presentation.systemStatus))
+    }
+
+    private var hoverControls: some View {
+        HStack(spacing: SuzzmeTheme.Spacing.small) {
+            Button(action: onInvoke) {
+                HStack(spacing: SuzzmeTheme.Spacing.xs) {
+                    SuzzmeMascot(state: .idle, size: 32, animation: .minimal)
+                        .accessibilityHidden(true)
+                    Text("Talk")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(.white)
+                }
+                .frame(minHeight: SuzzmeTheme.Layout.touchTarget)
+                .padding(.horizontal, SuzzmeTheme.Spacing.small)
+                .background(.white.opacity(0.10), in: Capsule())
+            }
+            .buttonStyle(.plain)
+            .keyboardShortcut(.defaultAction)
+            .accessibilityIdentifier("suzzme-notch-talk")
+            .accessibilityLabel("Talk to Suzzme")
+            .help("Click to start talking")
+            if let onPushToTalkPress, let onPushToTalkRelease {
+                Spacer(minLength: 0)
+                MacNotchHoldToTalkControl(onPress: onPushToTalkPress,
+                    onRelease: onPushToTalkRelease, onAccessibleActivate: onInvoke)
+            }
+        }
+        .padding(.horizontal, SuzzmeTheme.Spacing.medium)
+        .frame(maxWidth: .infinity, minHeight: 54)
+    }
+
+    private var contextChips: some View {
+        ForEach(contextLabels, id: \.self) { label in
+            Text(label)
+                .font(.caption2.weight(.medium))
+                .lineLimit(1)
+                .accessibilityLabel(label)
+                .foregroundStyle(.white.opacity(0.82))
+                .padding(.horizontal, SuzzmeTheme.Spacing.xs)
+                .padding(.vertical, SuzzmeTheme.Spacing.xxs)
+                .background(.white.opacity(reduceTransparency ? 0.18 : 0.09), in: Capsule())
+        }
     }
 
     private var surfaceTapInvokes: Bool {
-        guard review == nil else { return false }
+        guard review == nil, connectionRequest == nil, response == nil, visibleBackgroundActivity == nil else { return false }
         return switch state {
         case .idle, .success, .error: true
         default: false
         }
     }
+
+    private var isQuietIdle: Bool {
+        state == .idle && signal == .none && review == nil
+            && connectionRequest == nil && response == nil && visibleBackgroundActivity == nil
+    }
+
+    private var visibleBackgroundActivity: ScheduledBriefingActivity? {
+        guard state == .idle, response == nil, review == nil, connectionRequest == nil else { return nil }
+        return backgroundActivity
+    }
+
+    private var statusAccent: Color? {
+        switch presentation.emphasis {
+        case .success: SuzzmeTheme.success
+        case .error: SuzzmeTheme.warning
+        case .ambient, .active, .confirmation: nil
+        }
+    }
+
+    private var surfaceTransition: Animation? {
+        guard !reduceMotion, animation != .minimal, scenePhase == .active else { return nil }
+        return .spring(duration: SuzzmeTheme.Motion.presenceExpansion, bounce: animation == .pulse ? 0.08 : 0)
+    }
 }
 
-/// Concave shoulders meet the cutout below its hardware edge. No fake notch.
+private struct MacNotchHoldToTalkControl: View {
+    let onPress: () -> Void
+    let onRelease: () -> Void
+    let onAccessibleActivate: () -> Void
+    @State private var isPressed = false
+
+    var body: some View {
+        Label("Hold", systemImage: "mic.fill")
+            .font(.subheadline.weight(.semibold))
+            .foregroundStyle(.white)
+            .frame(minHeight: SuzzmeTheme.Layout.touchTarget)
+            .padding(.horizontal, SuzzmeTheme.Spacing.medium)
+            .background(SuzzmeTheme.intelligencePrimary.opacity(0.72), in: Capsule())
+            .contentShape(Capsule())
+            .gesture(
+                DragGesture(minimumDistance: 0)
+                    .onChanged { _ in
+                        guard !isPressed else { return }
+                        isPressed = true
+                        onPress()
+                    }
+                    .onEnded { _ in
+                        guard isPressed else { return }
+                        isPressed = false
+                        onRelease()
+                    }
+            )
+            .accessibilityElement()
+            .accessibilityAddTraits(.isButton)
+            .accessibilityIdentifier("suzzme-notch-hold")
+            .accessibilityLabel("Hold to talk")
+            .accessibilityHint("Press and hold, then release to send. VoiceOver activation starts tap-to-talk.")
+            .accessibilityAction { onAccessibleActivate() }
+            .help("Hold to talk; release to send")
+    }
+}
+
+/// The entire silhouette attaches to the display's top edge. The measured
+/// cutout controls minimum width; its height is a content inset, never a gap
+/// in the black surface. The fill and glow share one path.
 struct SuzzmeNotchSurfaceShape: Shape {
     var attached: Bool
     var neckWidth: CGFloat
+    var topCornerRadius: CGFloat = 8
+    var bottomCornerRadius: CGFloat = 18
+
+    var animatableData: AnimatablePair<CGFloat, CGFloat> {
+        get { .init(topCornerRadius, bottomCornerRadius) }
+        set {
+            topCornerRadius = newValue.first
+            bottomCornerRadius = newValue.second
+        }
+    }
 
     func path(in rect: CGRect) -> Path {
+        guard isValid(rect) else { return Path() }
         guard attached else { return RoundedRectangle(cornerRadius: 24, style: .continuous).path(in: rect) }
-        let shoulderDepth = min(12.0, rect.height * 0.28)
-        let radius = min(18.0, max(10.0, rect.height * 0.18))
-        let neck = min(max(0, neckWidth), max(0, rect.width - 24))
-        let left = rect.midX - neck / 2
-        let right = rect.midX + neck / 2
-        var path = Path()
-        path.move(to: CGPoint(x: left, y: rect.minY))
-        path.addLine(to: CGPoint(x: right, y: rect.minY))
-        path.addCurve(to: CGPoint(x: rect.maxX, y: rect.minY + shoulderDepth), control1: CGPoint(x: right, y: rect.minY + shoulderDepth), control2: CGPoint(x: rect.maxX, y: rect.minY))
-        path.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY - radius))
-        path.addQuadCurve(to: CGPoint(x: rect.maxX - radius, y: rect.maxY), control: CGPoint(x: rect.maxX, y: rect.maxY))
-        path.addLine(to: CGPoint(x: rect.minX + radius, y: rect.maxY))
-        path.addQuadCurve(to: CGPoint(x: rect.minX, y: rect.maxY - radius), control: CGPoint(x: rect.minX, y: rect.maxY))
-        path.addLine(to: CGPoint(x: rect.minX, y: rect.minY + shoulderDepth))
-        path.addCurve(to: CGPoint(x: left, y: rect.minY), control1: CGPoint(x: rect.minX, y: rect.minY), control2: CGPoint(x: left, y: rect.minY + shoulderDepth))
+        var path = skirtPath(in: rect)
         path.closeSubpath()
         return path
     }
-}
 
-/// Only the lower perimeter glows. Leaving the top edge black makes the app
-/// surface visually continuous with the physical notch instead of outlined.
-private struct SuzzmeNotchRimShape: Shape {
-    let attached: Bool
-
-    func path(in rect: CGRect) -> Path {
-        guard attached else {
-            return RoundedRectangle(cornerRadius: 18, style: .continuous).path(in: rect)
-        }
-        let shoulderDepth = min(12.0, rect.height * 0.28)
-        let radius = min(18.0, max(10.0, rect.height * 0.18))
+    /// Open skirt: concave top corners, sides and rounded bottom. Its endpoints
+    /// touch the display edge; the flat bezel line remains deliberately dark.
+    func skirtPath(in rect: CGRect) -> Path {
+        guard isValid(rect) else { return Path() }
+        guard attached else { return RoundedRectangle(cornerRadius: 24, style: .continuous).path(in: rect) }
+        let neck = min(nonnegative(neckWidth), rect.width)
+        let top = min(nonnegative(topCornerRadius), rect.height, (rect.width - neck) / 2)
+        let bottom = min(nonnegative(bottomCornerRadius), rect.width / 2 - top, rect.height - top)
+        let bodyTop = rect.minY
+        let left = rect.minX + top
+        let right = rect.maxX - top
         var path = Path()
-        path.move(to: CGPoint(x: rect.minX, y: rect.minY + shoulderDepth))
-        path.addLine(to: CGPoint(x: rect.minX, y: rect.maxY - radius))
-        path.addQuadCurve(
-            to: CGPoint(x: rect.minX + radius, y: rect.maxY),
-            control: CGPoint(x: rect.minX, y: rect.maxY)
-        )
-        path.addLine(to: CGPoint(x: rect.maxX - radius, y: rect.maxY))
-        path.addQuadCurve(
-            to: CGPoint(x: rect.maxX, y: rect.maxY - radius),
-            control: CGPoint(x: rect.maxX, y: rect.maxY)
-        )
-        path.addLine(to: CGPoint(x: rect.maxX, y: rect.minY + shoulderDepth))
+        path.move(to: CGPoint(x: rect.minX, y: bodyTop))
+        path.addQuadCurve(to: CGPoint(x: left, y: bodyTop + top), control: CGPoint(x: left, y: bodyTop))
+        path.addLine(to: CGPoint(x: left, y: rect.maxY - bottom))
+        path.addQuadCurve(to: CGPoint(x: left + bottom, y: rect.maxY), control: CGPoint(x: left, y: rect.maxY))
+        path.addLine(to: CGPoint(x: right - bottom, y: rect.maxY))
+        path.addQuadCurve(to: CGPoint(x: right, y: rect.maxY - bottom), control: CGPoint(x: right, y: rect.maxY))
+        path.addLine(to: CGPoint(x: right, y: bodyTop + top))
+        path.addQuadCurve(to: CGPoint(x: rect.maxX, y: bodyTop), control: CGPoint(x: right, y: bodyTop))
         return path
+    }
+
+    private func nonnegative(_ value: CGFloat) -> CGFloat { value.isFinite ? max(0, value) : 0 }
+
+    private func isValid(_ rect: CGRect) -> Bool {
+        !rect.isNull && !rect.isInfinite
+            && rect.origin.x.isFinite && rect.origin.y.isFinite
+            && rect.size.width.isFinite && rect.size.height.isFinite
+            && rect.maxX.isFinite && rect.maxY.isFinite
+            && rect.size.width > 0 && rect.size.height > 0
     }
 }
 
+/// Animates exactly the same radii as the fill without closing the bezel edge.
+private struct SuzzmeNotchRimShape: Shape {
+    var surface: SuzzmeNotchSurfaceShape
+
+    var animatableData: AnimatablePair<CGFloat, CGFloat> {
+        get { surface.animatableData }
+        set { surface.animatableData = newValue }
+    }
+
+    func path(in rect: CGRect) -> Path { surface.skirtPath(in: rect) }
+}
+
 private struct SuzzmeNotchEdgeTrace: View {
-    let attached: Bool
+    let shape: SuzzmeNotchSurfaceShape
+    let glow: Double
     let primary: Color
     let secondary: Color
     let highlight: Color
+    let state: SuzzmeAssistantState
     let isActive: Bool
     let animation: SuzzmePresenceAnimation
 
@@ -429,178 +1007,303 @@ private struct SuzzmeNotchEdgeTrace: View {
     @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
     @Environment(\.colorSchemeContrast) private var contrast
     @Environment(\.scenePhase) private var scenePhase
-    @State private var breathes = false
+    @State private var phase: CGFloat = 0
+    @State private var sweep: CGFloat = 0
+    private var motion: SuzzmePresenceMotion { .make(for: state) }
 
     var body: some View {
-        SuzzmeNotchRimShape(attached: attached)
+        SuzzmeNotchRimShape(surface: shape)
             .stroke(
                 LinearGradient(
-                    colors: [primary.opacity(0.72), highlight, secondary, highlight.opacity(0.82)],
-                    startPoint: .leading,
-                    endPoint: .trailing
+                    colors: isActive ? [primary, secondary, highlight, primary] : [.white.opacity(0.18), .white.opacity(0.3)],
+                    startPoint: UnitPoint(x: phase * motion.travel, y: 0),
+                    endPoint: UnitPoint(x: 1 - phase * motion.travel, y: 1)
                 ),
                 style: StrokeStyle(
-                    lineWidth: contrast == .increased ? 2 : isActive ? 1.35 : 0.7,
+                    lineWidth: contrast == .increased ? 2 : isActive ? 1.6 : 0.7,
                     lineCap: .round,
                     lineJoin: .round
                 )
             )
-            .shadow(
-                color: reduceTransparency ? .clear : primary.opacity(isActive ? (breathes ? 0.38 : 0.18) : 0.08),
-                radius: isActive ? (breathes ? 7 : 3) : 2
-            )
-            .opacity(isActive ? (breathes ? 1 : 0.78) : 0.36)
-            .allowsHitTesting(false)
-            .task(id: "\(isActive)-\(animation.rawValue)-\(reduceMotion)-\(scenePhase == .active)") {
-                breathes = false
-                guard isActive, animation.duration > 0, !reduceMotion, scenePhase == .active else { return }
-                withAnimation(.easeInOut(duration: max(1.4, animation.duration)).repeatForever(autoreverses: true)) {
-                    breathes = true
+            .background {
+                if isActive && !reduceTransparency && contrast != .increased {
+                    SuzzmeNotchRimShape(surface: shape)
+                        .stroke(primary.opacity(0.18 + Double(phase) * 0.12), lineWidth: 5)
+                        .blur(radius: 3)
                 }
+            }
+            .overlay {
+                // One finite pass follows the same open rim as the black fill.
+                // It never crosses the physical cutout or loops while waiting.
+                SuzzmeNotchRimShape(surface: shape)
+                    .trim(from: max(0, sweep - 0.22), to: sweep)
+                    .stroke(highlight, style: StrokeStyle(lineWidth: contrast == .increased ? 2.5 : 2,
+                                                         lineCap: .round, lineJoin: .round))
+                    .opacity(isActive ? Double(phase) * 0.9 : 0)
+            }
+            .shadow(
+                color: reduceTransparency || contrast == .increased || !isActive ? .clear : primary.opacity(glow + Double(phase) * 0.1),
+                radius: isActive ? 2 + phase * 3 : 0
+            )
+            .opacity(isActive ? 0.78 + Double(phase) * 0.22 : 0.36)
+            .allowsHitTesting(false)
+            .task(id: "\(state.rawValue)-\(animation.rawValue)-\(reduceMotion)-\(scenePhase == .active)") {
+                var reset = Transaction()
+                reset.disablesAnimations = true
+                withTransaction(reset) { phase = 0; sweep = 0 }
+                guard isActive, SuzzmePresenceMotion.allowsMotion(state: state, animation: animation,
+                                                                  reduceMotion: reduceMotion, isActive: scenePhase == .active) else { return }
+                let duration = motion.entryDuration(for: animation)
+                withAnimation(.smooth(duration: duration)) { phase = 1 }
+                withAnimation(.easeInOut(duration: min(1.2, duration + 0.45))) { sweep = 1 }
+                do { try await Task.sleep(for: .seconds(duration)) }
+                catch { return }
+                guard !Task.isCancelled else { return }
+                withAnimation(.easeOut(duration: SuzzmeTheme.Motion.calm)) { phase = 0 }
             }
             .accessibilityHidden(true)
     }
 }
 
 enum MacAssistantSurfaceMetrics {
+    static func cornerRadii(state: SuzzmeAssistantState, signal: SuzzmeProactivePresenceSignal, hasDetail: Bool) -> (top: CGFloat, bottom: CGFloat) {
+        if hasDetail { return (12, 22) }
+        if state == .idle && signal == .none { return (6, 12) }
+        return (8, 18)
+    }
+
     static func size(
         state: SuzzmeAssistantState,
         signal: SuzzmeProactivePresenceSignal,
         notchWidth: CGFloat,
         review: SuzzmePresenceReview?,
-        response: String?
+        response: String?,
+        connectionRequest: MacGitHubConnectionRequest? = nil,
+        notchHeight: CGFloat = 0,
+        contextLabels: [String] = [],
+        backgroundActivity: ScheduledBriefingActivity? = nil,
+        isHovered: Bool = false
     ) -> CGSize {
-        let presentation = SuzzmeAssistantPresentation.make(for: state)
-        let hasDetail = review != nil || response != nil
+        let showsBackground = state == .idle && review == nil && response == nil && connectionRequest == nil && backgroundActivity != nil
+        let hasDetail = review != nil || response != nil || connectionRequest != nil || showsBackground
         let compactIdle = state == .idle && signal == .none && !hasDetail
         let width: CGFloat
         let height: CGFloat
 
+        // Never make the attachment narrower than the measured physical cutout.
+        let cutoutWidth = notchWidth.isFinite ? max(0, notchWidth) : 0
+        let activeWidth = max(cutoutWidth + SuzzmeTheme.Spacing.large,
+                              min(max(328, cutoutWidth + 148), 380.0))
         if hasDetail {
-            width = min(max(390, notchWidth + 190), 440)
-            height = review != nil ? 184 : 164
+            width = activeWidth
+            if showsBackground {
+                height = 296
+            } else if connectionRequest != nil {
+                height = 292
+            } else if review != nil {
+                height = 248
+            } else {
+                let measured = (response ?? "") as NSString
+                let textHeight = measured.boundingRect(
+                    with: CGSize(width: activeWidth - 32, height: 1_000),
+                    options: [.usesLineFragmentOrigin, .usesFontLeading],
+                    attributes: [.font: NSFont.preferredFont(forTextStyle: .body)]
+                ).height
+                height = min(344, max(200, ceil(textHeight) + 172))
+            }
         } else if compactIdle {
-            width = min(max(196, notchWidth + 20), 232)
-            height = 38
+            width = isHovered ? max(340, cutoutWidth + 144) : max(196, cutoutWidth + 12)
+            height = isHovered ? 62 : 8
         } else if state == .idle {
-            width = min(max(282, notchWidth + 86), 340)
-            height = 66
+            width = activeWidth
+            height = 78
         } else {
-            width = min(max(300, notchWidth + 104), 360)
-            height = presentation.canExpand ? 96 : 76
+            width = activeWidth
+            height = state == .listening ? 146 : 78
         }
-        return CGSize(width: width, height: height)
+        return CGSize(width: width, height: height + max(0, notchHeight) + (showsBackground || contextLabels.isEmpty ? 0 : 32))
     }
 }
 
-@MainActor
+/// One listen-only event tap sees both foreground and background keyboard edges.
+/// Its source runs on the main run loop; no event is swallowed or rewritten.
+@MainActor @Observable
 final class MacInvocationShortcutMonitor {
-    private static let signature: OSType = 0x53555A4D // "SUZM"
-    private var hotKey: EventHotKeyRef?
-    private var handler: EventHandlerRef?
-    private var localMonitor: Any?
+    private(set) var status: MacGlobalShortcutStatus = .disabled
+    private var eventTap: CFMachPort?
+    private var runLoopSource: CFRunLoopSource?
+    private var reducer = SuzzmePushToTalkEdgeReducer()
+    private var shortcut: SuzzmeKeyboardShortcut = .disabled
     private var invoke: (() -> Void)?
+    private var release: (() -> Void)?
     private var cancel: (() -> Void)?
     private var isInvocationActive: (() -> Bool)?
+    private var availabilityChanged: ((Bool) -> Void)?
+
+    var isPressed: Bool { reducer.isPressed }
 
     func start(
         shortcut: SuzzmeKeyboardShortcut,
+        enabled: Bool = true,
         isInvocationActive: @escaping () -> Bool,
         invoke: @escaping () -> Void,
-        cancel: @escaping () -> Void
+        release: @escaping () -> Void = {},
+        cancel: @escaping () -> Void,
+        availabilityChanged: @escaping (Bool) -> Void = { _ in }
     ) {
-        stop()
-        self.isInvocationActive = isInvocationActive
-        self.invoke = invoke
-        self.cancel = cancel
-
-        localMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
-            guard let self else { return event }
-            if event.keyCode == 53, self.isInvocationActive?() == true {
-                self.cancel?()
-                return nil
-            }
-            return event
-        }
-
-        guard shortcut != .disabled else { return }
-        var eventType = EventTypeSpec(
-            eventClass: OSType(kEventClassKeyboard),
-            eventKind: UInt32(kEventHotKeyPressed)
-        )
-        let installation = InstallEventHandler(
-            GetApplicationEventTarget(),
-            Self.hotKeyHandler,
-            1,
-            &eventType,
-            Unmanaged.passUnretained(self).toOpaque(),
-            &handler
-        )
-        guard installation == noErr else { return }
-
-        var reference: EventHotKeyRef?
-        let registration = RegisterEventHotKey(
-            shortcut.carbonKeyCode,
-            shortcut.carbonModifiers,
-            EventHotKeyID(signature: Self.signature, id: 1),
-            GetApplicationEventTarget(),
-            0,
-            &reference
-        )
-        guard registration == noErr else {
-            if let handler { RemoveEventHandler(handler) }
-            handler = nil
+        let shouldMonitor = enabled && shortcut.isEnabled
+        let hasPermission = shouldMonitor && CGPreflightListenEventAccess()
+        // Permission refreshes must not interrupt a held chord or replace its
+        // owner callbacks. Reuse only a genuinely healthy tap, not stale status.
+        if shouldMonitor, self.shortcut == shortcut, status == .ready, hasPermission,
+           let eventTap, CFMachPortIsValid(eventTap), CGEvent.tapIsEnabled(tap: eventTap),
+           let runLoopSource, CFRunLoopSourceIsValid(runLoopSource) {
             return
         }
-        hotKey = reference
+        stop()
+        self.shortcut = shortcut
+        self.isInvocationActive = isInvocationActive
+        self.invoke = invoke
+        self.release = release
+        self.cancel = cancel
+        self.availabilityChanged = availabilityChanged
+        guard shouldMonitor else { setStatus(.disabled); return }
+        // Launch never requests permission. Only an explicit Settings action may.
+        guard hasPermission else { setStatus(.needsPermission); return }
+        // Reconfiguration or recovery cannot turn an already-held chord into
+        // a new voice request. Wait for its release before accepting another.
+        resetPressedState()
+        let eventMask = [CGEventType.flagsChanged, .keyDown, .keyUp].reduce(CGEventMask(0)) {
+            $0 | (CGEventMask(1) << $1.rawValue)
+        }
+        guard let tap = CGEvent.tapCreate(
+            tap: .cgSessionEventTap,
+            place: .headInsertEventTap,
+            options: .listenOnly,
+            eventsOfInterest: eventMask,
+            callback: Self.eventTapCallback,
+            userInfo: Unmanaged.passUnretained(self).toOpaque()
+        ) else { setStatus(.unavailable); return }
+        guard let source = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, tap, 0) else {
+            CFMachPortInvalidate(tap)
+            setStatus(.unavailable)
+            return
+        }
+        eventTap = tap
+        runLoopSource = source
+        CFRunLoopAddSource(CFRunLoopGetMain(), source, .commonModes)
+        CGEvent.tapEnable(tap: tap, enable: true)
+        if CGEvent.tapIsEnabled(tap: tap) {
+            setStatus(.ready)
+        } else {
+            removeEventTap()
+            setStatus(.unavailable)
+        }
     }
 
     func stop() {
-        if let hotKey { UnregisterEventHotKey(hotKey) }
-        if let handler { RemoveEventHandler(handler) }
-        if let localMonitor { NSEvent.removeMonitor(localMonitor) }
-        hotKey = nil
-        handler = nil
-        localMonitor = nil
+        if reducer.isPressed { cancel?() }
+        reducer = SuzzmePushToTalkEdgeReducer()
+        removeEventTap()
         invoke = nil
+        release = nil
         cancel = nil
         isInvocationActive = nil
+        availabilityChanged = nil
+        status = .disabled
+    }
+
+    private func removeEventTap() {
+        if let runLoopSource {
+            CFRunLoopRemoveSource(CFRunLoopGetMain(), runLoopSource, .commonModes)
+            self.runLoopSource = nil
+        }
+        if let eventTap {
+            CFMachPortInvalidate(eventTap)
+            self.eventTap = nil
+        }
+    }
+
+    func resetPressedState() {
+        _ = reducer.handle(.init(kind: .reset, modifiers: Self.modifiers(CGEventSource.flagsState(.combinedSessionState))), shortcut: shortcut)
     }
 
     isolated deinit { stop() }
 
-    private func handleHotKey() { invoke?() }
+    private func setStatus(_ status: MacGlobalShortcutStatus) {
+        self.status = status
+        availabilityChanged?(status == .ready)
+    }
 
-    nonisolated private static let hotKeyHandler: EventHandlerUPP = { _, _, userData in
-        guard let userData else { return noErr }
-        // Carbon invokes this application event handler on the main event loop.
-        // Resolve only while the registered handler owns a live monitor; never
-        // carry its unretained address into an asynchronous task.
-        let address = UInt(bitPattern: userData)
-        MainActor.assumeIsolated {
-            guard let pointer = UnsafeMutableRawPointer(bitPattern: address) else { return }
-            let monitor = Unmanaged<MacInvocationShortcutMonitor>.fromOpaque(pointer).takeUnretainedValue()
-            monitor.handleHotKey()
+    private func handle(eventTypeRawValue: UInt32, keyCode: UInt16, modifiers: SuzzmeShortcutModifiers, isRepeat: Bool) {
+        guard eventTap != nil, let eventType = CGEventType(rawValue: eventTypeRawValue) else { return }
+        if eventType == .tapDisabledByTimeout || eventType == .tapDisabledByUserInput {
+            let wasPressed = reducer.isPressed
+            resetPressedState()
+            // A lost key-up retires this held capture. An unrelated text or
+            // already-released voice response does not belong to the tap.
+            if wasPressed { cancel?() }
+            guard let eventTap, CGPreflightListenEventAccess() else {
+                removeEventTap()
+                setStatus(.needsPermission)
+                return
+            }
+            CGEvent.tapEnable(tap: eventTap, enable: true)
+            if CGEvent.tapIsEnabled(tap: eventTap) {
+                setStatus(.ready)
+            } else {
+                removeEventTap()
+                setStatus(.unavailable)
+            }
+            return
         }
-        return noErr
+        guard status == .ready else { return }
+        if eventType == .keyDown, keyCode == 53, !isRepeat,
+           isInvocationActive?() == true {
+            _ = reducer.handle(.init(kind: .reset, modifiers: modifiers), shortcut: shortcut)
+            cancel?()
+            return
+        }
+        let kind: SuzzmePushToTalkKeyEvent.Kind
+        switch eventType {
+        case .flagsChanged: kind = .flagsChanged
+        case .keyDown: kind = .keyDown
+        case .keyUp: kind = .keyUp
+        default: return
+        }
+        switch reducer.handle(.init(kind: kind, keyCode: keyCode, modifiers: modifiers,
+                                  isRepeat: isRepeat), shortcut: shortcut) {
+        case .none: break
+        case .pressed: invoke?()
+        case .released: release?()
+        case .cancelled: cancel?()
+        }
+    }
+
+    nonisolated private static func modifiers(_ flags: CGEventFlags) -> SuzzmeShortcutModifiers {
+        var modifiers: SuzzmeShortcutModifiers = []
+        if flags.contains(.maskControl) { modifiers.insert(.control) }
+        if flags.contains(.maskAlternate) { modifiers.insert(.option) }
+        if flags.contains(.maskCommand) { modifiers.insert(.command) }
+        if flags.contains(.maskShift) { modifiers.insert(.shift) }
+        return modifiers
+    }
+
+    nonisolated private static let eventTapCallback: CGEventTapCallBack = { _, type, event, userInfo in
+        if let userInfo {
+            let address = UInt(bitPattern: userInfo)
+            let eventTypeRawValue = type.rawValue
+            let keyCode = UInt16(truncatingIfNeeded: event.getIntegerValueField(.keyboardEventKeycode))
+            let modifiers = MacInvocationShortcutMonitor.modifiers(event.flags)
+            let isRepeat = event.getIntegerValueField(.keyboardEventAutorepeat) != 0
+            MainActor.assumeIsolated {
+                guard let pointer = UnsafeMutableRawPointer(bitPattern: address) else { return }
+                let monitor = Unmanaged<MacInvocationShortcutMonitor>.fromOpaque(pointer).takeUnretainedValue()
+                monitor.handle(eventTypeRawValue: eventTypeRawValue, keyCode: keyCode, modifiers: modifiers, isRepeat: isRepeat)
+            }
+        }
+        return Unmanaged.passUnretained(event)
     }
 }
 
-private extension SuzzmeKeyboardShortcut {
-    var carbonKeyCode: UInt32 {
-        switch self {
-        case .commandOptionSpace, .commandShiftSpace: UInt32(kVK_Space)
-        case .commandOptionReturn: UInt32(kVK_Return)
-        case .disabled: 0
-        }
-    }
-
-    var carbonModifiers: UInt32 {
-        switch self {
-        case .commandOptionSpace, .commandOptionReturn: UInt32(cmdKey | optionKey)
-        case .commandShiftSpace: UInt32(cmdKey | shiftKey)
-        case .disabled: 0
-        }
-    }
-}
 #endif

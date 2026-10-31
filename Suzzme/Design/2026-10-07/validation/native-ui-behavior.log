@@ -1,0 +1,58 @@
+/var/folders/tp/gdnfpld55dj76lq6wbsnlml40000gn/T/SuzzmeFinalUITests-o_ya9pya/Build/Build/Products/Debug/Suzzme.app: replacing existing signature
+PASS shared semantic mapping: idle
+PASS shared semantic mapping: listening
+PASS shared semantic mapping: transcribing
+PASS shared semantic mapping: understanding
+PASS shared semantic mapping: gatheringContext
+PASS shared semantic mapping: reasoning
+PASS shared semantic mapping: planning
+PASS shared semantic mapping: awaitingConfirmation
+PASS shared semantic mapping: acting
+PASS shared semantic mapping: speaking
+PASS shared semantic mapping: success
+PASS shared semantic mapping: error
+PASS idle hidden
+PASS success collapses
+PASS generic request completion never claims mutation done
+PASS minimal has no continuous motion
+PASS five distinct named themes
+PASS face adapts: suzzmePurple
+PASS face adapts: burgundy
+PASS face adapts: deepBlue
+PASS face adapts: silver
+PASS face adapts: graphite
+PASS no fabricated Live Activity: assistantInteraction
+PASS no fabricated Live Activity: dailySummaryReady
+PASS no fabricated Live Activity: opportunityReady
+PASS no fabricated Live Activity: timeCriticalNotice
+PASS navigation: home
+PASS navigation: today
+PASS navigation: briefing
+PASS navigation: memory
+PASS navigation: sources
+PASS navigation: history
+PASS navigation: settings
+PASS specific destructive verbs
+PASS permission availability distinctions
+PASS presence geometry bounded: (316.0, 102.0), attached false
+PASS presence geometry bounded: (316.0, 102.0), attached true
+PASS presence geometry bounded: (380.0, 300.0), attached false
+PASS presence geometry bounded: (380.0, 300.0), attached true
+PASS presence geometry bounded: (10.0, 10.0), attached false
+PASS presence geometry bounded: (10.0, 10.0), attached true
+PASS central action projected into Presence
+PASS wrong action rejected
+PASS wrong owner rejected
+PASS stale callbacks cannot mutate
+PASS cancel clears confirmation projection
+PASS cancel preserves target
+PASS cancelled confirmation rejected
+PASS new proposal has new identity
+PASS valid UI confirmation reaches central execution
+PASS duplicate confirmation rejected
+PASS cancellation removes private presentation
+PASS cancelled Core memory proposal cannot revive through text
+Final UI passed: 53
+Final UI failed: 0
+
+

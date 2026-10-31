@@ -1,0 +1,163 @@
+CoreData: debug: PostSaveMaintenance: incremental_vacuum with freelist_count - 38 and pages_to_free 7
+PASS Calendar normalization
+PASS Reminder normalization
+PASS stable source provenance
+PASS authoritative timestamps
+PASS effective date and normalization provenance
+PASS source collision protection
+PASS current freshness
+PASS stale freshness
+PASS expired freshness
+PASS future effective freshness
+PASS unknown date stays unknown
+PASS missing identifier rejected
+PASS empty title rejected
+PASS future modification rejected
+PASS raw payload bound
+PASS normalized text limits
+PASS entity limits
+PASS inverted period rejected
+PASS nonfinite time rejected
+PASS DST repeated hour remains distinct
+PASS DST identity includes absolute instant
+PASS time zone equivalent instant preserved
+PASS DST spring gap not reinterpreted
+PASS registered source resolves
+PASS unknown source rejected
+PASS unregistered source rejected
+PASS privacy before persistence: password
+PASS privacy before persistence: OTP
+PASS privacy before persistence: verification
+PASS privacy before persistence: API
+PASS privacy before persistence: access
+PASS privacy before persistence: Bearer
+PASS privacy before truncation
+PASS privacy covers entities
+PASS real SwiftData insertion
+PASS repeated Calendar observation dedup
+PASS dedup safe diagnostic
+PASS successful checkpoint
+PASS timestamp-only change dedup
+PASS correction supersedes previous
+PASS history link retained
+PASS deterministic location consolidation
+PASS only corrected interpretation retrieved
+PASS deterministic schedule consolidation
+PASS older source version cannot overwrite
+PASS explicit cancellation invalidates live interpretation
+PASS supersession group bounded
+PASS stale observations excluded
+PASS health becomes stale
+PASS expiration cleanup
+PASS expired diagnostic
+PASS repeated Reminder observation dedup
+PASS Reminder completion update
+PASS newly restricted record invalidates retained interpretation
+PASS permission required health
+PASS no fetch without permission
+PASS permission denied health
+PASS unsupported health
+PASS healthy empty distinct
+PASS truthful healthy empty response
+PASS source error health
+PASS failure retains successful checkpoint
+PASS failure attempt recorded
+PASS failure does not infer deletion
+PASS failed source not presented as current
+PASS failure not claimed empty
+PASS recovery restores current results
+PASS permission revocation health
+PASS retrieval rechecks permission
+PASS partial snapshot cannot infer absence
+PASS partial snapshot diagnostic
+PASS complete scoped snapshot invalidates disappeared record
+PASS absence never falsely claims deletion
+PASS live restoration outranks absence tombstone
+PASS disabled source not fetched
+PASS disabled source excluded from retrieval
+PASS disable retains local information
+PASS disabled source health
+PASS reenable resumes safely
+PASS future checkpoint bounded recovery
+PASS invalidated checkpoint cannot commit
+PASS intake bound enforced
+PASS bounded considered diagnostic
+PASS overflow reported
+PASS retrieval ceiling
+PASS negative retrieval safely empty
+PASS source filter
+PASS exact entity filtering no similar-person merge
+PASS same wording different identities dates not merged
+PASS time window filter
+PASS since filter
+PASS future filter
+PASS history group stays bounded after repeated corrections
+PASS newest correction survives retention
+PASS global record bound
+PASS per cycle persistence bound includes absence records
+PASS unrecorded absence invalidates previous active interpretation
+PASS unowned clear rejected
+PASS stale clear rejected
+PASS confirmed clear deletes information
+PASS clear resets checkpoint
+PASS clear preserves source preference
+PASS clear cannot replay
+PASS cleanup retrieval race excludes expired records
+PASS retention cleanup after long inactivity
+PASS simultaneous refresh coalesced
+PASS simultaneous refresh no duplicate persistence
+PASS lifecycle callbacks debounced
+PASS activation refresh resumes after debounce
+PASS disable race cannot advance checkpoint
+PASS disable race cannot expose results
+PASS superseded intake cannot overwrite newer result
+PASS permission checked again after fetch
+PASS revocation cannot commit checkpoint
+PASS app deactivation cancels intake ownership
+PASS cancelled refresh not represented as current
+PASS real information path reaches SuzzmeCore
+PASS source instructions produce no action or extraction
+PASS source injection cannot mutate EventKit capability
+PASS source injection cannot propose or self-confirm action
+PASS information never automatically admitted to memory
+PASS source instructions remain quoted data
+PASS raw notes never retrieved or sent to model
+PASS live context route preserved
+PASS core retrieval bounded
+PASS core source selection
+PASS fresh source authority invalidates deleted information in core
+PASS live refresh cannot execute source commands
+PASS core permission failure truthful
+PASS history query cannot contaminate long term memory
+PASS information clear cannot mutate source
+PASS unbounded query not admitted
+Step 9 behavioral checks: 132 passed / 0 failed
+PASS real pre-Step-9 memory fixture seeded
+PASS legacy fixture created before information store
+Step 9 behavioral checks: 2 passed / 0 failed
+PASS legacy memory survives Step 9 store open: seed
+PASS disk insert persisted
+PASS real information disk file exists
+PASS information mutations preserve legacy memory: seed
+Step 9 behavioral checks: 4 passed / 0 failed
+PASS legacy memory survives Step 9 store open: reopen
+PASS separate process disk retrieval
+PASS checkpoint survives process restart
+PASS dedup after process restart
+PASS disk supersession persisted
+PASS information mutations preserve legacy memory: reopen
+Step 9 behavioral checks: 6 passed / 0 failed
+PASS legacy memory survives Step 9 store open: expire
+PASS supersession survives process restart
+PASS disk history relationship survives
+PASS expiration after process restart
+PASS disk expiration cleanup
+PASS confirmed disk clear
+PASS information mutations preserve legacy memory: expire
+Step 9 behavioral checks: 7 passed / 0 failed
+PASS legacy memory survives Step 9 store open: cleared
+PASS clear survives separate process restart
+PASS source preference survives clear restart
+PASS cleared checkpoint survives restart
+PASS information mutations preserve legacy memory: cleared
+Step 9 behavioral checks: 5 passed / 0 failed

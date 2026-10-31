@@ -20,18 +20,20 @@ import SwiftData
     var supersedes: UUID?
     var isSuperseded: Bool
     var normalizationVersion: Int
+    var isAllDay: Bool? = nil
     init(_ value: InformationEvent) {
         id = value.id; source = value.source.rawValue; externalID = value.externalID; kind = value.kind.rawValue
         title = value.title; location = value.location; entities = value.entities; sourceUpdatedAt = value.sourceUpdatedAt
         observedAt = value.observedAt; effectiveAt = value.effectiveAt; effectiveUntil = value.effectiveUntil; expiresAt = value.expiresAt
         sensitivity = value.sensitivity.rawValue; fingerprint = value.fingerprint; objectState = value.objectState.rawValue
-        supersedes = value.supersedes; isSuperseded = value.isSuperseded; normalizationVersion = value.normalizationVersion
+        supersedes = value.supersedes; isSuperseded = value.isSuperseded; normalizationVersion = value.normalizationVersion; isAllDay = value.isAllDay
     }
     var value: InformationEvent? {
         guard let source = InformationSourceID(rawValue: source), let kind = InformationKind(rawValue: kind),
               let sensitivity = SuzzmeContextSensitivity(rawValue: sensitivity), sensitivity != .restricted,
               let state = InformationObjectState(rawValue: objectState), normalizationVersion == 1,
-              !externalID.isEmpty, externalID.count <= 512, !title.isEmpty, title.count <= 240, location.count <= 180, entities.count <= 5,
+              !externalID.isEmpty, externalID.count <= 512, !title.isEmpty,
+              title.count <= (source == .messages ? InformationLimits.selectedMessageCharacters : 240), location.count <= 180, entities.count <= 5,
               entities.allSatisfy({ $0.count <= 60 }), sourceUpdatedAt.timeIntervalSince1970.isFinite,
               [effectiveAt, effectiveUntil].compactMap({ $0 }).allSatisfy({ $0.timeIntervalSince1970.isFinite }),
               PrivacyEngine().classify(([title, location, externalID] + entities).joined(separator: " ")).policy != .neverProcess,
@@ -39,7 +41,7 @@ import SwiftData
         return .init(id: id, source: source, externalID: externalID, kind: kind, title: title, location: location, entities: entities,
                      sourceUpdatedAt: sourceUpdatedAt, observedAt: observedAt, effectiveAt: effectiveAt, effectiveUntil: effectiveUntil,
                      expiresAt: expiresAt, sensitivity: sensitivity, fingerprint: fingerprint, objectState: state,
-                     supersedes: supersedes, isSuperseded: isSuperseded, normalizationVersion: normalizationVersion)
+                     supersedes: supersedes, isSuperseded: isSuperseded, normalizationVersion: normalizationVersion, isAllDay: isAllDay)
     }
 }
 @Model final class StoredInformationSource {
@@ -98,7 +100,10 @@ struct InformationClearReceipt: Sendable {
         try modelContext.save()
         return token
     }
-    func invalidate() { cycles.removeAll() }
+    func invalidate(respectingTaskCancellation: Bool = false) {
+        guard !respectingTaskCancellation || !Task.isCancelled else { return }
+        cycles.removeAll()
+    }
     func fail(_ cycle: InformationCycle, state health: InformationHealthState) throws {
         guard cycles[cycle.source] == cycle.id else { return }
         cycles.removeValue(forKey: cycle.source)
@@ -144,7 +149,7 @@ struct InformationClearReceipt: Sendable {
                 if let previous {
                     previous.isSuperseded = true; row.supersedes = previous.id; state.consolidated += 1
                     if raw.state == .cancelled { row.kind = InformationKind.cancellation.rawValue }
-                    else if previous.effectiveAt != row.effectiveAt || previous.effectiveUntil != row.effectiveUntil { row.kind = InformationKind.scheduleChange.rawValue }
+                    else if previous.effectiveAt != row.effectiveAt || previous.effectiveUntil != row.effectiveUntil || previous.isAllDay != row.isAllDay { row.kind = InformationKind.scheduleChange.rawValue }
                     else if previous.location != row.location { row.kind = InformationKind.locationChange.rawValue }
                 }
                 modelContext.insert(row); existing.append(row); state.accepted += 1; persisted += 1
@@ -152,7 +157,9 @@ struct InformationClearReceipt: Sendable {
             // Only a complete successful snapshot within the same scope proves absence.
             if complete {
                 for previous in existing where previous.source == cycle.source.rawValue && !previous.isSuperseded && previous.objectState != InformationObjectState.cancelled.rawValue && previous.objectState != InformationObjectState.absent.rawValue && !seen.contains(previous.externalID) {
-                    guard let date = previous.effectiveAt, batch.window.contains(date) else { continue }
+                    let coversOpenWork = cycle.source == .reminders && batch.coversOpenReminders
+                    guard previous.effectiveAt.map({ batch.window.contains($0) || coversOpenWork && $0 < batch.window.end })
+                        ?? (cycle.source == .reminders && batch.coversUndated) else { continue }
                     guard let old = previous.value else { continue }
                     previous.isSuperseded = true
                     guard persisted < InformationLimits.persistedPerCycle else { state.limited = true; continue }
@@ -179,6 +186,12 @@ struct InformationClearReceipt: Sendable {
             if $0.observedAt != $1.observedAt { return $0.observedAt > $1.observedAt }
             return $0.sourceUpdatedAt > $1.sourceUpdatedAt
         }) {
+            // Gmail keeps only its current short observation. Older versions
+            // may reflect a less strict local summary policy and are unnecessary.
+            if row.source == InformationSourceID.gmail.rawValue && row.isSuperseded {
+                modelContext.delete(row)
+                continue
+            }
             let key = row.source + ":" + row.externalID
             guard row.value != nil, row.expiresAt > now, now.timeIntervalSince(row.observedAt) <= InformationLimits.retention,
                   versions[key, default: 0] < InformationLimits.versions, retained.count < InformationLimits.records else {

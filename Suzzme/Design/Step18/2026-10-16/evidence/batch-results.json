@@ -1,0 +1,233 @@
+{
+  "macOS-build": {
+    "command": [
+      "xcodebuild",
+      "-project",
+      "/Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme.xcodeproj",
+      "-scheme",
+      "Suzzme",
+      "-configuration",
+      "Release",
+      "-clonedSourcePackagesDirPath",
+      "/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages",
+      "-disableAutomaticPackageResolution",
+      "-skipPackageUpdates",
+      "COMPILER_INDEX_STORE_ENABLE=NO",
+      "-jobs",
+      "1",
+      "-destination",
+      "platform=macOS,arch=arm64",
+      "-derivedDataPath",
+      "/tmp/SuzzmeFullApp20261016/mac",
+      "build"
+    ],
+    "exit": 0,
+    "reason": null,
+    "seconds": 69.56,
+    "logSHA256": "9dfee8003c0df7c961641acf40942d2a66f0a32754b37d7295499c66dd90760a"
+  },
+  "integration-presentation-check": {
+    "command": [
+      "zsh",
+      "/Users/rehan/Documents/Projects/Suzzme/Suzzme/Validation/integration-presentation-check.sh"
+    ],
+    "exit": 0,
+    "reason": null,
+    "seconds": 4.03,
+    "logSHA256": "aab969bdc026bec877ddee5f4afceab241774c0a5ecd009d70c0e2aaed15310e"
+  },
+  "voice-quality-check": {
+    "command": [
+      "zsh",
+      "/Users/rehan/Documents/Projects/Suzzme/Suzzme/Validation/voice-quality-check.sh"
+    ],
+    "exit": 0,
+    "reason": null,
+    "seconds": 4.04,
+    "logSHA256": "933521f0441b6583360c6f493b6a21ad387a2657fae2f287407f5fbd0932459d"
+  },
+  "voice-lifecycle-acceptance-check": {
+    "command": [
+      "zsh",
+      "/Users/rehan/Documents/Projects/Suzzme/Suzzme/Validation/voice-lifecycle-acceptance-check.sh"
+    ],
+    "exit": 0,
+    "reason": null,
+    "seconds": 5.04,
+    "logSHA256": "451b0e809092c24866b74f7702484d0cc82949b2b6156461603a801a028aa2f3"
+  },
+  "p0-blocker-check": {
+    "command": [
+      "zsh",
+      "/Users/rehan/Documents/Projects/Suzzme/Suzzme/Validation/p0-blocker-check.sh"
+    ],
+    "exit": 0,
+    "reason": null,
+    "seconds": 20.18,
+    "logSHA256": "8b73be845deac8a4b7e7325f9863c001a387b5258206aad28ce0903d080a2e03"
+  },
+  "product-flow-check": {
+    "command": [
+      "zsh",
+      "/Users/rehan/Documents/Projects/Suzzme/Suzzme/Validation/product-flow-check.sh"
+    ],
+    "exit": 0,
+    "reason": null,
+    "seconds": 25.2,
+    "logSHA256": "d9f2ce3f89c11fcb8e6791a6ea3b6075ea307f0d7eb3599f51d8c49011bb7aa3"
+  },
+  "step8-check": {
+    "command": [
+      "zsh",
+      "/Users/rehan/Documents/Projects/Suzzme/Suzzme/Validation/step8-check.sh"
+    ],
+    "exit": 0,
+    "reason": null,
+    "seconds": 29.13,
+    "logSHA256": "c13e117d24910cbc0e613523b99eb6784d879a5553eae451ea9407ac88461bc4"
+  },
+  "iOS-build": {
+    "command": [
+      "xcodebuild",
+      "-project",
+      "/Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme.xcodeproj",
+      "-scheme",
+      "Suzzme",
+      "-configuration",
+      "Release",
+      "-clonedSourcePackagesDirPath",
+      "/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages",
+      "-disableAutomaticPackageResolution",
+      "-skipPackageUpdates",
+      "COMPILER_INDEX_STORE_ENABLE=NO",
+      "-jobs",
+      "1",
+      "-destination",
+      "generic/platform=iOS Simulator",
+      "-derivedDataPath",
+      "/tmp/SuzzmeFullApp20261016/ios",
+      "CODE_SIGNING_ALLOWED=NO",
+      "ARCHS=arm64",
+      "ONLY_ACTIVE_ARCH=YES",
+      "build"
+    ],
+    "exit": 0,
+    "reason": null,
+    "seconds": 66.26,
+    "logSHA256": "57267cfde3d3ab2710dcdbe384012fe6234db7c442cf8b70df6cda76e3b141b8"
+  },
+  "macOS-fitted-build": {
+    "command": [
+      "xcodebuild",
+      "-project",
+      "/Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme.xcodeproj",
+      "-scheme",
+      "Suzzme",
+      "-configuration",
+      "Release",
+      "-clonedSourcePackagesDirPath",
+      "/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages",
+      "-disableAutomaticPackageResolution",
+      "-skipPackageUpdates",
+      "COMPILER_INDEX_STORE_ENABLE=NO",
+      "-jobs",
+      "1",
+      "-destination",
+      "platform=macOS,arch=arm64",
+      "-derivedDataPath",
+      "/tmp/SuzzmeFullApp20261016/mac",
+      "build"
+    ],
+    "exit": 0,
+    "reason": null,
+    "seconds": 74.27,
+    "logSHA256": "7a8f89e5aa35ba4df8062709832c63e1081cb67bc6dabee5bc282df7376f0ede"
+  },
+  "iOS-final-build": {
+    "command": [
+      "xcodebuild",
+      "-project",
+      "/Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme.xcodeproj",
+      "-scheme",
+      "Suzzme",
+      "-configuration",
+      "Release",
+      "-clonedSourcePackagesDirPath",
+      "/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages",
+      "-disableAutomaticPackageResolution",
+      "-skipPackageUpdates",
+      "COMPILER_INDEX_STORE_ENABLE=NO",
+      "-jobs",
+      "1",
+      "-destination",
+      "generic/platform=iOS Simulator",
+      "-derivedDataPath",
+      "/tmp/SuzzmeFullApp20261016/ios",
+      "CODE_SIGNING_ALLOWED=NO",
+      "ARCHS=arm64",
+      "ONLY_ACTIVE_ARCH=YES",
+      "build"
+    ],
+    "exit": 0,
+    "reason": null,
+    "seconds": 61.21,
+    "logSHA256": "01fd17fc43e20da8f501b3c10088965cec7652c078f720c98377198a84dc353d"
+  },
+  "macOS-accepted-build": {
+    "command": [
+      "xcodebuild",
+      "-project",
+      "/Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme.xcodeproj",
+      "-scheme",
+      "Suzzme",
+      "-configuration",
+      "Release",
+      "-clonedSourcePackagesDirPath",
+      "/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages",
+      "-disableAutomaticPackageResolution",
+      "-skipPackageUpdates",
+      "COMPILER_INDEX_STORE_ENABLE=NO",
+      "-jobs",
+      "1",
+      "-destination",
+      "platform=macOS,arch=arm64",
+      "-derivedDataPath",
+      "/tmp/SuzzmeFullApp20261016/mac",
+      "build"
+    ],
+    "exit": 0,
+    "reason": null,
+    "seconds": 75.29,
+    "logSHA256": "436dc4b41dd180e7f801693b1ec98ea9620a045fb627f7b0925ecfd62603c22c"
+  },
+  "iOS-accepted-build": {
+    "command": [
+      "xcodebuild",
+      "-project",
+      "/Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme.xcodeproj",
+      "-scheme",
+      "Suzzme",
+      "-configuration",
+      "Release",
+      "-clonedSourcePackagesDirPath",
+      "/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages",
+      "-disableAutomaticPackageResolution",
+      "-skipPackageUpdates",
+      "COMPILER_INDEX_STORE_ENABLE=NO",
+      "-jobs",
+      "1",
+      "-destination",
+      "generic/platform=iOS Simulator",
+      "-derivedDataPath",
+      "/tmp/SuzzmeFullApp20261016/ios",
+      "CODE_SIGNING_ALLOWED=NO",
+      "ARCHS=arm64",
+      "ONLY_ACTIVE_ARCH=YES",
+      "build"
+    ],
+    "exit": 0,
+    "reason": null,
+    "seconds": 62.24,
+    "logSHA256": "94ee0265bd84f290f69f63baa18ca59926852f84aa2d853df123957290f22e12"
+  }
+}

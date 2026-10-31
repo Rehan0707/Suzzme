@@ -31,13 +31,31 @@ struct ValidationSurface: View {
     @Environment(AppEnvironment.self) private var environment
     @State private var screen = "Home"
     @State private var variant = "Standard"
-    private let screens = ["Home", "Ask", "Voice", "Daily Summary", "Memory", "Sources", "Watched Links", "Settings", "Summary Settings", "Privacy", "Confirmation", "Error", "Compact Presence", "Expanded Presence", "Today", "Presence Settings", "Onboarding", "Permissions", "Listening", "Understanding", "Speaking", "Success", "Unavailable", "Mac Compact", "Mac Listening", "Mac Understanding", "Mac Context", "Mac Reasoning", "Mac Confirmation", "Mac Acting", "Mac Speaking", "Mac Success", "Mac Error", "Mac Expanded", "Mac Fallback", "Mac Main", "Motion Lab", "Empty", "Setup", "iPhone Main"]
+    @State private var reviewResult: String?
+    @State private var wakeCount = 0
+    @State private var holdPressCount = 0
+    @State private var holdReleaseCount = 0
+    private let screens = ["Home", "Ask", "Voice", "Daily Summary", "Memory", "Sources", "Watched Links", "Settings", "Summary Settings", "Privacy", "Confirmation", "Error", "Compact Presence", "Expanded Presence", "Today", "Presence Settings", "Onboarding", "Permissions", "Listening", "Understanding", "Speaking", "Success", "Unavailable", "Mac Idle", "Mac Hover", "Mac Compact", "Mac Listening", "Mac Understanding", "Mac Context", "Mac Reasoning", "Mac Confirmation", "Mac Acting", "Mac Speaking", "Mac Success", "Mac Error", "Mac Expanded", "Mac Fallback", "Mac Main", "Motion Lab", "Empty", "Setup", "iPhone Main"]
     private let variants = ["Standard", "Dark", "Accessibility", "Compact"]
+    private var isPolishCapture: Bool { ProcessInfo.processInfo.arguments.contains("--polish") }
+    private var compactWidth: CGFloat? {
+        #if os(macOS)
+        return variant == "Compact" && !isPolishCapture ? 320 : nil
+        #else
+        return variant == "Compact" ? 320 : nil
+        #endif
+    }
     init() {
         _screen = State(initialValue: ProcessInfo.processInfo.arguments.contains("--today-only") ? "Today" : "Home")
     }
     var body: some View {
         VStack(spacing: 0) {
+            if isPolishCapture {
+                Text("Development fixture · synthetic data")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .padding(.top, 8)
+            }
             HStack {
                 Picker("Surface", selection: $screen) { ForEach(screens, id: \.self) { Text($0) } }
                 Picker("Environment", selection: $variant) { ForEach(variants, id: \.self) { Text($0) } }
@@ -49,16 +67,19 @@ struct ValidationSurface: View {
                 .environment(\.dynamicTypeSize, variant == "Accessibility" ? .accessibility5 : .large)
                 .preferredColorScheme(variant == "Dark" ? .dark : .light)
         }
-        .onChange(of: screen) { _, value in environment.assistant.transition(to: Self.state(for: value)) }
-        .frame(maxWidth: variant == "Compact" ? 320 : nil)
+        .onChange(of: screen) { _, value in reviewResult = nil; wakeCount = 0; holdPressCount = 0; holdReleaseCount = 0; environment.assistant.transition(to: Self.state(for: value)) }
+        .frame(maxWidth: compactWidth)
         .frame(minHeight: 300)
         .task {
             do { try await RuntimeFixtures.prepare(); await environment.loadProactiveState(); await environment.loadWatchedLinks() }
             catch { print("Runtime fixture failed: \(error)"); return }
             #if os(iOS)
-            if ProcessInfo.processInfo.arguments.contains("--capture-matrix") { await captureMatrix() }
+            if ProcessInfo.processInfo.arguments.contains("--behavior-checks") {
+                await IOSRuntimeBehavior.run(reopen: ProcessInfo.processInfo.arguments.contains("--reopen"))
+            }
+            if ProcessInfo.processInfo.arguments.contains("--capture-matrix") || isPolishCapture { await captureMatrix() }
             #else
-            if ProcessInfo.processInfo.arguments.contains("--capture-matrix") { await captureMacMatrix() }
+            if ProcessInfo.processInfo.arguments.contains("--capture-matrix") || isPolishCapture { await captureMacMatrix() }
             #endif
         }
     }
@@ -80,15 +101,20 @@ struct ValidationSurface: View {
         #if os(macOS)
         case "Mac Main": MacRootView()
         case let name where name.hasPrefix("Mac "):
-            let state = Self.state(for: name)
-            let review: SuzzmePresenceReview? = name == "Mac Confirmation" ? .init(id: UUID(), title: "Delete ‘Submit project report’ from Reminders?", confirmationLabel: "Delete Reminder", isDestructive: true) : nil
-            let response = name == "Mac Expanded" ? "Your project review is at 11 AM in Lab 2. Bring your design notes. Would you like to hear what else is coming up?" : nil
-            let size = MacAssistantSurfaceMetrics.size(state: state, signal: .none, notchWidth: 180, review: review, response: response)
+            let hovering = name == "Mac Hover"
+            let state = reviewResult == nil ? Self.state(for: name) : .success
+            let review: SuzzmePresenceReview? = name == "Mac Confirmation" && reviewResult == nil ? .init(id: UUID(), title: "Delete ‘Submit project report’ from Reminders?", confirmationLabel: "Delete Reminder", isDestructive: true) : nil
+            let response = reviewResult ?? (name == "Mac Expanded" ? "Your project review is at 11 AM in Lab 2.\n\n" + String(repeating: "Bring your design notes and leave some time for your unfinished reminders. ", count: 32) + "\n\nEnd of the full answer. No text was discarded." : nil)
+            let size = MacAssistantSurfaceMetrics.size(state: state, signal: .none, notchWidth: 180, review: review, response: response, contextLabels: name == "Mac Context" ? ["Xcode", "Screen"] : [], isHovered: hovering)
             VStack(spacing: 0) {
                 Text("Development simulation · physical alignment pending").font(.caption).foregroundStyle(.secondary).padding(.bottom, 24)
                 if name != "Mac Fallback" { UnevenRoundedRectangle(bottomLeadingRadius: 8, bottomTrailingRadius: 8).fill(.black).frame(width: 180, height: 28) }
-                MacAssistantNotchSurface(state: state, theme: .suzzmePurple, animation: .minimal, signal: .none, hasNotch: name != "Mac Fallback", notchWidth: 180, review: review, response: response, onConfirmation: { _ in }, onCancel: {}, onInvoke: {})
+                MacAssistantNotchSurface(state: state, theme: .suzzmePurple, animation: .gentle, signal: .none, hasNotch: name != "Mac Fallback", notchWidth: 180, isHovered: hovering, review: review, response: response, audioLevel: state == .listening ? 0.55 : 0, contextLabels: name == "Mac Context" ? ["Xcode", "Screen"] : [], onConfirmation: { reviewResult = $0 ? "Confirmation callback received. Development simulation only; no item was deleted." : "Cancelled. Development simulation only; nothing changed." }, onCancel: {}, onInvoke: { wakeCount += 1 }, onPushToTalkPress: hovering ? { holdPressCount += 1 } : nil, onPushToTalkRelease: hovering ? { holdReleaseCount += 1 } : nil)
                     .frame(width: size.width, height: size.height)
+                if hovering {
+                    Text("Wake callbacks: \(wakeCount) · Hold press: \(holdPressCount) · Release: \(holdReleaseCount)")
+                        .accessibilityIdentifier("suzzme-wake-count")
+                }
             }.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top).padding(.top, 32)
         #endif
         case "Daily Summary": BriefingView()
@@ -111,11 +137,23 @@ struct ValidationSurface: View {
     @MainActor private func captureMacMatrix() async {
         let directory = URL(fileURLWithPath: "/tmp/SuzzmeFinalUI-MacScreenshots")
         try? FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
-        for mode in ["Standard", "Dark"] {
+        let captureModes = isPolishCapture ? variants : ["Standard", "Dark"]
+        let captureScreens = isPolishCapture ? ["Home", "Ask", "Mac Main"] : screens.filter {
+            !ProcessInfo.processInfo.arguments.contains("--focused") || ["Mac Main", "Mac Confirmation", "Mac Expanded"].contains($0)
+        }
+        for mode in captureModes {
             variant = mode
-            for name in screens.filter({ !ProcessInfo.processInfo.arguments.contains("--focused") || ["Mac Main", "Mac Confirmation", "Mac Expanded"].contains($0) }) {
+            for name in captureScreens {
                 #if os(macOS)
-                NSApp.windows.first(where: { !($0 is NSPanel) })?.setContentSize(NSSize(width: name == "Mac Main" ? 1040 : 680, height: 850))
+                let size: NSSize
+                if isPolishCapture {
+                    size = mode == "Compact"
+                        ? NSSize(width: 640, height: 500)
+                        : NSSize(width: name == "Mac Main" ? 1040 : 680, height: 700)
+                } else {
+                    size = NSSize(width: name == "Mac Main" ? 1040 : 680, height: 850)
+                }
+                NSApp.windows.first(where: { !($0 is NSPanel) })?.setContentSize(size)
                 #endif
                 screen = name
                 if name == "Today" { try? await RuntimeFixtures.prepareDay(); await environment.loadProactiveState() }
@@ -152,6 +190,7 @@ struct ValidationSurface: View {
         for mode in variants {
             variant = mode
             for name in screens.filter({ name in
+                if isPolishCapture { return ["Home", "Ask", "iPhone Main"].contains(name) }
                 if ProcessInfo.processInfo.arguments.contains("--today-only") { return name == "Today" }
                 if ProcessInfo.processInfo.arguments.contains("--focused"), mode != "Compact" { return ["Today", "iPhone Main"].contains(name) }
                 if mode == "Compact" { return ["Home", "Ask", "Daily Summary", "Sources", "Confirmation"].contains(name) }
@@ -169,6 +208,15 @@ struct ValidationSurface: View {
                 let renderer = UIGraphicsImageRenderer(bounds: window.bounds)
                 let screenshot = renderer.image { _ in window.drawHierarchy(in: window.bounds, afterScreenUpdates: true) }
                 try? screenshot.pngData()?.write(to: directory.appendingPathComponent("\(mode)-\(name).png"))
+                if isPolishCapture && name == "iPhone Main" {
+                    // Exercise the app-owned banner in a labelled render fixture.
+                    // This changes presentation only; it does not start recording.
+                    environment.assistant.transition(to: .listening)
+                    try? await Task.sleep(for: .milliseconds(500))
+                    let active = renderer.image { _ in window.drawHierarchy(in: window.bounds, afterScreenUpdates: true) }
+                    try? active.pngData()?.write(to: directory.appendingPathComponent("\(mode)-\(name)-active-banner.png"))
+                    environment.assistant.transition(to: .idle)
+                }
                 if mode == "Accessibility" {
                     func scrollViews(_ view: UIView) -> [UIScrollView] {
                         (view as? UIScrollView).map { [$0] } ?? view.subviews.flatMap(scrollViews)

@@ -1,0 +1,99 @@
+Validation/NotionCoreChecks.swift:243:9: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+241 |         expect(try await multiGateway.snapshot().allSatisfy { $0.state != .ready },
+242 |                "restarted metadata is never accepted as live account verification")
+243 |         try await credentials.save("synthetic-second-account", accountID: secondID)
+    |         `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+244 |         try await multiGateway.verify(accountID: selected.id)
+245 |         try await multiGateway.verify(accountID: secondID)
+
+[#UnnecessaryEffectMarker]: <https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker>
+PASS real Notion client verifies connection through shipping gateway
+PASS real account metadata store contains neither credential nor retrieved content
+PASS actual client → gateway → context → Core → model answer path works
+PASS answer includes verified account and page provenance
+PASS Core read revalidates identity and fetches exact page through real client
+PASS Notion content reaches existing model as untrusted facts
+PASS Notion instructions never reach extraction or create Suzzme items
+PASS retrieved injection cannot authorize or mutate native actions
+PASS retrieved text never enters durable Memory
+PASS read route never persists extracted items
+PASS retrieved page never becomes actionable session facts
+PASS existing assistant progress receives understanding, context, reasoning and success
+PASS real deterministic fallback labels bounded partial excerpt without claiming model understanding
+PASS fallback preserves read-only boundary
+PASS explicit native action containing Notion URL still requires central Step 8 confirmation
+PASS native reminder proposal does not fetch external page
+PASS external write request cannot bypass central execution authority
+PASS unsupported write performs no provider request
+PASS connecting never grants summary ingestion permission
+PASS source enable alone cannot read any connected account
+PASS summary scope cannot widen page permission
+PASS explicit selected resource enables bounded intake
+PASS legacy accounts never inherit summary permission on migration
+PASS follow-up carries exact source account and permission generation
+PASS arbitrary session text cannot impersonate summary provenance
+PASS summary reference cannot authorize a write
+PASS restarted metadata is never accepted as live account verification
+PASS same URL under two accounts is ambiguous, never default-account authority
+PASS single referenced account wins over unrelated default account
+PASS old permission generation cannot regain summary authority after restart
+PASS bounded change follow-up retains exact account
+PASS pull-request question cannot resolve a Notion page
+PASS GitHub authoritative closed state suppresses obsolete active work
+PASS GitHub body neither invents dates nor enters storage
+PASS normalization independently rejects an unauthorized repository
+PASS summary permission excludes broad repository reads
+PASS Linear custom status remains data, never guessed completion authority
+PASS Linear descriptions do not become dates or retained notes
+PASS malformed provider output cannot become a fabricated observation
+PASS summary permission persists and retires prior request ownership
+PASS real intake normalizes only selected page title
+PASS provider prose never invents a deadline
+PASS observation retains account-scoped provenance
+PASS raw page body and its instructions are not persisted
+PASS normalized observation is actually persisted in SwiftData
+PASS persisted observation survives store/container reopen
+PASS identical provider snapshots do not create duplicate observations
+PASS existing deterministic fingerprint records duplicate suppression
+PASS actual Core daily question produces populated grounded summary
+PASS existing Today model contains source-attributed observation
+PASS relevance explains explicit resource selection
+PASS summary follow-up re-reads the exact allowed resource through shipping gateway
+PASS follow-up answers through existing read-only model boundary
+PASS intake and follow-up grant neither durable Memory nor mutation authority
+PASS retired summary reference rejected before provider read
+PASS stale account generation performs zero HTTP requests
+PASS revoked summary permission hides persisted observations immediately
+PASS revocation invalidates cached derived summary before display
+PASS revoked summary follow-up cannot read the prior resource
+PASS explicit removal deletes the local observations rather than only hiding them
+PASS disconnected page returns actionable real gateway recovery
+PASS disconnected credential cannot produce another network read
+PASS failed account read cannot fall through into capture, Memory or action
+PASS GitHub connection grants no automatic intake
+PASS GitHub observation binds exact account permission generation
+PASS GitHub stores minimal title, excludes injected body
+PASS GitHub observation reaches real SwiftData
+PASS account sync telemetry reflects verified intake
+PASS account telemetry persists without another store
+PASS project-day question produces real populated summary without model dependency
+PASS project question uses authorized Information when no briefing is prepared
+PASS which pull request re-reads original authorized PR
+PASS change follow-up retains original account rather than default lookup
+PASS repeated GitHub intake remains deduplicated
+PASS changed closed PR updates authority instead of inventing new active work
+PASS GitHub selection revocation hides prior observations immediately
+PASS GitHub revocation clears derived summary
+PASS revoked GitHub follow-up cannot regain read permission
+PASS GitHub disconnect removes local credential
+PASS empty project question cannot invent activity after revocation
+PASS nil briefing retains deterministic project-source disclosure
+PASS project question never calls the model when authorized project observations are empty
+PASS mixed successful and failed intake retains only the verified observation
+PASS mixed resource refresh records account partial status
+PASS partial refresh retains the successful read freshness
+PASS partial refresh preserves failure and valid timestamp chronology
+PASS partial account telemetry survives the actual metadata store
+PASS stale batch completion cannot overwrite newer account telemetry
+PASS retired permission generation cannot write synchronization metadata
+Notion Core checks: 89 passed, 0 failed. Synthetic HTTP; no live account or hardware acceptance.

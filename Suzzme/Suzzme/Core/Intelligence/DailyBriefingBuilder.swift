@@ -1,7 +1,7 @@
 import Foundation
 
 enum DailyBriefingBuilder {
-    static func make(from items: [SuzzmeItem], date: Date = .now, name: String = "Rehan", calendar: Calendar = .current) -> DailyBriefing {
+    static func make(from items: [SuzzmeItem], date: Date = .now, name: String = "", calendar: Calendar = .current) -> DailyBriefing {
         let active = items.filter { !$0.isCompleted }
         let today = calendar.startOfDay(for: date)
         let tomorrow = calendar.date(byAdding: .day, value: 1, to: today) ?? today
@@ -17,10 +17,11 @@ enum DailyBriefingBuilder {
         }.prefix(3)
         let hour = calendar.component(.hour, from: date)
         let greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening"
+        let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
         let attentionCount = Set((important + upcoming + carried).map(\.id)).count
         return DailyBriefing(
             date: today,
-            greeting: "\(greeting), \(name)",
+            greeting: trimmedName.isEmpty ? greeting : "\(greeting), \(trimmedName)",
             summary: attentionCount == 0 ? "Nothing pressing has surfaced yet." : "\(attentionCount) things deserve a little attention.",
             importantItems: Array(important),
             upcomingItems: Array(upcoming),

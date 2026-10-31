@@ -1,0 +1,31 @@
+PASS arbitrary URL network transport is unavailable
+PASS isolated public preflight fixture permits public record
+PASS public-to-private rebind rejected by policy; never used as connection proof
+PASS mixed DNS fixture rejected
+PASS public hostname with changed DNS performs no fetch (transport restricted or URL rejected)
+PASS loopback redirect destination performs no fetch (transport restricted or URL rejected)
+PASS link-local redirect destination performs no fetch (transport restricted or URL rejected)
+PASS IPv6 loopback performs no fetch (transport restricted or URL rejected)
+PASS IPv6 private performs no fetch (transport restricted or URL rejected)
+PASS IPv6 link-local performs no fetch (transport restricted or URL rejected)
+PASS IPv4 mapped loopback performs no fetch (transport restricted or URL rejected)
+PASS encoded IP performs no fetch (transport restricted or URL rejected)
+PASS integer IP performs no fetch (transport restricted or URL rejected)
+PASS short IP performs no fetch (transport restricted or URL rejected)
+PASS hex IP performs no fetch (transport restricted or URL rejected)
+PASS trailing-dot hostname performs no fetch (transport restricted or URL rejected)
+PASS redirect loop performs no fetch (transport restricted or URL rejected)
+PASS unbounded response endpoint performs no fetch (transport restricted or URL rejected)
+PASS embedded credentials performs no fetch (transport restricted or URL rejected)
+PASS file scheme performs no fetch (transport restricted or URL rejected)
+PASS hostname normalization remains deterministic
+PASS malformed or prohibited URL rejected
+PASS malformed or prohibited URL rejected
+PASS malformed or prohibited URL rejected
+PASS malformed or prohibited URL rejected
+PASS malformed or prohibited URL rejected
+PASS cancelled fetch returns cancellation before validation
+PASS response-size limit remains enforced for fixture/imported bytes
+PASS production source health does not claim checked readiness
+PASS previous watched data cannot regain derived-summary authority
+Watched transport checks: 30 passed, 0 failed. Isolated; arbitrary network intake deliberately disabled.

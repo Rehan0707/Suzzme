@@ -1,0 +1,39 @@
+PASS spoken referential follow-up without punctuation stays read-only
+PASS derived understanding belongs to the completed screen request
+PASS screen understanding is separate from conversation turns and actionable facts
+PASS screen understanding cannot set an actionable intent
+PASS derived screen understanding expires within five minutes
+PASS superseded owner cannot store late derived context
+PASS old cancellation cannot retire the current owner
+PASS cancelled owner cannot replace completed understanding
+PASS echoed screen instructions are not retained
+PASS restricted derived output is not retained
+PASS derived understanding is bounded by characters
+PASS session reset removes derived understanding
+PASS referential question can use earlier screen understanding
+PASS action imperative cannot use read-only screen continuity
+PASS day questions never silently select earlier screen
+PASS screen explanation has no write or action authority
+PASS real Core follow-up sends bounded earlier understanding to same service
+PASS raw screen text never enters read-only conversation prompt
+PASS follow-up does not recapture the screen or bypass fresh consent
+PASS follow-up is read-only with no item extraction
+PASS screen follow-up never runs extraction or admits planner facts
+PASS ordinary question reaches existing on-device intelligence abstraction
+PASS unrelated question cannot access earlier screen understanding
+PASS general explanation does not require private connector access: Explain the difference between a task and an event in two sentences.
+PASS general explanation does not require private connector access: What is a reminder?
+PASS general explanation does not require private connector access: Define a phone number.
+PASS general explanation does not require private connector access: What is an urgent task?
+PASS personal explanation retains authorized source requirements
+PASS Core routes conceptual question to read-only on-device answer rather than extraction
+PASS conceptual explanation does not expose prior personal facts
+PASS explicit personal planning requests existing authorized day sources
+PASS screen answer can receive checked Calendar context through the existing ContextEngine
+PASS cross-context screen answer does not copy live facts into planner session
+PASS model-unavailable fallback remains honest and does not capture a question
+PASS invalid read-only output is rejected
+PASS invalid read-only output is rejected
+PASS invalid read-only output is rejected
+PASS cancelled model answer cannot publish
+Companion 3 intelligence: 38 passed / 0 failed

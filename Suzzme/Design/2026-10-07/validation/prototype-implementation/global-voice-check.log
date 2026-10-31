@@ -1,0 +1,84 @@
+PASS initial production request enables native dictation punctuation while requiring local recognition
+PASS release stops capture and does not promote latest partial
+PASS partial after release cannot submit
+PASS genuine final after release submits owned text
+PASS successful final releases request, task, deadline, and level
+PASS duplicate final cannot replace submission
+PASS late error cannot overwrite accepted final
+PASS PTT natural final remains pending while shortcut held
+PASS release submits pending genuine final
+PASS repeated release cannot alter accepted final
+PASS rotated production request retains native punctuation and mandatory on-device recognition
+PASS early PTT final rotates segment ownership inside same physical session
+PASS retired segment cannot append a duplicate final
+PASS continued PTT combines committed finals with display-only partial
+PASS release preserves every genuine final segment from held PTT
+PASS release with trailing partial waits for its true final
+PASS post-release segment final joins prior committed final
+PASS combined final segments obey the existing 6000-character bound
+PASS measured input in rotated segment waits even before first partial arrives
+PASS unseen trailing speech final is preserved after physical release
+PASS empty rotated tail cannot discard earlier genuine final
+PASS in-app natural final remains usable
+PASS empty genuine final safely fails
+PASS finalization error cannot promote partial and releases resources
+PASS final queued after terminal error loses ownership
+PASS bounded deadline safely fails without final
+PASS timeout releases recognition request and deadline
+PASS late final after deadline cannot submit
+PASS cancellation during finalization retires callbacks and clears presentation
+PASS reused request ID still rejects previous capture final callbacks
+PASS reused request ID still rejects stale audio callbacks
+PASS current capture receives measured scalar
+PASS mainactor level updates are throttled
+PASS release zeros level and rejects queued level update
+PASS preparing recognition owns pending start
+PASS release revokes pending authorization start
+PASS queued start after early release cannot start microphone
+PASS native synthesis start and word range publish bounded owned progress
+PASS first queued phrase cannot finish the whole response
+PASS last owned phrase restores confirmation presentation
+PASS queue cancellation preserves confirmation and rejects delayed speech completion
+PASS owned preview completion cannot complete or reset a confirmation
+PASS native owned cancellation interrupts briefing without marking completion
+PASS rapid answer replacement rejects every stale A callback without changing B queue or presentation
+PASS barge-in retires the entire answer B queue before the new listening owner begins
+PASS late B callbacks cannot resume stale speech or overwrite the newer listening owner
+PASS disabling spoken responses retires queued real speech before didStart and preserves confirmation
+PASS callbacks retired by the speech setting cannot restart audio or dismiss confirmation
+PASS disabled spoken-response preference persists in the isolated domain across restart
+PASS disabling spoken responses interrupts the active Daily Summary without marking delivery complete
+PASS disabling response narration does not cancel an intentional voice audition
+PASS speech preference change does not cancel or replace the current listening owner
+PASS unrelated audio engine configuration cannot retire Suzzme capture
+PASS stopped owned audio engine retires capture with a readable retry and never promotes partial
+PASS hardware configuration failure rejects retired recognition callbacks
+PASS configuration notification after intentional Stop preserves genuine-final waiting
+PASS delayed old configuration callback cannot cancel a newer running engine
+PASS later actual stopped-engine state still retires the current listening owner
+PASS production microphone validation accepts matching hardware and tap formats
+PASS production microphone validation rejects stale bus sample rate before tap installation
+PASS production microphone validation rejects stale bus channel count before tap installation
+PASS cached usable bus format cannot conceal unavailable microphone hardware
+PASS invalid or absent hardware and tap formats are rejected without touching microphone
+PASS healthy repeated capture preparations reuse one controller-owned audio engine
+PASS other engine configuration cannot invalidate the owned capture engine
+PASS own configuration synchronously invalidates identity without rebuilding in notification callback
+PASS next capture recreates a dirty engine once on its owning actor
+PASS queued retired-engine notification cannot invalidate or fail the replacement
+PASS retired identity cannot mark replacement dirty from another callback
+PASS recovered healthy engine is reused instead of opening a new engine each session
+PASS initial stale-format check rebuilds once then validates the replacement
+PASS persistent format mismatch has one bounded rebuild retry without looping or opening capture
+PASS next-capture recovery cannot rebuild or replace active recognition ownership
+PASS next-capture recovery cannot interrupt genuine-final waiting
+PASS already cancelled authorization entry requests no permissions and preserves replacement state
+PASS cancelled task with current request ID cannot request permissions or alter its owner
+PASS already denied microphone does not request unrelated Speech permission
+PASS microphone denial from permission response ends authorization before Speech prompt
+PASS production authorization requests permissions in microphone-then-Speech order for the same owner
+PASS microphone revocation during Speech authorization is rechecked before capture
+PASS cancelled microphone permission continuation cannot request Speech or revive capture
+PASS superseded Speech permission continuation cannot fail or authorize a replacement session
+PASS denied Speech authorization remains a local readable failure without capture or repeat prompts
+Global voice acceptance: 83 passed / 0 failed

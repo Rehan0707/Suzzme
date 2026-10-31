@@ -9,6 +9,38 @@ actor ContextEngine {
     private let privacyEngine: PrivacyEngine
     init(privacyEngine: PrivacyEngine = PrivacyEngine()) { self.privacyEngine = privacyEngine }
 
+    func collectResource(from source: any SuzzmeResourceContextProviding, question: String, requestID: UUID,
+                         summaryReference: SuzzmeSummaryResourceReference? = nil) async throws -> SuzzmeResourceContext? {
+        let result: SuzzmeResourceContext?
+        if let summaryReference { result = try await source.readSummaryReference(summaryReference, requestID: requestID) }
+        else { result = try await source.readContext(for: question, requestID: requestID) }
+        guard let context = result else { return nil }
+        try Task.checkCancellation()
+        let age = Date.now.timeIntervalSince(context.capturedAt)
+        guard age >= 0, age <= 30, context.content.utf8.count <= 32_768,
+              context.provenance.utf8.count <= 512,
+              privacyEngine.classify(context.content).policy != .neverProcess,
+              await source.validate(context, requestID: requestID) else { throw SuzzmeResourceContextFailure(recovery: "This resource is stale, restricted, or too large. Share the current resource and try again.") }
+        return context
+    }
+
+    /// Ephemeral sources never pass through normalize/SessionMemory. Images
+    /// stay in this request's stack and cannot become durable context items.
+    func collectScreen(from source: any ScreenContextSource, requestID: UUID) async throws -> ScreenContext {
+        let screen = try await source.capture(requestID: requestID)
+        try Task.checkCancellation()
+        guard screen.isCurrent(requestID: requestID), screen.privacyClassification.policy != .neverProcess,
+              screen.privacyClassification.sensitivity != .restricted,
+              screen.image.count <= 4 * 1_024 * 1_024,
+              screen.pixelWidth > 0, screen.pixelHeight > 0,
+              screen.pixelWidth <= 1_600, screen.pixelHeight <= 1_600,
+              await source.validate(screen) else { throw ScreenContextError.captureUnavailable }
+        let structuralText = ([screen.accessibilityText, screen.recognizedText].compactMap { $0 }
+            + screen.textRegions.map(\.text)).joined(separator: " ")
+        guard privacyEngine.classify(structuralText).policy != .neverProcess else { throw ScreenContextError.sensitiveContent }
+        return screen
+    }
+
     func collect(from sources: [any ContextSource], request: SuzzmeContextRequest = .init()) async throws -> [SuzzmeContextItem] {
         try await collectWithHealth(from: sources, request: request).items
     }

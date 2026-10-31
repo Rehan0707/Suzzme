@@ -1,0 +1,118 @@
+PASS GitHub with no account is available, not connected
+PASS only ready verified account grouped connected
+PASS ready without verification needs attention
+PASS unconfigured never healthy catalog
+PASS authorizing never healthy catalog
+PASS connecting never healthy catalog
+PASS authExpired never healthy catalog
+PASS unavailable never healthy catalog
+PASS disabled never healthy catalog
+PASS mixed account health needs attention
+PASS unrelated account does not connect GitHub
+PASS linkedin never falsely offered Connect
+PASS stored metadata cannot make unsupported linkedin connected
+PASS moneybird never falsely offered Connect
+PASS stored metadata cannot make unsupported moneybird connected
+PASS dropbox never falsely offered Connect
+PASS stored metadata cannot make unsupported dropbox connected
+PASS outlook never falsely offered Connect
+PASS stored metadata cannot make unsupported outlook connected
+PASS oneDrive never falsely offered Connect
+PASS stored metadata cannot make unsupported oneDrive connected
+PASS excel never falsely offered Connect
+PASS stored metadata cannot make unsupported excel connected
+PASS microsoftTeams never falsely offered Connect
+PASS stored metadata cannot make unsupported microsoftTeams connected
+PASS sharePoint never falsely offered Connect
+PASS stored metadata cannot make unsupported sharePoint connected
+PASS googlePhotos never falsely offered Connect
+PASS stored metadata cannot make unsupported googlePhotos connected
+PASS implemented github offers setup without claiming account access
+PASS expired github never appears connected
+PASS implemented notion offers setup without claiming account access
+PASS expired notion never appears connected
+PASS implemented linear offers setup without claiming account access
+PASS expired linear never appears connected
+PASS implemented googleDocs offers setup without claiming account access
+PASS expired googleDocs never appears connected
+PASS implemented googleCalendar offers setup without claiming account access
+PASS expired googleCalendar never appears connected
+PASS implemented customMCP offers setup without claiming account access
+PASS expired customMCP never appears connected
+PASS implemented airtable offers setup without claiming account access
+PASS expired airtable never appears connected
+PASS implemented asana offers setup without claiming account access
+PASS expired asana never appears connected
+PASS implemented clickUp offers setup without claiming account access
+PASS expired clickUp never appears connected
+PASS implemented contentful offers setup without claiming account access
+PASS expired contentful never appears connected
+PASS implemented eventbrite offers setup without claiming account access
+PASS expired eventbrite never appears connected
+PASS implemented figma offers setup without claiming account access
+PASS expired figma never appears connected
+PASS implemented gitlab offers setup without claiming account access
+PASS expired gitlab never appears connected
+PASS implemented harvest offers setup without claiming account access
+PASS expired harvest never appears connected
+PASS implemented pushbullet offers setup without claiming account access
+PASS expired pushbullet never appears connected
+PASS implemented todoist offers setup without claiming account access
+PASS expired todoist never appears connected
+PASS implemented typeform offers setup without claiming account access
+PASS expired typeform never appears connected
+PASS implemented wakatime offers setup without claiming account access
+PASS expired wakatime never appears connected
+PASS implemented ynab offers setup without claiming account access
+PASS expired ynab never appears connected
+PASS implemented googleDrive offers setup without claiming account access
+PASS expired googleDrive never appears connected
+PASS implemented googleClassroom offers setup without claiming account access
+PASS expired googleClassroom never appears connected
+PASS implemented googleMeet offers setup without claiming account access
+PASS expired googleMeet never appears connected
+PASS implemented googleSheets offers setup without claiming account access
+PASS expired googleSheets never appears connected
+PASS implemented googleSlides offers setup without claiming account access
+PASS expired googleSlides never appears connected
+PASS implemented googleTasks offers setup without claiming account access
+PASS expired googleTasks never appears connected
+PASS implemented googleSearchConsole offers setup without claiming account access
+PASS expired googleSearchConsole never appears connected
+PASS implemented googleAnalytics offers setup without claiming account access
+PASS expired googleAnalytics never appears connected
+PASS implemented googleBigQuery offers setup without claiming account access
+PASS expired googleBigQuery never appears connected
+PASS implemented Notion requires explicit connection before Connected
+PASS explicit resource yields scoped invitation
+PASS ready allowed account needs no invitation
+PASS scope denial asks review rather than new silent access
+PASS expired account asks explicit recovery
+PASS multiple unselected accounts require review
+PASS explicit ready default resolves ambiguity
+PASS expired default cannot silently switch account
+PASS invalid, ambiguous or unsupported explicit context rejected
+PASS invalid, ambiguous or unsupported explicit context rejected
+PASS invalid, ambiguous or unsupported explicit context rejected
+PASS invalid, ambiguous or unsupported explicit context rejected
+PASS invalid, ambiguous or unsupported explicit context rejected
+PASS invalid, ambiguous or unsupported explicit context rejected
+PASS invalid, ambiguous or unsupported explicit context rejected
+PASS invalid, ambiguous or unsupported explicit context rejected
+PASS invalid, ambiguous or unsupported explicit context rejected
+PASS invalid, ambiguous or unsupported explicit context rejected
+PASS invalid, ambiguous or unsupported explicit context rejected
+PASS create cannot become connection invitation
+PASS delete cannot become connection invitation
+PASS publish cannot become connection invitation
+PASS send cannot become connection invitation
+PASS merge cannot become connection invitation
+PASS update cannot become connection invitation
+PASS edit cannot become connection invitation
+PASS close cannot become connection invitation
+PASS reopen cannot become connection invitation
+PASS write cannot become connection invitation
+PASS remember cannot become connection invitation
+PASS save cannot become connection invitation
+PASS invitation does not pretend ambiguous file ref was retrieved
+Integration Presentation: 117 passed / 0 failed

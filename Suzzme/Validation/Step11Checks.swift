@@ -13,6 +13,26 @@ actor Step11FakeFetcher: WatchedLinkFetching {
     }
 }
 
+private actor Step11WatchedSummaryFixture: InformationSource {
+    nonisolated let id: InformationSourceID = .watchedWeb
+    private let referenceDate: Date
+    private var state: InformationHealthState = .healthy
+    private var title = "College review moved to a new room"
+    init(now: Date) { referenceDate = now }
+    func authorization() -> InformationHealthState { state }
+    func setAuthorization(_ value: InformationHealthState) { state = value }
+    func replaceTitle(_ value: String) { title = value }
+    func permits(_ event: InformationEvent, now: Date) -> Bool {
+        state == .healthy && event.externalID == "web:https://example.edu/notices#selected-change"
+    }
+    func fetch(now: Date, checkpoint: Date?) -> InformationBatch {
+        .init(observations: [.init(externalID: "web:https://example.edu/notices#selected-change",
+            title: title, modifiedAt: referenceDate, effectiveAt: referenceDate.addingTimeInterval(300),
+            effectiveUntil: referenceDate.addingTimeInterval(3_600), kindHint: .scheduleChange)],
+            complete: false, window: .init(start: referenceDate.addingTimeInterval(-3_600), end: now.addingTimeInterval(7_200)))
+    }
+}
+
 actor Step11ActionCounter { private(set) var count = 0; func increment() { count += 1 } }
 
 struct Step11Capability: SuzzmeCapability {
@@ -50,7 +70,9 @@ struct Step11Checks {
     }
 
     static func main() async throws {
-        let root = FileManager.default.temporaryDirectory.appendingPathComponent("SuzzmeStep11-\(UUID().uuidString)", isDirectory: true)
+        let temporaryRoot = ProcessInfo.processInfo.environment["SUZZME_TEST_TMP_DIR"].map { URL(fileURLWithPath: $0, isDirectory: true) }
+            ?? FileManager.default.temporaryDirectory
+        let root = temporaryRoot.appendingPathComponent("SuzzmeStep11-\(UUID().uuidString)", isDirectory: true)
         try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
         defer { try? FileManager.default.removeItem(at: root) }
         try await architectureAndDailyContext(root)
@@ -60,9 +82,101 @@ struct Step11Checks {
         try await presenceAndInvocation(root)
         try await crossDeviceAndPrivacy(root)
         try await actionAndLifecycle(root)
+        gmailMetadata()
+        try await watchedSummaryProvenance(root)
         print("Step 11 behavioral checks passed: \(passed)")
         print("Step 11 behavioral checks failed: \(failed)")
-        if failed != 0 || passed != 220 { exit(1) }
+        if failed != 0 || passed != 244 { exit(1) }
+    }
+
+    static func gmailMetadata() {
+        let data = Data(#"{"id":"mail-1","internalDate":"1790870400000","payload":{"headers":[{"name":"From","value":"Ava Park <ava@example.com>"},{"name":"Subject","value":"Budget review\n"}],"body":{"data":"BODY_SECRET"}}}"#.utf8)
+        let message = try? JSONDecoder().decode(GmailMessageMetadataResponse.self, from: data)
+        let observation = message?.observation()
+        expect(observation?.title == "Ava Park: Budget review", 221, "Gmail metadata extracts sender and subject only")
+        expect(observation?.kindHint == .emailUpdate && observation?.externalID == "mail-1", 222, "Gmail header becomes an email observation")
+        expect(observation?.privateNotes.isEmpty == true && observation?.location.isEmpty == true, 223, "Gmail body content is not retained")
+    }
+
+    static func watchedSummaryProvenance(_ root: URL) async throws {
+        let schema = Schema([StoredInformationEvent.self, StoredInformationSource.self])
+        let container = try ModelContainer(for: schema,
+            configurations: ModelConfiguration(schema: schema, isStoredInMemoryOnly: true, cloudKitDatabase: .none))
+        let source = Step11WatchedSummaryFixture(now: now)
+        let information = InformationEngine(registry: .init([source]), store: InformationStore(modelContainer: container))
+        try await information.setEnabled(.watchedWeb, enabled: true)
+        try await information.refresh(source: .watchedWeb, force: true, now: now)
+        guard let event = try await information.retrieve(.init(sources: [.watchedWeb]), now: now).first else {
+            throw ProactiveError.invalidState
+        }
+        let watched = ProactiveCandidate(id: event.fingerprint, kind: .scheduleChange,
+            title: event.title, summary: event.summary, source: "watchedWeb", sourceReference: event.externalID,
+            effectiveAt: event.effectiveAt, effectiveUntil: event.effectiveUntil, entities: event.entities,
+            sensitivity: event.sensitivity, freshness: .current, sourceHealthy: true, confidence: 1)
+        let higherPriority = (0..<24).map { candidate("priority-\($0)", kind: .cancellation, offset: 3_600 + TimeInterval($0 * 60)) }
+        let file = root.appendingPathComponent("watched-summary-provenance.json")
+        let store = ProactiveIntelligenceStore(fileURL: file)
+        let engine = ProactiveIntelligenceEngine(store: store, information: information)
+        var preferences = try await engine.preferences()
+        preferences.timeCriticalEnabled = true
+        try await engine.updatePreferences(preferences)
+        let snapshot = try await engine.prepare(input: .init(candidates: [watched] + higherPriority, generatedAt: now), now: now, calendar: utc())
+        let reference = ProactiveWatchedReference(externalID: event.externalID, fingerprint: event.fingerprint)
+        expect(snapshot.dailyContext?.entries.count == 24 && snapshot.dailyContext?.entries.contains(where: { $0.source == "watchedWeb" }) == false, 224, "24 higher-priority Daily Context entries exclude the watched fact")
+        expect(snapshot.briefing?.items.contains(where: { $0.candidateID == watched.id }) == true, 225, "briefing independently selects the earlier watched fact")
+        expect(snapshot.timeCriticalItems.contains(where: { $0.candidateID == watched.id }), 226, "time-critical watched fact uses briefing provenance")
+        expect(snapshot.opportunities.contains(where: { $0.watchedSourceReferences == [reference] }), 227, "watched opportunity records exact provenance outside Daily Context")
+        expect(snapshot.briefing?.watchedSourceReferences == [reference], 228, "briefing records watched ID and content fingerprint")
+        let saved = try Data(contentsOf: file)
+        let firstCurrent = try await engine.current(now: now.addingTimeInterval(1))
+        let secondCurrent = try await engine.current(now: now.addingTimeInterval(2))
+        expect(firstCurrent.briefing?.id == snapshot.briefing?.id, 229, "healthy fresh watched cache remains available")
+        expect(secondCurrent.briefing?.id == snapshot.briefing?.id && secondCurrent.opportunities == snapshot.opportunities, 230, "repeated current reads preserve healthy derived artifacts")
+        expect(try Data(contentsOf: file) == saved, 231, "healthy provenance validation does not rewrite saved JSON")
+        await source.setAuthorization(.permissionDenied)
+        let revoked = try await engine.current(now: now.addingTimeInterval(3))
+        expect(revoked.briefing == nil && revoked.opportunities.isEmpty && revoked.timeCriticalItems.isEmpty && revoked.dailyContext == nil, 232, "revoked watched consent withholds every derived artifact despite context overflow")
+        expect(try Data(contentsOf: file) == saved, 233, "revocation read preserves saved derived JSON for safe rebuilding")
+        await source.setAuthorization(.healthy)
+        try await information.refresh(source: .watchedWeb, force: true, now: now.addingTimeInterval(4))
+        expect(try await engine.current(now: now.addingTimeInterval(4)).briefing?.id == snapshot.briefing?.id, 234, "renewed healthy authorization can validate the unchanged cache")
+        await source.setAuthorization(.unsupported)
+        let paused = try await engine.current(now: now.addingTimeInterval(5))
+        expect(paused.briefing == nil && paused.opportunities.isEmpty && paused.timeCriticalItems.isEmpty, 235, "transport-unavailable source state withholds cached watched facts")
+        expect(try Data(contentsOf: file) == saved, 236, "transport pause does not delete saved JSON or settings")
+        await source.setAuthorization(.healthy)
+        await source.replaceTitle("College review moved again")
+        try await information.refresh(source: .watchedWeb, force: true, now: now.addingTimeInterval(6))
+        expect(try await engine.current(now: now.addingTimeInterval(6)).briefing == nil, 237, "same external ID with changed content cannot validate an earlier fingerprint")
+        expect(try Data(contentsOf: file) == saved, 238, "changed-source validation preserves earlier stored artifacts without presenting them")
+        await source.replaceTitle("College review moved to a new room")
+        try await information.refresh(source: .watchedWeb, force: true, now: now.addingTimeInterval(7))
+
+        func legacyData(_ data: Data) throws -> Data {
+            var object = try JSONSerialization.jsonObject(with: data) as! [String: Any]
+            for key in ["briefings", "opportunities"] {
+                object[key] = (object[key] as? [[String: Any]] ?? []).map { row in
+                    var copy = row; copy.removeValue(forKey: "watchedSourceReferences"); return copy
+                }
+            }
+            return try JSONSerialization.data(withJSONObject: object, options: [.sortedKeys])
+        }
+        let legacy = try legacyData(saved)
+        let legacyFile = root.appendingPathComponent("legacy-watched-summary.json")
+        try legacy.write(to: legacyFile, options: .atomic)
+        let legacyEngine = ProactiveIntelligenceEngine(store: .init(fileURL: legacyFile), information: information)
+        let legacyCurrent = try await legacyEngine.current(now: now.addingTimeInterval(8))
+        expect(legacyCurrent.briefing == nil && legacyCurrent.opportunities.isEmpty && legacyCurrent.timeCriticalItems.isEmpty, 239, "legacy watched briefing without complete provenance requires rebuilding")
+        expect(try Data(contentsOf: legacyFile) == legacy, 240, "legacy cache is withheld without migration deletion")
+        expect(try await legacyEngine.preferences() == preferences, 241, "legacy preferences survive provenance withholding")
+        let native = try await engine.prepare(input: .init(candidates: Array(higherPriority.prefix(2)), generatedAt: now), now: now, calendar: utc())
+        let nativeLegacyFile = root.appendingPathComponent("legacy-unknown-opportunities.json")
+        try legacyData(Data(contentsOf: file)).write(to: nativeLegacyFile, options: .atomic)
+        let nativeLegacyEngine = ProactiveIntelligenceEngine(store: .init(fileURL: nativeLegacyFile), information: information)
+        let nativeLegacy = try await nativeLegacyEngine.current(now: now)
+        expect(nativeLegacy.briefing?.id == native.briefing?.id && nativeLegacy.opportunities.isEmpty, 242, "opaque legacy opportunities are withheld while known native briefing remains available")
+        expect(!native.opportunities.isEmpty && native.opportunities.allSatisfy { $0.watchedSourceReferences == [] }, 243, "fresh native opportunities carry complete empty watched provenance")
+        expect((try JSONSerialization.jsonObject(with: saved) as? [String: Any])?["schemaVersion"] as? Int == 1, 244, "optional provenance retains the version-one saved format")
     }
 
     static func architectureAndDailyContext(_ root: URL) async throws {

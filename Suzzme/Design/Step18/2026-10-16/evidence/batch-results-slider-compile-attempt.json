@@ -1,0 +1,29 @@
+{
+  "macOS-build": {
+    "command": [
+      "xcodebuild",
+      "-project",
+      "/Users/rehan/Documents/Projects/Suzzme/Suzzme/Suzzme.xcodeproj",
+      "-scheme",
+      "Suzzme",
+      "-configuration",
+      "Release",
+      "-clonedSourcePackagesDirPath",
+      "/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages",
+      "-disableAutomaticPackageResolution",
+      "-skipPackageUpdates",
+      "COMPILER_INDEX_STORE_ENABLE=NO",
+      "-jobs",
+      "1",
+      "-destination",
+      "platform=macOS,arch=arm64",
+      "-derivedDataPath",
+      "/tmp/SuzzmeFullApp20261016/mac",
+      "build"
+    ],
+    "exit": 65,
+    "reason": null,
+    "seconds": 25.22,
+    "logSHA256": "830290597eaecf57dec3201e741e625c46974fe5cbb7350aa75e7fe675e8980f"
+  }
+}

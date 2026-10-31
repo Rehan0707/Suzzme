@@ -1,0 +1,48 @@
+PASS: semantic background token
+PASS: semantic intelligence token
+PASS: spacing scale
+PASS: radius scale
+PASS: motion scale
+PASS: single reusable Face type
+PASS: Home uses Face-led presence
+PASS: Home voice primary action
+PASS: Home typed secondary action
+FAIL: production Settings reachable
+PASS: compact navigation avoids all destinations
+FAIL: compact navigation has Today Memory Sources Settings
+PASS: Ask uses central environment
+PASS: Ask shows exact action title
+PASS: Ask has semantic confirmation summary
+PASS: Ask hides confidence metadata
+FAIL: Ask hides raw framework errors
+PASS: Ask provides keyboard dismissal
+PASS: Memory delete requires confirmation
+PASS: Memory explains deletion boundary
+PASS: Sources has permission recovery
+PASS: Sources exposes real health
+PASS: Information distinguishes nothing new
+PASS: Information distinguishes unavailable
+PASS: Information UI hides external IDs
+PASS: Information UI hides fingerprints
+PASS: Information UI hides normalization internals
+PASS: Settings has native groups
+PASS: Privacy controls are reachable
+PASS: Voice selection is visible
+PASS: onboarding has real permission requests
+PASS: onboarding has no credential fields
+PASS: Sign in with Apple is truthfully unavailable
+PASS: Presence respects Reduce Motion
+PASS: Presence respects Reduce Transparency
+PASS: Presence respects Increased Contrast
+PASS: Home has small-width preview
+PASS: Home has large-width preview
+PASS: Home has accessibility type preview
+PASS: Mac uses split navigation
+PASS: Mac preserves non-notch policy
+PASS: no fake Dynamic Island implementation
+PASS: UI Foundation skill exists
+PASS: Screen Patterns skill exists
+PASS: Presence skill exists
+PASS: UI Validation skill exists
+UI recovery checks passed: 43
+UI recovery checks failed: 3

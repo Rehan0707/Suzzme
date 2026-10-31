@@ -1,0 +1,2 @@
+[functions.companion-delivery]
+verify_jwt = true

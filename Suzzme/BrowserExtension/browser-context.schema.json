@@ -1,0 +1,304 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:suzzme:browser-context:v1",
+  "title": "Suzzme browser context protocol v1",
+  "description": "Step 14 accepts authenticated GitHub connection metadata only. Generic context.submit is unavailable. Frames are limited to 65536 UTF-8 bytes before decoding.",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/hello"
+    },
+    {
+      "$ref": "#/$defs/pairing"
+    },
+    {
+      "$ref": "#/$defs/authenticatedRequest"
+    }
+  ],
+  "$defs": {
+    "uuid": {
+      "type": "string",
+      "format": "uuid",
+      "maxLength": 36
+    },
+    "secret": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{43}$"
+    },
+    "extensionID": {
+      "type": "string",
+      "pattern": "^[a-p]{32}$"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    },
+    "context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contextID",
+        "contextVersion",
+        "capturedAt",
+        "browser",
+        "browserInstallationID",
+        "tabID",
+        "windowID",
+        "url",
+        "title"
+      ],
+      "properties": {
+        "contextID": {
+          "$ref": "#/$defs/uuid"
+        },
+        "contextVersion": {
+          "$ref": "#/$defs/version"
+        },
+        "capturedAt": {
+          "type": "number",
+          "description": "Unix seconds. Receiver rejects future values or age beyond 30 seconds."
+        },
+        "browser": {
+          "enum": [
+            "chrome",
+            "chromium"
+          ]
+        },
+        "browserInstallationID": {
+          "$ref": "#/$defs/uuid"
+        },
+        "tabID": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "windowID": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "documentID": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "url": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096,
+          "description": "HTTPS, no userinfo or custom port; independently enforce 4096 UTF-8 bytes."
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 512,
+          "description": "Independently enforce 512 UTF-8 bytes."
+        },
+        "selectedText": {
+          "type": "string",
+          "maxLength": 8192,
+          "description": "Explicit request only; independently enforce 8192 UTF-8 bytes."
+        },
+        "boundedPageContext": {
+          "type": "string",
+          "maxLength": 16384,
+          "description": "Explicit request only; independently enforce 16384 UTF-8 bytes."
+        }
+      }
+    },
+    "invalidation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contextID",
+        "contextVersion",
+        "reason"
+      ],
+      "properties": {
+        "contextID": {
+          "$ref": "#/$defs/uuid"
+        },
+        "contextVersion": {
+          "$ref": "#/$defs/version"
+        },
+        "reason": {
+          "enum": [
+            "navigation",
+            "tab_closed",
+            "user",
+            "expired",
+            "replaced"
+          ]
+        }
+      }
+    },
+    "hello": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "protocolVersion",
+        "requestID",
+        "taskID",
+        "extensionID",
+        "method",
+        "payload"
+      ],
+      "properties": {
+        "protocolVersion": {
+          "const": 1
+        },
+        "requestID": {
+          "$ref": "#/$defs/uuid"
+        },
+        "taskID": {
+          "$ref": "#/$defs/uuid"
+        },
+        "extensionID": {
+          "$ref": "#/$defs/extensionID"
+        },
+        "method": {
+          "const": "session.hello"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "pairingID",
+            "clientNonce"
+          ],
+          "properties": {
+            "pairingID": {
+              "$ref": "#/$defs/uuid"
+            },
+            "clientNonce": {
+              "$ref": "#/$defs/secret"
+            }
+          }
+        }
+      }
+    },
+    "pairing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "protocolVersion",
+        "requestID",
+        "taskID",
+        "extensionID",
+        "method",
+        "payload"
+      ],
+      "properties": {
+        "protocolVersion": {
+          "const": 1
+        },
+        "requestID": {
+          "$ref": "#/$defs/uuid"
+        },
+        "taskID": {
+          "$ref": "#/$defs/uuid"
+        },
+        "extensionID": {
+          "$ref": "#/$defs/extensionID"
+        },
+        "method": {
+          "const": "pairing.request"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "pairingToken",
+            "clientNonce"
+          ],
+          "properties": {
+            "pairingToken": {
+              "$ref": "#/$defs/secret"
+            },
+            "clientNonce": {
+              "$ref": "#/$defs/secret"
+            }
+          }
+        }
+      }
+    },
+    "authenticatedRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "protocolVersion",
+        "requestID",
+        "taskID",
+        "extensionID",
+        "pairingID",
+        "sessionID",
+        "serverNonce",
+        "method",
+        "payloadBytes",
+        "authentication"
+      ],
+      "properties": {
+        "protocolVersion": {
+          "const": 1
+        },
+        "requestID": {
+          "$ref": "#/$defs/uuid"
+        },
+        "taskID": {
+          "$ref": "#/$defs/uuid"
+        },
+        "extensionID": {
+          "$ref": "#/$defs/extensionID"
+        },
+        "pairingID": {
+          "$ref": "#/$defs/uuid"
+        },
+        "sessionID": {
+          "$ref": "#/$defs/uuid"
+        },
+        "serverNonce": {
+          "$ref": "#/$defs/secret"
+        },
+        "method": {
+          "enum": [
+            "github.connection",
+            "context.invalidate"
+          ]
+        },
+        "payloadBytes": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "maxLength": 64000,
+          "description": "Exact base64url JSON bytes. Authenticate before decoding, then validate context or invalidation schema for its method."
+        },
+        "authentication": {
+          "$ref": "#/$defs/secret"
+        }
+      }
+    },
+    "githubConnection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contextID",
+        "contextVersion",
+        "capturedAt",
+        "repository"
+      ],
+      "properties": {
+        "contextID": {
+          "$ref": "#/$defs/uuid"
+        },
+        "contextVersion": {
+          "$ref": "#/$defs/version"
+        },
+        "capturedAt": {
+          "type": "number",
+          "description": "Unix seconds, age 0\u201330 seconds"
+        },
+        "repository": {
+          "type": "string",
+          "maxLength": 140,
+          "description": "Canonical GitHub owner/repository only; not account authorization"
+        }
+      }
+    }
+  }
+}

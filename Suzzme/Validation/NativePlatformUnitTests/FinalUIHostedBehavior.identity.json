@@ -1,0 +1,15 @@
+{
+  "generatedAtUTC": "2026-10-12T15:10:55.325331+00:00",
+  "originalAssertionsSource": "Validation/FinalUIBehaviorChecks.swift",
+  "originalAssertionsSHA256": "9419832d20859ab2901d3656e80864a70cea01de59b936a42b1fca3e454938f5",
+  "unchangedMainAndHelpersSHA256": "18f37172b4fc3dd07d6d62b1b9296d4b1501545083fb8e9ad4896dde4a9969d9",
+  "geometrySource": "Suzzme/Platform/macOS/MacAssistantPresence.swift",
+  "exactExtractedShapeSHA256": "a40fcda3f6a2e3c1bf22d11f34ecde7f88236179cf4dd78eaa46daace6414c78",
+  "expectedTotalChecks": 80,
+  "originalChecks": 53,
+  "conversationChecks": 12,
+  "ownershipChecks": 15,
+  "macGeometryChecks": 6,
+  "scope": "Controlled hosted behavior fixtures; not live microphone/model/notch/device acceptance",
+  "productionEntryReplaced": false
+}

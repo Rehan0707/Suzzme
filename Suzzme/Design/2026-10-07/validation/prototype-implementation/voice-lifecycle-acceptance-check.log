@@ -1,0 +1,32 @@
+PASS unset voice resolves to the installed natural default
+PASS voice picker excludes novelty voices
+PASS automatic selection never chooses novelty or personal voices
+PASS empty installed inventory falls back safely
+PASS natural voice selection does not depend on inventory order
+PASS removed voice falls back to an installed natural voice
+PASS fallback preserves explicit preference
+PASS Automatic uses the natural system rate without tuning
+PASS ordinary picker excludes personal voices requiring separate authorization
+PASS pace and automatic language policy persist
+PASS nonfinite pace restores natural default
+PASS pace clamps to useful native range
+PASS completed answer divides into bounded speech phrases
+PASS speech phrases preserve every completed-response word
+PASS 100 repeated sessions have unique ownership
+PASS 100 cancellations retire ownership, clear transcripts and return idle
+PASS stale start cannot request recognition or revive cancelled session
+PASS empty Stop cannot submit a transcript
+PASS cancel recovers safely after empty Stop
+PASS release before async start cannot later open the microphone
+PASS silent microphone samples have zero measured level
+PASS measured level uses RMS and bounded normalization
+PASS loud microphone samples clamp to the normalized maximum
+PASS nonfinite microphone samples never publish a nonfinite level
+PASS empty microphone buffers have zero measured level
+PASS disabled voice never starts speech
+PASS voice response setting persists across controller restart
+PASS voice choice persists across controller restart
+PASS Automatic reset persists and restores the best installed voice
+PASS unowned TTS completion cannot overwrite listening
+PASS late completion cannot mark cancelled briefing complete
+Voice lifecycle acceptance: 31 passed / 0 failed

@@ -1,0 +1,150 @@
+{
+  "browser-bridge-check.sh": {
+    "exit": 0,
+    "seconds": 8.77
+  },
+  "browser-github-controller-check.sh": {
+    "exit": 0,
+    "seconds": 15.98
+  },
+  "browser-github-handoff-check.sh": {
+    "exit": 0,
+    "seconds": 6.86
+  },
+  "check.sh": {
+    "exit": 0,
+    "seconds": 5.39
+  },
+  "companion3-intelligence-check.sh": {
+    "exit": 0,
+    "seconds": 26.66
+  },
+  "connector-acceptance-check.sh": {
+    "exit": 0,
+    "seconds": 10.22
+  },
+  "final-extraction-grounding-check.sh": {
+    "exit": 0,
+    "seconds": 10.86
+  },
+  "global-screen-check.sh": {
+    "exit": 0,
+    "seconds": 22.14
+  },
+  "global-shortcut-check.sh": {
+    "exit": 0,
+    "seconds": 7.12
+  },
+  "global-voice-check.sh": {
+    "exit": 0,
+    "seconds": 10.62
+  },
+  "integration-core-check.sh": {
+    "exit": 0,
+    "seconds": 21.48
+  },
+  "integration-mcp-check.sh": {
+    "exit": 0,
+    "seconds": 3.85
+  },
+  "integration-presentation-check.sh": {
+    "exit": 0,
+    "seconds": 4.26
+  },
+  "integration-safety-check.sh": {
+    "exit": 0,
+    "seconds": 13.62
+  },
+  "notion-client-check.sh": {
+    "exit": 0,
+    "seconds": 5.31
+  },
+  "notion-core-check.sh": {
+    "exit": 0,
+    "seconds": 47.47
+  },
+  "notion-gateway-check.sh": {
+    "exit": 0,
+    "seconds": 10.66
+  },
+  "p0-blocker-check.sh": {
+    "exit": 0,
+    "seconds": 29.52
+  },
+  "persistence-check.sh": {
+    "exit": 0,
+    "seconds": 5.77
+  },
+  "product-flow-check.sh": {
+    "exit": 0,
+    "seconds": 43.2
+  },
+  "provider-read-check.sh": {
+    "exit": 0,
+    "seconds": 7.65
+  },
+  "step10-check.sh": {
+    "exit": 0,
+    "seconds": 24.67
+  },
+  "step11-check.sh": {
+    "exit": 0,
+    "seconds": 23.54
+  },
+  "step12-check.sh": {
+    "exit": 0,
+    "seconds": 48.89
+  },
+  "step12-recovery-check.sh": {
+    "exit": 0,
+    "seconds": 46.0
+  },
+  "step15-google-check.sh": {
+    "exit": 0,
+    "seconds": 79.47
+  },
+  "step15-mcp-check.sh": {
+    "exit": 0,
+    "seconds": 11.51
+  },
+  "step15-oauth-check.sh": {
+    "exit": 0,
+    "seconds": 2.65
+  },
+  "step16-actual-pipeline-check.sh": {
+    "exit": 0,
+    "seconds": 20.04
+  },
+  "step17-summary-follow-up-check.sh": {
+    "exit": 0,
+    "seconds": 24.64
+  },
+  "step3-check.sh": {
+    "exit": 0,
+    "seconds": 38.87
+  },
+  "step4-check.sh": {
+    "exit": 0,
+    "seconds": 7.05
+  },
+  "step5-check.sh": {
+    "exit": 0,
+    "seconds": 1.17
+  },
+  "ui-recovery-check.sh": {
+    "exit": 0,
+    "seconds": 0.19
+  },
+  "voice-lifecycle-acceptance-check.sh": {
+    "exit": 0,
+    "seconds": 4.9
+  },
+  "voice-quality-check.sh": {
+    "exit": 0,
+    "seconds": 3.6
+  },
+  "watched-transport-check.sh": {
+    "exit": 0,
+    "seconds": 16.71
+  }
+}

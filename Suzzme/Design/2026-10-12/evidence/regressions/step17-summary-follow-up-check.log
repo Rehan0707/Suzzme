@@ -1,0 +1,27 @@
+PASS summary retains overdue work and four legitimate upcoming events
+PASS summary keeps explicit overdue and upcoming source dates
+PASS test consumes the actual Core summary-to-session projection
+PASS summary date clarification uses checked facts without model inference or extraction
+PASS overdue summary reminder retains its actual due date
+PASS no overdue reminder or future event is asserted to be today
+PASS upcoming source events remain later events
+PASS available model cannot override grounded date classification
+PASS fixed October 11 reference never classifies September 10 reminder as today
+PASS fixed October 17–20 events retain their later status and actual dates
+PASS an actual current-day event is classified as today
+PASS a past Calendar event is not mislabeled overdue work
+PASS missing source date remains unknown
+PASS unmentioned context cannot become the referenced summary
+PASS missing summary reference asks for clarification
+PASS expired source context cannot support a date assertion
+PASS expired assistant turn cannot select a reference
+PASS an empty native date cannot hide a valid summary effective date
+PASS the same source instant respects the current local day near midnight
+PASS confirmed event end spanning now preserves its ongoing status and source dates
+PASS session expiration cannot substitute for an unknown event end
+PASS blank source title cannot select an unmentioned item
+PASS external title wording cannot change source date/type or grant extraction authority
+PASS a non-temporal yes/no question keeps the read-only question route
+PASS other read-only questions receive source item types and summary effective dates
+PASS other read-only questions receive the device date and local timezone
+Step 17 summary follow-up: 26 passed / 0 failed

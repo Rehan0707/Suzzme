@@ -1,0 +1,25 @@
+Window: "", App: Suzzme.
+0 sheet Secondary Actions: Raise
+	1 container
+		2 text Value: Ask Suzzme, Secondary Actions: Cancel
+		3 text field (settable) Description: Question for Suzzme, Placeholder: Ask Suzzme or follow up, ID: suzzme-assistant-input, Secondary Actions: Cancel
+		4 button (disabled) Description: Send question, ID: suzzme-assistant-submit, Secondary Actions: Cancel
+		5 button Description: Start voice conversation, Secondary Actions: Cancel
+		6 switch Read answers aloud, Help: Speak Suzzme’s answers to typed questions, Value: off, Secondary Actions: Cancel
+		7 scroll area Secondary Actions: Cancel
+			8 list Secondary Actions: AXScrollToTop, AXScrollToBottom
+				9 text Suzzme status: Ready when you are Apple Intelligence is ready on this device.
+				10 container
+					11 heading What’s on your mind?
+					12 text Ask about your day, think something through, or share something you’d like Suzzme to remember.
+		13 button Done
+		14 button Manage sources
+15 menu bar
+	16 Suzzme
+	17 Edit
+	18 View
+	19 Companion
+	20 Window
+	21 Help
+
+The focused UI element is 0 sheet Secondary Actions: Raise

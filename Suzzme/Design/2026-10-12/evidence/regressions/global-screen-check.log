@@ -1,0 +1,69 @@
+PASS new installations ask before screen capture
+PASS screen preferences persist without content
+PASS normal request never authorizes capture: What's next on my calendar?
+PASS normal request never authorizes capture: What's my day like?
+PASS normal request never authorizes capture: What should I focus on?
+PASS normal request never authorizes capture: Tell me about HTML
+PASS personal day question never needs pixels, even after one-shot screen invocation: What do I have tomorrow?
+PASS personal day question never needs pixels, even after one-shot screen invocation: What matters today?
+PASS Off never auto-captures
+PASS Ask when needed requires request consent
+PASS voice screen question can use selected voice mode
+PASS typed screen question still needs consent
+PASS explicit one-shot consent permits its request
+PASS ordinary collection cannot obtain screen bytes or text
+PASS normal Core request never invokes screen capture
+PASS screen request without source has no capture or mutation authority
+PASS normalized point allows negative display origins and threshold confidence
+PASS image-free metadata retains coordinate validity
+PASS coordinates cannot replay into another request
+PASS old capture cannot guide a newer screen
+PASS invalid normalized coordinate rejected: nan
+PASS invalid normalized coordinate rejected: inf
+PASS invalid normalized coordinate rejected: -0.01
+PASS invalid normalized coordinate rejected: 1.01
+PASS invalid or weak confidence rejected: nan
+PASS invalid or weak confidence rejected: inf
+PASS invalid or weak confidence rejected: 0.79
+PASS invalid or weak confidence rejected: 1.01
+PASS coordinates cannot target another display
+PASS secret labels cannot reach guidance
+PASS metadata preserves AppKit geometry and screen data defaults local-only
+PASS empty image rejected at collection boundary
+PASS image above four MiB rejected
+PASS image dimension above 1600 rejected
+PASS stale capture rejected before model
+PASS source replay with different request rejected
+PASS non-local image policy rejected
+PASS restricted image classification rejected
+PASS OCR secret patterns rejected before model
+PASS AX secret patterns rejected before model
+PASS permission or secure-field failure surfaces without model
+PASS failed capture never reaches model
+PASS failed capture releases exact request ownership
+PASS permission or secure-field failure surfaces without model
+PASS failed capture never reaches model
+PASS failed capture releases exact request ownership
+PASS screen injection cannot produce an action or item
+PASS screen prose never gains confirmation or executor authority
+PASS screen request leaves conversation and context memory unchanged
+PASS screen injection leaves real SwiftData long-term memory unchanged
+PASS screen output cannot create durable Suzzme items
+PASS screen injection leaves real information state unchanged
+PASS screen injection leaves proactive store bytes unchanged
+PASS screen branch uses only the read-only model method
+PASS successful screen request captures once and releases ownership
+PASS invalid model answer rejected: empty
+PASS invalid model answer rejected: secret
+PASS invalid model answer rejected: oversized
+PASS invalid coordinates cannot leave Core
+PASS guidance setting off overrides unsolicited model coordinates
+PASS screen explanation cannot silently authorize a pointing request
+PASS valid guidance returns only matching image-free display metadata
+PASS superseded model continuation cannot return a screen answer
+PASS old cleanup cannot clear newer screen request ownership
+PASS focus or geometry change during inference discards answer
+PASS invalidated screen answer releases its source
+PASS cancelled Core owner cannot return a delayed screen answer
+PASS cancelled inference releases exact screen ownership
+Global screen checks: 68 passed / 0 failed

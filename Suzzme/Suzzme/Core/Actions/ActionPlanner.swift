@@ -5,6 +5,10 @@ import Foundation
 /// enters the registry.
 struct SuzzmeActionPlanner: Sendable {
     let calendar: Calendar
+    private static let eventCreationPrefixes = [
+        "create a calendar event", "create calendar event", "create an event",
+        "create event", "schedule", "add"
+    ]
 
     init(calendar: Calendar = .current) {
         self.calendar = calendar
@@ -49,7 +53,7 @@ struct SuzzmeActionPlanner: Sendable {
             guard !title.isEmpty, let dueDate else { throw SuzzmeCapabilityError.malformedPlan }
             return .init(requestID: requestID, capability: .reminders, operation: .update, payload: .reminder(.init(title: title, dueDate: dueDate)), risk: .consequentialWrite)
         }
-        if lowered.hasPrefix("add ") || lowered.hasPrefix("create event") || lowered.hasPrefix("schedule ") {
+        if Self.eventCreationPrefixes.contains(where: { lowered == $0 || lowered.hasPrefix($0 + " ") }) {
             guard lowered.contains("tomorrow") || lowered.contains("today") || lowered.contains(" at ") || lowered.contains(" from ") || lowered.contains(" in ") || lowered.contains("next ") else { return nil }
             let title = eventTitle(in: normalized)
             guard !title.isEmpty else { throw SuzzmeCapabilityError.malformedPlan }
@@ -86,9 +90,9 @@ struct SuzzmeActionPlanner: Sendable {
 
     private func eventTitle(in text: String) -> String {
         let lowered = text.lowercased()
-        let prefixes = ["add ", "create event ", "schedule "]
-        guard let prefix = prefixes.first(where: { lowered.hasPrefix($0) }) else { return "" }
-        let value = String(text.dropFirst(prefix.count))
+        guard let prefix = Self.eventCreationPrefixes.first(where: { lowered.hasPrefix($0 + " ") }) else { return "" }
+        var value = String(text.dropFirst(prefix.count + 1))
+        if value.lowercased().hasPrefix("called ") { value.removeFirst("called ".count) }
         return prefixBeforeTemporalTerm(value, terms: ["today", "tonight", "tomorrow", "at", "from", "next", "in", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"])
     }
 

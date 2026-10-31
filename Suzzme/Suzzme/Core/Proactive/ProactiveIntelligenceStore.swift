@@ -12,6 +12,9 @@ private struct ProactiveStoredState: Codable, Sendable {
     var opportunities: [SuzzmeOpportunity] = []
     var deliveries: [ProactiveDeliveryRecord] = []
     var dailyContext: DailyContextSnapshot?
+    var urgentItems: [ProactiveBriefingItem]?
+    var urgentGeneratedAt: Date?
+    var currentBriefingMissing: Bool?
 }
 
 actor ProactiveIntelligenceStore {
@@ -75,12 +78,16 @@ actor ProactiveIntelligenceStore {
         guard generationID == generation else { throw ProactiveError.staleGeneration }
         generationID = nil
         if let briefing = snapshot.briefing {
+            var calendar = Calendar.current
+            calendar.timeZone = TimeZone(identifier: state.preferences.timeZoneIdentifier) ?? calendar.timeZone
+            state.briefings.removeAll { calendar.isDate($0.informationCutoff, inSameDayAs: briefing.informationCutoff) }
             state.briefings.insert(briefing, at: 0)
             state.briefings = Array(state.briefings.prefix(ProactiveLimits.storedBriefings))
+            state.currentBriefingMissing = false
         } else {
             // A completed generation with no supported content invalidates the
             // previous current briefing instead of presenting it as fresh.
-            state.briefings.removeAll()
+            state.currentBriefingMissing = true
         }
         let dismissed = Dictionary(state.opportunities.filter { $0.state == .dismissed }.map { ($0.key, $0) }, uniquingKeysWith: { first, _ in first })
         state.opportunities = snapshot.opportunities.map { value in
@@ -90,11 +97,14 @@ actor ProactiveIntelligenceStore {
         }
         state.opportunities = Array(state.opportunities.filter { $0.expiresAt > now }.prefix(ProactiveLimits.storedOpportunities))
         state.dailyContext = snapshot.dailyContext
+        state.urgentItems = Array(snapshot.timeCriticalItems.prefix(ProactiveLimits.briefingItems))
+        state.urgentGeneratedAt = snapshot.generatedAt
         try cleanup(now: now, persistChanges: false)
         try persist()
     }
 
-    func cancelGeneration() {
+    func cancelGeneration(respectingTaskCancellation: Bool = false) {
+        guard !respectingTaskCancellation || !Task.isCancelled else { return }
         generationID = nil
     }
 
@@ -104,7 +114,7 @@ actor ProactiveIntelligenceStore {
         let priorContextDay = state.dailyContext?.localDay
         let dailyContext = rolledDailyContext(now: now)
         if priorContextDay != state.dailyContext?.localDay { try persist() }
-        var briefing = state.briefings.first
+        var briefing = state.currentBriefingMissing == true ? nil : state.briefings.first
         if var value = briefing, now.timeIntervalSince(value.createdAt) > ProactiveLimits.briefingFreshness {
             value.deliveryState = .stale
             briefing = value
@@ -113,9 +123,16 @@ actor ProactiveIntelligenceStore {
             generatedAt: briefing?.createdAt ?? now,
             briefing: briefing,
             opportunities: state.opportunities.filter { $0.state == .active },
-            timeCriticalItems: briefing?.items.filter { $0.delivery == .timeCritical } ?? [],
+            timeCriticalItems: state.urgentGeneratedAt.map { now.timeIntervalSince($0) >= 0 && now.timeIntervalSince($0) < 900 } == true
+                ? (state.urgentItems ?? []) : [],
             dailyContext: dailyContext
         )
+    }
+
+    func savedBriefings(now: Date) throws -> [ProactiveBriefing] {
+        try loadIfNeeded()
+        try cleanup(now: now, persistChanges: true)
+        return state.briefings
     }
 
     func canDeliver(key: String, now: Date) throws -> Bool {
@@ -150,9 +167,12 @@ actor ProactiveIntelligenceStore {
         try loadIfNeeded()
         generationID = nil
         state.briefings.removeAll()
+        state.currentBriefingMissing = nil
         state.opportunities.removeAll()
         state.deliveries.removeAll()
         state.dailyContext = nil
+        state.urgentItems = nil
+        state.urgentGeneratedAt = nil
         try persist()
     }
 

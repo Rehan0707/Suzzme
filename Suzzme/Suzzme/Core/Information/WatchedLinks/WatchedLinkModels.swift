@@ -7,6 +7,8 @@ enum WatchedLinkLimits {
     static let sections = 32
     static let redirects = 3
     static let timeout: TimeInterval = 15
+    static let dnsTimeout: TimeInterval = 3
+    static let transportConsentRevision = 1
     static let minimumRefreshInterval: TimeInterval = 15 * 60
     static let maximumBackoff: TimeInterval = 24 * 3_600
     static let changeRetention: TimeInterval = 30 * 86_400
@@ -47,8 +49,12 @@ struct WatchedLinkRecord: Identifiable, Codable, Sendable, Equatable {
     var nextEligibleRefresh: Date?
     var pageTitle: String?
     var changes: [WatchedLinkChange]
+    // Missing in schema-1 records created before the pinned transport. Reading
+    // history never grants permission to restart network retrieval.
+    var transportConsentRevision: Int? = nil
 
     var sourceIdentity: String { "web:\(canonicalURL.absoluteString)" }
+    var permitsFetching: Bool { enabled && transportConsentRevision == WatchedLinkLimits.transportConsentRevision }
 }
 
 struct WatchedLinkFetchRequest: Sendable {
@@ -69,10 +75,12 @@ struct WatchedLinkFetchResponse: Sendable {
 enum WatchedLinkError: LocalizedError, Sendable, Equatable {
     case invalidURL, unsupportedScheme, blockedHost, redirectLimit, responseTooLarge
     case unsupportedContent, malformedContent, timeout, unavailable, notFound, serverError
-    case staleRefresh, disabled, limitExceeded, persistence, restrictedContent
+    case staleRefresh, disabled, limitExceeded, persistence, restrictedContent, transportRestricted, consentRequired
 
     var errorDescription: String? {
         switch self {
+        case .consentRequired: "Review this saved page and choose Resume checking before Suzme makes any new request."
+        case .transportRestricted: "Watched-page checking is paused while its network safety boundary is hardened. Saved pages are kept; no network request is sent."
         case .invalidURL: "Enter a complete HTTPS page address."
         case .unsupportedScheme: "Watched Links support HTTPS pages only."
         case .blockedHost: "That address points to a local or private network and cannot be watched."
@@ -99,5 +107,8 @@ struct WatchedLinkRefresh: Sendable {
 }
 
 protocol WatchedLinkFetching: Sendable {
+    var isAvailable: Bool { get }
     func fetch(_ request: WatchedLinkFetchRequest) async throws -> WatchedLinkFetchResponse
 }
+
+extension WatchedLinkFetching { var isAvailable: Bool { true } }

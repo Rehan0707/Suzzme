@@ -1,0 +1,278 @@
+[
+  {
+    "url": "https://github.com/Owner/Repo",
+    "repository": "owner/repo"
+  },
+  {
+    "url": "https://GITHUB.COM/Owner/Repo/",
+    "repository": "owner/repo"
+  },
+  {
+    "url": "https://github.com/Owner/Repo?token=must-not-forward#discussion",
+    "repository": "owner/repo"
+  },
+  {
+    "url": "https://github.com/Owner/Repo/issues/123",
+    "repository": "owner/repo"
+  },
+  {
+    "url": "https://github.com/Owner/Repo/issues/0001/",
+    "repository": "owner/repo"
+  },
+  {
+    "url": "https://github.com/Owner/Repo/pull/45",
+    "repository": "owner/repo"
+  },
+  {
+    "url": "https://github.com/Owner/Repo/blob/main/Sources/File.swift",
+    "repository": "owner/repo"
+  },
+  {
+    "url": "https://github.com/Owner/Repo/blob/feature/ui/File.swift",
+    "repository": "owner/repo"
+  },
+  {
+    "url": "https://github.com/Owner/Repo/tree/main",
+    "repository": "owner/repo"
+  },
+  {
+    "url": "https://github.com/Owner/Repo/tree/feature/ui",
+    "repository": "owner/repo"
+  },
+  {
+    "url": "https://github.com/Owner/Repo/releases/latest",
+    "repository": "owner/repo"
+  },
+  {
+    "url": "https://github.com/Owner/Repo/releases/tag/v1.0",
+    "repository": "owner/repo"
+  },
+  {
+    "url": "https://github.com/Owner/Repo/issues",
+    "repository": "owner/repo"
+  },
+  {
+    "url": "https://github.com/Owner/Repo/pulls",
+    "repository": "owner/repo"
+  },
+  {
+    "url": "https://github.com/Owner/Repo/actions",
+    "repository": "owner/repo"
+  },
+  {
+    "url": "https://github.com/Owner/Repo/releases",
+    "repository": "owner/repo"
+  },
+  {
+    "url": "https://github.com/Owner/Repo/tags",
+    "repository": "owner/repo"
+  },
+  {
+    "url": "https://github.com/Owner/Repo/branches",
+    "repository": "owner/repo"
+  },
+  {
+    "url": "https://github.com/Owner/Repo/commits",
+    "repository": "owner/repo"
+  },
+  {
+    "url": "https://github.com/Owner/Repo/discussions",
+    "repository": "owner/repo"
+  },
+  {
+    "url": "https://github.com/Owner/Repo/projects",
+    "repository": "owner/repo"
+  },
+  {
+    "url": "https://github.com/Owner/Repo/wiki",
+    "repository": "owner/repo"
+  },
+  {
+    "url": "https://github.com/Owner/Repo/security",
+    "repository": "owner/repo"
+  },
+  {
+    "url": "https://github.com/Owner/Repo/settings",
+    "repository": "owner/repo"
+  },
+  {
+    "url": "https://github.com",
+    "repository": null
+  },
+  {
+    "url": "https://github.com/",
+    "repository": null
+  },
+  {
+    "url": "https://github.com/person",
+    "repository": null
+  },
+  {
+    "url": "https://github.com/person?tab=repositories",
+    "repository": null
+  },
+  {
+    "url": "https://github.com/search/code",
+    "repository": null
+  },
+  {
+    "url": "https://github.com/search?q=repo",
+    "repository": null
+  },
+  {
+    "url": "https://github.com/settings/profile",
+    "repository": null
+  },
+  {
+    "url": "http://github.com/owner/repo",
+    "repository": null
+  },
+  {
+    "url": "https://www.github.com/owner/repo",
+    "repository": null
+  },
+  {
+    "url": "https://github.com./owner/repo",
+    "repository": null
+  },
+  {
+    "url": "https://github.com.evil.test/owner/repo",
+    "repository": null
+  },
+  {
+    "url": "https://github.com@evil.test/owner/repo",
+    "repository": null
+  },
+  {
+    "url": "https://secret@github.com/owner/repo",
+    "repository": null
+  },
+  {
+    "url": "https://@github.com/owner/repo",
+    "repository": null
+  },
+  {
+    "url": "https://:secret@github.com/owner/repo",
+    "repository": null
+  },
+  {
+    "url": "https://github.com:443/owner/repo",
+    "repository": null
+  },
+  {
+    "url": "https://github.com:8443/owner/repo",
+    "repository": null
+  },
+  {
+    "url": "https://127.0.0.1/owner/repo",
+    "repository": null
+  },
+  {
+    "url": "https://g\u0131thub.com/owner/repo",
+    "repository": null
+  },
+  {
+    "url": "https://github.com/owner%2Frepo/issues/1",
+    "repository": null
+  },
+  {
+    "url": "https://github.com/owner/repo%5Cother",
+    "repository": null
+  },
+  {
+    "url": "https://github.com/owner/%ZZ",
+    "repository": null
+  },
+  {
+    "url": "https://github.com/owner/repo/blob/main/%252e%252e/secret",
+    "repository": null
+  },
+  {
+    "url": "https://github.com/owner/repo/blob/main/%2e%2e/secret",
+    "repository": null
+  },
+  {
+    "url": "https://github.com/owner/repo/blob/main/../secret",
+    "repository": null
+  },
+  {
+    "url": "https://github.com/owner/repo/blob/main/a%00b",
+    "repository": null
+  },
+  {
+    "url": "https://github.com/owner/repo//issues/1",
+    "repository": null
+  },
+  {
+    "url": "https://github.com/owner/repo/issues/0",
+    "repository": null
+  },
+  {
+    "url": "https://github.com/owner/repo/issues/-1",
+    "repository": null
+  },
+  {
+    "url": "https://github.com/owner/repo/issues/9223372036854775808",
+    "repository": null
+  },
+  {
+    "url": "https://github.com/owner/repo/issues/1/other",
+    "repository": null
+  },
+  {
+    "url": "https://github.com/owner/repo/issues/nope",
+    "repository": null
+  },
+  {
+    "url": "https://github.com/owner/repo/unknown",
+    "repository": null
+  },
+  {
+    "url": "https://github.com/owner/repo/tree",
+    "repository": null
+  },
+  {
+    "url": "https://github.com/owner/repo/blob/main",
+    "repository": null
+  },
+  {
+    "url": "https://github.com/-owner/repo",
+    "repository": null
+  },
+  {
+    "url": "https://github.com/owner-/repo",
+    "repository": null
+  },
+  {
+    "url": "https://github.com/owner/.",
+    "repository": null
+  },
+  {
+    "url": "https://github.com/owner/..",
+    "repository": null
+  },
+  {
+    "url": "https://github.com/owner/repo\n",
+    "repository": null
+  },
+  {
+    "url": "https://github.com/owner\\repo",
+    "repository": null
+  },
+  {
+    "url": "https://linkedin.com/in/person",
+    "repository": null
+  },
+  {
+    "url": "chrome://extensions",
+    "repository": null
+  },
+  {
+    "url": "https://github.com/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/repo",
+    "repository": null
+  },
+  {
+    "url": "https://github.com/owner/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "repository": null
+  }
+]

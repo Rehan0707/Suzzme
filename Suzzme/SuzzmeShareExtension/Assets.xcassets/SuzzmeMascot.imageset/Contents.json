@@ -1,0 +1,6 @@
+{
+  "images" : [
+    { "filename" : "mascot_idle.png", "idiom" : "universal" }
+  ],
+  "info" : { "author" : "xcode", "version" : 1 }
+}

@@ -1,0 +1,27 @@
+{
+  "review_date": "2026-10-13",
+  "archived_final_exit_zero_count": 46,
+  "archived_final_results": "final-results.json",
+  "archived_log_hashes_verified": true,
+  "preserved_initial_results_sha256": "6d52bba6a2d9d9091816381073683bd0ce235474cc28559bbfc9c05ca63a8849",
+  "archived_records_rewritten": false,
+  "tests_rerun_by_this_review": false,
+  "scope": "Read-only source/evidence review and report correction. No production or validation source edited.",
+  "new_source_scope": "One Runtime-owned Live Activity adapter, aggregate App scene phase and current-state sampling in cancelled/replaced presentation tasks.",
+  "current_source_sha256": {
+    "Suzzme/App/SuzzmeApp.swift": "c0306e14b855854350168142fa363bfb016e590d34fb5c799763abeb07e1cf15",
+    "Suzzme/App/SuzzmeAppStartup.swift": "38723cad72d4ab9eecd36c39fc69353f7350c46c3528f682f5f169204c495d31",
+    "Suzzme/App/ContentView.swift": "56e5995aafee35e51bbd8de478a58db9b4b4bdc6a741eb81e04399b10ea52197",
+    "Suzzme/Platform/iOS/SuzzmeLiveActivityController.swift": "4af502a19b23cb94208f1c7b550e724809aa7b07f85c2063ab0853e96eb16edd",
+    "Validation/live-activity-check.sh": "d005e42a9d41297fe2f6f78b11676488e5f1fa8f13ce938c9893b40963d868b2"
+  },
+  "pending_current_source_gates": [
+    "Shared-runtime Live Activity shell recheck",
+    "Native builds and final Release configurations",
+    "Hosted native tests",
+    "Standalone native UI behavior completion",
+    "Visual inspection register"
+  ],
+  "host_artifact_limit": "Temporary native builds and unarchived logs were cleared; persistent archived logs and captures remain valid for their recorded execution.",
+  "white_screen_limit": "Original reported white screen not independently reproduced; eager startup work is a code-audit finding."
+}

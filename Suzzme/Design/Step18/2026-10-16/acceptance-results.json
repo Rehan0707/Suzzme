@@ -1,0 +1,55 @@
+{
+  "scope": "Step 18 first bounded production batch",
+  "completeStep18Mission": false,
+  "statuses": {
+    "BUILD PASSED": [
+      "macOS Release arm64 (final source)",
+      "iOS Release arm64 simulator (final source)"
+    ],
+    "TEST PASSED": {
+      "integrationPresentation": 117,
+      "voiceQuality": 23,
+      "voiceLifecycle": 31,
+      "p0Regressions": 71,
+      "productFlow": 39,
+      "confirmationStep8": 198
+    },
+    "RUNTIME OBSERVED": [
+      "launch",
+      "Home",
+      "seven sidebar destinations",
+      "Settings",
+      "600+ point fitted Assistant sheet without observed regular-window clipping",
+      "typed deterministic help answer",
+      "real generated photosynthesis follow-up and retained earlier answer",
+      "real processing/cancel state",
+      "Sources navigation and return",
+      "single pace control and one accessibility slider label",
+      "optional trackpad feedback control visible",
+      "supported integration entries first",
+      "catalog include toggle",
+      "Bitbucket search with catalog toggle off and singular count",
+      "honest empty search and clear",
+      "How access works disclosure",
+      "GitHub setup opens and cancels; verify disabled with empty credentials",
+      "Presence settings with explicitly labeled preview",
+      "real in-app microphone activation into Listening and cancellation back to Ready"
+    ],
+    "PHYSICAL DEVICE VERIFIED": [],
+    "OWNER APPROVED": "Implementation/test scope authorized; final visual acceptance not recorded",
+    "BLOCKED": [
+      "iOS runtime",
+      "current onboarding runtime",
+      "hardware notch",
+      "physical iPhone Live Activity/Dynamic Island",
+      "physical haptic sensation",
+      "full spoken ASR-model-TTS conversation",
+      "complete VoiceOver/contrast/reduced-motion/size matrix"
+    ]
+  },
+  "sourceChanges": "/Users/rehan/Documents/Projects/Suzzme/Suzzme/Design/Step18/2026-10-16/source-change-manifest.json",
+  "originalGalleryImagesInspected": 81,
+  "newNativeMacScreenshots": 23,
+  "runtimeEvidence": "evidence/manual-runtime-results.json",
+  "rawBuildAndTestEvidence": "evidence/batch-results.json"
+}

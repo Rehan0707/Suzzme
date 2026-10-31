@@ -1,0 +1,22 @@
+Window: "", App: Suzzme.
+0 sheet Secondary Actions: Raise
+	1 container
+		2 text Value: Ask Suzzme, Secondary Actions: Cancel
+		3 text field (disabled) Description: Question for Suzzme, Placeholder: Ask Suzzme or follow up, ID: suzzme-assistant-input, Secondary Actions: Cancel
+		4 button Description: Cancel request, ID: suzzme-assistant-submit, Secondary Actions: Cancel
+		5 button Description: Cancel request, Secondary Actions: Cancel
+		6 scroll area Secondary Actions: Cancel
+			7 list Secondary Actions: AXScrollToTop, AXScrollToBottom
+				8 text Suzzme status: Thinking it through… Apple Intelligence is ready on this device.
+				9 unknown Description: You said: Explain how photosynthesis works in six short paragraphs., ID: suzzme-turn-AEFC3189-523E-4213-81BD-1303B3B53DD5-user
+		10 button Done
+		11 button Manage sources
+12 menu bar
+	13 Suzzme
+	14 Edit
+	15 View
+	16 Companion
+	17 Window
+	18 Help
+
+The focused UI element is 0 sheet Secondary Actions: Raise

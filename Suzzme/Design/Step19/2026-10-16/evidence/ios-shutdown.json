@@ -1,0 +1,13 @@
+{
+  "command": [
+    "xcrun",
+    "simctl",
+    "shutdown",
+    "A4E6594C-838C-474A-B2BA-25A23BA6CEAD"
+  ],
+  "exit": 0,
+  "seconds": 12.313083707998885,
+  "stdout": "",
+  "stderr": "",
+  "erased": false
+}

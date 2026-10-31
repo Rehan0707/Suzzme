@@ -1,0 +1,67 @@
+PASS wide physical cutouts are never narrowed by a generic width cap
+PASS compact invocation keeps an accessible control height below the cutout
+PASS listening expands the same attachment downward
+PASS the attachment covers both measured physical cutout edges
+PASS concave outer top corners retain their clear silhouette
+PASS negative display origins retain the cutout center and top anchor
+PASS the active surface stays within its invocation display
+PASS a pointer pinned to the exact display top can reveal the physical notch
+PASS notch entry cannot capture adjacent menu-bar or off-display space
+PASS invalid display and pointer geometry cannot reveal or intercept
+PASS the attached silhouette accepts a first click at the exact bezel edge
+PASS the notch body keeps its native controls interactive
+PASS transparent concave and rounded corners pass clicks through
+PASS the edge bloom never enlarges the interactive silhouette
+PASS non-notch rounded fallback corners also pass clicks through
+PASS invocation captures its display
+PASS cursor and audio updates cannot migrate an active interaction
+PASS the completed answer retains its display through reading
+PASS a new request may select a new invocation display
+PASS disconnecting the owned display selects an available display
+PASS ending the interaction releases display ownership
+PASS every semantic phase has a distinct finite visual interpretation
+PASS idle transition has a bounded completion interval
+PASS idle respects Minimal, Reduce Motion and inactive scenes
+PASS listening transition has a bounded completion interval
+PASS listening respects Minimal, Reduce Motion and inactive scenes
+PASS transcribing transition has a bounded completion interval
+PASS transcribing respects Minimal, Reduce Motion and inactive scenes
+PASS understanding transition has a bounded completion interval
+PASS understanding respects Minimal, Reduce Motion and inactive scenes
+PASS gatheringContext transition has a bounded completion interval
+PASS gatheringContext respects Minimal, Reduce Motion and inactive scenes
+PASS reasoning transition has a bounded completion interval
+PASS reasoning respects Minimal, Reduce Motion and inactive scenes
+PASS planning transition has a bounded completion interval
+PASS planning respects Minimal, Reduce Motion and inactive scenes
+PASS awaitingConfirmation transition has a bounded completion interval
+PASS awaitingConfirmation respects Minimal, Reduce Motion and inactive scenes
+PASS acting transition has a bounded completion interval
+PASS acting respects Minimal, Reduce Motion and inactive scenes
+PASS speaking transition has a bounded completion interval
+PASS speaking respects Minimal, Reduce Motion and inactive scenes
+PASS success transition has a bounded completion interval
+PASS success respects Minimal, Reduce Motion and inactive scenes
+PASS error transition has a bounded completion interval
+PASS error respects Minimal, Reduce Motion and inactive scenes
+PASS idle never schedules a motion cycle
+PASS pending confirmation retains user agency without an automatic deadline
+PASS the filled notch silhouette is closed
+PASS the attached glowing skirt remains open
+PASS the visible perimeter contains both concave shoulders and rounded bottom corners
+PASS the skirt joins the display top at both outer corners
+PASS top corners curve concavely into the body rather than rounding inward from its sides
+PASS the open glow never strokes the flat bezel line
+PASS offset rectangle contours stay finite and within their own bounds
+PASS black upper wings connect the physical cutout to the expanded surface while outer concave corners remain clear
+PASS a continuous black band spans both expanded wings just below the concave corner radius
+PASS different physical content insets preserve the same gap-free display-top silhouette
+PASS oversized corner radii clamp without crossing the body bounds
+PASS negative corner radii produce safe finite contours
+PASS nonfinite corner radii use the safe zero-radius contour
+PASS a nearly collapsed surface retains finite geometry
+PASS empty and invalid rectangles cannot emit invalid drawing coordinates
+PASS animation updates both corner radii on the actual shape
+PASS intermediate radius values morph the same contour instead of swapping shapes
+PASS non-notch screens keep a matching continuous rounded fallback surface and rim
+Companion Presence checks: 66 passed / 0 failed

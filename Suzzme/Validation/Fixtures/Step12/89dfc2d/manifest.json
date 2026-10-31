@@ -8,7 +8,7 @@
     "Core/Intelligence/SuzzmeUnderstandingPipeline.swift": "f4d3ecbe9b8e7a75acc1022789d5e40e6c0b897508f917673b4202da76808414",
     "compiled-helper": "b768830bc4b5cf1ae736448915fc13d4e715b8a2841cd19de37c0b4b82984d5c"
   },
-  "fixture_sha256": "5979c48e6227d5af2395a8df5bc115872ed8895992aafffd455afb8842e3316c",
+  "fixture_sha256": "4d6d1d67269c2f4c58c9d08498cc09a089d8add46b308478c4988ed45081c846",
   "fixture_bytes": 102400,
   "expected_memories": 5,
   "expected_relationships": 1,

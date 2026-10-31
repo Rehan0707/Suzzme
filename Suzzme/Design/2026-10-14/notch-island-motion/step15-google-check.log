@@ -1,0 +1,78 @@
+PASS sign-in alone does not authorize Google intake
+PASS googleCalendar explicit selection valid
+PASS googleCalendar arbitrary endpoint denied
+PASS googleCalendar disabled selection cannot ingest
+PASS googleDrive explicit selection valid
+PASS googleDrive arbitrary endpoint denied
+PASS googleDrive disabled selection cannot ingest
+PASS googleDocs explicit selection valid
+PASS googleDocs arbitrary endpoint denied
+PASS googleDocs disabled selection cannot ingest
+PASS googleSheets explicit selection valid
+PASS googleSheets arbitrary endpoint denied
+PASS googleSheets disabled selection cannot ingest
+PASS googleTasks explicit selection valid
+PASS googleTasks arbitrary endpoint denied
+PASS googleTasks disabled selection cannot ingest
+PASS sheet selection requires tab
+PASS sheet range capped at 500 cells
+PASS all five real selected adapters normalize observations
+PASS observations owned by account and selection generation
+PASS document instructions never become retained notes
+PASS only authorized official GETs issued
+PASS Google reads require TLS
+PASS calendar cancellation records requested
+PASS Tasks due date does not invent clock time
+PASS Docs excerpt grounded and change comparison explicitly unavailable
+PASS Sheets preserves numeric/boolean values without inferred meaning
+PASS bounded pagination reports partial and deduplicates IDs
+PASS rate limit returns bounded failure
+PASS all-day Calendar interval respects provider timezone and DST
+PASS wrong resource/malformed/credential echo rejected
+PASS wrong resource/malformed/credential echo rejected
+PASS wrong resource/malformed/credential echo rejected
+PASS deleted Google task does not invent active work
+PASS shipping intake really persists selected Google observations
+PASS SwiftData survives reopen
+PASS duplicate refresh does not duplicate observations
+PASS Google → Information → relevance → populated Daily Summary
+PASS same evolving Daily Context owns selected observations
+PASS Google schedule answers work even without native Calendar permission
+PASS calendar changes include authorized Google events without unrelated resources
+PASS tomorrow morning cannot reuse today's evening event
+PASS current request atomically commits selected context
+PASS superseded callback cannot replace a newer request's facts
+PASS superseded revocation check cannot clear a newer conversation
+PASS cancelled callback cannot commit selected context
+PASS late answer cannot survive cancellation or revoked conversation ownership
+PASS summary follow-up freshly reads exact selected Google document
+PASS external instructions cannot become actions or extracted commitments
+PASS multiple Google resources require clarification
+PASS partial failure hides stale failed source while preserving healthy services
+PASS per-service failure health remains factual
+PASS latest successful empty selection cannot authorize obsolete event
+PASS calendar tombstone supersedes prior event
+PASS concurrent refreshes preserve one current observation per resource
+PASS late health callback cannot restore retired selection generation
+PASS expired SDK generation rejected
+PASS account switching cannot authorize prior observations
+PASS removing selection immediately rejects persisted document
+PASS removed selection invalidates follow-up reference
+PASS retired document metadata physically deleted
+PASS late callback from retired account cannot be committed
+PASS revoked provider permission is not a healthy empty read
+PASS 403 retires service authority over stored facts
+PASS Gmail sign-in alone cannot read headers
+PASS explicit unread selection reads headers only
+PASS mail question grounded in selected authorized headers
+PASS mail follow-up rechecks headers and discloses limits
+PASS Gmail consent removal revokes cached authority
+PASS revoked Gmail cannot answer from stale conversation
+PASS cancelled intake cannot return a successful batch
+PASS exact Google/EventKit UID and interval match preserves native authority without duplicate
+PASS approved MCP → existing Core → deterministic answer
+PASS MCP prompt injection never reaches native actions or extraction
+PASS raw MCP result never enters Session facts or long-term Memory
+PASS Core retires MCP read capability after answering
+PASS retired MCP context cannot be reused for another answer
+Step 15 Google: 77 passed / 0 failed. SDK ownership and HTTP fixtures only; live acceptance pending.

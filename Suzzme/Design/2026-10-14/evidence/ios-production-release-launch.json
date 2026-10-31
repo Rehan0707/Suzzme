@@ -1,0 +1,35 @@
+{
+  "recordedAtUTC": "2026-10-14T04:19:21.160061+00:00",
+  "device": "BF97982B-6BF2-4C6D-B647-2CC5A387A30B",
+  "bundleIdentifier": "rehan.Suzzme",
+  "configuration": "Release",
+  "entryPointReplaced": false,
+  "environmentInjected": false,
+  "launchArguments": [],
+  "containerRelocatedByInstaller": true,
+  "preexistingStoresAndPreferencesRetained": [
+    {
+      "file": "Library/Application Support/default.store",
+      "bytes": 102400,
+      "modifiedUTC": "2026-10-02T11:02:24.884055+00:00"
+    },
+    {
+      "file": "Library/Application Support/SuzzmeInformation.store",
+      "bytes": 81920,
+      "modifiedUTC": "2026-10-12T13:27:47.393864+00:00"
+    },
+    {
+      "file": "Library/Preferences/rehan.Suzzme.plist",
+      "bytes": 188,
+      "modifiedUTC": "2026-10-05T17:12:13.870163+00:00"
+    },
+    {
+      "file": "Library/Application Support/Suzzme/proactive-intelligence-v1.json",
+      "bytes": 4751,
+      "modifiedUTC": "2026-10-12T13:27:54.734563+00:00"
+    }
+  ],
+  "simulatorDataErased": false,
+  "launchResult": "rehan.Suzzme: 16098",
+  "executableSHA256": "e9594bb35b443343aaa78fba6d8ea410d539b86e14906e6bd4a9c99b4dbe3635"
+}

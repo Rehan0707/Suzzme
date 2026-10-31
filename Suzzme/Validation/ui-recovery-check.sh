@@ -27,12 +27,20 @@ check "spacing scale" contains Suzzme/DesignSystem/Theme/SuzzmeTheme.swift 'enum
 check "radius scale" contains Suzzme/DesignSystem/Theme/SuzzmeTheme.swift 'enum Radius'
 check "motion scale" contains Suzzme/DesignSystem/Theme/SuzzmeTheme.swift 'enum Motion'
 check "single reusable Face type" count_is Suzzme/DesignSystem/Components/SuzzmeFace.swift '^struct SuzzmeFace:' 1
-check "Home uses Face-led presence" contains Suzzme/Features/Home/HomeView.swift 'SuzzmeHalo'
+check "single reusable cloud companion type" count_is Suzzme/DesignSystem/Components/SuzzmeMascot.swift '^struct SuzzmeMascot:' 1
+check "Home uses shared cloud companion" contains Suzzme/Features/Home/HomeView.swift 'SuzzmeMascot'
 check "Home voice primary action" contains Suzzme/Features/Home/HomeView.swift 'Talk to Suzzme'
-check "Home typed secondary action" contains Suzzme/Features/Home/HomeView.swift 'Type to Suzzme'
-check "production Settings reachable" contains Suzzme/Features/Home/HomeView.swift 'SettingsView'
+check "Home typed secondary action" contains Suzzme/Features/Home/HomeView.swift 'TextField\("Ask Suzzme anything'
+check "production Settings reachable" contains Suzzme/Platform/macOS/MacRootView.swift 'row\(\.settings\)'
 check "compact navigation avoids all destinations" absent Suzzme/Platform/iOS/MobileRootView.swift 'ForEach\(AppDestination\.allCases\)'
-check "compact navigation has three destinations" contains Suzzme/Platform/iOS/MobileRootView.swift '\[\.home, \.briefing, \.memory\]'
+# Today, Ask and Settings are compact tabs; other destinations remain in navigation.
+compact_routes_present() {
+  contains Suzzme/Platform/iOS/MobileRootView.swift 'Label\("Today"' &&
+    contains Suzzme/Platform/iOS/MobileRootView.swift 'Label\("Ask"' &&
+    contains Suzzme/Platform/iOS/MobileRootView.swift 'Label\("Settings"' &&
+    contains Suzzme/Platform/iOS/MobileRootView.swift 'navigationDestination\(for: AppDestination.self\)'
+}
+check "compact navigation has Today Ask Settings and secondary routes" compact_routes_present
 check "Ask uses central environment" contains Suzzme/Features/Home/AskSuzzmeView.swift 'environment.askSuzzme'
 check "Ask shows exact action title" contains Suzzme/Features/Home/AskSuzzmeView.swift 'title: action.title'
 check "Ask has semantic confirmation summary" contains Suzzme/Features/Home/AskSuzzmeView.swift 'SuzzmeConfirmationSummary'
@@ -53,13 +61,14 @@ check "Privacy controls are reachable" contains Suzzme/Features/Settings/Setting
 check "Voice selection is visible" contains Suzzme/Features/Settings/VoiceSettingsView.swift 'checkmark'
 check "onboarding has real permission requests" contains Suzzme/App/LaunchExperience.swift 'requestSourcePermission'
 check "onboarding has no credential fields" absent Suzzme/App/LaunchExperience.swift 'SecureField|emailAddress|password'
-check "Sign in with Apple is truthfully unavailable" contains Suzzme/App/LaunchExperience.swift 'Account sync is not available'
+check "Google sign-in uses live account flow" contains Suzzme/App/SignInView.swift 'GoogleAccountSignIn.signInAndSave'
+check "No placeholder Apple sign-in" absent Suzzme/App/SignInView.swift 'Sign in with Apple'
 check "Presence respects Reduce Motion" contains Suzzme/DesignSystem/Components/SuzzmeAssistantPresenceView.swift 'accessibilityReduceMotion'
 check "Presence respects Reduce Transparency" contains Suzzme/DesignSystem/Components/SuzzmeAssistantPresenceView.swift 'accessibilityReduceTransparency'
 check "Presence respects Increased Contrast" contains Suzzme/DesignSystem/Components/SuzzmeAssistantPresenceView.swift 'colorSchemeContrast'
-check "Home has small-width preview" contains Suzzme/Features/Home/HomeView.swift 'frame\(width: 320, height: 568\)'
-check "Home has large-width preview" contains Suzzme/Features/Home/HomeView.swift 'frame\(width: 440, height: 956\)'
-check "Home has accessibility type preview" contains Suzzme/Features/Home/HomeView.swift 'dynamicTypeSize, \.accessibility3'
+check "Today has small-width preview" contains Suzzme/Features/Home/DailyContextView.swift 'frame\(width: 320, height: 568\)'
+check "Today has large-width preview" contains Suzzme/Features/Home/DailyContextView.swift 'frame\(width: 440, height: 956\)'
+check "Today has accessibility type preview" contains Suzzme/Features/Home/DailyContextView.swift 'dynamicTypeSize, \.accessibility3'
 check "Mac uses split navigation" contains Suzzme/Platform/macOS/MacRootView.swift 'NavigationSplitView'
 check "Mac preserves non-notch policy" contains Suzzme/Core/Invocation/AssistantPresentation.swift 'topCenter'
 check "no fake Dynamic Island implementation" absent Suzzme 'DynamicIsland|dynamicIsland|fake island'

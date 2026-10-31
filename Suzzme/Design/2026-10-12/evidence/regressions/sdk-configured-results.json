@@ -1,0 +1,38 @@
+{
+  "dependency_products": "/tmp/SuzzmeNativePlatformMacBuild/Build/Products/Debug",
+  "appauth_headers": "/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/AppAuth-iOS/Sources/AppAuthCore",
+  "resolved_pins": {
+    "appauth-ios": {
+      "revision": "a972daac82d449d58ab119e91c68153e29ddac33",
+      "version": "3.0.0"
+    },
+    "swift-sdk": {
+      "revision": "a0ae212ebf6eab5f754c3129608bc5557637e605",
+      "version": "0.12.1"
+    }
+  },
+  "initial_failure_cause": "Required SUZZME_MCP_PRODUCTS / SUZZME_APPAUTH_SOURCE environment was absent; no assertions ran.",
+  "step15_mcp_configured_sandbox_failure": "Swift Observation macro plugin nested sandbox denied sandbox_apply; unchanged checks rerun with approved host execution.",
+  "assertions_or_production_source_modified": false,
+  "scope": "Actual pinned MCP/AppAuth SDK implementations with controlled transport/authorization boundary fixtures. No provider traffic, token exchange, live account or hardware acceptance.",
+  "results": {
+    "integration-mcp-check.sh": {
+      "exit": 0,
+      "passed": 28,
+      "failed": 0,
+      "log": "integration-mcp-check-configured.log"
+    },
+    "step15-mcp-check.sh": {
+      "exit": 0,
+      "passed": 66,
+      "failed": 0,
+      "log": "step15-mcp-check-configured-host.log"
+    },
+    "step15-oauth-check.sh": {
+      "exit": 0,
+      "passed": 19,
+      "failed": 0,
+      "log": "step15-oauth-check-configured.log"
+    }
+  }
+}

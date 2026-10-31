@@ -1,0 +1,30 @@
+PASS Control Option default
+PASS single modifier cannot invoke
+PASS first complete chord invokes
+PASS held chord never duplicates
+PASS unrelated key preserves hold
+PASS unrelated key release preserves hold
+PASS control-first release finalizes once
+PASS second modifier release is quiet
+PASS option-first release finalizes once
+PASS rapid press release press preserves edges
+PASS Escape tap disable or sleep retires held state
+PASS recovery never restarts already-held chord
+PASS fresh press works after recovery
+PASS reset with released physical keys permits first press
+PASS unsupported modifier combination cannot start
+PASS legacy shortcut requires its primary key
+PASS autorepeat cannot start a session
+PASS safe existing shortcut begins on key down
+PASS autorepeat does not duplicate existing session
+PASS legacy key up finalizes
+PASS legacy modifier release finalizes
+PASS disabled shortcut stays quiet
+PASS new install enables default hold shortcut
+PASS disabled global shortcut preference persists
+PASS safe existing configured shortcut remains intact
+PASS physical press assigns authoritative request identity
+PASS coordinator never creates duplicate active voice request
+PASS stale completion cannot retire new request
+PASS matching completion retires invocation
+Global shortcut reducer checks passed: 29

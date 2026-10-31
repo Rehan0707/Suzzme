@@ -1,0 +1,54 @@
+Window: "Personal Memory", App: Suzzme.
+0 standard window Personal Memory, ID: main, Secondary Actions: Raise
+	1 split group main, SidebarNavigationSplitView
+		2 scroll area Secondary Actions: Scroll Up, Scroll Down
+			3 list Sidebar
+				4 row (selectable)
+				5 row (selectable) Suzzme, Your personal companion
+				6 row (selectable) Your day
+				7 row (selectable) Home
+				8 row (selectable) Today
+				9 row (selectable) Daily Summary
+				10 row (selectable) Your information
+				11 row (selected) Personal Memory
+				12 row (selectable) Sources
+				13 row (selectable) History
+				14 row (selectable)
+				15 row (selectable) Settings
+			16 scroll bar (settable, float) 0
+				17 value indicator (settable, float) 0
+				18 increment arrow button
+				19 decrement arrow button
+				20 increment page button
+				21 decrement page button
+		22 splitter (disabled, settable, float) 232
+		23 scroll area
+			24 list Secondary Actions: Cancel
+				25 row (selectable)
+				26 row (selectable) Description: The details that stay with you, Value: Useful details you choose to share, kept on this device.
+				27 row (selectable)
+				28 row (selectable) What would you like Suzzme to remember?
+Tell Suzzme your main project or a preference, in your own words.
+				29 row (selectable) Tell Suzzme
+				30 row (selectable) Memory controls
+				31 row (selectable) Personal Memory
+					32 checkbox Description: Personal Memory, Value: 1
+				33 row (selectable) Memory stays on this device. It is separate from your current day and recent source updates.
+	34 toolbar
+		35 button Description: Hide Sidebar, Secondary Actions: Increment, Decrement, Delete, Cancel
+		36 button Description: Ask Suzzme, Help: Ask Suzzme (⌘K), ID: suzzme-ask-open, Secondary Actions: Increment, Decrement, Delete, Cancel, Move previous, Move next, Remove from toolbar
+		37 button Description: Remember something, Secondary Actions: Increment, Decrement, Delete, Cancel, Move previous, Move next, Remove from toolbar
+		38 button Search
+	39 close button
+	40 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	41 minimize button
+	42 text Personal Memory
+43 menu bar
+	44 Suzzme
+	45 Edit
+	46 View
+	47 Companion
+	48 Window
+	49 Help
+
+The focused UI element is 0 standard window Personal Memory, ID: main, Secondary Actions: Raise

@@ -1,0 +1,41 @@
+PASS capability question receives local conversational answer
+PASS help does not become a saved item or promise autonomous actions
+PASS day question requests calendar and reminders
+PASS unrelated text does not request Apple sources
+PASS assignment question requests reminders only
+PASS daily answer is personal
+PASS daily answer includes calendar
+PASS daily answer includes reminders
+PASS daily answer reports grounded context
+PASS ambiguous follow-up asks for clarification
+PASS fresh source location replaces the same event's summary projection
+PASS same source object does not become an ambiguous duplicate
+PASS tomorrow overview requests calendar and reminders
+PASS tomorrow overview has correct temporal framing
+PASS tomorrow overview combines events and deadlines
+PASS summary follow-up resolves due assignment
+PASS summary follow-up resolves a meaningful change
+PASS summary follow-up resolves referenced registration
+PASS referential reminder enters central confirmation pipeline
+PASS referential reminder keeps central cancellation ownership
+PASS named summary follow-up resolves grounded item
+PASS follow-up resolves active event
+PASS follow-up stays grounded
+PASS authoritative source update replaces stale session fact
+PASS unfinished overdue reminder remains useful
+PASS duplicate source objects consolidate
+PASS daily summary time survives restart
+PASS live Calendar all-day flag survives summary conversion
+PASS Today context preserves all-day semantics
+PASS future summary narration includes the actual date
+PASS all-day narration does not claim a midnight appointment
+PASS future Calendar event is not placed in Today section
+PASS pre-existing summary JSON still decodes without all-day field
+PASS information persistence conversion retains authoritative all-day flag
+PASS all-day change invalidates semantic fingerprint
+PASS midnight timed event is not inferred to be all-day
+PASS all-day flag survives disk store reopen
+PASS persisted information reaches summary with all-day semantics
+PASS information-backed summary does not narrate midnight
+Product flow checks passed: 39
+Product flow checks failed: 0

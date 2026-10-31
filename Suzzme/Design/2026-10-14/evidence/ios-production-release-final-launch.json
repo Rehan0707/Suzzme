@@ -1,0 +1,15 @@
+{
+  "recordedAtUTC": "2026-10-14T05:32:46.770727+00:00",
+  "device": "BF97982B-6BF2-4C6D-B647-2CC5A387A30B",
+  "bundleIdentifier": "rehan.Suzzme",
+  "configuration": "Release",
+  "entryPointReplaced": false,
+  "environmentInjected": false,
+  "launchArguments": [],
+  "containerRelocatedByInstaller": true,
+  "preexistingStoresAndPreferencesBytePreserved": true,
+  "retainedFileCount": 4,
+  "simulatorDataErased": false,
+  "launchResult": "rehan.Suzzme: 20823",
+  "executableSHA256": "838315b2dd2b9407bb03f3d1c45077223ab355e8c136d39e553be653f3db7ef1"
+}

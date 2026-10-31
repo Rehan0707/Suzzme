@@ -1,0 +1,345 @@
+[
+  {
+    "path": "evidence/before/assistant-empty.jpg",
+    "stage": "before",
+    "width": 1360,
+    "height": 1250,
+    "sha256": "8345415310c3af8a9d0d735718cc2bee770493b0e7401f0c0536d0d58c778b7a"
+  },
+  {
+    "path": "evidence/before/daily-summary.jpg",
+    "stage": "before",
+    "width": 2160,
+    "height": 1640,
+    "sha256": "f8b625162ba459e00c787fa7ab44f5237acb58449c2562ee0aec3774cf42989e"
+  },
+  {
+    "path": "evidence/before/privacy.jpg",
+    "stage": "before",
+    "width": 2160,
+    "height": 1640,
+    "sha256": "4cf55076cacadcbc5b6b289d5d7237c221d348b8ace846bdd2fe3dbc4be2019b"
+  },
+  {
+    "path": "evidence/after/assistant-empty-light.jpg",
+    "stage": "after",
+    "width": 1360,
+    "height": 1250,
+    "sha256": "c362a1b749b180101846432e77ebe5ee6f41c96b67ad7a8958d0527f81910bd8"
+  },
+  {
+    "path": "evidence/after/assistant-follow-up-dark.jpg",
+    "stage": "after",
+    "width": 1360,
+    "height": 1250,
+    "sha256": "884b1333584ef24816dbb41c51db6e12a0ed78502d45a1b4fca30dbcd61286c6"
+  },
+  {
+    "path": "evidence/after/assistant-latest-return-dark.jpg",
+    "stage": "after",
+    "width": 1360,
+    "height": 1250,
+    "sha256": "2f27a8f5e2ab48101a4de90283ce21c78bea7dcd6e462d4063e671daf6fe3547"
+  },
+  {
+    "path": "evidence/after/assistant-processing-dark.jpg",
+    "stage": "after",
+    "width": 1360,
+    "height": 1250,
+    "sha256": "4e039db135630de8aa755785ca15de1fe8153f258b7ac664d19e345f0ec12f28"
+  },
+  {
+    "path": "evidence/after/assistant-reading-earlier-dark.jpg",
+    "stage": "after",
+    "width": 1360,
+    "height": 1250,
+    "sha256": "88fccd23362f54792a2cb37b30a12ee3ab66c06f830384528caeff775fc69837"
+  },
+  {
+    "path": "evidence/after/assistant-sources-light.jpg",
+    "stage": "after",
+    "width": 1360,
+    "height": 1250,
+    "sha256": "cdd015be2b16ad11cd77b809d6001113c3400d01d18ef6f4e9b9ccd54656c5e2"
+  },
+  {
+    "path": "evidence/after/daily-summary-compact-dark.jpg",
+    "stage": "after",
+    "width": 1470,
+    "height": 1104,
+    "sha256": "d0dc34c6243cafd1fed69b36e2d1610b680b4e4e75ba81fff6c02a52ed013d28"
+  },
+  {
+    "path": "evidence/after/daily-summary-dark.jpg",
+    "stage": "after",
+    "width": 2160,
+    "height": 1640,
+    "sha256": "5f6a887a5df232a2d0aaddeb7ec2e2f6220f55617c27a8f722155682ec5bc050"
+  },
+  {
+    "path": "evidence/after/daily-summary-light.jpg",
+    "stage": "after",
+    "width": 2160,
+    "height": 1640,
+    "sha256": "34364cbb3ea8cd6da9f505c8b2458d4915380ee0f1e807f4343d07648b28b785"
+  },
+  {
+    "path": "evidence/after/history-compact-dark.jpg",
+    "stage": "after",
+    "width": 1470,
+    "height": 1104,
+    "sha256": "74825601a2ea06cfa246a3a54ad4086f921366f7b7fd4a773d0db250e6fa6900"
+  },
+  {
+    "path": "evidence/after/home-compact-dark.jpg",
+    "stage": "after",
+    "width": 1470,
+    "height": 1104,
+    "sha256": "4bd30ebea230d4153a3b3276a0d2cb453f7b18b1be6c1ba07a9081f72d13f925"
+  },
+  {
+    "path": "evidence/after/home-dark.jpg",
+    "stage": "after",
+    "width": 2160,
+    "height": 1640,
+    "sha256": "0de7f69524f4bd65edf96b60011c0341b551a00e631ebb0f32a11b19a5295e5d"
+  },
+  {
+    "path": "evidence/after/home-light.jpg",
+    "stage": "after",
+    "width": 2160,
+    "height": 1640,
+    "sha256": "acb843242f507a7c214bd8cf511c9ca7b8290958ef69fe8dbbd81dfd89558561"
+  },
+  {
+    "path": "evidence/after/home-system-restored.jpg",
+    "stage": "after",
+    "width": 2160,
+    "height": 1640,
+    "sha256": "6359b1488cf627200ca27e2f4e28c7c3375f76472a64148e09c3e0c4798f1b35"
+  },
+  {
+    "path": "evidence/after/integrations-dark.jpg",
+    "stage": "after",
+    "width": 2160,
+    "height": 1640,
+    "sha256": "2227999e5afe9043461038c1db47c1b2feda5ab36bead5bc3fb679c62ad21002"
+  },
+  {
+    "path": "evidence/after/integrations-light.jpg",
+    "stage": "after",
+    "width": 2160,
+    "height": 1640,
+    "sha256": "b46541a59d619081631538ad7653870c106903911ec588ec87a64002cc350efc"
+  },
+  {
+    "path": "evidence/after/memory-compact-dark.jpg",
+    "stage": "after",
+    "width": 1470,
+    "height": 1104,
+    "sha256": "bf57dfb6d16cb18599ba682a28f3ebcdb5208909b0ef7933f9f26db4e67ae463"
+  },
+  {
+    "path": "evidence/after/memory-dark.jpg",
+    "stage": "after",
+    "width": 2160,
+    "height": 1640,
+    "sha256": "1dc743a58ac384459f988ca13121ebf8140061c0ac02c14397d51ef127ff1635"
+  },
+  {
+    "path": "evidence/after/presence-settings-dark.jpg",
+    "stage": "after",
+    "width": 2160,
+    "height": 1640,
+    "sha256": "30a8d17aed62d128c91d9a576ad1f53c9084cb1e709df2e0eb15c34159a98add"
+  },
+  {
+    "path": "evidence/after/presence-settings-light.jpg",
+    "stage": "after",
+    "width": 2160,
+    "height": 1640,
+    "sha256": "2efa7754715c5c6a16afff30093ef3860686ba6bbec19105055688f7263f3223"
+  },
+  {
+    "path": "evidence/after/privacy-dark.jpg",
+    "stage": "after",
+    "width": 2160,
+    "height": 1640,
+    "sha256": "cbf4d5a7ef888817e051ec9b5e61077d0caa002e6a9a48124f937d1cac083f4a"
+  },
+  {
+    "path": "evidence/after/settings-compact-dark.jpg",
+    "stage": "after",
+    "width": 1470,
+    "height": 1104,
+    "sha256": "5588f5714e81a167067193b84b4f174873ec20d51cad1ca14658103ebf7c9a98"
+  },
+  {
+    "path": "evidence/after/settings-dark-restored.jpg",
+    "stage": "after",
+    "width": 2160,
+    "height": 1640,
+    "sha256": "998907b112a0ae9335618be6f34635104ffaf0a492cc497750c1c2c21a1240d5"
+  },
+  {
+    "path": "evidence/after/settings-dark.jpg",
+    "stage": "after",
+    "width": 2160,
+    "height": 1640,
+    "sha256": "f5ed03264792a0eb9a2433299972bb2851475b69563e5dda6205200e8d052fae"
+  },
+  {
+    "path": "evidence/after/settings-light-before-restore.jpg",
+    "stage": "after",
+    "width": 2160,
+    "height": 1640,
+    "sha256": "83664895f6d93b62fc81286da64a6ab3c25950bcdb9186cc73e3d6260036c63c"
+  },
+  {
+    "path": "evidence/after/settings-light.jpg",
+    "stage": "after",
+    "width": 2160,
+    "height": 1640,
+    "sha256": "4c29952284910cdc7a3b95d56e813c8f18f36e26217bf4c08b021096f9cbe7c7"
+  },
+  {
+    "path": "evidence/after/sources-compact-dark.jpg",
+    "stage": "after",
+    "width": 1470,
+    "height": 1104,
+    "sha256": "4f91bc9f83297c0c1b7de04b43ec8764394f87e797cbf2ba8b934969200bfb5c"
+  },
+  {
+    "path": "evidence/after/today-compact-dark.jpg",
+    "stage": "after",
+    "width": 1470,
+    "height": 1104,
+    "sha256": "ac295f1ee95f4167a361e1d764dbb2b17ca538b716e0ce2a106b0b81d220b7e9"
+  },
+  {
+    "path": "evidence/after/today-dark.jpg",
+    "stage": "after",
+    "width": 2160,
+    "height": 1640,
+    "sha256": "9b6a0b0e2964d6416a1a7dad98d4bda7e1f1cfce10c29c04aa31ca2638382be3"
+  },
+  {
+    "path": "evidence/after/voice-cancelled-dark.jpg",
+    "stage": "after",
+    "width": 1360,
+    "height": 1250,
+    "sha256": "1bffd6aebef1eb917858dc8f2ecad101002912dd7b14b4f71f0b14e04976472a"
+  },
+  {
+    "path": "evidence/after/voice-listening-dark.jpg",
+    "stage": "after",
+    "width": 1360,
+    "height": 1250,
+    "sha256": "adf119a000d8eb7fccccd9be436d27a0e47bddef97e28b88718d81f7e30bacd9"
+  },
+  {
+    "path": "evidence/after/voice-settings-dark.jpg",
+    "stage": "after",
+    "width": 2160,
+    "height": 1640,
+    "sha256": "c19aa05b31b1ebd07d38f3d887b2d7b229eb54cb80821cd2771735d0f056a211"
+  },
+  {
+    "path": "evidence/after/voice-settings-light.jpg",
+    "stage": "after",
+    "width": 2160,
+    "height": 1640,
+    "sha256": "d14b6c429f5156cf9f5f8a9c5af2a37233a9a1b3a9a5c43ca8c1182b33bcd7b7"
+  },
+  {
+    "path": "evidence/iteration-1/assistant-follow-up-dark.jpg",
+    "stage": "iteration-1",
+    "width": 1360,
+    "height": 1250,
+    "sha256": "afbeef8c2b223b0578c29c149f7518ff5cab13bdddc8bd30aaf10ae24a9dddf4"
+  },
+  {
+    "path": "evidence/iteration-1/assistant-processing-dark.jpg",
+    "stage": "iteration-1",
+    "width": 1360,
+    "height": 1250,
+    "sha256": "b0d86813124e59261b5fc555637820ebae7d2a58f7ffc7ac2bd347fdee39bb83"
+  },
+  {
+    "path": "evidence/iteration-1/assistant-reading-earlier-dark.jpg",
+    "stage": "iteration-1",
+    "width": 1360,
+    "height": 1250,
+    "sha256": "b59773789ab9464781b60bc29af97ed2c0c16cd707b46a9f2886969e914625b8"
+  },
+  {
+    "path": "evidence/iteration-1/daily-summary-dark.jpg",
+    "stage": "iteration-1",
+    "width": 2160,
+    "height": 1640,
+    "sha256": "26f229e8832a71a8265ad3be813e95b4775ad41d9615c6318e72a40b934b5399"
+  },
+  {
+    "path": "evidence/iteration-1/home-dark.jpg",
+    "stage": "iteration-1",
+    "width": 2160,
+    "height": 1640,
+    "sha256": "660dd28f037664c0006760a538b0d0d10ec4e2682c9d2cf21569d85851d2e50b"
+  },
+  {
+    "path": "evidence/iteration-1/privacy-dark.jpg",
+    "stage": "iteration-1",
+    "width": 2160,
+    "height": 1640,
+    "sha256": "c3efa5f5f5ceb4da52e2cdc2107980ae933039483faac182d49afedba5cef1ce"
+  },
+  {
+    "path": "evidence/iteration-1/privacy-quarter-window.jpg",
+    "stage": "iteration-1",
+    "width": 1472,
+    "height": 1106,
+    "sha256": "beeaac307d5bf6151966128bf4c271f479b15afc7a0300ee251ce10ad563745f"
+  },
+  {
+    "path": "evidence/iteration-1/voice-cancelled-dark.jpg",
+    "stage": "iteration-1",
+    "width": 1360,
+    "height": 1250,
+    "sha256": "147c7a1b41f3c5612f1712a8fad7c0e1f9688792a8a7e012f943646474be8f5f"
+  },
+  {
+    "path": "evidence/iteration-1/voice-listening-dark.jpg",
+    "stage": "iteration-1",
+    "width": 1360,
+    "height": 1250,
+    "sha256": "1d9dba825918013a247953dc439884d4fc41e81a74af0cb09feae4e7f3d79bcb"
+  },
+  {
+    "path": "evidence/iteration-2/assistant-latest-return-dark.jpg",
+    "stage": "iteration-2",
+    "width": 1360,
+    "height": 1250,
+    "sha256": "19b0c14c6c42fceda06177f45fb5d07d94d442532c449a1c65998a3af4bb80c1"
+  },
+  {
+    "path": "evidence/iteration-2/home-compact-dark-active.jpg",
+    "stage": "iteration-2",
+    "width": 1470,
+    "height": 1104,
+    "sha256": "9a93c1e6e011e2c595c83a465692465630de3cb5428d1ff7e5ef5ba188795cd4"
+  },
+  {
+    "path": "evidence/iteration-2/home-compact-dark.jpg",
+    "stage": "iteration-2",
+    "width": 1470,
+    "height": 1104,
+    "sha256": "da049bef33f8dea2521a39967bdbd72a7afb1b332a4c6780956d732351cf83c7"
+  },
+  {
+    "path": "evidence/iteration-3/assistant-manual-bottom-dark.jpg",
+    "stage": "iteration-3",
+    "width": 1360,
+    "height": 1250,
+    "sha256": "e426008d2f47f0b63eaa335e199592649d46fb3fedddc6c09d1b803d68d413a1"
+  }
+]

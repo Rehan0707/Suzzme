@@ -1,0 +1,62 @@
+{
+  "recordedAtUTC": "2026-10-14T05:44:12.756188+00:00",
+  "releaseBuilds": {
+    "macOS": "passed",
+    "iOSSimulator": "passed"
+  },
+  "sourceResourceCount": 347,
+  "sourceUnchangedSinceFinalBuilds": true,
+  "nativeHostedCases": {
+    "cumulativePassed": 15,
+    "initialPassed": 14,
+    "initialFailed": 1,
+    "targetedRepairPassed": 1,
+    "preservedUIBehaviorAssertions": 80
+  },
+  "nativeIOSUIJourneys": {
+    "cumulativePassed": 5,
+    "failed": 0,
+    "largestTextAndIncreasedContrastSecondaryRoutes": 9,
+    "runtimeWarning": "Invalid frame dimension (negative or non-finite) during conversation; origin not isolated"
+  },
+  "backgroundCleanupChecks": {
+    "passed": 23,
+    "failed": 0
+  },
+  "sharedActivityOwnershipChecks": {
+    "passed": 36,
+    "failed": 0
+  },
+  "macObservedInteractions": [
+    "Cmd-K assistant",
+    "production Core help response",
+    "on-device model explanation and retained prior exchange",
+    "companion panel",
+    "Talk/Cmd-Shift-T listening",
+    "Escape cancellation from Home",
+    "colored integration search"
+  ],
+  "brandVectorAssetCount": 81,
+  "inputMonitoring": "unchanged: owner declined permission expansion",
+  "globalHoldReleaseVerified": false,
+  "physicalIPhoneIslandAndHapticsVerified": false,
+  "completeHumanVoiceAndAudibleTTSVerified": false,
+  "ownerVisualApproval": false,
+  "distributionPerformed": false,
+  "filesSHA256": {
+    "mac-release-final-build.log": "5266f5357d7e03d664cdcfd21c2fbcc06d0dab9facd4121abd95516a7ecff6db",
+    "ios-release-final-build.log": "54674ee045bd55bcd19a1eb568181f68021a8d83bd2ef51a9a32ba89f4808dd7",
+    "ios-hosted-unit-tests.log": "42c501072b8e25f92878b373b1532edf1cfec6bee5d43aa9d5e7546eecdac607",
+    "ios-startup-renderer-repair.log": "a962eb54c43e1a47909f717d077b2271170c6adc0cbeec94a53372bcd16a9aff",
+    "ios-production-ui-journeys.log": "8ba1a9b53d61125d6273e1d93549cde1ea02c55ab224e0ca825130f06e6ecb00",
+    "ios-accessibility-picker-repair-journey.log": "8023b022f05004d3ae8261dd1d4ca234cc7a529adf64afd4d00deebcdefec9f5",
+    "background-cleanup-check.log": "2de0ee7ae5a812b48a51119e9cb8e44c141e71f8072e9cf7262746aa16942e7e",
+    "step9-cleanup-regression.log": "d2c783facde79d453de2f166545dd58fd66defe15942b0f8db213dfec28fd06a",
+    "step10-cleanup-regression.log": "61d776d1a1916a805d17edc03555d76650a91b6d2ddc0bd526a7791c227d8c98",
+    "final-production-source-manifest.json": "1a8e3c2f6cfbbb5c32ca7bfe94881235daa9d4e09fd8c6da521e245af6729eda",
+    "integration-color-verification.json": "6c035f58542fb6e6567701e620101fda8640681760a50d2e9a5e90d911f3dc6d",
+    "mac-final-colored-integrations.png": "d2d5ba2be1663c6f6fba0bb87060991b24ea4800a1b6f0d12f74c8069633cbaf",
+    "ios-production-release-final-home.png": "ec5a5b0e42cf64d3d5e8e1315060392cafe1cc73b9e8b499cf4a8c29ff6b472a",
+    "ios-production-release-final-launch.json": "b382010cba865531f9e1cd08ad990ac2fcad136af3aeadc63a8a90b6d464aff6"
+  }
+}

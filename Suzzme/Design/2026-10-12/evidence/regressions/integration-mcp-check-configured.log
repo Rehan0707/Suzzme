@@ -1,0 +1,29 @@
+PASS SDK initialize and reviewed discovery succeeds
+PASS SDK follows bounded tools pagination
+PASS unsupported negotiated version
+PASS missing tools capability
+PASS unexpected write tool
+PASS duplicate discovery name
+PASS pagination cycle
+PASS discovery exceeding per-task call budget
+PASS absent read annotation
+PASS remote schema reference
+PASS advertised notification stream unavailable
+PASS SDK returns text as data; never dispatches injected writes
+PASS schema changed before read
+PASS schema changed after read
+PASS tool notification invalidates in-flight result
+PASS tool error is not success
+PASS unreviewed image result
+PASS empty response
+PASS credential-bearing response
+PASS no reviewed schema cannot authorize read
+PASS write tool blocked before connection
+PASS read method cannot smuggle create
+PASS cancellation closes SDK and releases pending call
+PASS cancelled transport disconnected
+PASS root directory uses omitted optional path
+PASS oversized frame rejected before HTTP
+PASS deep JSON envelope rejected
+PASS PAT redaction independent of stored token
+MCP SDK behavioral checks: 28 passed, 0 failed. No network or real-account acceptance.

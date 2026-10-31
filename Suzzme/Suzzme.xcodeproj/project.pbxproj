@@ -6,8 +6,63 @@
 	objectVersion = 110;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		A10000000000000000000001 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = A10000000000000000000003 /* GoogleSignIn */; };
+		A10000000000000000000002 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = A10000000000000000000004 /* GoogleSignInSwift */; };
+		A11000000000000000000001 /* MCP in Frameworks */ = {isa = PBXBuildFile; productRef = A11000000000000000000003 /* MCP */; };
+		A11000000000000000000002 /* Logging in Frameworks */ = {isa = PBXBuildFile; productRef = A11000000000000000000004 /* Logging */; };
+		A21000000000000000000001 /* SuzzmeSpeechKit in Frameworks */ = {isa = PBXBuildFile; productRef = A21000000000000000000003 /* SuzzmeSpeechKit */; };
+		D9000000000000000000000C /* SuzzmePresenceWidget.appex in Embed Presence Extension */ = {isa = PBXBuildFile; fileRef = D90000000000000000000001 /* SuzzmePresenceWidget.appex */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		E7000000000000000000000C /* SuzzmeShareExtension.appex in Embed Share Extension */ = {isa = PBXBuildFile; fileRef = E70000000000000000000001 /* SuzzmeShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		E70000000000000000000010 /* Suzzme/DesignSystem/Components/SuzzmeMark.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7000000000000000000000F /* Suzzme/DesignSystem/Components/SuzzmeMark.swift */; };
+		E80000000000000000000001 /* SuzzmeWatchedTransport in Frameworks */ = {isa = PBXBuildFile; productRef = E80000000000000000000003 /* SuzzmeWatchedTransport */; };
+		F10000000000000000000001 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = F10000000000000000000003 /* FirebaseAuth */; };
+		F10000000000000000000002 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = F10000000000000000000004 /* FirebaseCore */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		D9000000000000000000000E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5D4622CD30596019005D015B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D90000000000000000000004;
+			remoteInfo = SuzzmePresenceWidget;
+		};
+		E7000000000000000000000E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5D4622CD30596019005D015B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E70000000000000000000004;
+			remoteInfo = SuzzmeShareExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		D9000000000000000000000B /* Embed Presence Extension */ = {
+			isa = PBXCopyFilesBuildPhase;
+			dstPath = "";
+			dstSubfolder = PlugIns;
+			files = (
+				D9000000000000000000000C /* SuzzmePresenceWidget.appex in Embed Presence Extension */,
+			);
+			name = "Embed Presence Extension";
+		};
+		E7000000000000000000000B /* Embed Share Extension */ = {
+			isa = PBXCopyFilesBuildPhase;
+			dstPath = "";
+			dstSubfolder = PlugIns;
+			files = (
+				E7000000000000000000000C /* SuzzmeShareExtension.appex in Embed Share Extension */,
+			);
+			name = "Embed Share Extension";
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		5D4622D530596019005D015B /* Suzzme.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Suzzme.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D90000000000000000000001 /* SuzzmePresenceWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; path = SuzzmePresenceWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		E70000000000000000000001 /* SuzzmeShareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; path = SuzzmeShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		E7000000000000000000000F /* Suzzme/DesignSystem/Components/SuzzmeMark.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Suzzme/DesignSystem/Components/SuzzmeMark.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -16,10 +71,48 @@
 			path = Suzzme;
 			sourceTree = "<group>";
 		};
+		D90000000000000000000002 /* PresenceShared */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = PresenceShared;
+			sourceTree = "<group>";
+		};
+		D90000000000000000000003 /* SuzzmePresenceWidget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = SuzzmePresenceWidget;
+			sourceTree = "<group>";
+		};
+		E70000000000000000000002 /* ShareShared */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = ShareShared;
+			sourceTree = "<group>";
+		};
+		E70000000000000000000003 /* SuzzmeShareExtension */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = SuzzmeShareExtension;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		5D4622D230596019005D015B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+				E80000000000000000000001 /* SuzzmeWatchedTransport in Frameworks */,
+				A21000000000000000000001 /* SuzzmeSpeechKit in Frameworks */,
+				A11000000000000000000001 /* MCP in Frameworks */,
+				A11000000000000000000002 /* Logging in Frameworks */,
+				A10000000000000000000001 /* GoogleSignIn in Frameworks */,
+				A10000000000000000000002 /* GoogleSignInSwift in Frameworks */,
+				F10000000000000000000001 /* FirebaseAuth in Frameworks */,
+				F10000000000000000000002 /* FirebaseCore in Frameworks */,
+			);
+		};
+		D90000000000000000000006 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+			);
+		};
+		E70000000000000000000006 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			files = (
 			);
@@ -27,11 +120,24 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5D01541E308E662700CE9F57 /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				E7000000000000000000000F /* Suzzme/DesignSystem/Components/SuzzmeMark.swift */,
+			);
+			name = "Recovered References";
+			sourceTree = "<group>";
+		};
 		5D4622CC30596019005D015B = {
 			isa = PBXGroup;
 			children = (
 				5D4622D730596019005D015B /* Suzzme */,
+				D90000000000000000000002 /* PresenceShared */,
+				D90000000000000000000003 /* SuzzmePresenceWidget */,
+				E70000000000000000000002 /* ShareShared */,
+				E70000000000000000000003 /* SuzzmeShareExtension */,
 				5D4622D630596019005D015B /* Products */,
+				5D01541E308E662700CE9F57 /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -39,6 +145,8 @@
 			isa = PBXGroup;
 			children = (
 				5D4622D530596019005D015B /* Suzzme.app */,
+				D90000000000000000000001 /* SuzzmePresenceWidget.appex */,
+				E70000000000000000000001 /* SuzzmeShareExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -53,16 +161,73 @@
 				5D4622D130596019005D015B /* Sources */,
 				5D4622D230596019005D015B /* Frameworks */,
 				5D4622D330596019005D015B /* Resources */,
+				B14000000000000000000001 /* Browser native components */,
+				D9000000000000000000000B /* Embed Presence Extension */,
+				E7000000000000000000000B /* Embed Share Extension */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D9000000000000000000000D /* PBXTargetDependency */,
+				E7000000000000000000000D /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				5D4622D730596019005D015B /* Suzzme */,
+				D90000000000000000000002 /* PresenceShared */,
+				E70000000000000000000002 /* ShareShared */,
+			);
+			name = Suzzme;
+			packageProductDependencies = (
+				E80000000000000000000003 /* SuzzmeWatchedTransport */,
+				A21000000000000000000003 /* SuzzmeSpeechKit */,
+				A11000000000000000000003 /* MCP */,
+				A11000000000000000000004 /* Logging */,
+				A10000000000000000000003 /* GoogleSignIn */,
+				A10000000000000000000004 /* GoogleSignInSwift */,
+				F10000000000000000000003 /* FirebaseAuth */,
+				F10000000000000000000004 /* FirebaseCore */,
+			);
+			productName = Suzzme;
+			productReference = 5D4622D530596019005D015B /* Suzzme.app */;
+			productType = "com.apple.product-type.application";
+		};
+		D90000000000000000000004 /* SuzzmePresenceWidget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D90000000000000000000008 /* Build configuration list for PBXNativeTarget "SuzzmePresenceWidget" */;
+			buildPhases = (
+				D90000000000000000000005 /* Sources */,
+				D90000000000000000000006 /* Frameworks */,
+				D90000000000000000000007 /* Resources */,
 			);
 			buildRules = (
 			);
 			fileSystemSynchronizedGroups = (
-				5D4622D730596019005D015B /* Suzzme */,
+				D90000000000000000000002 /* PresenceShared */,
+				D90000000000000000000003 /* SuzzmePresenceWidget */,
 			);
-			name = Suzzme;
-			productName = Suzzme;
-			productReference = 5D4622D530596019005D015B /* Suzzme.app */;
-			productType = "com.apple.product-type.application";
+			name = SuzzmePresenceWidget;
+			productName = SuzzmePresenceWidget;
+			productReference = D90000000000000000000001 /* SuzzmePresenceWidget.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		E70000000000000000000004 /* SuzzmeShareExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E70000000000000000000008 /* Build configuration list for PBXNativeTarget "SuzzmeShareExtension" */;
+			buildPhases = (
+				E70000000000000000000005 /* Sources */,
+				E70000000000000000000006 /* Frameworks */,
+				E70000000000000000000007 /* Resources */,
+			);
+			buildRules = (
+			);
+			fileSystemSynchronizedGroups = (
+				E70000000000000000000002 /* ShareShared */,
+				E70000000000000000000003 /* SuzzmeShareExtension */,
+			);
+			name = SuzzmeShareExtension;
+			productName = SuzzmeShareExtension;
+			productReference = E70000000000000000000001 /* SuzzmeShareExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -88,12 +253,22 @@
 			);
 			mainGroup = 5D4622CC30596019005D015B;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				E80000000000000000000005 /* XCLocalSwiftPackageReference "Packages/SuzzmeWatchedTransport" */,
+				A21000000000000000000005 /* XCLocalSwiftPackageReference "Packages/SuzzmeSpeechKit" */,
+				A11000000000000000000005 /* XCRemoteSwiftPackageReference "swift-sdk" */,
+				A11000000000000000000006 /* XCRemoteSwiftPackageReference "swift-log" */,
+				A10000000000000000000005 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
+				F10000000000000000000005 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 5D4622D630596019005D015B /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				5D4622D430596019005D015B /* Suzzme */,
+				D90000000000000000000004 /* SuzzmePresenceWidget */,
+				E70000000000000000000004 /* SuzzmeShareExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -104,7 +279,45 @@
 			files = (
 			);
 		};
+		D90000000000000000000007 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
+			);
+		};
+		E70000000000000000000007 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
+			);
+		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		B14000000000000000000001 /* Browser native components */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			inputPaths = (
+				"$(SRCROOT)/BrowserNativeHost/build-components.py",
+				"$(SRCROOT)/BrowserNativeHost/NativeMessagingHost.swift",
+				"$(SRCROOT)/BrowserNativeHost/BrowserBroker.swift",
+				"$(SRCROOT)/Suzzme/Core/BrowserBridge/BrowserBridgeIPC.swift",
+				"$(SRCROOT)/Suzzme/Core/BrowserBridge/BrowserBridgeEngine.swift",
+				"$(SRCROOT)/Suzzme/Core/BrowserBridge/NativeMessagingFrame.swift",
+				"$(SUZZME_BROWSER_CONFIG)",
+			);
+			name = "Browser native components";
+			outputPaths = (
+				"$(SUZZME_BROWSER_OUTPUT_ROOT)/MacOS/SuzzmeBrowserHost",
+				"$(SUZZME_BROWSER_OUTPUT_ROOT)/MacOS/SuzzmeBrowserBroker",
+				"$(SUZZME_BROWSER_OUTPUT_ROOT)/Resources/BrowserBridge.json",
+				"$(SUZZME_BROWSER_OUTPUT_ROOT)/Library/LaunchAgents/rehan.Suzzme.BrowserBroker.plist",
+				"$(DERIVED_FILE_DIR)/BrowserNativeComponents",
+			);
+			shellPath = /bin/sh;
+			shellScript = (
+				"if [ \"$PLATFORM_NAME\" = macosx ]; then /usr/bin/python3 \"$SRCROOT/BrowserNativeHost/build-components.py\"; fi",
+			);
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		5D4622D130596019005D015B /* Sources */ = {
@@ -112,7 +325,32 @@
 			files = (
 			);
 		};
+		D90000000000000000000005 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+			);
+		};
+		E70000000000000000000005 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+				E70000000000000000000010 /* Suzzme/DesignSystem/Components/SuzzmeMark.swift in Sources */,
+			);
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		D9000000000000000000000D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			platformFilter = ios;
+			target = D90000000000000000000004 /* SuzzmePresenceWidget */;
+			targetProxy = D9000000000000000000000E /* PBXContainerItemProxy */;
+		};
+		E7000000000000000000000D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E70000000000000000000004 /* SuzzmeShareExtension */;
+			targetProxy = E7000000000000000000000E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		5D4622DE3059601B005D015B /* Debug configuration for PBXProject "Suzzme" */ = {
@@ -172,6 +410,7 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				SUZZME_SHARE_APP_GROUP = "";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -227,6 +466,7 @@
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				SUZZME_SHARE_APP_GROUP = "";
 				SWIFT_COMPILATION_MODE = wholemodule;
 			};
 			name = Release;
@@ -234,24 +474,46 @@
 		5D4622E13059601B005D015B /* Debug configuration for PBXNativeTarget "Suzzme" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				"ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES[sdk=iphoneos*]" = "AppIconPink AppIconRed AppIconOrange AppIconYellow AppIconGreen AppIconTeal AppIconPurple";
+				"ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES[sdk=iphonesimulator*]" = "AppIconPink AppIconRed AppIconOrange AppIconYellow AppIconGreen AppIconTeal AppIconPurple";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				"CODE_SIGN_ENTITLEMENTS[sdk=iphoneos*]" = "Suzzme/Suzzme-iOS-Debug.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=iphonesimulator*]" = "Suzzme/Suzzme-iOS-Debug.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = Suzzme/SuzzmeRelease.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = VA9D6XP354;
 				ENABLE_APP_SANDBOX = YES;
-                "ENABLE_OUTGOING_NETWORK_CONNECTIONS[sdk=macosx*]" = YES;
-                "ENABLE_RESOURCE_ACCESS_AUDIO_INPUT[sdk=macosx*]" = YES;
-                "ENABLE_RESOURCE_ACCESS_CALENDARS[sdk=macosx*]" = YES;
-                "ENABLE_RESOURCE_ACCESS_CONTACTS[sdk=macosx*]" = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
+				"ENABLE_OUTGOING_NETWORK_CONNECTIONS[sdk=macosx*]" = YES;
 				ENABLE_PREVIEWS = YES;
+				"ENABLE_RESOURCE_ACCESS_AUDIO_INPUT[sdk=macosx*]" = YES;
+				"ENABLE_RESOURCE_ACCESS_CALENDARS[sdk=macosx*]" = YES;
+				"ENABLE_RESOURCE_ACCESS_CONTACTS[sdk=macosx*]" = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				GOOGLE_IOS_CLIENT_ID = "230244731392-klate3i7rdhudndkp5vpg668k1pevk7r.apps.googleusercontent.com";
+				GOOGLE_IOS_REVERSED_CLIENT_ID = "com.googleusercontent.apps.230244731392-klate3i7rdhudndkp5vpg668k1pevk7r";
+				GOOGLE_MACOS_CLIENT_ID = "230244731392-klate3i7rdhudndkp5vpg668k1pevk7r.apps.googleusercontent.com";
+				GOOGLE_MACOS_REVERSED_CLIENT_ID = "com.googleusercontent.apps.230244731392-klate3i7rdhudndkp5vpg668k1pevk7r";
+				"GOOGLE_OAUTH_CLIENT_ID[sdk=iphoneos*]" = "$(GOOGLE_IOS_CLIENT_ID)";
+				"GOOGLE_OAUTH_CLIENT_ID[sdk=iphonesimulator*]" = "$(GOOGLE_IOS_CLIENT_ID)";
+				"GOOGLE_OAUTH_CLIENT_ID[sdk=macosx*]" = "$(GOOGLE_MACOS_CLIENT_ID)";
+				"GOOGLE_OAUTH_REVERSED_CLIENT_ID[sdk=iphoneos*]" = "$(GOOGLE_IOS_REVERSED_CLIENT_ID)";
+				"GOOGLE_OAUTH_REVERSED_CLIENT_ID[sdk=iphonesimulator*]" = "$(GOOGLE_IOS_REVERSED_CLIENT_ID)";
+				"GOOGLE_OAUTH_REVERSED_CLIENT_ID[sdk=macosx*]" = "$(GOOGLE_MACOS_REVERSED_CLIENT_ID)";
+				INFOPLIST_FILE = GmailOAuthInfo.plist;
+				"INFOPLIST_FILE[sdk=iphone*]" = "SuzzmeCompanion-iOS-Info.plist";
 				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "Suzzme reads your schedule to answer questions and summarize your day. Calendar changes require your confirmation.";
 				INFOPLIST_KEY_NSContactsUsageDescription = "Let Suzzme identify contacts you ask about.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Microphone access lets Suzzme hear you when you choose to speak.";
 				INFOPLIST_KEY_NSRemindersFullAccessUsageDescription = "Suzzme reads reminders to help plan your day. Creating, changing, completing, or deleting reminders requires your confirmation.";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Speech recognition lets Suzzme understand your spoken requests.";
+				"INFOPLIST_KEY_NSSupportsLiveActivities[sdk=iphone*]" = YES;
+				INFOPLIST_KEY_SuzzmeAppleSignInEnabled = NO;
+				INFOPLIST_KEY_SuzzmePushEnabled = NO;
+				INFOPLIST_KEY_SuzzmePushEnvironment = sandbox;
+				INFOPLIST_KEY_SuzzmeShareAppGroup = "$(SUZZME_SHARE_APP_GROUP)";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -267,12 +529,22 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = rehan.Suzzme;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				SDKROOT = auto;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPABASE_PUBLISHABLE_KEY = sb_publishable_auxG15PpJ0IobBJNarwvVg_rwRP9Y3m;
+				SUPABASE_URL = "https://xkddrfkdesagugtxuwzu.supabase.co";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUZZME_BROWSER_CONFIG = "$(SRCROOT)/BrowserNativeHost/BrowserBridge.json";
+				SUZZME_BROWSER_OUTPUT_ROOT = "$(DERIVED_FILE_DIR)/InactiveBrowserBridge";
+				"SUZZME_BROWSER_OUTPUT_ROOT[sdk=macosx*]" = "$(TARGET_BUILD_DIR)/$(CONTENTS_FOLDER_PATH)";
+				SUZZME_VOICE_GATEWAY_URL = "https://suzzme-voice.suzzmeai.workers.dev";
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
@@ -284,26 +556,47 @@
 		5D4622E23059601B005D015B /* Release configuration for PBXNativeTarget "Suzzme" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				"ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES[sdk=iphoneos*]" = "AppIconPink AppIconRed AppIconOrange AppIconYellow AppIconGreen AppIconTeal AppIconPurple";
+				"ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES[sdk=iphonesimulator*]" = "AppIconPink AppIconRed AppIconOrange AppIconYellow AppIconGreen AppIconTeal AppIconPurple";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				"CODE_SIGN_ENTITLEMENTS[sdk=iphoneos*]" = "Suzzme/Suzzme-iOS.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=iphonesimulator*]" = "Suzzme/Suzzme-iOS.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = Suzzme/SuzzmeRelease.entitlements;
+				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = NO;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-                CODE_SIGN_INJECT_BASE_ENTITLEMENTS = NO;
-                "CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = Suzzme/SuzzmeRelease.entitlements;
 				DEVELOPMENT_TEAM = VA9D6XP354;
 				ENABLE_APP_SANDBOX = YES;
-                "ENABLE_OUTGOING_NETWORK_CONNECTIONS[sdk=macosx*]" = YES;
-                "ENABLE_RESOURCE_ACCESS_AUDIO_INPUT[sdk=macosx*]" = YES;
-                "ENABLE_RESOURCE_ACCESS_CALENDARS[sdk=macosx*]" = YES;
-                "ENABLE_RESOURCE_ACCESS_CONTACTS[sdk=macosx*]" = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
+				"ENABLE_OUTGOING_NETWORK_CONNECTIONS[sdk=macosx*]" = YES;
 				ENABLE_PREVIEWS = YES;
+				"ENABLE_RESOURCE_ACCESS_AUDIO_INPUT[sdk=macosx*]" = YES;
+				"ENABLE_RESOURCE_ACCESS_CALENDARS[sdk=macosx*]" = YES;
+				"ENABLE_RESOURCE_ACCESS_CONTACTS[sdk=macosx*]" = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				GOOGLE_IOS_CLIENT_ID = "230244731392-klate3i7rdhudndkp5vpg668k1pevk7r.apps.googleusercontent.com";
+				GOOGLE_IOS_REVERSED_CLIENT_ID = "com.googleusercontent.apps.230244731392-klate3i7rdhudndkp5vpg668k1pevk7r";
+				GOOGLE_MACOS_CLIENT_ID = "230244731392-klate3i7rdhudndkp5vpg668k1pevk7r.apps.googleusercontent.com";
+				GOOGLE_MACOS_REVERSED_CLIENT_ID = "com.googleusercontent.apps.230244731392-klate3i7rdhudndkp5vpg668k1pevk7r";
+				"GOOGLE_OAUTH_CLIENT_ID[sdk=iphoneos*]" = "$(GOOGLE_IOS_CLIENT_ID)";
+				"GOOGLE_OAUTH_CLIENT_ID[sdk=iphonesimulator*]" = "$(GOOGLE_IOS_CLIENT_ID)";
+				"GOOGLE_OAUTH_CLIENT_ID[sdk=macosx*]" = "$(GOOGLE_MACOS_CLIENT_ID)";
+				"GOOGLE_OAUTH_REVERSED_CLIENT_ID[sdk=iphoneos*]" = "$(GOOGLE_IOS_REVERSED_CLIENT_ID)";
+				"GOOGLE_OAUTH_REVERSED_CLIENT_ID[sdk=iphonesimulator*]" = "$(GOOGLE_IOS_REVERSED_CLIENT_ID)";
+				"GOOGLE_OAUTH_REVERSED_CLIENT_ID[sdk=macosx*]" = "$(GOOGLE_MACOS_REVERSED_CLIENT_ID)";
+				INFOPLIST_FILE = GmailOAuthInfo.plist;
+				"INFOPLIST_FILE[sdk=iphone*]" = "SuzzmeCompanion-iOS-Info.plist";
 				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "Suzzme reads your schedule to answer questions and summarize your day. Calendar changes require your confirmation.";
 				INFOPLIST_KEY_NSContactsUsageDescription = "Let Suzzme identify contacts you ask about.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Microphone access lets Suzzme hear you when you choose to speak.";
 				INFOPLIST_KEY_NSRemindersFullAccessUsageDescription = "Suzzme reads reminders to help plan your day. Creating, changing, completing, or deleting reminders requires your confirmation.";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Speech recognition lets Suzzme understand your spoken requests.";
+				"INFOPLIST_KEY_NSSupportsLiveActivities[sdk=iphone*]" = YES;
+				INFOPLIST_KEY_SuzzmeAppleSignInEnabled = YES;
+				INFOPLIST_KEY_SuzzmePushEnabled = YES;
+				INFOPLIST_KEY_SuzzmePushEnvironment = production;
+				INFOPLIST_KEY_SuzzmeShareAppGroup = "$(SUZZME_SHARE_APP_GROUP)";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -319,15 +612,159 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = rehan.Suzzme;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				SDKROOT = auto;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPABASE_PUBLISHABLE_KEY = sb_publishable_auxG15PpJ0IobBJNarwvVg_rwRP9Y3m;
+				SUPABASE_URL = "https://xkddrfkdesagugtxuwzu.supabase.co";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUZZME_BROWSER_CONFIG = "$(SRCROOT)/BrowserNativeHost/BrowserBridge.json";
+				SUZZME_BROWSER_OUTPUT_ROOT = "$(DERIVED_FILE_DIR)/InactiveBrowserBridge";
+				"SUZZME_BROWSER_OUTPUT_ROOT[sdk=macosx*]" = "$(TARGET_BUILD_DIR)/$(CONTENTS_FOLDER_PATH)";
+				SUZZME_VOICE_GATEWAY_URL = "https://suzzme-voice.suzzmeai.workers.dev";
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		D90000000000000000000009 /* Debug configuration for PBXNativeTarget "SuzzmePresenceWidget" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = VA9D6XP354;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "SuzzmePresenceWidget-Info.plist";
+				"INFOPLIST_KEY_NSSupportsLiveActivities[sdk=iphone*]" = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = rehan.Suzzme.Presence;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		D9000000000000000000000A /* Release configuration for PBXNativeTarget "SuzzmePresenceWidget" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = VA9D6XP354;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "SuzzmePresenceWidget-Info.plist";
+				"INFOPLIST_KEY_NSSupportsLiveActivities[sdk=iphone*]" = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = rehan.Suzzme.Presence;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		E70000000000000000000009 /* Debug configuration for PBXNativeTarget "SuzzmeShareExtension" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				"CODE_SIGN_ENTITLEMENTS[sdk=iphoneos*]" = "SuzzmeShareExtension-iOS.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=iphonesimulator*]" = "SuzzmeShareExtension-iOS.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "SuzzmeShareExtension-macOS.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "SuzzmeShareExtension-Info.plist";
+				INFOPLIST_KEY_SuzzmeShareAppGroup = "$(SUZZME_SHARE_APP_GROUP)";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = rehan.Suzzme.Share;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = auto;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		E7000000000000000000000A /* Release configuration for PBXNativeTarget "SuzzmeShareExtension" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				"CODE_SIGN_ENTITLEMENTS[sdk=iphoneos*]" = "SuzzmeShareExtension-iOS.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=iphonesimulator*]" = "SuzzmeShareExtension-iOS.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "SuzzmeShareExtension-macOS.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "SuzzmeShareExtension-Info.plist";
+				INFOPLIST_KEY_SuzzmeShareAppGroup = "$(SUZZME_SHARE_APP_GROUP)";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = rehan.Suzzme.Share;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = auto;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -352,7 +789,112 @@
 			);
 			defaultConfigurationName = Release;
 		};
+		D90000000000000000000008 /* Build configuration list for PBXNativeTarget "SuzzmePresenceWidget" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D90000000000000000000009 /* Debug configuration for PBXNativeTarget "SuzzmePresenceWidget" */,
+				D9000000000000000000000A /* Release configuration for PBXNativeTarget "SuzzmePresenceWidget" */,
+			);
+			defaultConfigurationName = Release;
+		};
+		E70000000000000000000008 /* Build configuration list for PBXNativeTarget "SuzzmeShareExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E70000000000000000000009 /* Debug configuration for PBXNativeTarget "SuzzmeShareExtension" */,
+				E7000000000000000000000A /* Release configuration for PBXNativeTarget "SuzzmeShareExtension" */,
+			);
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		A21000000000000000000005 /* XCLocalSwiftPackageReference "Packages/SuzzmeSpeechKit" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/SuzzmeSpeechKit;
+		};
+		E80000000000000000000005 /* XCLocalSwiftPackageReference "Packages/SuzzmeWatchedTransport" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/SuzzmeWatchedTransport;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		A10000000000000000000005 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google/GoogleSignIn-iOS";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 10.0.0;
+			};
+		};
+		A11000000000000000000005 /* XCRemoteSwiftPackageReference "swift-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/modelcontextprotocol/swift-sdk";
+			requirement = {
+				kind = exactVersion;
+				version = 0.12.1;
+			};
+		};
+		A11000000000000000000006 /* XCRemoteSwiftPackageReference "swift-log" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-log.git";
+			requirement = {
+				kind = exactVersion;
+				version = 1.6.2;
+			};
+		};
+		F10000000000000000000005 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 13.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		A10000000000000000000003 /* GoogleSignIn */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A10000000000000000000005 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignIn;
+		};
+		A10000000000000000000004 /* GoogleSignInSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A10000000000000000000005 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignInSwift;
+		};
+		A11000000000000000000003 /* MCP */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A11000000000000000000005 /* XCRemoteSwiftPackageReference "swift-sdk" */;
+			productName = MCP;
+		};
+		A11000000000000000000004 /* Logging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A11000000000000000000006 /* XCRemoteSwiftPackageReference "swift-log" */;
+			productName = Logging;
+		};
+		A21000000000000000000003 /* SuzzmeSpeechKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A21000000000000000000005 /* XCLocalSwiftPackageReference "Packages/SuzzmeSpeechKit" */;
+			productName = SuzzmeSpeechKit;
+		};
+		E80000000000000000000003 /* SuzzmeWatchedTransport */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E80000000000000000000005 /* XCLocalSwiftPackageReference "Packages/SuzzmeWatchedTransport" */;
+			productName = SuzzmeWatchedTransport;
+		};
+		F10000000000000000000003 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F10000000000000000000005 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		F10000000000000000000004 /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F10000000000000000000005 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 5D4622CD30596019005D015B /* Project object */;
 	validationLevel = 1;

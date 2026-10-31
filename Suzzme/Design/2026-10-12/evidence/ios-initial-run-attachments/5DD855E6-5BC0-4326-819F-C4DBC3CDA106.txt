@@ -1,0 +1,11 @@
+Failed to tap "suzzme-assistant-input" TextView: No matches found for Descendants matching type TextView from input {(
+    Application, pid: 37095, label: 'Suzzme'
+)}
+Possibly caused by runtime issues:
+Automation type mismatch: computed TextField from legacy attributes vs TextView from modern attribute. Input attributes and values: {
+    "XC_kAXXCAttributeAutomationType" = 52;
+    "XC_kAXXCAttributeElementBaseType" = UITextView;
+    "XC_kAXXCAttributeElementType" = "SwiftUI.VerticalTextView";
+    "XC_kAXXCAttributeTraits" = 146029150208;
+}
+See test report attachments for more detail.

@@ -1,0 +1,79 @@
+PASS official page URL resolves exact UUID
+PASS page canonical URL does not retain tracking or view query
+PASS official page URL resolves exact UUID
+PASS page canonical URL does not retain tracking or view query
+PASS official page URL resolves exact UUID
+PASS page canonical URL does not retain tracking or view query
+PASS official page URL resolves exact UUID
+PASS page canonical URL does not retain tracking or view query
+PASS unsafe or unsupported page URL rejected
+PASS unsafe or unsupported page URL rejected
+PASS unsafe or unsupported page URL rejected
+PASS unsafe or unsupported page URL rejected
+PASS unsafe or unsupported page URL rejected
+PASS unsafe or unsupported page URL rejected
+PASS unsafe or unsupported page URL rejected
+PASS unsafe or unsupported page URL rejected
+PASS unsafe or unsupported page URL rejected
+PASS unsafe or unsupported page URL rejected
+PASS explicit page ID canonicalization
+PASS wildcard cannot authorize workspace
+PASS Notion default cannot replace GitHub account
+PASS Notion default resolves only Notion
+PASS GitHub explicit account cannot authorize Notion
+PASS repository scope never grants page access
+PASS exact page scope grants page read
+PASS unlisted child or related page denied
+PASS service-scoped defaults survive restart
+PASS legacy GitHub metadata retains identity and permissions
+PASS mixed service scopes cannot persist
+PASS duplicate stored pages rejected
+PASS bad update preserves valid metadata
+PASS Notion connects with service-specific page scope
+PASS selecting Notion preserves GitHub default
+PASS production gateway returns authenticated page excerpt
+PASS page answer identifies provider
+PASS a page title containing Update is target data, not a write request
+PASS fresh result validated against same account generation
+PASS unlisted page cannot read
+PASS scope denial makes zero provider calls
+PASS create cannot become external read or execution
+PASS delete cannot become external read or execution
+PASS send cannot become external read or execution
+PASS publish cannot become external read or execution
+PASS edit cannot become external read or execution
+PASS remember cannot become external read or execution
+PASS save cannot become external read or execution
+PASS duplicate provider connection cannot persist
+PASS duplicate creates no extra account
+PASS reauthorization preserves account and explicit default
+PASS reauthorization retires old generation
+PASS completed prior read loses authority after reconnect
+PASS reauthorization cannot switch identity
+PASS wrong identity preserves original credential
+PASS restored metadata does not imply live authorization
+PASS live Notion verification restores readiness
+PASS revoked token cannot retrieve content
+PASS revocation updates actual connection health
+PASS live page permission or identity change cannot return content
+PASS live access failure requires explicit connection verification
+PASS live page permission or identity change cannot return content
+PASS live access failure requires explicit connection verification
+PASS failed credential deletion reported
+PASS failed deletion cannot retain read authority
+PASS disabled account cannot read after deletion failure
+PASS retry deletion removes only selected account
+PASS concurrent readers reach credential suspension together
+PASS credential resume cannot exceed eight simultaneous provider reads
+PASS overflow reads fail closed instead of queued unbounded execution
+PASS github test reaches actual metadata commit
+PASS github cancellation during commit cannot succeed
+PASS github cancelled connection never published
+PASS github cancelled connection cannot resurrect on restart
+PASS github cancelled connection removes new credential
+PASS notion test reaches actual metadata commit
+PASS notion cancellation during commit cannot succeed
+PASS notion cancelled connection never published
+PASS notion cancelled connection cannot resurrect on restart
+PASS notion cancelled connection removes new credential
+Notion Gateway: 78 passed / 0 failed. Synthetic provider only.

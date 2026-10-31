@@ -1,0 +1,413 @@
+PASS URL denies http://example.edu
+PASS URL denies file:///etc/passwd
+PASS URL denies ftp://example.edu
+PASS URL denies javascript:alert(1)
+PASS URL denies https://user:pass@example.edu
+PASS URL denies https://localhost
+PASS URL denies https://localhost.
+PASS URL denies https://x.local
+PASS URL denies https://x.internal
+PASS URL denies https://127.0.0.1
+PASS URL denies https://10.0.0.1
+PASS URL denies https://172.16.0.1
+PASS URL denies https://192.168.0.1
+PASS URL denies https://169.254.169.254
+PASS URL denies https://100.64.0.1
+PASS URL denies https://0.0.0.0
+PASS URL denies https://224.0.0.1
+PASS URL denies https://255.255.255.255
+PASS URL denies https://198.18.0.1
+PASS URL denies https://192.0.2.1
+PASS URL denies https://198.51.100.1
+PASS URL denies https://203.0.113.1
+PASS URL denies https://[::1]
+PASS URL denies https://[::]
+PASS URL denies https://[fe80::1]
+PASS URL denies https://[fc00::1]
+PASS URL denies https://[ff02::1]
+PASS URL denies https://[::ffff:127.0.0.1]
+PASS URL denies https://[::ffff:192.168.1.1]
+PASS URL denies https://[2001:db8::1]
+PASS URL denies https://example.edu?access_token=secret
+PASS URL denies https://example.edu?api%5Fkey=secret
+PASS URL canonicalizes public https://example.edu/notices
+PASS URL canonicalizes public https://EXAMPLE.edu/path#section
+PASS URL canonicalizes public https://example.edu/timetable?term=fall
+PASS URL canonicalizes public https://8.8.8.8
+PASS URL canonicalizes public https://[2606:4700:4700::1111]
+PASS DNS denies 127.0.0.1
+PASS DNS denies 10.2.3.4
+PASS DNS denies ::1
+PASS DNS denies fc00::1
+PASS DNS denies ::ffff:10.0.0.1
+PASS DNS denies invalid
+PASS DNS denies 
+PASS DNS denies 169.254.1.1
+PASS DNS mixed public/private rejected
+PASS DNS empty rejected
+PASS DNS public addresses accepted without network
+PASS Privacy rejects secret 0
+PASS Web rejects before persistence 0
+PASS Disk excludes secret 0
+PASS Raw disk excludes secret 0
+PASS Restricted page preserves user configuration 0
+PASS Privacy rejects secret 1
+PASS Web rejects before persistence 1
+PASS Disk excludes secret 1
+PASS Raw disk excludes secret 1
+PASS Restricted page preserves user configuration 1
+PASS Privacy rejects secret 2
+PASS Web rejects before persistence 2
+PASS Disk excludes secret 2
+PASS Raw disk excludes secret 2
+PASS Restricted page preserves user configuration 2
+PASS Privacy rejects secret 3
+PASS Web rejects before persistence 3
+PASS Disk excludes secret 3
+PASS Raw disk excludes secret 3
+PASS Restricted page preserves user configuration 3
+PASS Privacy rejects secret 4
+PASS Web rejects before persistence 4
+PASS Disk excludes secret 4
+PASS Raw disk excludes secret 4
+PASS Restricted page preserves user configuration 4
+PASS Privacy rejects secret 5
+PASS Web rejects before persistence 5
+PASS Disk excludes secret 5
+PASS Raw disk excludes secret 5
+PASS Restricted page preserves user configuration 5
+PASS Privacy rejects secret 6
+PASS Web rejects before persistence 6
+PASS Disk excludes secret 6
+PASS Raw disk excludes secret 6
+PASS Restricted page preserves user configuration 6
+PASS Privacy rejects secret 7
+PASS Web rejects before persistence 7
+PASS Disk excludes secret 7
+PASS Raw disk excludes secret 7
+PASS Restricted page preserves user configuration 7
+PASS Privacy rejects secret 8
+PASS Web rejects before persistence 8
+PASS Disk excludes secret 8
+PASS Raw disk excludes secret 8
+PASS Restricted page preserves user configuration 8
+PASS Privacy rejects secret 9
+PASS Web rejects before persistence 9
+PASS Disk excludes secret 9
+PASS Raw disk excludes secret 9
+PASS Restricted page preserves user configuration 9
+PASS Privacy rejects secret 10
+PASS Web rejects before persistence 10
+PASS Disk excludes secret 10
+PASS Raw disk excludes secret 10
+PASS Restricted page preserves user configuration 10
+PASS Privacy rejects secret 11
+PASS Web rejects before persistence 11
+PASS Disk excludes secret 11
+PASS Raw disk excludes secret 11
+PASS Restricted page preserves user configuration 11
+PASS Privacy rejects secret 12
+PASS Web rejects before persistence 12
+PASS Disk excludes secret 12
+PASS Raw disk excludes secret 12
+PASS Restricted page preserves user configuration 12
+PASS Privacy rejects secret 13
+PASS Web rejects before persistence 13
+PASS Disk excludes secret 13
+PASS Raw disk excludes secret 13
+PASS Restricted page preserves user configuration 13
+PASS Privacy rejects secret 14
+PASS Web rejects before persistence 14
+PASS Disk excludes secret 14
+PASS Raw disk excludes secret 14
+PASS Restricted page preserves user configuration 14
+PASS Privacy rejects secret 15
+PASS Web rejects before persistence 15
+PASS Disk excludes secret 15
+PASS Raw disk excludes secret 15
+PASS Restricted page preserves user configuration 15
+PASS Settings rejects Don't enable Daily Summary
+PASS Settings rejects Do not turn Daily Summary off
+PASS Settings rejects Never enable Daily Summary
+PASS Settings rejects Turn Daily Summary on and off
+PASS Settings rejects Set Daily Summary to 13 PM
+PASS Settings rejects Set Daily Summary to 0 AM
+PASS Settings rejects Set Daily Summary to 9:99 PM
+PASS Settings rejects Set Daily Summary to 9 PM or 10 PM
+PASS Settings rejects Set Daily Summary to 10
+PASS Settings rejects Set Daily Summary to 25:00
+PASS Settings evidence Set my Daily Summary to 9 PM
+PASS Settings readback Set my Daily Summary to 9 PM
+PASS Settings persisted Set my Daily Summary to 9 PM
+PASS Settings replay cached exact plan Set my Daily Summary to 9 PM
+PASS Settings rejects ID collision Set my Daily Summary to 9 PM
+PASS Settings evidence Set Daily Summary to 12 AM
+PASS Settings readback Set Daily Summary to 12 AM
+PASS Settings persisted Set Daily Summary to 12 AM
+PASS Settings replay cached exact plan Set Daily Summary to 12 AM
+PASS Settings rejects ID collision Set Daily Summary to 12 AM
+PASS Settings evidence Set Daily Summary to 12 PM
+PASS Settings readback Set Daily Summary to 12 PM
+PASS Settings persisted Set Daily Summary to 12 PM
+PASS Settings replay cached exact plan Set Daily Summary to 12 PM
+PASS Settings rejects ID collision Set Daily Summary to 12 PM
+PASS Settings evidence Set Daily Summary to 00:30
+PASS Settings readback Set Daily Summary to 00:30
+PASS Settings persisted Set Daily Summary to 00:30
+PASS Settings replay cached exact plan Set Daily Summary to 00:30
+PASS Settings rejects ID collision Set Daily Summary to 00:30
+PASS Settings evidence Set Daily Summary to 23:59
+PASS Settings readback Set Daily Summary to 23:59
+PASS Settings persisted Set Daily Summary to 23:59
+PASS Settings replay cached exact plan Set Daily Summary to 23:59
+PASS Settings rejects ID collision Set Daily Summary to 23:59
+PASS Settings cancelled owner denied
+PASS Settings authorization rechecked at disk mutation
+PASS Cancelled disk mutation retained previous value
+PASS Settings superseded owner cannot commit
+PASS Supported voice phrase Use Suzzme Purple
+PASS Supported voice phrase Use Burgundy
+PASS Supported voice phrase Use Gentle animation
+PASS Link failed disk commit surfaces error
+PASS Link failed commit rolls cache back
+PASS Preference failed disk commit surfaces error
+PASS Preference failed commit cannot verify unsaved value
+PASS Corrupt links fail closed 0
+PASS Corrupt proactive fails closed 0
+PASS Corrupt user file not silently destroyed 0
+PASS Corrupt links fail closed 1
+PASS Corrupt proactive fails closed 1
+PASS Corrupt user file not silently destroyed 1
+PASS Corrupt links fail closed 2
+PASS Corrupt proactive fails closed 2
+PASS Corrupt user file not silently destroyed 2
+PASS Corrupt links fail closed 3
+PASS Corrupt proactive fails closed 3
+PASS Corrupt user file not silently destroyed 3
+PASS Corrupt links fail closed 4
+PASS Corrupt proactive fails closed 4
+PASS Corrupt user file not silently destroyed 4
+PASS Corrupt links fail closed 5
+PASS Corrupt proactive fails closed 5
+PASS Corrupt user file not silently destroyed 5
+PASS Restart invalidates refreshing state
+PASS Cancellation clears refreshing UI
+PASS Cancelled fetch cannot commit
+PASS Disabled source rejects late fetch
+PASS Disabled state survives restart
+PASS Removed link gone after reopen
+PASS Link limit enforced
+PASS Duplicate at capacity is idempotent
+PASS Damaged watched store fails closed 0
+PASS Watched recovery waits for explicit reset 0
+PASS Explicit watched reset produces usable empty store 0
+PASS Watched reset accepts and persists new configuration 0
+PASS Damaged proactive store fails closed 0
+PASS Proactive recovery waits for explicit reset 0
+PASS Proactive reset clears derived Today 0
+PASS Proactive reset persists default preferences 0
+PASS Damaged watched store fails closed 1
+PASS Watched recovery waits for explicit reset 1
+PASS Explicit watched reset produces usable empty store 1
+PASS Watched reset accepts and persists new configuration 1
+PASS Damaged proactive store fails closed 1
+PASS Proactive recovery waits for explicit reset 1
+PASS Proactive reset clears derived Today 1
+PASS Proactive reset persists default preferences 1
+PASS Damaged watched store fails closed 2
+PASS Watched recovery waits for explicit reset 2
+PASS Explicit watched reset produces usable empty store 2
+PASS Watched reset accepts and persists new configuration 2
+PASS Damaged proactive store fails closed 2
+PASS Proactive recovery waits for explicit reset 2
+PASS Proactive reset clears derived Today 2
+PASS Proactive reset persists default preferences 2
+PASS Cancel before first load preserves watched store bytes
+PASS Cancel before first load preserves configuration after reopen
+PASS Settings owner alone cannot authorize an arbitrary plan
+PASS Exact settings grant permits one mutation
+PASS Consumed settings grant rejects a duplicate mutation
+PASS Expired settings grant rejected at mutation boundary
+PASS Injection remains dateless data 0
+PASS Injection remains dateless data 1
+PASS Injection remains dateless data 2
+PASS Injection remains dateless data 3
+PASS Injection remains dateless data 4
+PASS Injection remains dateless data 5
+PASS Number is not invented clock: Tomorrow seminar in Room 2
+PASS Number is not invented clock: Tomorrow seminar in Lab 12
+PASS Number is not invented clock: Tomorrow seminar for 6 people
+PASS Invalid clock not trusted: Tomorrow seminar at 13 PM
+PASS Invalid clock not trusted: Tomorrow seminar at 9:99 PM
+PASS Invalid clock not trusted: Tomorrow seminar at 0 AM
+PASS Navigation/footer churn does not change fingerprint
+PASS Time change preserves object identity
+PASS Partial website outage cannot report healthy-empty
+PASS Failure backoff cannot mask outage as success
+PASS Real InformationEngine records partial failure
+PASS Unavailable information is not current truth
+PASS Recovery replays uncheckpointed unchanged page
+PASS Recovery proves healthy checked state
+PASS Unchanged refresh renews observation freshness
+PASS Per-page disable denies retrieval while another remains enabled
+PASS Removal physically deletes page observations
+PASS Removal preserves independent page
+PASS Information clear deletes disk-backed observations
+PASS Pre-Step11 schema preserves preferences
+PASS Pre-Step11 schema does not invent Daily Context
+PASS Invalid persisted timezone fails closed
+PASS Live empty versus unavailable remains distinguishable
+PASS Live source failure reaches Daily Context
+PASS Context entities cannot smuggle secrets
+PASS Context metadata cannot smuggle secrets
+PASS DST nonexistent/repeated clock remains unknown 2026-03-08T05:00:00Z
+PASS DST nonexistent/repeated clock remains unknown 2026-11-01T04:00:00Z
+PASS Same-version conflict is commutative
+PASS Sensitive metadata remains local preference
+PASS Sensitive metadata remains local summaryMetadata
+PASS Repeated large extraction remains bounded
+PASS Memory admission enforces 500-record bound
+PASS Memory capacity failure preserves existing facts
+PASS Correction still works at memory capacity
+PASS Memory boundary refuses restricted replacement
+PASS Restricted correction preserves prior safe fact
+PASS Unknown stored memory type is not invented as a topic
+PASS Explicit memory deletion verified
+PASS Cancel during source acquisition rejects late preparation
+PASS Cancelled source acquisition never persists Today
+PASS Day 0 bounded context after 354 inputs
+PASS Day 0 deduplicated context
+PASS Day 0 excludes expired
+PASS Day 0 excludes unavailable
+PASS Day 0 bounded summary
+PASS Day 0 summary toggle respected
+PASS Day 0 bounded opportunities
+PASS Day 0 disk context preserved
+PASS Day 0 disk summary preserved
+PASS Day 0 duplicate delivery cooldown
+PASS Day 0 delivery cooldown expires
+PASS Day 1 bounded context after 354 inputs
+PASS Day 1 deduplicated context
+PASS Day 1 excludes expired
+PASS Day 1 excludes unavailable
+PASS Day 1 bounded summary
+PASS Day 1 summary toggle respected
+PASS Day 1 bounded opportunities
+PASS Day 1 disk context preserved
+PASS Day 1 disk summary preserved
+PASS Day 1 duplicate delivery cooldown
+PASS Day 1 delivery cooldown expires
+PASS Day 2 bounded context after 354 inputs
+PASS Day 2 deduplicated context
+PASS Day 2 excludes expired
+PASS Day 2 excludes unavailable
+PASS Day 2 bounded summary
+PASS Day 2 summary toggle respected
+PASS Day 2 bounded opportunities
+PASS Day 2 disk context preserved
+PASS Day 2 disk summary preserved
+PASS Day 2 duplicate delivery cooldown
+PASS Day 2 delivery cooldown expires
+PASS Day 3 bounded context after 354 inputs
+PASS Day 3 deduplicated context
+PASS Day 3 excludes expired
+PASS Day 3 excludes unavailable
+PASS Day 3 bounded summary
+PASS Day 3 summary toggle respected
+PASS Day 3 bounded opportunities
+PASS Day 3 disk context preserved
+PASS Day 3 disk summary preserved
+PASS Day 3 duplicate delivery cooldown
+PASS Day 3 delivery cooldown expires
+PASS Day 4 bounded context after 354 inputs
+PASS Day 4 deduplicated context
+PASS Day 4 excludes expired
+PASS Day 4 excludes unavailable
+PASS Day 4 bounded summary
+PASS Day 4 summary toggle respected
+PASS Day 4 bounded opportunities
+PASS Day 4 disk context preserved
+PASS Day 4 disk summary preserved
+PASS Day 4 duplicate delivery cooldown
+PASS Day 4 delivery cooldown expires
+PASS Day 5 bounded context after 354 inputs
+PASS Day 5 deduplicated context
+PASS Day 5 excludes expired
+PASS Day 5 excludes unavailable
+PASS Day 5 bounded summary
+PASS Day 5 summary toggle respected
+PASS Day 5 bounded opportunities
+PASS Day 5 disk context preserved
+PASS Day 5 disk summary preserved
+PASS Day 5 duplicate delivery cooldown
+PASS Day 5 delivery cooldown expires
+PASS Day 6 bounded context after 354 inputs
+PASS Day 6 deduplicated context
+PASS Day 6 excludes expired
+PASS Day 6 excludes unavailable
+PASS Day 6 bounded summary
+PASS Day 6 summary toggle respected
+PASS Day 6 bounded opportunities
+PASS Day 6 disk context preserved
+PASS Day 6 disk summary preserved
+PASS Day 6 duplicate delivery cooldown
+PASS Day 6 delivery cooldown expires
+PASS Clear removes all derived copies after reopen
+PASS Core verified settings conversation: Set my Daily Summary to 9 PM.
+PASS Core verified settings conversation: Change it to 10 AM.
+PASS Core verified settings conversation: Turn Daily Summary off.
+PASS Core verified settings conversation: Turn it back on.
+PASS Ambiguous contextual clock asks without mutation
+PASS Ambiguous follow-up preserves verified setting
+PASS Cleared context cannot authorize pronoun settings
+PASS Follow-up retains typed settings authority
+PASS Settings rejects injected or combined follow-up
+PASS Settings rejects injected or combined follow-up
+PASS Settings rejects injected or combined follow-up
+PASS Oversized voice request rejected without truncated action
+PASS Oversized final callback cannot be followed by duplicate action
+PASS Voice final buffer accepts exact bounded limit
+PASS Empty voice final remains unavailable
+PASS Denied notification authorization stays denied
+PASS Denied notifications do not claim scheduling
+PASS Denied notifications leave no pending payload
+PASS Notification capability reflects current authority
+PASS Authorized notification schedules public hint
+PASS Notification identifier excludes source identity
+PASS Notification payload contains generic public copy only
+PASS Notification preference cancellation removes pending hints
+PASS Notification OS scheduling failure is not success
+PASS Overlapping delivery callback cannot enqueue twice
+PASS Cancelled in-flight notification cannot claim scheduling
+PASS Late notification add is removed after cancellation
+PASS Task cancellation rejects late notification success
+PASS Task cancellation cleans its exact OS request
+PASS Permission revoked at notification commit reports failure
+PASS Notification pending queue enforces 64-item bound
+PASS Notification queue remains bounded after overflow
+PASS Bounded notification queue clears completely
+PASS Never sync transcript public
+PASS Never sync transcript personal
+PASS Never sync transcript sensitive
+PASS Never sync transcript restricted
+PASS Never sync audio public
+PASS Never sync audio personal
+PASS Never sync audio sensitive
+PASS Never sync audio restricted
+PASS Never sync prompt public
+PASS Never sync prompt personal
+PASS Never sync prompt sensitive
+PASS Never sync prompt restricted
+PASS Never sync actionAuthorization public
+PASS Never sync actionAuthorization personal
+PASS Never sync actionAuthorization sensitive
+PASS Never sync actionAuthorization restricted
+PASS Restricted metadata never syncs preference
+PASS Restricted metadata never syncs dailyContext
+PASS Restricted metadata never syncs summaryMetadata
+PASS Restricted metadata never syncs sourceConfiguration
+PASS Restricted metadata never syncs memory
+PASS Restricted metadata never syncs diagnostic
+MEASUREMENT 100 HTML extractions (400 repeated rows each): 12.300339666 seconds
+Step 12 behavioral checks passed: 410
+Step 12 behavioral checks failed: 0

@@ -1,0 +1,13 @@
+PASS recurring exact native identity dedup; distinct identities preserved
+PASS recurring live time remains authoritative
+PASS recurring Today shares one authoritative occurrence
+PASS change exact native identity dedup; distinct identities preserved
+PASS change live time remains authoritative
+PASS change Today shares one authoritative occurrence
+PASS verified current schedule change remains visible
+PASS earlier exact native identity dedup; distinct identities preserved
+PASS earlier live time remains authoritative
+PASS earlier Today shares one authoritative occurrence
+PASS old later time cannot override fresh earlier time
+PASS distinct exact native identity dedup; distinct identities preserved
+Step 16 actual-pipeline regressions: 12 passed / 0 failed. Synthetic sources, shipping engines and SwiftData.

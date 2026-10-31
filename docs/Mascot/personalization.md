@@ -1,0 +1,11 @@
+# Mascot personalization
+
+After Google sign-in or local continue, first-run setup shows a swipeable carousel of the eight supplied character colors. Each page previews its supplied speaking loop without starting capture, playback, or assistant work. A user can also select any of the eight accessible color swatches. Existing users see this screen once on their next launch; later changes stay in Presence settings.
+
+Blue remains Suzzme's default. The selected color is stored in `suzzme.mascot.color` and drives the existing mascot component, in-app logo, the reactive semantic accent and wash tokens in `SuzzmeTheme`, and the macOS cursor companion. The login, shared cards, Home composer, page wash, navigation controls and presence accents follow the selected palette while preserving readable system text and surfaces.
+
+The chosen color also updates the platform icon. iOS builds bundle seven alternate icons and use `UIApplication.setAlternateIconName`; iOS displays its system notice after an icon change. Blue restores the primary icon. macOS uses the selected mascot image for the Dock tile and restores the primary icon for blue. Both icon variants use the supplied transparent character PNGs, centered to match the blue master.
+
+Custom panels and controls across sign-in, onboarding, Home, assistant input, integration browsing, shared cards, settings lists and the macOS menu-bar companion use SwiftUI Liquid Glass on iOS 26/macOS 26 and later. Earlier supported systems use native material. Reduce Transparency selects an opaque surface. Native SwiftUI forms and navigation retain their platform-standard components and inherit the selected tint and themed backdrop. Mascot previews honor Reduce Motion and only the selected page animates. Sign-in keeps the Google identity action, local continuation, privacy/terms information and errors visible in the redesigned layout.
+
+`SuzzmeGlassSurface.swift` owns the material fallback and `MascotSelectionView.swift` owns first-run selection. `SuzzmeMascotAppearance` in `SuzzmeMascotArtwork.swift` publishes the color used by `SuzzmeTheme`. `export-icons.swift` rebuilds the primary and alternate icon images from the retained master and supplied archive assets.

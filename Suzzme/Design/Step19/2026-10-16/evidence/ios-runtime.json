@@ -1,0 +1,111 @@
+{
+  "ios-boot": {
+    "command": [
+      "xcrun",
+      "simctl",
+      "boot",
+      "A4E6594C-838C-474A-B2BA-25A23BA6CEAD"
+    ],
+    "exit": 0,
+    "reason": null,
+    "seconds": 2.01,
+    "load": [
+      2.126953125,
+      2.4697265625,
+      3.3876953125
+    ]
+  },
+  "ios-boot-status": {
+    "command": [
+      "xcrun",
+      "simctl",
+      "bootstatus",
+      "A4E6594C-838C-474A-B2BA-25A23BA6CEAD",
+      "-b"
+    ],
+    "exit": 0,
+    "reason": null,
+    "seconds": 7.05,
+    "load": [
+      12.52685546875,
+      4.6201171875,
+      4.14111328125
+    ]
+  },
+  "ios-install": {
+    "command": [
+      "xcrun",
+      "simctl",
+      "install",
+      "A4E6594C-838C-474A-B2BA-25A23BA6CEAD",
+      "/tmp/SuzzmeFullApp20261016/ios/Build/Products/Release-iphonesimulator/Suzzme.app"
+    ],
+    "exit": 0,
+    "reason": null,
+    "seconds": 31.14,
+    "load": [
+      114.6875,
+      29.27880859375,
+      13.0439453125
+    ]
+  },
+  "ios-launch": {
+    "command": [
+      "xcrun",
+      "simctl",
+      "launch",
+      "A4E6594C-838C-474A-B2BA-25A23BA6CEAD",
+      "rehan.Suzzme"
+    ],
+    "exit": -2,
+    "reason": "timeout",
+    "seconds": 45.35,
+    "load": [
+      121.5654296875,
+      44.71630859375,
+      19.67236328125
+    ]
+  },
+  "ios-processes": {
+    "command": [
+      "xcrun",
+      "simctl",
+      "spawn",
+      "A4E6594C-838C-474A-B2BA-25A23BA6CEAD",
+      "launchctl",
+      "list"
+    ],
+    "exit": -2,
+    "reason": "timeout",
+    "seconds": 30.57,
+    "load": [
+      104.7451171875,
+      49.27587890625,
+      22.35791015625
+    ]
+  },
+  "ios-recent-log": {
+    "command": [
+      "xcrun",
+      "simctl",
+      "spawn",
+      "A4E6594C-838C-474A-B2BA-25A23BA6CEAD",
+      "log",
+      "show",
+      "--last",
+      "3m",
+      "--style",
+      "compact",
+      "--predicate",
+      "process == \"Suzzme\" OR eventMessage CONTAINS \"rehan.Suzzme\""
+    ],
+    "exit": 0,
+    "reason": "timeout",
+    "seconds": 47.59,
+    "load": [
+      114.6630859375,
+      59.318359375,
+      27.423828125
+    ]
+  }
+}

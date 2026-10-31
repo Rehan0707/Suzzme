@@ -1,0 +1,26 @@
+{
+  "accessibilityTrusted" : false,
+  "appPath" : "\/tmp\/SuzzmeNativePlatformMacBuild\/Build\/Products\/Release\/Suzzme.app",
+  "appSandboxEntitled" : true,
+  "bundleIdentifier" : "rehan.Suzzme",
+  "captures" : [
+
+  ],
+  "driverCompleted" : true,
+  "entryPointReplaced" : false,
+  "environmentInjected" : false,
+  "executableSHA256" : "4ca6ff0ad21916a1d18af4d6f09e8318015aed8cbdd22677710bca68008c0eb6",
+  "initialWindowVisible" : false,
+  "launchArgumentDefaults" : [
+
+  ],
+  "observationOnly" : true,
+  "processIdentifier" : 20816,
+  "running" : true,
+  "screenCaptureAuthorized" : true,
+  "uiActions" : "Not run: driver has no existing Accessibility authorization. No permission was requested.",
+  "wasAlreadyRunning" : true,
+  "windows" : [
+
+  ]
+}

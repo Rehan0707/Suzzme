@@ -25,18 +25,16 @@ actor AppleContextPermissions {
         }
     }
 
-    func request(_ kind: SuzzmeContextSourceKind) async -> SuzzmePermissionState {
+    func request(_ kind: SuzzmeContextSourceKind) async throws -> SuzzmePermissionState {
         guard status(for: kind) == .notDetermined || status(for: kind) == .writeOnly else { return status(for: kind) }
-        do {
-            switch kind {
+        switch kind {
             case .calendar:
                 if #available(iOS 17.0, macOS 14.0, *) { _ = try await eventStore.requestFullAccessToEvents() }
             case .reminders:
                 if #available(iOS 17.0, macOS 14.0, *) { _ = try await eventStore.requestFullAccessToReminders() }
             case .contacts:
                 _ = try await contactStore.requestAccess(for: .contacts)
-            }
-        } catch { }
+        }
         return status(for: kind)
     }
 

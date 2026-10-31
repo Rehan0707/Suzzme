@@ -1,0 +1,54 @@
+Window: "Integrations", App: Suzzme.
+0 standard window Integrations, ID: main, Secondary Actions: Raise
+	1 split group main, SidebarNavigationSplitView
+		2 scroll area
+			3 list Sidebar
+				4 row (selectable)
+				5 row (selectable) Suzzme, Your personal companion
+				6 row (selectable) Your day
+				7 row (selectable) Home
+				8 row (selectable) Today
+				9 row (selectable) Daily Summary
+				10 row (selectable) Your information
+				11 row (selectable) Personal Memory
+				12 row (selectable) Sources
+				13 row (selectable) History
+				14 row (selectable)
+				15 row (selected) Settings
+		16 splitter (disabled, settable, float) 232
+		17 scroll area Secondary Actions: Scroll Up, Scroll Down, Cancel
+			18 heading Apps and integrations
+			19 text Choose a connection and review its access. Status reflects what is available in this build.
+			20 text field (settable) Description: Search integrations, Value: Bitbucket, Placeholder: Search apps, ID: suzzme-integration-search
+			21 button Description: Clear search, ID: xmark.circle.fill
+			22 disclosure triangle Description: How access works, Value: off
+			23 text Connecting does not enable automatic intake or actions.
+			24 checkbox Description: Include catalog-only apps (92), Help: Shows reference entries that cannot connect in this build. Search always includes them., Value: 0, ID: suzzme-integration-catalog-toggle
+			25 button Browser pairing
+			26 heading Development and data
+			27 text 1 app
+			28 collection Secondary Actions: AXScrollToTop, AXScrollToBottom
+				29 text Catalog only, Bitbucket, Listed in the reference catalog. Suzzme does not connect to this app in this build., Unavailable
+			30 text Catalog-only entries do not connect an account or grant Suzzme access. You choose the access Connected credentials stay in Keychain. External writes are disabled.
+			31 scroll bar (settable, float) 0
+				32 value indicator (settable, float) 0
+				33 increment arrow button
+				34 decrement arrow button
+				35 increment page button
+				36 decrement page button
+	37 toolbar
+		38 button Description: Hide Sidebar, Secondary Actions: Increment, Decrement, Delete, Cancel
+		39 button Description: Back, ID: chevron.backward, Secondary Actions: Increment, Decrement, Delete, Cancel, Move previous, Remove from toolbar
+	40 close button
+	41 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	42 minimize button
+	43 text Integrations
+44 menu bar
+	45 Suzzme
+	46 Edit
+	47 View
+	48 Companion
+	49 Window
+	50 Help
+
+The focused UI element is 20 text field (settable) Description: Search integrations, Value: Bitbucket, Placeholder: Search apps, ID: suzzme-integration-search

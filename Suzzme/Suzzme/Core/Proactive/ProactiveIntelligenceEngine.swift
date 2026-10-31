@@ -7,6 +7,7 @@ actor ProactiveIntelligenceEngine {
     private let memoryStore: LongTermMemoryStore?
     private let contextEngine: ContextEngine
     private let privacy: PrivacyEngine
+    private let localBriefingSummarizer: (@Sendable (String) async throws -> String?)?
     private var preparationRevision: UInt64 = 0
 
     init(
@@ -14,13 +15,15 @@ actor ProactiveIntelligenceEngine {
         information: InformationEngine? = nil,
         memoryStore: LongTermMemoryStore? = nil,
         contextEngine: ContextEngine = ContextEngine(),
-        privacy: PrivacyEngine = PrivacyEngine()
+        privacy: PrivacyEngine = PrivacyEngine(),
+        localBriefingSummarizer: (@Sendable (String) async throws -> String?)? = nil
     ) {
         self.store = store
         self.information = information
         self.memoryStore = memoryStore
         self.contextEngine = contextEngine
         self.privacy = privacy
+        self.localBriefingSummarizer = localBriefingSummarizer
     }
 
     func preferences() async throws -> ProactivePreferences {
@@ -35,20 +38,91 @@ actor ProactiveIntelligenceEngine {
         try await store.applySettings(plan, authorization: authorization)
     }
 
-    func cancel() async {
+    func cancel(respectingTaskCancellation: Bool = false) async {
+        guard !respectingTaskCancellation || !Task.isCancelled else { return }
         preparationRevision &+= 1
-        await store.cancelGeneration()
+        await store.cancelGeneration(respectingTaskCancellation: respectingTaskCancellation)
     }
 
     func current(now: Date = .now) async throws -> ProactiveSnapshot {
-        try await store.current(now: now)
+        let cached = try await revalidateWatchedContent(try await store.current(now: now), now: now)
+        let references = Set((cached.dailyContext?.entries ?? []).filter { ["connectedApps", "gmail", "whatsapp"].contains($0.source) }.map(\.sourceReference))
+        if !references.isEmpty {
+            let permitted = Set((try await information?.retrieve(.init(sources: [.connectedApps, .watchedWeb, .gmail, .whatsapp], limit: InformationLimits.records), now: now) ?? []).map(\.externalID))
+            if !references.isSubset(of: permitted) {
+                try await store.clearProactiveContent()
+                return try await store.current(now: now)
+            }
+        }
+        return cached
+    }
+
+    func savedBriefings(now: Date = .now) async throws -> [ProactiveBriefing] {
+        let saved = try await store.savedBriefings(now: now)
+        var result: [ProactiveBriefing] = []
+        for briefing in saved {
+            var allowed = true
+            for source in [InformationSourceID.calendar, .reminders] where briefing.sourceEvidence.contains(source.rawValue) {
+                if await information?.isAuthorized(source) != true { allowed = false; break }
+            }
+            guard allowed else { continue }
+            let snapshot = ProactiveSnapshot(generatedAt: briefing.createdAt, briefing: briefing, opportunities: [], timeCriticalItems: [], dailyContext: nil)
+            guard try await revalidateWatchedContent(snapshot, now: now).briefing != nil else { continue }
+            let protectedItems = briefing.items.filter { item in
+                !Set(item.sourceEvidence).isDisjoint(with: ["gmail", "whatsapp", "connectedApps"])
+            }
+            let events = try await information?.retrieveHistorical(.init(sources: [.connectedApps, .gmail, .whatsapp], limit: InformationLimits.records), asOf: briefing.createdAt, now: now) ?? []
+            let permitted = Set(events.map(\.fingerprint))
+            guard protectedItems.allSatisfy({ permitted.contains($0.candidateID) }) else { continue }
+            result.append(briefing)
+        }
+        return result
+    }
+
+    private func revalidateWatchedContent(_ cached: ProactiveSnapshot, now: Date) async throws -> ProactiveSnapshot {
+        func withheld() -> ProactiveSnapshot {
+            // Derived content can be rebuilt. Preserve saved JSON, preferences,
+            // delivery history and dismissed items; reading never resets them.
+            .init(generatedAt: now, briefing: nil, opportunities: [], timeCriticalItems: [], dailyContext: nil)
+        }
+        if let briefing = cached.briefing {
+            if briefing.sourceEvidence.contains("watchedWeb") {
+                guard let references = briefing.watchedSourceReferences, !references.isEmpty else { return withheld() }
+            }
+            if let references = briefing.watchedSourceReferences,
+               references.count > ProactiveLimits.briefingItems || !references.allSatisfy(\.isValid) { return withheld() }
+        }
+        // Legacy opportunities have opaque keys and no reliable source marker.
+        // Withhold those artifacts until a fresh generation supplies provenance.
+        let opportunities = cached.opportunities.filter { $0.watchedSourceReferences != nil }
+        guard opportunities.allSatisfy({ opportunity in
+            let references = opportunity.watchedSourceReferences ?? []
+            return references.count <= 2 && references.allSatisfy(\.isValid)
+        }) else { return withheld() }
+        let contextReferences = (cached.dailyContext?.entries ?? []).filter { $0.source == "watchedWeb" }.map {
+            ProactiveWatchedReference(externalID: $0.sourceReference, fingerprint: $0.id)
+        }
+        let references = Set((cached.briefing?.watchedSourceReferences ?? [])
+            + opportunities.flatMap { $0.watchedSourceReferences ?? [] } + contextReferences)
+        guard references.count <= ProactiveLimits.dailyContextItems + ProactiveLimits.briefingItems + 2 * ProactiveLimits.opportunities,
+              references.allSatisfy(\.isValid) else { return withheld() }
+        if !references.isEmpty {
+            let events = try await information?.retrieve(.init(sources: [.watchedWeb], limit: InformationLimits.records), now: now) ?? []
+            try Task.checkCancellation()
+            let permitted = Set(events.map { ProactiveWatchedReference(externalID: $0.externalID, fingerprint: $0.fingerprint) })
+            guard references.isSubset(of: permitted) else { return withheld() }
+        }
+        guard opportunities.count != cached.opportunities.count else { return cached }
+        return .init(generatedAt: cached.generatedAt, briefing: cached.briefing, opportunities: opportunities,
+                     timeCriticalItems: cached.timeCriticalItems, dailyContext: cached.dailyContext)
     }
 
     func prepare(
         from sources: [any ContextSource],
         now: Date = .now,
         calendar: Calendar = .current,
-        profileName: String? = nil
+        profileName: String? = nil,
+        summaryCutoff: Date? = nil
     ) async throws -> ProactiveSnapshot {
         preparationRevision &+= 1
         let owner = preparationRevision
@@ -58,19 +132,44 @@ actor ProactiveIntelligenceEngine {
         let (informationValues, liveValues, memories) = try await (informationResult, liveResult, memoryResult)
         try Task.checkCancellation()
         guard owner == preparationRevision else { throw CancellationError() }
+        let hasLiveReminders = sources.contains { $0.identifier == "reminders" }
+            && !liveValues.limitations.contains { $0.source == "reminders" }
+        // Current open-work selection is authoritative over cached reminders.
+        // Keep information-only operation when live access is unavailable.
+        let liveCalendarReferences = Set(liveValues.candidates.filter { $0.source == "calendar" }.map(\.sourceReference))
+        let cached = informationValues.candidates.filter {
+            (!hasLiveReminders || $0.source != "reminders")
+                && ($0.source != "calendar" || !liveCalendarReferences.contains($0.sourceReference))
+        }
+        let live = liveValues.candidates.map { current in
+            // Keep a reported change only when the live event still agrees with
+            // it. A fresh event moved earlier must replace the old later time.
+            guard current.source == "calendar",
+                  let verifiedChange = informationValues.candidates.first(where: {
+                      $0.source == "calendar" && $0.sourceReference == current.sourceReference
+                          && $0.kind == .scheduleChange && $0.title == current.title
+                          && Self.sameNativeTime($0.effectiveAt, current.effectiveAt)
+                          && Self.sameNativeTime($0.effectiveUntil, current.effectiveUntil)
+                          && $0.sourceHealthy && !$0.isCompleted
+                          && ($0.freshness == .current || $0.freshness == .future)
+                  }) else { return current }
+            return verifiedChange
+        }
         let input = ProactiveInput(
-            candidates: informationValues.candidates + liveValues.candidates,
+            candidates: cached + live,
             memories: memories,
             healthLimitations: informationValues.limitations + liveValues.limitations,
             generatedAt: now
         )
-        return try await prepare(input: input, now: now, calendar: calendar, profileName: profileName)
+        return try await prepare(input: input, now: now, calendar: calendar, profileName: profileName, summaryCutoff: summaryCutoff)
     }
 
-    func prepare(input: ProactiveInput, now: Date? = nil, calendar: Calendar = .current, profileName: String? = nil) async throws -> ProactiveSnapshot {
+    func prepare(input: ProactiveInput, now: Date? = nil, calendar: Calendar = .current, profileName: String? = nil, summaryCutoff: Date? = nil) async throws -> ProactiveSnapshot {
         preparationRevision &+= 1
         let owner = preparationRevision
         let reference = now ?? input.generatedAt
+        let cutoff = min(summaryCutoff ?? reference, reference)
+        let enforceCutoff = summaryCutoff != nil
         let (generation, preferences) = try await store.beginGeneration()
         guard owner == preparationRevision else { throw CancellationError() }
         guard preferences.dailyBriefingEnabled || preferences.timeCriticalEnabled || preferences.preparedAssistanceEnabled else {
@@ -83,7 +182,7 @@ actor ProactiveIntelligenceEngine {
         var evaluated: [(ProactiveCandidate, RelevanceDecision, TemporalUsefulness, ProactiveDeliveryClassification)] = []
         for candidate in candidates {
             let relevance = Self.relevance(for: candidate, memories: input.memories, now: reference)
-            let temporal = Self.temporalUsefulness(for: candidate, now: reference, nextBriefing: nextBriefing)
+            let temporal = Self.temporalUsefulness(for: candidate, now: reference, nextBriefing: nextBriefing, calendar: calendar)
             let delivery = try await classification(
                 candidate: candidate,
                 relevance: relevance,
@@ -94,21 +193,27 @@ actor ProactiveIntelligenceEngine {
             evaluated.append((candidate, relevance, temporal, delivery))
         }
         try Task.checkCancellation()
-        let briefing = preferences.dailyBriefingEnabled
-            ? Self.makeBriefing(from: evaluated, input: input, now: reference, nextBriefing: nextBriefing, profileName: profileName)
+        var briefing = preferences.dailyBriefingEnabled
+            ? Self.makeBriefing(from: evaluated, input: input, now: reference, nextBriefing: nextBriefing, profileName: profileName, calendar: calendar, cutoff: cutoff, enforceCutoff: enforceCutoff)
             : nil
+        if let current = briefing {
+            briefing = try await locallySummarized(current)
+            try Task.checkCancellation()
+            guard owner == preparationRevision else { throw CancellationError() }
+        }
         let opportunities = Self.makeOpportunities(
             from: evaluated,
             memories: input.memories,
             preferences: preferences,
             now: reference
         )
-        let timeCritical = briefing?.items.filter { $0.delivery == .timeCritical } ?? []
+        let timeCritical = Self.urgentItems(from: evaluated)
         let dailyContext = Self.makeDailyContext(
             from: evaluated,
             limitations: input.healthLimitations,
             now: reference,
-            calendar: calendar
+            calendar: calendar,
+            cutoff: enforceCutoff ? cutoff : nil
         )
         let snapshot = ProactiveSnapshot(
             generatedAt: reference,
@@ -120,9 +225,33 @@ actor ProactiveIntelligenceEngine {
         try Task.checkCancellation()
         guard owner == preparationRevision else { throw CancellationError() }
         try await store.commit(snapshot, generation: generation, now: reference)
-        let current = try await store.current(now: reference)
+        let current = try await revalidateWatchedContent(try await store.current(now: reference), now: reference)
         guard owner == preparationRevision else { throw CancellationError() }
         return current
+    }
+
+    /// Improves only the spoken narration. The deterministic version remains
+    /// the fallback, and the injected closure may return text only when a local
+    /// model actually generated it.
+    private func locallySummarized(_ briefing: ProactiveBriefing) async throws -> ProactiveBriefing {
+        guard !briefing.items.isEmpty, let localBriefingSummarizer else { return briefing }
+        let generated: String?
+        do {
+            generated = try await localBriefingSummarizer(briefing.narration)
+        } catch is CancellationError {
+            throw CancellationError()
+        } catch {
+            return briefing
+        }
+        try Task.checkCancellation()
+        guard let text = generated?.trimmingCharacters(in: .whitespacesAndNewlines),
+              !text.isEmpty, text.count <= ProactiveLimits.narrationCharacters,
+              !text.contains("\0"), privacy.classify(text).policy != .neverProcess else {
+            return briefing
+        }
+        var result = briefing
+        result.narration = text
+        return result
     }
 
     func dismissOpportunity(id: UUID) async throws {
@@ -162,7 +291,10 @@ actor ProactiveIntelligenceEngine {
             Self.candidate(from: $0, sourceHealthy: healthy[$0.source] == true, now: now)
         }
         let limitations = health.compactMap { value -> ProactiveHealthLimitation? in
-            guard value.enabled, value.state != .healthy else { return nil }
+            guard value.enabled, value.state != .healthy || value.limited else { return nil }
+            if value.state == .healthy && value.limited {
+                return .init(source: value.source.rawValue, message: "Only part of your \(value.source.title.lowercased()) was checked. This summary may be incomplete.")
+            }
             return .init(source: value.source.rawValue, message: "I couldn’t check your \(value.source.title.lowercased()), so this briefing may be incomplete.")
         }
         return (candidates, limitations)
@@ -226,19 +358,29 @@ actor ProactiveIntelligenceEngine {
         from evaluated: [(ProactiveCandidate, RelevanceDecision, TemporalUsefulness, ProactiveDeliveryClassification)],
         limitations: [ProactiveHealthLimitation],
         now: Date,
-        calendar: Calendar
+        calendar: Calendar,
+        cutoff: Date? = nil
     ) -> DailyContextSnapshot {
-        let day = calendar.startOfDay(for: now)
+        let enforceCutoff = cutoff != nil
+        let cutoff = min(cutoff ?? now, now)
+        let day = calendar.startOfDay(for: cutoff)
         let end = calendar.date(byAdding: .day, value: 1, to: day) ?? day.addingTimeInterval(86_400)
         let entries = evaluated
             .filter { candidate, relevance, temporal, _ in
-                guard candidate.freshness != .expired else { return false }
-                let effective = candidate.effectiveAt ?? now
-                let withinToday = effective >= day && effective < end
-                if candidate.isCompleted { return withinToday }
-                guard temporal != .obsolete else { return false }
-                let futureCommitment = effective >= end && [.deadline, .reminder, .commitment, .schedule].contains(candidate.kind)
-                return withinToday || futureCommitment || relevance.relevance != .irrelevant
+                if !enforceCutoff {
+                    guard candidate.freshness != .expired else { return false }
+                    let effective = candidate.effectiveAt ?? now
+                    let withinToday = effective >= day && effective < end
+                    if candidate.isCompleted { return withinToday }
+                    guard temporal != .obsolete else { return false }
+                    return withinToday || (effective >= end && [.deadline, .reminder, .commitment, .schedule].contains(candidate.kind)) || relevance.relevance != .irrelevant
+                }
+                if candidate.isCompleted {
+                    guard candidate.sourceUpdatedAt.map({ $0 <= cutoff }) ?? true else { return false }
+                    return candidate.effectiveAt.map { $0 >= day && $0 < end && $0 <= cutoff } ?? false
+                }
+                guard temporal != .obsolete || (candidate.source == "calendar" && candidate.kind == .schedule) else { return false }
+                return belongsToDailyBriefing(candidate, relevance: relevance, now: cutoff, calendar: calendar)
             }
             .sorted { lhs, rhs in
                 func priority(_ candidate: ProactiveCandidate) -> Int {
@@ -279,7 +421,8 @@ actor ProactiveIntelligenceEngine {
                     mayBeDurableCandidate: relevance.relevance == .strong
                         && candidate.confidence >= 0.8
                         && candidate.sensitivity != .restricted
-                        && [.commitment, .deadline].contains(candidate.kind)
+                        && [.commitment, .deadline].contains(candidate.kind),
+                    isAllDay: candidate.isAllDay
                 )
             }
         return .init(
@@ -291,6 +434,25 @@ actor ProactiveIntelligenceEngine {
         )
     }
 
+    private static func belongsToDailyBriefing(_ candidate: ProactiveCandidate,
+        relevance: RelevanceDecision, now: Date, calendar: Calendar) -> Bool {
+        let day = calendar.startOfDay(for: now)
+        let end = calendar.date(byAdding: .day, value: 1, to: day) ?? day.addingTimeInterval(86_400)
+        guard let effective = candidate.effectiveAt else { return false }
+        let historicalCalendar = candidate.source == "calendar" && candidate.kind == .schedule
+        if let updated = candidate.sourceUpdatedAt, updated > now { return false }
+        guard (candidate.freshness != .expired || historicalCalendar), candidate.sourceHealthy,
+              effective >= day, effective < end, effective <= now else { return false }
+        if candidate.kind == .information && effective > now { return false }
+        if candidate.kind == .information && candidate.source == "gmail" {
+            // This marker is produced only after the on-device model returns
+            // a grounded important or urgent extraction from an allowed body.
+            guard candidate.title.hasPrefix("Important email · ") else { return false }
+        }
+        return relevance.relevance != .irrelevant ||
+            [.schedule, .scheduleChange, .cancellation, .deadline, .reminder, .commitment].contains(candidate.kind)
+    }
+
     static func relevance(for candidate: ProactiveCandidate, memories: [SuzzmeMemoryRecord], now: Date) -> RelevanceDecision {
         var evidence: [RelevanceEvidence] = []
         func add(_ kind: RelevanceEvidenceKind, _ explanation: String, _ reference: String) {
@@ -299,6 +461,11 @@ actor ProactiveIntelligenceEngine {
             evidence.append(.init(id: "\(kind.rawValue):\(reference)", kind: kind, explanation: explanation, reference: reference))
         }
         if candidate.sourceHealthy { add(.sourceReliability, "It comes from a source Suzzme could check.", candidate.source) }
+        if candidate.source == "connectedApps" {
+            add(.explicitPreference, "You explicitly selected this resource for Daily Summary.", candidate.sourceReference)
+        } else if candidate.source == "gmail" || candidate.source == "whatsapp" {
+            add(.explicitPreference, "You selected this source for Daily Summary.", candidate.sourceReference)
+        }
         switch candidate.kind {
         case .schedule, .scheduleChange, .cancellation:
             add(.schedule, "It affects your current schedule.", candidate.sourceReference)
@@ -336,13 +503,18 @@ actor ProactiveIntelligenceEngine {
         return .init(candidateID: candidate.id, relevance: relevance, evidence: evidence)
     }
 
-    static func temporalUsefulness(for candidate: ProactiveCandidate, now: Date, nextBriefing: Date) -> TemporalUsefulness {
+    static func temporalUsefulness(for candidate: ProactiveCandidate, now: Date, nextBriefing: Date,
+                                   calendar: Calendar = .current) -> TemporalUsefulness {
         if candidate.freshness == .expired || candidate.freshness == .superseded || candidate.freshness == .stale || candidate.isCompleted {
             return .obsolete
         }
         if let end = candidate.effectiveUntil, end <= now { return .obsolete }
         guard let date = candidate.effectiveAt else { return .canWait }
         if date < now.addingTimeInterval(-30 * 60) {
+            // A selected inbox or chat is a record of today's activity, even
+            // when its message arrived hours before the summary runs.
+            if candidate.kind == .information, ["gmail", "whatsapp"].contains(candidate.source),
+               calendar.isDate(date, inSameDayAs: now) { return .canWait }
             // An unfinished due item remains useful after its due time. Past
             // calendar events age out, while overdue work stays actionable.
             if [.reminder, .commitment].contains(candidate.kind), !candidate.isCompleted {
@@ -376,14 +548,39 @@ actor ProactiveIntelligenceEngine {
         }
     }
 
+    private static func urgentItems(from values: [(ProactiveCandidate, RelevanceDecision, TemporalUsefulness, ProactiveDeliveryClassification)]) -> [ProactiveBriefingItem] {
+        values.filter { $0.3 == .timeCritical }.prefix(ProactiveLimits.briefingItems).map { candidate, relevance, _, delivery in
+            ProactiveBriefingItem(id: stableUUID(candidate.id), candidateID: candidate.id, kind: candidate.kind,
+                summary: String(candidate.summary.prefix(240)), whyRelevant: String(relevance.explanation.prefix(300)),
+                effectiveTime: candidate.effectiveAt, sourceEvidence: Array(relevance.evidence.map(\.reference).prefix(ProactiveLimits.evidencePerItem)),
+                relatedEntities: Array(candidate.entities.prefix(5)), freshness: candidate.freshness,
+                confidence: candidate.confidence, sensitivity: candidate.sensitivity, delivery: delivery, isAllDay: candidate.isAllDay)
+        }
+    }
+
     private static func makeBriefing(
         from values: [(ProactiveCandidate, RelevanceDecision, TemporalUsefulness, ProactiveDeliveryClassification)],
         input: ProactiveInput,
         now: Date,
         nextBriefing: Date,
-        profileName: String?
+        profileName: String?,
+        calendar: Calendar,
+        cutoff: Date,
+        enforceCutoff: Bool
     ) -> ProactiveBriefing? {
-        let selected = values.filter { $0.3 != .ignore }.prefix(ProactiveLimits.briefingItems)
+        var sourceCounts: [String: Int] = [:]
+        let selected = values.filter { candidate, relevance, _, delivery in
+            let historicalCalendar = candidate.source == "calendar" && candidate.kind == .schedule
+            if enforceCutoff {
+                guard (delivery != .ignore || historicalCalendar),
+                      belongsToDailyBriefing(candidate, relevance: relevance, now: cutoff, calendar: calendar) else { return false }
+            } else if delivery == .ignore { return false }
+            if candidate.kind == .information, ["gmail", "whatsapp"].contains(candidate.source) {
+                guard sourceCounts[candidate.source, default: 0] < 2 else { return false }
+                sourceCounts[candidate.source, default: 0] += 1
+            }
+            return true
+        }.prefix(ProactiveLimits.briefingItems)
         let items = selected.map { candidate, relevance, _, delivery in
             ProactiveBriefingItem(
                 id: stableUUID(candidate.id),
@@ -397,7 +594,8 @@ actor ProactiveIntelligenceEngine {
                 freshness: candidate.freshness,
                 confidence: candidate.confidence,
                 sensitivity: candidate.sensitivity,
-                delivery: delivery
+                delivery: delivery == .ignore ? .brief : delivery,
+                isAllDay: candidate.isAllDay
             )
         }
         let limitations = input.healthLimitations.map(\.message)
@@ -407,7 +605,7 @@ actor ProactiveIntelligenceEngine {
             let section: ProactiveBriefingSectionKind
             if item.delivery == .timeCritical || item.kind == .deadline || item.kind == .reminder { section = .needsAttention }
             else if [.scheduleChange, .cancellation].contains(item.kind) { section = .changes }
-            else if let date = item.effectiveTime, date <= now.addingTimeInterval(24 * 3_600) { section = .today }
+            else if let date = item.effectiveTime, calendar.isDate(date, inSameDayAs: cutoff) { section = .today }
             else { section = .later }
             buckets[section, default: []].append(item)
         }
@@ -415,21 +613,29 @@ actor ProactiveIntelligenceEngine {
             guard kind != .opening, let values = buckets[kind], !values.isEmpty else { return nil }
             return .init(kind: kind, items: values)
         }
-        let narration = makeNarration(items: items, limitations: limitations, now: now, profileName: profileName)
+        var narrationItems = Array(items.prefix(5))
+        if !narrationItems.isEmpty {
+            let represented = Set(selected.prefix(5).map { $0.0.source })
+            if let missingSource = selected.indices.first(where: { !represented.contains(selected[$0].0.source) }) {
+                narrationItems[narrationItems.count - 1] = items[missingSource]
+            }
+        }
+        let narration = makeNarration(items: narrationItems, limitations: limitations, now: now, profileName: profileName)
         let sources = Array(Set(selected.map { $0.0.source })).sorted()
         let live = Array(Set(selected.filter { $0.0.source == "calendar" || $0.0.source == "reminders" }.map { $0.0.sourceReference })).prefix(8).map { $0 }
         let memory = Array(Set(selected.flatMap { $0.1.evidence.filter { [.project, .commitment, .person, .explicitPreference].contains($0.kind) }.map(\.reference) })).prefix(ProactiveLimits.memoryEvidence).map { $0 }
         return .init(
             id: UUID(), createdAt: now,
             coverageWindow: .init(start: now, end: max(nextBriefing, now.addingTimeInterval(24 * 3_600))),
-            informationCutoff: input.generatedAt,
+            informationCutoff: cutoff,
             sections: sections,
             sourceEvidence: sources,
             liveContextEvidence: live,
             memoryEvidence: memory,
             healthLimitations: limitations,
             narration: narration,
-            deliveryState: limitations.isEmpty ? .ready : .partiallyDelivered
+            deliveryState: limitations.isEmpty ? .ready : .partiallyDelivered,
+            watchedSourceReferences: watchedReferences(from: selected.map { $0.0 })
         )
     }
 
@@ -445,13 +651,20 @@ actor ProactiveIntelligenceEngine {
                 : "I couldn’t confirm everything in your day because a source was unavailable.")
         } else {
             let formatter = DateFormatter(); formatter.dateStyle = .none; formatter.timeStyle = .short
+            let dateFormatter = DateFormatter(); dateFormatter.dateStyle = .medium; dateFormatter.timeStyle = .none
             parts.append(contentsOf: items.prefix(5).map { item in
                 guard let time = item.effectiveTime else { return item.summary }
+                let isToday = Calendar.current.isDate(time, inSameDayAs: now)
                 switch item.kind {
                 case .schedule, .scheduleChange:
-                    return "At \(formatter.string(from: time)), \(item.summary)"
+                    if item.isAllDay == true {
+                        let day = isToday ? "Today" : "On \(dateFormatter.string(from: time))"
+                        return "\(day), \(item.summary) is an all-day event."
+                    }
+                    let day = isToday ? "At" : "On \(dateFormatter.string(from: time)), at"
+                    return "\(day) \(formatter.string(from: time)), \(item.summary)"
                 case .deadline, .reminder, .commitment:
-                    return "By \(formatter.string(from: time)), \(item.summary)"
+                    return "By \(ProactiveDatePresentation.label(time, isAllDay: false, relativeTo: now)), \(item.summary)"
                 case .cancellation, .information:
                     return item.summary
                 }
@@ -494,7 +707,8 @@ actor ProactiveIntelligenceEngine {
                 supportingMemory: Array(relevance.evidence.filter { [.project, .commitment, .person, .explicitPreference].contains($0.kind) }.map(\.reference).prefix(ProactiveLimits.memoryEvidence)),
                 supportingLiveContext: candidate.source == "calendar" || candidate.source == "reminders" ? [candidate.sourceReference] : [],
                 possibleAssistance: proposal, requiredCapabilities: [capability], riskPreview: .reviewOnly,
-                freshness: candidate.freshness, confidence: candidate.confidence, state: .active
+                freshness: candidate.freshness, confidence: candidate.confidence, state: .active,
+                watchedSourceReferences: watchedReferences(from: [candidate])
             ))
         }
         let schedule = useful.map(\.0).filter { $0.kind == .schedule || $0.kind == .scheduleChange }
@@ -516,11 +730,18 @@ actor ProactiveIntelligenceEngine {
                     reason: "Both are present in your current schedule.", supportingInformation: [], supportingMemory: [],
                     supportingLiveContext: [first.sourceReference, second.sourceReference], possibleAssistance: proposal,
                     requiredCapabilities: [.calendar], riskPreview: .reviewOnly, freshness: .current,
-                    confidence: min(first.confidence, second.confidence), state: .active
+                    confidence: min(first.confidence, second.confidence), state: .active,
+                    watchedSourceReferences: watchedReferences(from: [first, second])
                 ))
             }
         }
         return Array(opportunities.prefix(ProactiveLimits.opportunities))
+    }
+
+    private static func watchedReferences(from candidates: [ProactiveCandidate]) -> [ProactiveWatchedReference] {
+        Array(Set(candidates.filter { $0.source == "watchedWeb" }.map {
+            ProactiveWatchedReference(externalID: $0.sourceReference, fingerprint: $0.id)
+        })).sorted { ($0.externalID, $0.fingerprint) < ($1.externalID, $1.fingerprint) }
     }
 
     private static func overlaps(_ lhs: ProactiveCandidate, _ rhs: ProactiveCandidate) -> Bool {
@@ -541,7 +762,7 @@ actor ProactiveIntelligenceEngine {
         case .cancellation: .cancellation
         case .reminderChange: .reminder
         case .eventUpdate: .schedule
-        case .generalUpdate: .information
+        case .emailUpdate, .generalUpdate: .information
         }
         let freshness: ProactiveCandidateFreshness = switch event.freshness(at: now) {
         case .current: .current
@@ -553,12 +774,12 @@ actor ProactiveIntelligenceEngine {
         return .init(
             id: event.fingerprint, kind: kind, title: event.title, summary: event.summary,
             source: event.source.rawValue, sourceReference: event.externalID,
-            effectiveAt: event.effectiveAt, effectiveUntil: event.effectiveUntil, entities: event.entities,
+            effectiveAt: event.effectiveAt, effectiveUntil: event.effectiveUntil, sourceUpdatedAt: event.sourceUpdatedAt, entities: event.entities,
             sensitivity: event.sensitivity, freshness: freshness,
             // A cancellation is a meaningful current change. Treating it as completed
             // would suppress the exact last-minute disruption Step 10 must surface.
             isCompleted: event.objectState == .completed || event.objectState == .absent,
-            sourceHealthy: sourceHealthy, confidence: 1
+            sourceHealthy: sourceHealthy, confidence: 1, isAllDay: event.isAllDay == true
         )
     }
 
@@ -574,20 +795,33 @@ actor ProactiveIntelligenceEngine {
         }
         let completed = item.metadata["completed"] == "true"
         let reference = item.metadata["fingerprint"] ?? item.sourceIdentifier
+        let sourceReference = source == "calendar"
+            ? item.metadata["informationIdentifier"].flatMap { $0.isEmpty ? nil : $0 } ?? item.sourceIdentifier
+            : item.sourceIdentifier
         return .init(
             id: source + ":" + reference, kind: kind,
             title: item.metadata["title"].flatMap { $0.isEmpty ? nil : $0 } ?? item.content,
-            summary: item.content, source: source, sourceReference: item.sourceIdentifier,
-            effectiveAt: effectiveAt, effectiveUntil: effectiveUntil, entities: item.entities,
+            summary: item.content, source: source, sourceReference: sourceReference,
+            effectiveAt: effectiveAt, effectiveUntil: effectiveUntil, sourceUpdatedAt: item.timestamp, entities: item.entities,
             sensitivity: item.sensitivity,
             freshness: item.expiration.map { $0 <= now ? .expired : .current } ?? .current,
-            isCompleted: completed, sourceHealthy: true, confidence: item.confidence
+            isCompleted: completed, sourceHealthy: true, confidence: item.confidence,
+            isAllDay: item.metadata["allDay"] == "true"
         )
     }
 
     private static func date(_ value: String?) -> Date? {
         guard let value, !value.isEmpty else { return nil }
         return ISO8601DateFormatter().date(from: value)
+    }
+
+    private static func sameNativeTime(_ first: Date?, _ second: Date?) -> Bool {
+        switch (first, second) {
+        case (nil, nil): true
+        // Native context's ISO8601 representation has whole-second precision.
+        case let (first?, second?): abs(first.timeIntervalSince(second)) < 1
+        default: false
+        }
     }
 
     private static func stableUUID(_ value: String) -> UUID {

@@ -1,0 +1,455 @@
+sandbox-exec: sandbox_apply: Operation not permitted
+Suzzme/Core/Integrations/IntegrationController.swift:7:13: error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+  5 | /// for the duration of connection and are never published as observable state.
+  6 | @MainActor @Observable
+  7 | final class IntegrationController {
+    |             `- error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+  8 |     let gateway: IntegrationGateway
+  9 |     private(set) var accounts: [IntegrationAccount] = []
+
+Observation.Observable:2:210: note: 'Observable()' declared here
+1 | @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
+2 | @attached(member, names: named(_$observationRegistrar), named(access), named(withMutation), named(shouldNotifyObservers)) @attached(memberAttribute) @attached(extension, conformances: Observable) public macro Observable() = #externalMacro(module: "ObservationMacros", type: "ObservableMacro")
+  |                                                                                                                                                                                                                  `- note: 'Observable()' declared here
+
+Suzzme/Core/Integrations/IntegrationController.swift:8:9: error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+  6 | @MainActor @Observable
+  7 | final class IntegrationController {
+  8 |     let gateway: IntegrationGateway
+    |         `- error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+  9 |     private(set) var accounts: [IntegrationAccount] = []
+ 10 |     private(set) var isBusy = false
+
+Observation.Observable:2:210: note: 'Observable()' declared here
+1 | @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
+2 | @attached(member, names: named(_$observationRegistrar), named(access), named(withMutation), named(shouldNotifyObservers)) @attached(memberAttribute) @attached(extension, conformances: Observable) public macro Observable() = #externalMacro(module: "ObservationMacros", type: "ObservableMacro")
+  |                                                                                                                                                                                                                  `- note: 'Observable()' declared here
+
+Suzzme/Core/Integrations/IntegrationController.swift:9:22: error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+  7 | final class IntegrationController {
+  8 |     let gateway: IntegrationGateway
+  9 |     private(set) var accounts: [IntegrationAccount] = []
+    |                      `- error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+ 10 |     private(set) var isBusy = false
+ 11 |     private(set) var errorMessage: String?
+
+Observation.Observable:2:210: note: 'Observable()' declared here
+1 | @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
+2 | @attached(member, names: named(_$observationRegistrar), named(access), named(withMutation), named(shouldNotifyObservers)) @attached(memberAttribute) @attached(extension, conformances: Observable) public macro Observable() = #externalMacro(module: "ObservationMacros", type: "ObservableMacro")
+  |                                                                                                                                                                                                                  `- note: 'Observable()' declared here
+
+Suzzme/Core/Integrations/IntegrationController.swift:10:22: error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+  8 |     let gateway: IntegrationGateway
+  9 |     private(set) var accounts: [IntegrationAccount] = []
+ 10 |     private(set) var isBusy = false
+    |                      `- error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+ 11 |     private(set) var errorMessage: String?
+ 12 |     private(set) var connectionState: IntegrationConnectionState = .unconfigured
+
+Observation.Observable:2:210: note: 'Observable()' declared here
+1 | @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
+2 | @attached(member, names: named(_$observationRegistrar), named(access), named(withMutation), named(shouldNotifyObservers)) @attached(memberAttribute) @attached(extension, conformances: Observable) public macro Observable() = #externalMacro(module: "ObservationMacros", type: "ObservableMacro")
+  |                                                                                                                                                                                                                  `- note: 'Observable()' declared here
+
+Suzzme/Core/Integrations/IntegrationController.swift:11:22: error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+  9 |     private(set) var accounts: [IntegrationAccount] = []
+ 10 |     private(set) var isBusy = false
+ 11 |     private(set) var errorMessage: String?
+    |                      `- error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+ 12 |     private(set) var connectionState: IntegrationConnectionState = .unconfigured
+ 13 |     private var loadRevision = 0
+
+Observation.Observable:2:210: note: 'Observable()' declared here
+1 | @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
+2 | @attached(member, names: named(_$observationRegistrar), named(access), named(withMutation), named(shouldNotifyObservers)) @attached(memberAttribute) @attached(extension, conformances: Observable) public macro Observable() = #externalMacro(module: "ObservationMacros", type: "ObservableMacro")
+  |                                                                                                                                                                                                                  `- note: 'Observable()' declared here
+
+Suzzme/Core/Integrations/IntegrationController.swift:12:22: error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+ 10 |     private(set) var isBusy = false
+ 11 |     private(set) var errorMessage: String?
+ 12 |     private(set) var connectionState: IntegrationConnectionState = .unconfigured
+    |                      `- error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+ 13 |     private var loadRevision = 0
+ 14 |     private var hasLoadError = false
+
+Observation.Observable:2:210: note: 'Observable()' declared here
+1 | @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
+2 | @attached(member, names: named(_$observationRegistrar), named(access), named(withMutation), named(shouldNotifyObservers)) @attached(memberAttribute) @attached(extension, conformances: Observable) public macro Observable() = #externalMacro(module: "ObservationMacros", type: "ObservableMacro")
+  |                                                                                                                                                                                                                  `- note: 'Observable()' declared here
+
+Suzzme/Core/Integrations/IntegrationController.swift:13:17: error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+ 11 |     private(set) var errorMessage: String?
+ 12 |     private(set) var connectionState: IntegrationConnectionState = .unconfigured
+ 13 |     private var loadRevision = 0
+    |                 `- error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+ 14 |     private var hasLoadError = false
+ 15 |     private(set) var browserHandoff = BrowserGitHubHandoff()
+
+Observation.Observable:2:210: note: 'Observable()' declared here
+1 | @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
+2 | @attached(member, names: named(_$observationRegistrar), named(access), named(withMutation), named(shouldNotifyObservers)) @attached(memberAttribute) @attached(extension, conformances: Observable) public macro Observable() = #externalMacro(module: "ObservationMacros", type: "ObservableMacro")
+  |                                                                                                                                                                                                                  `- note: 'Observable()' declared here
+
+Suzzme/Core/Integrations/IntegrationController.swift:14:17: error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+ 12 |     private(set) var connectionState: IntegrationConnectionState = .unconfigured
+ 13 |     private var loadRevision = 0
+ 14 |     private var hasLoadError = false
+    |                 `- error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+ 15 |     private(set) var browserHandoff = BrowserGitHubHandoff()
+ 16 |     @ObservationIgnored private var browserRoutesReady = false
+
+Observation.Observable:2:210: note: 'Observable()' declared here
+1 | @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
+2 | @attached(member, names: named(_$observationRegistrar), named(access), named(withMutation), named(shouldNotifyObservers)) @attached(memberAttribute) @attached(extension, conformances: Observable) public macro Observable() = #externalMacro(module: "ObservationMacros", type: "ObservableMacro")
+  |                                                                                                                                                                                                                  `- note: 'Observable()' declared here
+
+Suzzme/Core/Integrations/IntegrationController.swift:15:22: error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+ 13 |     private var loadRevision = 0
+ 14 |     private var hasLoadError = false
+ 15 |     private(set) var browserHandoff = BrowserGitHubHandoff()
+    |                      `- error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+ 16 |     @ObservationIgnored private var browserRoutesReady = false
+ 17 |     @ObservationIgnored private var browserResolutionTask: Task<Void, Never>?
+
+Observation.Observable:2:210: note: 'Observable()' declared here
+1 | @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
+2 | @attached(member, names: named(_$observationRegistrar), named(access), named(withMutation), named(shouldNotifyObservers)) @attached(memberAttribute) @attached(extension, conformances: Observable) public macro Observable() = #externalMacro(module: "ObservationMacros", type: "ObservableMacro")
+  |                                                                                                                                                                                                                  `- note: 'Observable()' declared here
+
+Suzzme/Core/Integrations/IntegrationController.swift:16:37: error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+ 14 |     private var hasLoadError = false
+ 15 |     private(set) var browserHandoff = BrowserGitHubHandoff()
+ 16 |     @ObservationIgnored private var browserRoutesReady = false
+    |                                     `- error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+ 17 |     @ObservationIgnored private var browserResolutionTask: Task<Void, Never>?
+ 18 |     @ObservationIgnored private var browserExpiryTask: Task<Void, Never>?
+
+Observation.Observable:2:210: note: 'Observable()' declared here
+1 | @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
+2 | @attached(member, names: named(_$observationRegistrar), named(access), named(withMutation), named(shouldNotifyObservers)) @attached(memberAttribute) @attached(extension, conformances: Observable) public macro Observable() = #externalMacro(module: "ObservationMacros", type: "ObservableMacro")
+  |                                                                                                                                                                                                                  `- note: 'Observable()' declared here
+
+Suzzme/Core/Integrations/IntegrationController.swift:17:37: error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+ 15 |     private(set) var browserHandoff = BrowserGitHubHandoff()
+ 16 |     @ObservationIgnored private var browserRoutesReady = false
+ 17 |     @ObservationIgnored private var browserResolutionTask: Task<Void, Never>?
+    |                                     `- error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+ 18 |     @ObservationIgnored private var browserExpiryTask: Task<Void, Never>?
+ 19 |     init(gateway: IntegrationGateway = IntegrationGateway()) { self.gateway = gateway }
+
+Observation.Observable:2:210: note: 'Observable()' declared here
+1 | @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
+2 | @attached(member, names: named(_$observationRegistrar), named(access), named(withMutation), named(shouldNotifyObservers)) @attached(memberAttribute) @attached(extension, conformances: Observable) public macro Observable() = #externalMacro(module: "ObservationMacros", type: "ObservableMacro")
+  |                                                                                                                                                                                                                  `- note: 'Observable()' declared here
+
+Suzzme/Core/Integrations/IntegrationController.swift:18:37: error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+ 16 |     @ObservationIgnored private var browserRoutesReady = false
+ 17 |     @ObservationIgnored private var browserResolutionTask: Task<Void, Never>?
+ 18 |     @ObservationIgnored private var browserExpiryTask: Task<Void, Never>?
+    |                                     `- error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+ 19 |     init(gateway: IntegrationGateway = IntegrationGateway()) { self.gateway = gateway }
+ 20 | 
+
+Observation.Observable:2:210: note: 'Observable()' declared here
+1 | @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
+2 | @attached(member, names: named(_$observationRegistrar), named(access), named(withMutation), named(shouldNotifyObservers)) @attached(memberAttribute) @attached(extension, conformances: Observable) public macro Observable() = #externalMacro(module: "ObservationMacros", type: "ObservableMacro")
+  |                                                                                                                                                                                                                  `- note: 'Observable()' declared here
+
+Suzzme/Core/Integrations/IntegrationController.swift:19:5: error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+ 17 |     @ObservationIgnored private var browserResolutionTask: Task<Void, Never>?
+ 18 |     @ObservationIgnored private var browserExpiryTask: Task<Void, Never>?
+ 19 |     init(gateway: IntegrationGateway = IntegrationGateway()) { self.gateway = gateway }
+    |     `- error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+ 20 | 
+ 21 |     func receiveBrowserURL(_ url: URL) {
+
+Observation.Observable:2:210: note: 'Observable()' declared here
+1 | @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
+2 | @attached(member, names: named(_$observationRegistrar), named(access), named(withMutation), named(shouldNotifyObservers)) @attached(memberAttribute) @attached(extension, conformances: Observable) public macro Observable() = #externalMacro(module: "ObservationMacros", type: "ObservableMacro")
+  |                                                                                                                                                                                                                  `- note: 'Observable()' declared here
+
+Suzzme/Core/Integrations/IntegrationController.swift:21:10: error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+ 19 |     init(gateway: IntegrationGateway = IntegrationGateway()) { self.gateway = gateway }
+ 20 | 
+ 21 |     func receiveBrowserURL(_ url: URL) {
+    |          `- error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+ 22 |         guard browserHandoff.receive(url) else {
+ 23 |             if browserHandoff.request == nil { browserResolutionTask?.cancel(); browserExpiryTask?.cancel() }
+
+Observation.Observable:2:210: note: 'Observable()' declared here
+1 | @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
+2 | @attached(member, names: named(_$observationRegistrar), named(access), named(withMutation), named(shouldNotifyObservers)) @attached(memberAttribute) @attached(extension, conformances: Observable) public macro Observable() = #externalMacro(module: "ObservationMacros", type: "ObservableMacro")
+  |                                                                                                                                                                                                                  `- note: 'Observable()' declared here
+
+Suzzme/Core/Integrations/IntegrationController.swift:36:10: error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+ 34 |     }
+ 35 | 
+ 36 |     func enableBrowserRoutes() { browserRoutesReady = true; resolveBrowserHandoffIfReady() }
+    |          `- error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+ 37 | 
+ 38 |     private func resolveBrowserHandoffIfReady() {
+
+Observation.Observable:2:210: note: 'Observable()' declared here
+1 | @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
+2 | @attached(member, names: named(_$observationRegistrar), named(access), named(withMutation), named(shouldNotifyObservers)) @attached(memberAttribute) @attached(extension, conformances: Observable) public macro Observable() = #externalMacro(module: "ObservationMacros", type: "ObservableMacro")
+  |                                                                                                                                                                                                                  `- note: 'Observable()' declared here
+
+Suzzme/Core/Integrations/IntegrationController.swift:38:18: error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+ 36 |     func enableBrowserRoutes() { browserRoutesReady = true; resolveBrowserHandoffIfReady() }
+ 37 | 
+ 38 |     private func resolveBrowserHandoffIfReady() {
+    |                  `- error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+ 39 |         guard browserRoutesReady, browserHandoff.phase == .queued, let request = browserHandoff.request else { return }
+ 40 |         browserResolutionTask?.cancel()
+
+Observation.Observable:2:210: note: 'Observable()' declared here
+1 | @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
+2 | @attached(member, names: named(_$observationRegistrar), named(access), named(withMutation), named(shouldNotifyObservers)) @attached(memberAttribute) @attached(extension, conformances: Observable) public macro Observable() = #externalMacro(module: "ObservationMacros", type: "ObservableMacro")
+  |                                                                                                                                                                                                                  `- note: 'Observable()' declared here
+
+Suzzme/Core/Integrations/IntegrationController.swift:50:10: error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+ 48 |     }
+ 49 | 
+ 50 |     func decideBrowserRequest(id: UUID, openSetup: Bool) {
+    |          `- error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+ 51 |         _ = browserHandoff.decide(id: id, openSetup: openSetup)
+ 52 |         if browserHandoff.request == nil { browserExpiryTask?.cancel() }
+
+Observation.Observable:2:210: note: 'Observable()' declared here
+1 | @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
+2 | @attached(member, names: named(_$observationRegistrar), named(access), named(withMutation), named(shouldNotifyObservers)) @attached(memberAttribute) @attached(extension, conformances: Observable) public macro Observable() = #externalMacro(module: "ObservationMacros", type: "ObservableMacro")
+  |                                                                                                                                                                                                                  `- note: 'Observable()' declared here
+
+Suzzme/Core/Integrations/IntegrationController.swift:55:10: error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+ 53 |     }
+ 54 | 
+ 55 |     func takeBrowserGitHubSetup() -> BrowserGitHubHandoff.Request? {
+    |          `- error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+ 56 |         let request = browserHandoff.takeSetup()
+ 57 |         if request != nil { browserExpiryTask?.cancel() }
+
+Observation.Observable:2:210: note: 'Observable()' declared here
+1 | @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
+2 | @attached(member, names: named(_$observationRegistrar), named(access), named(withMutation), named(shouldNotifyObservers)) @attached(memberAttribute) @attached(extension, conformances: Observable) public macro Observable() = #externalMacro(module: "ObservationMacros", type: "ObservableMacro")
+  |                                                                                                                                                                                                                  `- note: 'Observable()' declared here
+
+Suzzme/Core/Integrations/IntegrationController.swift:61:10: error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+ 59 |     }
+ 60 | 
+ 61 |     func clearBrowserHandoff() {
+    |          `- error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+ 62 |         browserResolutionTask?.cancel(); browserExpiryTask?.cancel()
+ 63 |         browserHandoff.clear()
+
+Observation.Observable:2:210: note: 'Observable()' declared here
+1 | @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
+2 | @attached(member, names: named(_$observationRegistrar), named(access), named(withMutation), named(shouldNotifyObservers)) @attached(memberAttribute) @attached(extension, conformances: Observable) public macro Observable() = #externalMacro(module: "ObservationMacros", type: "ObservableMacro")
+  |                                                                                                                                                                                                                  `- note: 'Observable()' declared here
+
+Suzzme/Core/Integrations/IntegrationController.swift:65:10: error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+ 63 |         browserHandoff.clear()
+ 64 |     }
+ 65 |     func load() async {
+    |          `- error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+ 66 |         loadRevision += 1
+ 67 |         let revision = loadRevision
+
+Observation.Observable:2:210: note: 'Observable()' declared here
+1 | @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
+2 | @attached(member, names: named(_$observationRegistrar), named(access), named(withMutation), named(shouldNotifyObservers)) @attached(memberAttribute) @attached(extension, conformances: Observable) public macro Observable() = #externalMacro(module: "ObservationMacros", type: "ObservableMacro")
+  |                                                                                                                                                                                                                  `- note: 'Observable()' declared here
+
+Suzzme/Core/Integrations/IntegrationController.swift:80:10: error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+ 78 |         }
+ 79 |     }
+ 80 |     func beginAuthorization() { if !isBusy { connectionState = .authorizing; errorMessage = nil; hasLoadError = false } }
+    |          `- error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+ 81 |     func cancelAuthorization() { if !isBusy { connectionState = .unconfigured } }
+ 82 |     func connect(token: String, label: String, repositories: String, replacing accountID: UUID? = nil) async -> Bool {
+
+Observation.Observable:2:210: note: 'Observable()' declared here
+1 | @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
+2 | @attached(member, names: named(_$observationRegistrar), named(access), named(withMutation), named(shouldNotifyObservers)) @attached(memberAttribute) @attached(extension, conformances: Observable) public macro Observable() = #externalMacro(module: "ObservationMacros", type: "ObservableMacro")
+  |                                                                                                                                                                                                                  `- note: 'Observable()' declared here
+
+Suzzme/Core/Integrations/IntegrationController.swift:81:10: error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+ 79 |     }
+ 80 |     func beginAuthorization() { if !isBusy { connectionState = .authorizing; errorMessage = nil; hasLoadError = false } }
+ 81 |     func cancelAuthorization() { if !isBusy { connectionState = .unconfigured } }
+    |          `- error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+ 82 |     func connect(token: String, label: String, repositories: String, replacing accountID: UUID? = nil) async -> Bool {
+ 83 |         guard !isBusy else { return false }
+
+Observation.Observable:2:210: note: 'Observable()' declared here
+1 | @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
+2 | @attached(member, names: named(_$observationRegistrar), named(access), named(withMutation), named(shouldNotifyObservers)) @attached(memberAttribute) @attached(extension, conformances: Observable) public macro Observable() = #externalMacro(module: "ObservationMacros", type: "ObservableMacro")
+  |                                                                                                                                                                                                                  `- note: 'Observable()' declared here
+
+Suzzme/Core/Integrations/IntegrationController.swift:82:10: error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+ 80 |     func beginAuthorization() { if !isBusy { connectionState = .authorizing; errorMessage = nil; hasLoadError = false } }
+ 81 |     func cancelAuthorization() { if !isBusy { connectionState = .unconfigured } }
+ 82 |     func connect(token: String, label: String, repositories: String, replacing accountID: UUID? = nil) async -> Bool {
+    |          `- error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+ 83 |         guard !isBusy else { return false }
+ 84 |         isBusy = true; connectionState = .connecting; errorMessage = nil
+
+Observation.Observable:2:210: note: 'Observable()' declared here
+1 | @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
+2 | @attached(member, names: named(_$observationRegistrar), named(access), named(withMutation), named(shouldNotifyObservers)) @attached(memberAttribute) @attached(extension, conformances: Observable) public macro Observable() = #externalMacro(module: "ObservationMacros", type: "ObservableMacro")
+  |                                                                                                                                                                                                                  `- note: 'Observable()' declared here
+
+Suzzme/Core/Integrations/IntegrationController.swift:102:10: error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+100 |         return false
+101 |     }
+102 |     func verify(_ account: IntegrationAccount) async {
+    |          `- error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+103 |         guard !isBusy else { return }
+104 |         isBusy = true; errorMessage = nil
+
+Observation.Observable:2:210: note: 'Observable()' declared here
+1 | @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
+2 | @attached(member, names: named(_$observationRegistrar), named(access), named(withMutation), named(shouldNotifyObservers)) @attached(memberAttribute) @attached(extension, conformances: Observable) public macro Observable() = #externalMacro(module: "ObservationMacros", type: "ObservableMacro")
+  |                                                                                                                                                                                                                  `- note: 'Observable()' declared here
+
+Suzzme/Core/Integrations/IntegrationController.swift:109:10: error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+107 |         await load()
+108 |     }
+109 |     func connectNotion(token: String, label: String, pages: String, replacing accountID: UUID? = nil) async -> Bool {
+    |          `- error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+110 |         guard !isBusy else { return false }
+111 |         isBusy = true; connectionState = .connecting; errorMessage = nil; hasLoadError = false
+
+Observation.Observable:2:210: note: 'Observable()' declared here
+1 | @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
+2 | @attached(member, names: named(_$observationRegistrar), named(access), named(withMutation), named(shouldNotifyObservers)) @attached(memberAttribute) @attached(extension, conformances: Observable) public macro Observable() = #externalMacro(module: "ObservationMacros", type: "ObservableMacro")
+  |                                                                                                                                                                                                                  `- note: 'Observable()' declared here
+
+Suzzme/Core/Integrations/IntegrationController.swift:128:10: error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+126 |         return false
+127 |     }
+128 |     func connectLinear(token: String, label: String, issues: String, replacing accountID: UUID? = nil) async -> Bool {
+    |          `- error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+129 |         guard !isBusy else { return false }
+130 |         isBusy = true; connectionState = .connecting; errorMessage = nil; hasLoadError = false
+
+Observation.Observable:2:210: note: 'Observable()' declared here
+1 | @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
+2 | @attached(member, names: named(_$observationRegistrar), named(access), named(withMutation), named(shouldNotifyObservers)) @attached(memberAttribute) @attached(extension, conformances: Observable) public macro Observable() = #externalMacro(module: "ObservationMacros", type: "ObservableMacro")
+  |                                                                                                                                                                                                                  `- note: 'Observable()' declared here
+
+Suzzme/Core/Integrations/IntegrationController.swift:150:10: error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+148 |     }
+149 | 
+150 |     func chooseDefault(_ account: IntegrationAccount) async {
+    |          `- error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+151 |         guard !isBusy else { return }
+152 |         isBusy = true; errorMessage = nil
+
+Observation.Observable:2:210: note: 'Observable()' declared here
+1 | @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
+2 | @attached(member, names: named(_$observationRegistrar), named(access), named(withMutation), named(shouldNotifyObservers)) @attached(memberAttribute) @attached(extension, conformances: Observable) public macro Observable() = #externalMacro(module: "ObservationMacros", type: "ObservableMacro")
+  |                                                                                                                                                                                                                  `- note: 'Observable()' declared here
+
+Suzzme/Core/Integrations/IntegrationController.swift:158:10: error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+156 |     }
+157 | 
+158 |     func connectProvider(service: IntegrationID, token: String, label: String, scope: [String: String], replacing accountID: UUID? = nil) async -> Bool {
+    |          `- error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+159 |         guard !isBusy else { return false }
+160 |         isBusy = true; errorMessage = nil; connectionState = .connecting
+
+Observation.Observable:2:210: note: 'Observable()' declared here
+1 | @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
+2 | @attached(member, names: named(_$observationRegistrar), named(access), named(withMutation), named(shouldNotifyObservers)) @attached(memberAttribute) @attached(extension, conformances: Observable) public macro Observable() = #externalMacro(module: "ObservationMacros", type: "ObservableMacro")
+  |                                                                                                                                                                                                                  `- note: 'Observable()' declared here
+
+Suzzme/Core/Integrations/IntegrationController.swift:169:10: error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+167 |     }
+168 | 
+169 |     func preview(_ account: IntegrationAccount, requestID: UUID) async throws -> String {
+    |          `- error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+170 |         let context = try await gateway.readProviderContext(service: account.service, selectedAccount: account.id, requestID: requestID)
+171 |         try Task.checkCancellation()
+
+Observation.Observable:2:210: note: 'Observable()' declared here
+1 | @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
+2 | @attached(member, names: named(_$observationRegistrar), named(access), named(withMutation), named(shouldNotifyObservers)) @attached(memberAttribute) @attached(extension, conformances: Observable) public macro Observable() = #externalMacro(module: "ObservationMacros", type: "ObservableMacro")
+  |                                                                                                                                                                                                                  `- note: 'Observable()' declared here
+
+Suzzme/Core/Integrations/IntegrationController.swift:175:10: error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+173 |         return context.content
+174 |     }
+175 |     func disconnect(_ account: IntegrationAccount) async {
+    |          `- error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+176 |         guard !isBusy else { return }
+177 |         isBusy = true; errorMessage = nil
+
+Observation.Observable:2:210: note: 'Observable()' declared here
+1 | @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
+2 | @attached(member, names: named(_$observationRegistrar), named(access), named(withMutation), named(shouldNotifyObservers)) @attached(memberAttribute) @attached(extension, conformances: Observable) public macro Observable() = #externalMacro(module: "ObservationMacros", type: "ObservableMacro")
+  |                                                                                                                                                                                                                  `- note: 'Observable()' declared here
+
+Suzzme/Core/Integrations/IntegrationController.swift:182:18: error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+180 |         await load()
+181 |     }
+182 |     private func show(_ error: Error) {
+    |                  `- error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+183 |         hasLoadError = false
+184 |         errorMessage = (error as? IntegrationFailure ?? .connectorUnavailable).errorDescription
+
+Observation.Observable:2:210: note: 'Observable()' declared here
+1 | @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
+2 | @attached(member, names: named(_$observationRegistrar), named(access), named(withMutation), named(shouldNotifyObservers)) @attached(memberAttribute) @attached(extension, conformances: Observable) public macro Observable() = #externalMacro(module: "ObservationMacros", type: "ObservableMacro")
+  |                                                                                                                                                                                                                  `- note: 'Observable()' declared here
+
+Suzzme/Core/Integrations/IntegrationController.swift:7:13: error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+  5 | /// for the duration of connection and are never published as observable state.
+  6 | @MainActor @Observable
+  7 | final class IntegrationController {
+    |             `- error: external macro implementation type 'ObservationMacros.ObservableMacro' could not be found for macro 'Observable()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+  8 |     let gateway: IntegrationGateway
+  9 |     private(set) var accounts: [IntegrationAccount] = []
+
+Observation.Observable:2:210: note: 'Observable()' declared here
+1 | @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
+2 | @attached(member, names: named(_$observationRegistrar), named(access), named(withMutation), named(shouldNotifyObservers)) @attached(memberAttribute) @attached(extension, conformances: Observable) public macro Observable() = #externalMacro(module: "ObservationMacros", type: "ObservableMacro")
+  |                                                                                                                                                                                                                  `- note: 'Observable()' declared here
+
+Suzzme/Core/Integrations/IntegrationController.swift:16:37: error: external macro implementation type 'ObservationMacros.ObservationIgnoredMacro' could not be found for macro 'ObservationIgnored()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+ 14 |     private var hasLoadError = false
+ 15 |     private(set) var browserHandoff = BrowserGitHubHandoff()
+ 16 |     @ObservationIgnored private var browserRoutesReady = false
+    |                                     `- error: external macro implementation type 'ObservationMacros.ObservationIgnoredMacro' could not be found for macro 'ObservationIgnored()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+ 17 |     @ObservationIgnored private var browserResolutionTask: Task<Void, Never>?
+ 18 |     @ObservationIgnored private var browserExpiryTask: Task<Void, Never>?
+
+Observation.ObservationIgnored:2:34: note: 'ObservationIgnored()' declared here
+1 | @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
+2 | @attached(accessor) public macro ObservationIgnored() = #externalMacro(module: "ObservationMacros", type: "ObservationIgnoredMacro")
+  |                                  `- note: 'ObservationIgnored()' declared here
+
+Suzzme/Core/Integrations/IntegrationController.swift:17:37: error: external macro implementation type 'ObservationMacros.ObservationIgnoredMacro' could not be found for macro 'ObservationIgnored()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+ 15 |     private(set) var browserHandoff = BrowserGitHubHandoff()
+ 16 |     @ObservationIgnored private var browserRoutesReady = false
+ 17 |     @ObservationIgnored private var browserResolutionTask: Task<Void, Never>?
+    |                                     `- error: external macro implementation type 'ObservationMacros.ObservationIgnoredMacro' could not be found for macro 'ObservationIgnored()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+ 18 |     @ObservationIgnored private var browserExpiryTask: Task<Void, Never>?
+ 19 |     init(gateway: IntegrationGateway = IntegrationGateway()) { self.gateway = gateway }
+
+Observation.ObservationIgnored:2:34: note: 'ObservationIgnored()' declared here
+1 | @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
+2 | @attached(accessor) public macro ObservationIgnored() = #externalMacro(module: "ObservationMacros", type: "ObservationIgnoredMacro")
+  |                                  `- note: 'ObservationIgnored()' declared here
+
+Suzzme/Core/Integrations/IntegrationController.swift:18:37: error: external macro implementation type 'ObservationMacros.ObservationIgnoredMacro' could not be found for macro 'ObservationIgnored()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+ 16 |     @ObservationIgnored private var browserRoutesReady = false
+ 17 |     @ObservationIgnored private var browserResolutionTask: Task<Void, Never>?
+ 18 |     @ObservationIgnored private var browserExpiryTask: Task<Void, Never>?
+    |                                     `- error: external macro implementation type 'ObservationMacros.ObservationIgnoredMacro' could not be found for macro 'ObservationIgnored()'; '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' produced malformed response
+ 19 |     init(gateway: IntegrationGateway = IntegrationGateway()) { self.gateway = gateway }
+ 20 | 
+
+Observation.ObservationIgnored:2:34: note: 'ObservationIgnored()' declared here
+1 | @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
+2 | @attached(accessor) public macro ObservationIgnored() = #externalMacro(module: "ObservationMacros", type: "ObservationIgnoredMacro")
+  |                                  `- note: 'ObservationIgnored()' declared here

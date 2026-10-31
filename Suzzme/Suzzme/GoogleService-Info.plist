@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>230244731392-klate3i7rdhudndkp5vpg668k1pevk7r.apps.googleusercontent.com</string>
+	<key>REVERSED_CLINT_ID</key>
+	<string>com.googleusercontent.apps.230244731392-klate3i7rdhudndkp5vpg668k1pevk7r</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBlq52May1cUfCiqOk2D3jtyn2sF2_RhqA</string>
+	<key>GCM_SENDER_ID</key>
+	<string>230244731392</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>rehan.Suzzme</string>
+	<key>PROJECT_ID</key>
+	<string>suzzme-e70f2</string>
+	<key>STORAGE_BUCKET</key>
+	<string>suzzme-e70f2.firebasestorage.app</string>
+	<key>IS_ADS_ENABLED</key>
+	<false/>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false/>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true/>
+	<key>IS_GCM_ENABLED</key>
+	<true/>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true/>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:230244731392:ios:c407172110d0ae6e9ba6e5</string>
+</dict>
+</plist>

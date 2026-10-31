@@ -1,0 +1,12 @@
+{
+  "name": "suzzme-connector-server",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=24 <25" },
+  "scripts": {
+    "setup": "node setup.mjs",
+    "check": "node --env-file-if-exists=.env.local check-config.mjs",
+    "start": "node --env-file-if-exists=.env.local server.mjs",
+    "test": "node --test server.test.mjs setup.test.mjs deployment.test.mjs worker.test.mjs"
+  }
+}

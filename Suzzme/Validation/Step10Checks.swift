@@ -1,6 +1,43 @@
 import Foundation
 import SwiftData
 
+actor SummaryGmailFixtureAccount: GmailAuthorizationProviding {
+    private let identity = "summary-fixture-account"
+    private var generation = UUID()
+    private var state = InformationHealthState.healthy
+    private let selection: GmailSelection
+    init(includeBodies: Bool = false) {
+        selection = GmailSelection(mode: .recentInbox,
+            generation: UUID(uuidString: "FEDCBAFE-DCBA-FEDC-BAFE-DCBAFEDCBAFE")!,
+            includeBodies: includeBodies)
+    }
+    func gmailSelection() -> GmailSelection? { selection }
+    func gmailBodyAccess() -> Bool { selection.includeBodies }
+
+    func authorization() -> InformationHealthState { state }
+
+    func accessGrant() throws -> GmailAccessGrant {
+        guard state == .healthy else { throw InformationError.authorizationRequired }
+        return .init(token: "summary-fixture-token", accountNamespace: GmailAccessGrant.namespace(for: identity), generation: generation)
+    }
+
+    func validate(_ grant: GmailAccessGrant) throws {
+        guard state == .healthy, grant.generation == generation,
+              grant.accountNamespace == GmailAccessGrant.namespace(for: identity) else { throw InformationError.authorizationExpired }
+    }
+
+    func invalidate(_ grant: GmailAccessGrant, state: InformationHealthState) {
+        guard grant.generation == generation else { return }
+        self.state = state
+    }
+
+    func permitsGmailEvent(_ event: InformationEvent) -> Bool {
+        state == .healthy && event.externalID.hasPrefix(GmailAccessGrant.namespace(for: identity))
+    }
+
+    func revoke() { state = .permissionDenied }
+}
+
 @main @MainActor
 struct Step10Checks {
     static var passed = 0
@@ -57,7 +94,9 @@ struct Step10Checks {
     }
 
     static func main() async throws {
-        let root = FileManager.default.temporaryDirectory.appendingPathComponent("SuzzmeStep10-\(UUID().uuidString)", isDirectory: true)
+        let temporaryDirectory = ProcessInfo.processInfo.environment["SUZZME_VALIDATION_TMPDIR"]
+            .map { URL(fileURLWithPath: $0, isDirectory: true) } ?? FileManager.default.temporaryDirectory
+        let root = temporaryDirectory.appendingPathComponent("SuzzmeStep10-\(UUID().uuidString)", isDirectory: true)
         try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
         defer { try? FileManager.default.removeItem(at: root) }
 
@@ -71,11 +110,193 @@ struct Step10Checks {
         try await lifecycle(root)
         try await persistence(root)
         try await additionalCoverage(root)
+        try await gmailToSummary(root)
+        try await dailyCutoff(root)
         bounds()
 
         print("Step 10 behavioral checks passed: \(passed)")
         print("Step 10 behavioral checks failed: \(failed)")
         if failed != 0 { exit(1) }
+    }
+
+    static func dailyCutoff(_ root: URL) async throws {
+        let (engine, store) = engine(at: root.appendingPathComponent("daily-cutoff.json"))
+        try await engine.updatePreferences(.init(dailyBriefingEnabled: true, briefingHour: 8, briefingMinute: 0,
+            timeZoneIdentifier: "UTC", timeCriticalEnabled: true, preparedAssistanceEnabled: false))
+        let cutoff = ISO8601DateFormatter().date(from: "2026-10-30T08:00:00Z")!
+        let run = cutoff.addingTimeInterval(7200)
+        func event(_ id: String, _ seconds: TimeInterval) -> ProactiveCandidate {
+            .init(id: id, kind: .schedule, title: id, summary: id, source: "calendar", sourceReference: id,
+                  effectiveAt: cutoff.addingTimeInterval(seconds), sourceHealthy: true)
+        }
+        let before = event("before-cutoff", -1800)
+        let exact = event("at-cutoff", 0)
+        let after = event("after-cutoff", 1)
+        let tomorrow = event("tomorrow", 86400)
+        let yesterday = event("yesterday", -86400)
+        let undated = ProactiveCandidate(id: "undated-cutoff", kind: .information, title: "Unknown time", summary: "Unknown time", source: "connectedApps", sourceReference: "undated-cutoff", sourceHealthy: true)
+        let changedLater = ProactiveCandidate(id: "changed-later", kind: .schedule, title: "Changed later", summary: "Changed later", source: "calendar", sourceReference: "changed-later", effectiveAt: cutoff.addingTimeInterval(-1800), sourceUpdatedAt: cutoff.addingTimeInterval(1), sourceHealthy: true)
+        let urgent = ProactiveCandidate(id: "urgent-after-cutoff", kind: .scheduleChange, title: "Urgent change", summary: "Urgent change", source: "calendar", sourceReference: "urgent-after-cutoff", effectiveAt: run.addingTimeInterval(1800), sourceHealthy: true)
+        let snapshot = try await engine.prepare(input: .init(candidates: [before, exact, after, tomorrow, yesterday, undated, urgent, changedLater], generatedAt: run),
+            now: run, calendar: utc(), summaryCutoff: cutoff)
+        let ids = Set(snapshot.briefing?.items.map(\.candidateID) ?? [])
+        let context = Set(snapshot.dailyContext?.entries.map(\.id) ?? [])
+        expect(ids.contains("before-cutoff") && ids.contains("at-cutoff"), "briefing includes today's events through the selected time")
+        expect(!ids.contains("after-cutoff") && !ids.contains("tomorrow") && !ids.contains("yesterday"), "briefing excludes events outside today's cutoff")
+        expect(context == ids, "daily context and narration use the same cutoff")
+        expect(snapshot.briefing?.informationCutoff == cutoff, "catch-up preserves the selected cutoff")
+        expect(snapshot.generatedAt == run, "catch-up records actual generation time")
+        expect(!(snapshot.briefing?.narration.contains("tomorrow") ?? false), "spoken summary does not include future-day events")
+        expect(!ids.contains("undated-cutoff"), "unknown timestamps do not claim to precede the cutoff")
+        expect(!ids.contains("changed-later") && !context.contains("changed-later"), "later source changes do not leak into catch-up summary")
+        expect(snapshot.timeCriticalItems.contains { $0.candidateID == "urgent-after-cutoff" }, "urgent updates remain independent of the daily cutoff")
+        let nextDay = cutoff.addingTimeInterval(86400)
+        let nextEvent = ProactiveCandidate(id: "next-day", kind: .schedule, title: "Next day", summary: "Next day", source: "calendar", sourceReference: "next-day", effectiveAt: nextDay.addingTimeInterval(-60), sourceHealthy: true)
+        _ = try await engine.prepare(input: .init(candidates: [nextEvent], generatedAt: nextDay), now: nextDay, calendar: utc(), summaryCutoff: nextDay)
+        let historyBeforeEmpty = try await store.savedBriefings(now: nextDay)
+        expect(historyBeforeEmpty.count == 2, "saved summaries retain one record for each day")
+        let (generation, _) = try await store.beginGeneration()
+        try await store.commit(.init(generatedAt: nextDay, briefing: nil, opportunities: [], timeCriticalItems: []), generation: generation, now: nextDay)
+        let currentAfterEmpty = try await store.current(now: nextDay)
+        let historyAfterEmpty = try await store.savedBriefings(now: nextDay)
+        expect(currentAfterEmpty.briefing == nil, "empty refresh clears the current summary")
+        expect(historyAfterEmpty.count == 2, "empty refresh retains saved daily summaries")
+        var india = Calendar(identifier: .gregorian); india.timeZone = TimeZone(identifier: "Asia/Kolkata")!
+        let indiaCutoff = ISO8601DateFormatter().date(from: "2026-10-30T02:30:00Z")!
+        let indiaEvent = ProactiveCandidate(id: "india-today", kind: .schedule, title: "Early event", summary: "Early event", source: "calendar", sourceReference: "india-today", effectiveAt: indiaCutoff.addingTimeInterval(-10800), sourceHealthy: true)
+        let indiaResult = try await engine.prepare(input: .init(candidates: [indiaEvent], generatedAt: indiaCutoff), now: indiaCutoff, calendar: india, summaryCutoff: indiaCutoff)
+        expect(indiaResult.briefing?.items.contains { $0.candidateID == "india-today" } == true, "local timezone defines today across UTC midnight")
+    }
+
+    static func gmailToSummary(_ root: URL) async throws {
+        let account = SummaryGmailFixtureAccount()
+        let timestamp = String(Int64((now.timeIntervalSince1970 - 4 * 3_600) * 1_000))
+        let source = GmailInformationSource(account: account, transport: { request in
+            let url = request.url!
+            let payload: String
+            if url.path.hasSuffix("/messages") {
+                payload = #"{"messages":[{"id":"summary-mail-1"}]}"#
+            } else {
+                payload = #"{"id":"summary-mail-1","internalDate":"\#(timestamp)","labelIds":["INBOX"],"payload":{"headers":[{"name":"From","value":"Maya <maya@example.test>"},{"name":"Subject","value":"Hackathon review"}]},"snippet":"BODY MUST NOT ENTER SUMMARY"}"#
+            }
+            return (Data(payload.utf8), HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil)!)
+        })
+
+        let informationSchema = Schema([StoredInformationEvent.self, StoredInformationSource.self])
+        let informationContainer = try ModelContainer(
+            for: informationSchema,
+            configurations: ModelConfiguration(schema: informationSchema, isStoredInMemoryOnly: true, cloudKitDatabase: .none)
+        )
+        let information = InformationEngine(
+            registry: InformationSourceRegistry([source]),
+            store: InformationStore(modelContainer: informationContainer)
+        )
+        try await information.setEnabled(.gmail, enabled: true)
+        try await information.refresh(source: .gmail, force: true, now: now)
+
+        let memorySchema = Schema([StoredSuzzmeMemory.self, StoredSuzzmeMemoryRelationship.self])
+        let memoryContainer = try ModelContainer(
+            for: memorySchema,
+            configurations: ModelConfiguration(schema: memorySchema, isStoredInMemoryOnly: true, cloudKitDatabase: .none)
+        )
+        let memoryContext = ModelContext(memoryContainer)
+        memoryContext.insert(StoredSuzzmeMemory(
+            type: .project, name: "Hackathon", detail: "Current project", confidence: 1,
+            importance: .normal, provenance: .userExplicit
+        ))
+        try memoryContext.save()
+        let previousMemorySetting = UserDefaults.standard.object(forKey: "suzzme.personalMemory.enabled") as? Bool
+        UserDefaults.standard.set(true, forKey: "suzzme.personalMemory.enabled")
+        defer {
+            if let previousMemorySetting { UserDefaults.standard.set(previousMemorySetting, forKey: "suzzme.personalMemory.enabled") }
+            else { UserDefaults.standard.removeObject(forKey: "suzzme.personalMemory.enabled") }
+        }
+
+        let summaryStore = ProactiveIntelligenceStore(fileURL: root.appendingPathComponent("gmail-summary.json"))
+        let summaryEngine = ProactiveIntelligenceEngine(
+            store: summaryStore,
+            information: information,
+            memoryStore: LongTermMemoryStore(modelContainer: memoryContainer)
+        )
+        let events = try await information.retrieve(.init(sources: [.gmail]), now: now)
+        expect(events.count == 1 && events[0].kind == .emailUpdate && !events[0].title.contains("BODY MUST NOT ENTER SUMMARY"), "Gmail contributes header-only observations")
+
+        let snapshot = try await summaryEngine.prepare(from: [], now: now, calendar: utc())
+        let emailTitle = "Maya: Hackathon review"
+        expect(snapshot.dailyContext?.entries.contains(where: { $0.source == "gmail" && $0.title == emailTitle }) == true, "Gmail header enters source-attributed Daily Context")
+        expect(snapshot.briefing?.items.contains(where: { $0.kind == .information && $0.summary == emailTitle }) == true, "earlier-today Gmail header appears in Daily Summary")
+
+        await account.revoke()
+        let revokedSnapshot = try await summaryEngine.prepare(from: [], now: now.addingTimeInterval(1), calendar: utc())
+        let stillExposed = revokedSnapshot.dailyContext?.entries.contains(where: { $0.source == "gmail" }) == true
+            || revokedSnapshot.briefing?.items.contains(where: { $0.summary == emailTitle }) == true
+        expect(!stillExposed && revokedSnapshot.dailyContext?.sourceLimitations.contains(where: { $0.localizedCaseInsensitiveContains("gmail") }) == true, "revoked Gmail headers leave summary and report limitation")
+
+        let crowded = (0..<7).map { candidate("calendar-\($0)", title: "Calendar item \($0)", kind: .schedule,
+            offset: Double($0 + 1) * 3_600, source: "calendar") }
+            + [candidate("selected-mail", title: "Selected mail update", kind: .information,
+                offset: nil, source: "gmail")]
+        let mixed = try await summaryEngine.prepare(input: .init(candidates: crowded, generatedAt: now),
+            now: now, calendar: utc())
+        expect(mixed.briefing?.narration.contains("Selected mail update") == true,
+            "short summary includes a selected source after several calendar items")
+
+        let bodyAccount = SummaryGmailFixtureAccount(includeBodies: true)
+        let encodedBody = Data("Project agenda says review the design on Tuesday.".utf8)
+            .base64EncodedString().replacingOccurrences(of: "+", with: "-")
+            .replacingOccurrences(of: "/", with: "_")
+        let bodySource = GmailInformationSource(account: bodyAccount, transport: { request in
+            let url = request.url!
+            let payload: String
+            if url.path.hasSuffix("/messages") {
+                payload = #"{"messages":[{"id":"summary-mail-1"}]}"#
+            } else if url.query?.contains("format=full") == true {
+                payload = #"{"id":"summary-mail-1","internalDate":"\#(timestamp)","labelIds":["INBOX"],"payload":{"headers":[{"name":"From","value":"Maya <maya@example.test>"},{"name":"Subject","value":"Hackathon review"}],"mimeType":"text/plain","body":{"data":"\#(encodedBody)"}}}"#
+            } else {
+                payload = #"{"id":"summary-mail-1","internalDate":"\#(timestamp)","labelIds":["INBOX"],"payload":{"headers":[{"name":"From","value":"Maya <maya@example.test>"},{"name":"Subject","value":"Hackathon review"}]}}"#
+            }
+            return (Data(payload.utf8), HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil)!)
+        }, canSummarize: { true }, summarize: { _ in
+            GmailBodySummary(text: "Design review is Tuesday", usedOnDeviceModel: true)
+        })
+        let spoofed = GmailMessageMetadataResponse(id: "spoof", internalDate: timestamp,
+            payload: GmailMessagePayload(headers: [GmailMessageHeader(name: "Subject", value: "Important email · fabricated priority")], mimeType: nil, filename: nil, body: nil, parts: nil))
+        expect(spoofed.observation()?.title.hasPrefix("Important email · ") == false,
+            "sender-controlled Gmail subject cannot spoof on-device classification")
+        let bodyBatch = try await bodySource.fetch(now: now, checkpoint: nil)
+        expect(bodyBatch.observations.count == 1 && bodyBatch.observations[0].title == "Important email · Design review is Tuesday",
+            "authorized Gmail body becomes a short on-device summary")
+        expect(!bodyBatch.observations[0].title.contains("Project agenda says"),
+            "raw Gmail body stays out of stored observations")
+        expect(bodyBatch.observations[0].effectiveAt == Date(timeIntervalSince1970: (now.timeIntervalSince1970 - 4 * 3_600)),
+            "Gmail carries the real received timestamp to the summary")
+        let bodyContainer = try ModelContainer(for: informationSchema,
+            configurations: ModelConfiguration(schema: informationSchema, isStoredInMemoryOnly: true, cloudKitDatabase: .none))
+        let bodyInformation = InformationEngine(registry: InformationSourceRegistry([bodySource]), store: InformationStore(modelContainer: bodyContainer))
+        try await bodyInformation.setEnabled(.gmail, enabled: true)
+        try await bodyInformation.refresh(source: .gmail, force: true, now: now)
+        let bodyEngine = ProactiveIntelligenceEngine(store: ProactiveIntelligenceStore(fileURL: root.appendingPathComponent("gmail-full-flow.json")), information: bodyInformation)
+        let eligible = try await bodyEngine.prepare(from: [], now: now, calendar: utc(), summaryCutoff: now)
+        expect(eligible.briefing?.items.contains(where: { $0.summary.contains("Design review is Tuesday") }) == true,
+            "permitted model-classified Gmail message reaches the cutoff briefing")
+        expect(eligible.dailyContext?.entries.contains(where: { $0.source == "gmail" && $0.title.contains("Design review is Tuesday") }) == true,
+            "permitted Gmail has matching source-attributed day context")
+        let earlierCutoff = try await bodyEngine.prepare(from: [], now: now, calendar: utc(), summaryCutoff: now.addingTimeInterval(-5 * 3_600))
+        expect(earlierCutoff.briefing?.items.contains(where: { $0.summary.contains("Design review is Tuesday") }) != true,
+            "email received after the chosen cutoff is excluded")
+
+        let unsafeSource = GmailInformationSource(account: bodyAccount, transport: bodySource.transport,
+            canSummarize: { true }, summarize: { _ in
+                GmailBodySummary(text: "Review https://accounts.google.com/secret?id=123", usedOnDeviceModel: true)
+            })
+        let unsafeBatch = try await unsafeSource.fetch(now: now, checkpoint: nil)
+        expect(unsafeBatch.observations.count == 1 && unsafeBatch.observations[0].title == emailTitle,
+            "Gmail summary with a URL falls back to its safe header")
+        await bodyAccount.revoke()
+        let afterRevoke = try await bodyEngine.prepare(from: [], now: now.addingTimeInterval(1), calendar: utc(), summaryCutoff: now)
+        expect(afterRevoke.briefing?.items.contains(where: { $0.summary.contains("Design review is Tuesday") }) != true,
+            "revoking Gmail permission removes model-classified mail from the briefing")
+
     }
 
     static func preferences(_ root: URL) async throws {
@@ -132,6 +353,8 @@ struct Step10Checks {
         expect(schedule.evidence.contains { $0.kind == .schedule }, "schedule relevance")
         let weak = ProactiveIntelligenceEngine.relevance(for: candidate("weak", title: "University bought Macs", kind: .information, offset: nil), memories: [], now: now)
         expect(weak.relevance == .irrelevant, "weak information is not promoted")
+        let selectedMail = ProactiveIntelligenceEngine.relevance(for: candidate("mail", title: "Project update", kind: .information, offset: -4 * 3_600, source: "gmail"), memories: [], now: now)
+        expect(selectedMail.relevance == .useful, "selected Gmail has source-backed relevance")
         let unrelated = ProactiveIntelligenceEngine.relevance(for: candidate("unrelated", title: "Gardening update", kind: .information, offset: nil), memories: [memory()], now: now)
         expect(unrelated.evidence.allSatisfy { $0.kind != .project }, "unrelated memory does not create relevance")
         expect(strong.evidence.count <= ProactiveLimits.evidencePerItem, "relevance evidence bounded")
@@ -150,6 +373,7 @@ struct Step10Checks {
         expect(ProactiveIntelligenceEngine.temporalUsefulness(for: candidate("soon", offset: 30 * 60), now: now, nextBriefing: next) == .immediate, "imminent deadline")
         expect(ProactiveIntelligenceEngine.temporalUsefulness(for: candidate("two-hours", offset: 2 * 3_600), now: now, nextBriefing: next) == .immediate, "near deadline immediate")
         expect(ProactiveIntelligenceEngine.temporalUsefulness(for: candidate("past", offset: -4 * 3_600), now: now, nextBriefing: next) == .obsolete, "past deadline obsolete")
+        expect(ProactiveIntelligenceEngine.temporalUsefulness(for: candidate("today-mail", kind: .information, offset: -4 * 3_600, source: "gmail"), now: now, nextBriefing: next) == .canWait, "today's Gmail message remains useful for summary")
         expect(ProactiveIntelligenceEngine.temporalUsefulness(for: candidate("unknown", offset: nil), now: now, nextBriefing: next) == .canWait, "unknown time can wait")
         expect(ProactiveIntelligenceEngine.temporalUsefulness(for: candidate("stale", freshness: .stale), now: now, nextBriefing: next) == .obsolete, "stale event suppressed")
         expect(ProactiveIntelligenceEngine.temporalUsefulness(for: candidate("superseded", freshness: .superseded), now: now, nextBriefing: next) == .obsolete, "superseded event suppressed")

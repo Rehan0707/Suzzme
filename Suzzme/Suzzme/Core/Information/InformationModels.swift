@@ -2,11 +2,23 @@ import Foundation
 import CryptoKit
 
 enum InformationSourceID: String, Codable, CaseIterable, Sendable, Identifiable {
-    case calendar, reminders, watchedWeb
+    case calendar, reminders, gmail, messages, whatsapp, watchedWeb, connectedApps, localKnowledge
     var id: String { rawValue }
-    var title: String { self == .watchedWeb ? "Watched Links" : rawValue.capitalized }
+    var title: String {
+        switch self {
+        case .gmail: "Gmail"
+        case .messages: "Messages"
+        case .whatsapp: "WhatsApp"
+        case .watchedWeb: "Watched Links"
+        case .connectedApps: "Connected apps"
+        case .localKnowledge: "Local Knowledge"
+        case .calendar: "Calendar"
+        case .reminders: "Reminders"
+        }
+    }
 }
-enum InformationKind: String, Codable, Sendable { case eventUpdate, scheduleChange, locationChange, reminderChange, cancellation, generalUpdate }
+enum SelectedMessageImportResult: Sendable, Equatable { case imported, rejected, unavailable }
+enum InformationKind: String, Codable, Sendable { case eventUpdate, scheduleChange, locationChange, reminderChange, emailUpdate, cancellation, generalUpdate }
 enum InformationObjectState: String, Codable, Sendable { case active, completed, cancelled, absent }
 enum InformationFreshness: String, Sendable { case current, future, stale, expired, superseded }
 enum InformationHealthState: String, Codable, Sendable {
@@ -36,6 +48,7 @@ enum InformationLimits {
     static let retention: TimeInterval = 30 * 86400
     static let freshness: TimeInterval = 6 * 3600
     static let debounce: TimeInterval = 60
+    static let selectedMessageCharacters = 720
 }
 struct InformationObservation: Sendable {
     let externalID: String
@@ -48,6 +61,7 @@ struct InformationObservation: Sendable {
     var effectiveUntil: Date?
     var state: InformationObjectState = .active
     var kindHint: InformationKind?
+    var isAllDay: Bool?
 }
 struct InformationBatch: Sendable {
     let observations: [InformationObservation]
@@ -55,6 +69,8 @@ struct InformationBatch: Sendable {
     let complete: Bool
     let window: DateInterval
     var validatedExternalIDs: [String] = []
+    var coversUndated: Bool = false
+    var coversOpenReminders: Bool = false
 }
 struct InformationEvent: Identifiable, Sendable, Equatable {
     let id: UUID
@@ -75,6 +91,7 @@ struct InformationEvent: Identifiable, Sendable, Equatable {
     let supersedes: UUID?
     let isSuperseded: Bool
     let normalizationVersion: Int
+    var isAllDay: Bool? = nil
 
     func freshness(at now: Date) -> InformationFreshness {
         if isSuperseded { return .superseded }
@@ -90,6 +107,7 @@ struct InformationEvent: Identifiable, Sendable, Equatable {
         case .scheduleChange: "Schedule updated: \(title)"
         case .locationChange: "Location updated: \(title) — \(location)"
         case .reminderChange: objectState == .completed ? "Completed: \(title)" : "Reminder updated: \(title)"
+        case .emailUpdate: title
         case .eventUpdate, .generalUpdate: title
         }
     }
@@ -118,16 +136,24 @@ struct InformationQuery: Sendable {
     var limit = InformationLimits.retrieval
     var includeFuture = true
 }
-enum InformationError: Error { case unsupported, disabled, staleCycle, unavailable, malformed, clearConfirmationRequired, persistence }
+enum InformationError: Error { case unsupported, disabled, staleCycle, unavailable, malformed, authorizationRequired, authorizationExpired, permissionDenied, clearConfirmationRequired, persistence }
 
 protocol InformationSource: Sendable {
     var id: InformationSourceID { get }
     func authorization() async -> InformationHealthState
     func fetch(now: Date, checkpoint: Date?) async throws -> InformationBatch
+    func fetchForBriefing(now: Date, checkpoint: Date?, cutoff: Date, calendar: Calendar) async throws -> InformationBatch
+    func owns(_ event: InformationEvent) async -> Bool
     func permits(_ event: InformationEvent, now: Date) async -> Bool
+    func didCommit(_ batch: InformationBatch) async
 }
 extension InformationSource {
+    func fetchForBriefing(now: Date, checkpoint: Date?, cutoff: Date, calendar: Calendar) async throws -> InformationBatch {
+        try await fetch(now: now, checkpoint: checkpoint)
+    }
+    func owns(_ event: InformationEvent) async -> Bool { false }
     func permits(_ event: InformationEvent, now: Date) async -> Bool { true }
+    func didCommit(_ batch: InformationBatch) async {}
 }
 struct InformationSourceRegistry: Sendable {
     private let sources: [InformationSourceID: any InformationSource]
@@ -148,13 +174,16 @@ enum InformationNormalizer {
               [observation.effectiveAt, observation.effectiveUntil].compactMap({ $0 }).allSatisfy({ $0.timeIntervalSince1970.isFinite }) else { return nil }
         let decision = PrivacyEngine().classify(text)
         guard decision.policy != .neverProcess else { return nil }
-        let title = String(observation.title.trimmingCharacters(in: .whitespacesAndNewlines).prefix(240))
+        let titleLimit = source == .messages ? InformationLimits.selectedMessageCharacters : 240
+        let title = String(observation.title.trimmingCharacters(in: .whitespacesAndNewlines).prefix(titleLimit))
         guard !title.isEmpty else { return nil }
         if let start = observation.effectiveAt, let end = observation.effectiveUntil, end < start { return nil }
         let location = String(observation.location.prefix(180))
         let entities = observation.entities.prefix(5).map { String($0.prefix(60)) }.sorted()
-        let semantics = [source.rawValue, observation.externalID, title, location, entities.joined(separator: "|"), observation.state.rawValue,
+        var semantics = [source.rawValue, observation.externalID, title, location, entities.joined(separator: "|"), observation.state.rawValue,
                          observation.effectiveAt.map { String($0.timeIntervalSince1970) } ?? "", observation.effectiveUntil.map { String($0.timeIntervalSince1970) } ?? ""]
+        // Preserve legacy fingerprints when no authoritative all-day metadata exists.
+        if let isAllDay = observation.isAllDay { semantics.append("allDay:\(isAllDay)") }
         // Length-prefixed fields avoid concatenation collisions.
         let key = semantics.map { "\($0.utf8.count):\($0)" }.joined()
         let fingerprint = SHA256.hash(data: Data(key.utf8)).map { String(format: "%02x", $0) }.joined()
@@ -165,6 +194,6 @@ enum InformationNormalizer {
                      title: title, location: location, entities: entities, sourceUpdatedAt: observation.modifiedAt, observedAt: now,
                      effectiveAt: observation.effectiveAt, effectiveUntil: observation.effectiveUntil, expiresAt: expiry,
                      sensitivity: max(.personal, decision.sensitivity), fingerprint: fingerprint, objectState: observation.state,
-                     supersedes: nil, isSuperseded: false, normalizationVersion: 1)
+                     supersedes: nil, isSuperseded: false, normalizationVersion: 1, isAllDay: observation.isAllDay)
     }
 }

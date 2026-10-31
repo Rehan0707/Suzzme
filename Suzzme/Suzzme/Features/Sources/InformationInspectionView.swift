@@ -3,6 +3,7 @@ import SwiftUI
 struct InformationSourceControls: View {
     @Environment(AppEnvironment.self) private var environment
     let source: InformationSourceID
+    var canEnable = true
     private var health: InformationHealth? { environment.informationHealth.first { $0.source == source } }
 
     var body: some View {
@@ -12,6 +13,7 @@ struct InformationSourceControls: View {
                 set: { enabled in Task { await environment.setInformationEnabled(source, enabled: enabled) } }
             ))
             .accessibilityLabel("\(source.title) recent updates")
+            .disabled(!canEnable && health?.enabled != true)
 
             Label(health?.state.humanLabel ?? "Updates off", systemImage: health?.state.statusSymbol ?? "pause.circle")
                 .font(.subheadline)
@@ -24,7 +26,7 @@ struct InformationSourceControls: View {
                     .font(.caption).foregroundStyle(SuzzmeTheme.textSecondary)
             }
             if health?.enabled == true {
-                Button("Refresh Updates") { Task { await environment.refreshInformation(force: true) } }
+                Button("Refresh Updates") { Task { await environment.refreshInformation(force: true, source: source) } }
                     .disabled(environment.isRefreshingInformation)
             }
             Text("Turning updates off stops intake and hides stored updates. Source items and Personal Memory are not deleted.")
@@ -44,7 +46,7 @@ struct InformationInspectionView: View {
 
     var body: some View {
         SuzzmePage {
-            SuzzmeEmptyState(symbol: "clock.arrow.circlepath", title: "Recent information", message: "A calm, local history of recent observations from sources you enabled.")
+            SuzzmeScreenIntroduction(title: "Recent information", message: "Updates from the sources you enabled, kept on this device.")
 
             Button { Task { await environment.refreshInformation(force: true) } } label: {
                 Label(environment.isRefreshingInformation ? "Refreshing…" : "Refresh Updates", systemImage: "arrow.clockwise")
@@ -63,8 +65,8 @@ struct InformationInspectionView: View {
 
             ForEach(environment.informationEvents) { event in
                 VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.xs) {
-                    Label(event.source.title, systemImage: event.source == .calendar ? "calendar" : "checklist")
-                        .font(.caption.weight(.semibold)).foregroundStyle(SuzzmeTheme.intelligencePrimary)
+                    Label(event.source.title, systemImage: symbol(for: event.source))
+                        .font(.caption.weight(.semibold)).foregroundStyle(SuzzmeTheme.textSecondary)
                     Text(event.summary).font(.headline)
                     Text("Observed \(event.observedAt.formatted(date: .abbreviated, time: .shortened))")
                         .font(.caption).foregroundStyle(SuzzmeTheme.textSecondary)
@@ -97,6 +99,19 @@ struct InformationInspectionView: View {
             Button("Cancel", role: .cancel) { receipt = nil }
         } message: {
             Text("This cannot be undone. Source items and Personal Memory will not be deleted.")
+        }
+    }
+
+    private func symbol(for source: InformationSourceID) -> String {
+        switch source {
+        case .calendar: "calendar"
+        case .reminders: "checklist"
+        case .gmail: "envelope"
+        case .messages: "message"
+        case .whatsapp: "bubble.left.fill"
+        case .watchedWeb: "link"
+        case .connectedApps: "app.connected.to.app.below.fill"
+        case .localKnowledge: "books.vertical"
         }
     }
 }

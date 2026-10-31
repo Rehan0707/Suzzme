@@ -3,6 +3,16 @@ import SwiftData
 
 @main
 struct Step3Checks {
+    /// The reset task and the check's sleep are independently scheduled. Wait
+    /// for the observed state rather than racing a 100 ms scheduling margin.
+    @MainActor private static func waitForIdle(_ controller: AssistantStateController) async throws {
+        let clock = ContinuousClock()
+        let deadline = clock.now.advanced(by: .seconds(4))
+        while controller.state != .idle && clock.now < deadline {
+            try await Task.sleep(for: .milliseconds(20))
+        }
+    }
+
     @MainActor static func main() async throws {
         let privacy = PrivacyEngine()
         precondition(privacy.classify("My password is 1234").policy == .neverProcess)
@@ -29,6 +39,41 @@ struct Step3Checks {
 
         let memory = SessionMemoryEngine(maximumTurns: 2, lifetime: 1)
         let start = Date(timeIntervalSince1970: 1_000)
+        let importedMessage = InformationNormalizer.normalize(
+            InformationObservation(
+                externalID: "selected-message:test",
+                title: "Can we move the design review to Thursday afternoon?",
+                modifiedAt: start
+            ),
+            source: .messages,
+            now: start
+        )
+        precondition(importedMessage?.source == .messages)
+        precondition(importedMessage?.title == "Can we move the design review to Thursday afternoon?")
+        let protectedMessage = InformationNormalizer.normalize(
+            InformationObservation(externalID: "selected-message:secret", title: "My password is hunter2", modifiedAt: start),
+            source: .messages,
+            now: start
+        )
+        precondition(protectedMessage == nil)
+        precondition(InformationRequest.query(for: "What changed in my iMessage?")?.sources == [.messages])
+        let messageContainer = try ModelContainer(
+            for: StoredInformationSource.self,
+            StoredInformationEvent.self,
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+        )
+        let messageEngine = InformationEngine(
+            registry: InformationSourceRegistry([UserSelectedMessageSource()]),
+            store: InformationStore(modelContainer: messageContainer)
+        )
+        try await messageEngine.importSelectedMessage("Please bring the new draft to Thursday’s review.", now: start)
+        let importedHealth = try await messageEngine.health(now: start).first { $0.source == .messages }
+        precondition(importedHealth?.enabled == true && importedHealth?.accepted == 1)
+        let storedMessage = try await messageEngine.retrieve(.init(sources: [.messages]), now: start)
+        precondition(storedMessage.count == 1 && storedMessage[0].title.contains("Thursday’s review"))
+        try await messageEngine.removeAllObjects(source: .messages)
+        let removedMessages = try await messageEngine.retrieve(.init(sources: [.messages]), now: start)
+        precondition(removedMessages.isEmpty)
         await memory.remember(role: .user, text: "When is it?", now: start)
         let currentMemory = await memory.snapshot(now: start)
         precondition(currentMemory.turns.count == 1)
@@ -46,11 +91,11 @@ struct Step3Checks {
         precondition(controller.state == .idle)
         controller.fail(message: "A safe error")
         precondition(controller.state == .error)
-        try? await Task.sleep(for: .seconds(1.6))
+        try await waitForIdle(controller)
         precondition(controller.state == .idle)
         controller.complete()
         precondition(controller.state == .success)
-        try? await Task.sleep(for: .seconds(1.6))
+        try await waitForIdle(controller)
         precondition(controller.state == .idle)
 
         let action = SuzzmeAction(type: .sendMessage, title: "Send update", risk: .consequential)
@@ -70,6 +115,32 @@ struct Step3Checks {
         let extracted = try await router.route(text: "Submit the report before Friday.", context: [], existingFingerprints: [])
         precondition(extracted.route == .deterministic)
         precondition(extracted.extractedItems.first?.category == .deadline)
+        let modelRouter = IntelligenceRouter(pipeline: SuzzmeUnderstandingPipeline(
+            primary: TestIntelligenceService(fails: false),
+            fallback: fallback
+        ))
+        let modelResponse = try await modelRouter.route(text: "Extract the facts from this note: Club meeting tomorrow at 10 AM.", context: [], existingFingerprints: [])
+        precondition(modelResponse.route == .onDeviceIntelligence)
+        let modelDayResponse = try await modelRouter.route(text: "Give me a daily summary.", context: localContext, existingFingerprints: [])
+        precondition(modelDayResponse.route == .onDeviceIntelligence)
+        precondition(modelDayResponse.text.contains("A short factual summary."))
+        let modelFailureRouter = IntelligenceRouter(pipeline: SuzzmeUnderstandingPipeline(
+            primary: TestIntelligenceService(fails: true),
+            fallback: fallback
+        ))
+        let fallbackResponse = try await modelFailureRouter.route(text: "Submit the project report tomorrow.", context: [], existingFingerprints: [])
+        precondition(fallbackResponse.route == .deterministic)
+        let fallbackDayResponse = try await modelFailureRouter.route(text: "Summarize my day.", context: localContext, existingFingerprints: [])
+        precondition(fallbackDayResponse.route == .localContext)
+        precondition(fallbackDayResponse.text.contains("Operating Systems at 10 AM"))
+        let devicePipeline = SuzzmeUnderstandingPipeline()
+        if await devicePipeline.capability().usesFoundationModels {
+            let deviceResult = try await devicePipeline.process("I need to send the project outline before Friday.")
+            precondition(deviceResult.usedOnDeviceModel)
+            let deviceSummary = try await devicePipeline.summarizeGroundedFacts("Project review at 11 AM. Submit the design outline by Friday.")
+            precondition(deviceSummary.usedOnDeviceModel && !deviceSummary.text.isEmpty)
+            print("PASS: on-device Foundation Models extraction and daily summary")
+        }
         let core = SuzzmeCore(router: router)
         do {
             _ = try await core.respond(to: "My password is secret", sources: [], existingFingerprints: []) { _ in }
@@ -160,5 +231,28 @@ private struct FailingContextSource: ContextSource {
     let identifier = "test-failing"
     func fetchContext(for request: SuzzmeContextRequest) async throws -> [SuzzmeContextItem] {
         throw SuzzmeContextError.sourceUnavailable(identifier)
+    }
+}
+
+private struct TestIntelligenceService: SuzzmeIntelligenceService {
+    let fails: Bool
+
+    func capability() async -> IntelligenceCapability { .available }
+
+    func understand(text: String, referenceDate: Date) async throws -> [ExtractedSuzzmeItem] {
+        if fails { throw SuzzmeIntelligenceError.invalidOutput }
+        return [ExtractedSuzzmeItem(
+            title: "Project note",
+            summary: "The note contains project information.",
+            category: .information,
+            priority: .normal,
+            confidence: 0.9,
+            reason: "Test model output."
+        )]
+    }
+
+    func summarize(text: String) async throws -> String {
+        if fails { throw SuzzmeIntelligenceError.invalidOutput }
+        return "A short factual summary."
     }
 }

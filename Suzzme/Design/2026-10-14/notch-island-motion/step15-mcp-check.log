@@ -1,0 +1,67 @@
+PASS explicit pinned public HTTPS endpoint supported
+PASS SSRF destination 127.0.0.1 blocked
+PASS SSRF destination 10.1.2.3 blocked
+PASS SSRF destination 172.16.0.1 blocked
+PASS SSRF destination 192.168.1.1 blocked
+PASS SSRF destination 169.254.169.254 blocked
+PASS SSRF destination 100.64.0.1 blocked
+PASS SSRF destination 224.0.0.1 blocked
+PASS SSRF destination 0.0.0.0 blocked
+PASS SSRF destination 198.18.0.1 blocked
+PASS SSRF destination 192.0.2.1 blocked
+PASS SSRF destination 203.0.113.1 blocked
+PASS SSRF destination 8.8.8.08 blocked
+PASS SSRF destination ::1 blocked
+PASS unsafe endpoint rejected
+PASS unsafe endpoint rejected
+PASS unsafe endpoint rejected
+PASS unsafe endpoint rejected
+PASS unsafe endpoint rejected
+PASS unsafe endpoint rejected
+PASS unsafe endpoint rejected
+PASS unknown tool semantics disabled despite possible server hints
+PASS invalid tool-name bytes rejected
+PASS command-bearing tool schema unavailable
+PASS credential header injection rejected
+PASS redirect fails closed before following location
+PASS wire size bound enforced
+PASS bounded HTTP content-length framing
+PASS SSE response matched to request without open-ended subscription
+PASS shipping SDK initializes and discovers reviewed schema
+PASS discovery never executes tool
+PASS description displayed as data without authority
+PASS bounded untrusted result preserved only as read data
+PASS only explicit allowed MCP methods issued
+PASS unknown/write/unsupported schema remains disabled
+PASS unknown/write/unsupported schema remains disabled
+PASS unknown/write/unsupported schema remains disabled
+PASS protocol/auth failure wrongVersion remains failure
+PASS protocol/auth failure missingTools remains failure
+PASS protocol/auth failure badID remains failure
+PASS protocol/auth failure serverRequest remains failure
+PASS protocol/auth failure auth remains failure
+PASS protocol/auth failure limited remains failure
+PASS unsafe result image rejected
+PASS unsafe result secret rejected
+PASS unsafe result oversized rejected
+PASS unsafe result toolError rejected
+PASS unsafe result empty rejected
+PASS schema changed during read revokes result
+PASS invalid tool arguments cannot execute
+PASS invalid tool arguments cannot execute
+PASS invalid tool arguments cannot execute
+PASS bounded hung session timeout
+PASS cancelled session cannot publish success
+PASS verified server grants no tool approval
+PASS credential passes through existing secure-store abstraction
+PASS account metadata excludes credential and retrieved result
+PASS unapproved tool blocked by central gateway
+PASS write cannot be approved
+PASS approved explicit result bound to account generation and request
+PASS reviewed approval persists across restart
+PASS cancelled result loses authority
+PASS tool revocation invalidates existing answer reference
+PASS late callback after disconnect never returns authorized result
+PASS disconnected server removed from factual account state
+PASS disconnect deletes credential
+Step 15 MCP: 66 passed / 0 failed. Controlled HTTP boundary fixtures; live TLS/server acceptance pending.

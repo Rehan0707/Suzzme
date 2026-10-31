@@ -5,13 +5,7 @@ struct InvocationSettingsView: View {
 
     var body: some View {
         SuzzmePage {
-            SuzzmeCard {
-                Label("Call Suzzme", systemImage: "mic.fill")
-                    .font(.headline)
-                Text("Suzzme starts listening only when you invoke it. Your conversation stays on this device.")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-            }
+            SuzzmeScreenIntroduction(title: "Ready when you are", message: "Suzzme starts listening only when you invoke it. Your conversation stays on this device.")
 
             #if os(iOS)
             SuzzmeSectionHeader(title: "iPhone")
@@ -30,23 +24,13 @@ struct InvocationSettingsView: View {
             }
             #else
             SuzzmeSectionHeader(title: "Mac")
+            MacGlobalInvocationSettings()
             SuzzmeCard {
-                Picker("Keyboard shortcut", selection: Binding(
-                    get: { environment.invocation.keyboardShortcut },
-                    set: { environment.invocation.keyboardShortcut = $0 }
-                )) {
-                    ForEach(SuzzmeKeyboardShortcut.allCases, id: \.self) { shortcut in
-                        Text(shortcut.title).tag(shortcut)
-                    }
-                }
-                Text("Talk to Suzzme from anywhere on your Mac. Listening begins only when you use the shortcut.")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                Text("The notch surface hides after eight quiet seconds. Move the pointer away and back to the notch to reveal it, or use your shortcut or Talk to Suzzme. Active conversations and confirmations stay visible.")
+                Text("Move the pointer to the Mac notch to reveal Talk and Hold. Click Talk to start a voice conversation, or press and hold Hold while speaking, then release to send. The quiet surface hides after three seconds; active conversations and confirmations stay visible.")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
                 Button("Start Suzzme now") {
-                    Task { _ = await environment.invokeSuzzme() }
+                    Task { await environment.invokeTransientVoice() }
                 }
                 .buttonStyle(.borderedProminent)
                     .suzzmeProminentContrast()

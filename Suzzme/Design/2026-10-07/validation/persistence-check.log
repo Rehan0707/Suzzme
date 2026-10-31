@@ -1,0 +1,1 @@
+PASS: raw text → fallback pipeline → SuzzmeItem → in-memory SwiftData → Home briefing

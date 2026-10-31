@@ -1,0 +1,91 @@
+{
+  "status": "RUNTIME OBSERVED",
+  "platform": "macOS",
+  "productionProduct": "/tmp/SuzzmeFullApp20261016/mac/Build/Products/Release/Suzzme.app",
+  "mainRoutes": [
+    {
+      "route": "Home",
+      "appearance": "System (dark)",
+      "window": "Window: \"Home\", App: Suzzme.",
+      "screenshot": "home-dark.jpg"
+    },
+    {
+      "route": "Today",
+      "appearance": "System (dark)",
+      "window": "Window: \"Today\", App: Suzzme.",
+      "screenshot": "today-dark.jpg"
+    },
+    {
+      "route": "Daily Summary",
+      "appearance": "System (dark)",
+      "window": "Window: \"Daily Summary\", App: Suzzme.",
+      "screenshot": "daily-summary-dark.jpg"
+    },
+    {
+      "route": "Personal Memory",
+      "appearance": "System (dark)",
+      "window": "Window: \"Personal Memory\", App: Suzzme.",
+      "screenshot": "personal-memory-dark.jpg"
+    },
+    {
+      "route": "Sources",
+      "appearance": "System (dark)",
+      "window": "Window: \"Sources\", App: Suzzme.",
+      "screenshot": "sources-dark.jpg"
+    },
+    {
+      "route": "History",
+      "appearance": "System (dark)",
+      "window": "Window: \"History\", App: Suzzme.",
+      "screenshot": "history-dark.jpg"
+    },
+    {
+      "route": "Settings",
+      "appearance": "System (dark)",
+      "window": "Window: \"Settings\", App: Suzzme.",
+      "screenshot": "settings-dark.jpg"
+    }
+  ],
+  "appearances": [
+    "System (dark)",
+    "Light",
+    "Dark"
+  ],
+  "appearanceRestored": "System",
+  "observed": [
+    "launch",
+    "Home",
+    "seven sidebar destinations",
+    "Settings",
+    "600+ point fitted Assistant sheet without observed regular-window clipping",
+    "typed deterministic help answer",
+    "real generated photosynthesis follow-up and retained earlier answer",
+    "real processing/cancel state",
+    "Sources navigation and return",
+    "single pace control and one accessibility slider label",
+    "optional trackpad feedback control visible",
+    "supported integration entries first",
+    "catalog include toggle",
+    "Bitbucket search with catalog toggle off and singular count",
+    "honest empty search and clear",
+    "How access works disclosure",
+    "GitHub setup opens and cancels; verify disabled with empty credentials",
+    "Presence settings with explicitly labeled preview",
+    "real in-app microphone activation into Listening and cancellation back to Ready"
+  ],
+  "notAccepted": [
+    "iOS runtime",
+    "current onboarding runtime",
+    "hardware notch",
+    "physical iPhone Live Activity/Dynamic Island",
+    "physical haptic sensation",
+    "full spoken ASR-model-TTS conversation",
+    "complete VoiceOver/contrast/reduced-motion/size matrix"
+  ],
+  "newPermissionGranted": false,
+  "inputMonitoringChanged": false,
+  "ownerStoreReset": false,
+  "externalAccountConnected": false,
+  "simulatorErased": false,
+  "newProductionScreenshots": 23
+}

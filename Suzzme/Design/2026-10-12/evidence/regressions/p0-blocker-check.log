@@ -1,0 +1,72 @@
+PASS native high-priority reminder remains important
+PASS native medium-priority reminder remains normal
+PASS native low-priority reminder cannot outrank important work
+PASS context selected: What should I focus on?
+PASS question never becomes capture: What should I focus on?
+PASS context selected: What should I work on today?
+PASS question never becomes capture: What should I work on today?
+PASS context selected: What needs my attention?
+PASS question never becomes capture: What needs my attention?
+PASS context selected: What should I prioritize?
+PASS question never becomes capture: What should I prioritize?
+PASS context selected: Anything important today?
+PASS question never becomes capture: Anything important today?
+PASS context selected: What matters most right now?
+PASS question never becomes capture: What matters most right now?
+PASS context selected: What is important today?
+PASS question never becomes capture: What is important today?
+PASS context selected: Do I have anything urgent?
+PASS question never becomes capture: Do I have anything urgent?
+PASS context selected: What should I work on?
+PASS question never becomes capture: What should I work on?
+PASS ordinary questions cannot invoke probabilistic extraction
+PASS explicit capture boundary: Remember that my project is Atlas.
+PASS explicit capture boundary: Save this information.
+PASS explicit capture boundary: Keep this in mind: registration closes tomorrow.
+PASS explicit capture boundary: Remember this deadline.
+PASS explicit memory still reaches admission: Remember that my project is Atlas.
+PASS explicit memory still reaches admission: Remember that I prefer morning summaries.
+PASS missing capture referent asks clarification
+PASS open due 0 days ago retained
+PASS open due 1 days ago retained
+PASS open due 8 days ago retained
+PASS open due 30 days ago retained
+PASS completed 1 days ago excluded
+PASS completed 30 days ago excluded
+PASS unfinished no-date reminder retained
+PASS tomorrow scope does not invent date for undated work
+PASS old open work deduplicates in Today
+PASS 30-day overdue commitment reaches summary
+PASS deleted or completed reminder leaves active Today on refresh
+PASS repeat refresh does not duplicate open commitment
+PASS unfinished wording grounded: Do I have anything unfinished?
+PASS unfinished wording grounded: What am I behind on?
+PASS unfinished wording grounded: Anything overdue?
+PASS unfinished wording grounded: What still needs to be done?
+PASS unfinished wording grounded: What did I forget to finish?
+PASS completed work cannot be resurrected from conversational context
+PASS failed reminder read cannot present cached commitments as live authority
+PASS updated due date supersedes old commitment
+PASS unresolved overdue work survives day rollover
+PASS undated open commitment reaches Today without inventing due date
+PASS large open-work backlog remains bounded rather than dumped
+PASS complete open snapshot retires old completed/deleted information
+PASS deleted undated commitment retires only with complete open-work coverage
+PASS enabled summary schedules preferred local time
+PASS notification never claims ungenerated summary ready
+PASS OS calendar trigger follows user-local timezone
+PASS time change replaces schedule without duplicate
+PASS repeated reconcile is idempotent
+PASS restart reconciles one OS schedule
+PASS timezone change retains 9 AM local-time semantics
+PASS disable cancels summary schedule
+PASS permission denial leaves no schedule
+PASS permission revocation retires schedule
+PASS disable during OS add cannot leave stale schedule
+PASS scheduling failure surfaced
+PASS preferred time persists across store reopen
+PASS native Apple trigger has a next local daily delivery
+PASS native trigger resolves preferred wall-clock time on next day
+PASS notification open survives until navigation consumes it
+PASS notification open cannot navigate twice
+P0 regression checks: 71 passed / 0 failed

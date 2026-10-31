@@ -1,0 +1,17 @@
+name = "suzzme-voice"
+account_id = "0a617c025002cefb3f713194b6fd7a34"
+main = "src/index.ts"
+compatibility_date = "2026-10-28"
+
+[vars]
+ELEVENLABS_VOICE_ID = "hpp4J3VqNfWAUOO0d1Us"
+
+[[secrets_store_secrets]]
+binding = "ASSEMBLYAI_API_KEY"
+store_id = "755a7871548d47cb9913c8e86440cbf5"
+secret_name = "ASSEMBLYAI_API_KEY"
+
+[[secrets_store_secrets]]
+binding = "ELEVENLABS_API_KEY"
+store_id = "755a7871548d47cb9913c8e86440cbf5"
+secret_name = "ELEVENLABS_API_KEY"

@@ -1,0 +1,50 @@
+Window: "Daily Summary", App: Suzzme.
+0 standard window Daily Summary, ID: main, Secondary Actions: Raise
+	1 split group main, SidebarNavigationSplitView
+		2 scroll area
+			3 list Sidebar
+				4 row (selectable)
+				5 row (selectable) Suzzme, Your personal companion
+				6 row (selectable) Your day
+				7 row (selectable) Home
+				8 row (selectable) Today
+				9 row (selected) Daily Summary
+				10 row (selectable) Your information
+				11 row (selectable) Personal Memory
+				12 row (selectable) Sources
+				13 row (selectable) History
+				14 row (selectable)
+				15 row (selectable) Settings
+		16 splitter (disabled, settable, float) 232
+		17 scroll area Secondary Actions: Scroll Up, Scroll Down, Cancel
+			18 heading Your Daily Summary
+			19 text What matters today, from the information you share. Friday, 16 Oct at 11:19 PM Good evening. By 10 Sep 2026 at 12:00 AM, ‎WhatsApp Audio ‪Vaibhav‬ On 17 Oct 2026, First Day of Durga Puja Festivities is an all-day event. On 18 Oct 2026, Maha Saptami is an all-day event. On 19 Oct 2026, Maha Ashtami is an all-day event. On 20 Oct 2026, Dussehra is an all-day event.
+			20 button Description: Listen to Daily Summary, Help: Rechecks current context before speaking
+			21 button Ask about your day
+			22 text You can interrupt the summary with a question.
+			23 heading Needs Attention
+			24 text 10 Sep 2026 at 12:00 AM, ‎WhatsApp Audio ‪Vaibhav‬, It comes from a source Suzzme could check. It is tied to an unfinished commitment.
+			25 heading Later
+			26 text 17 Oct 2026 · All day, First Day of Durga Puja Festivities, It comes from a source Suzzme could check. It affects your current schedule. Its timing makes it useful soon. 18 Oct 2026 · All day, Maha Saptami, It comes from a source Suzzme could check. It affects your current schedule. Its timing makes it useful soon. 19 Oct 2026 · All day, Maha Ashtami, It comes from a source Suzzme could check. It affects your current schedule. 20 Oct 2026 · All day, Dussehra, It comes from a source Suzzme could check. It affects your current schedule. 20 Oct 2026 · All day, Dussehra, It comes from a source Suzzme could check. It affects your current schedule. 26 Oct 2026 · All day, Maharishi Valmiki Jayanti, It comes from a source Suzzme could check. It affects your current schedule. 26 Oct 2026 · All day, Maharishi Valmiki’s Birthday, It comes from a source Suzzme could check. It affects your current schedule.
+			27 scroll bar (settable, float) 0
+				28 value indicator (settable, float) 0
+				29 increment arrow button
+				30 decrement arrow button
+				31 increment page button
+				32 decrement page button
+	33 toolbar
+		34 button Description: Hide Sidebar, Secondary Actions: Increment, Decrement, Delete, Cancel
+		35 button Description: Ask Suzzme, Help: Ask Suzzme (⌘K), ID: suzzme-ask-open, Secondary Actions: Increment, Decrement, Delete, Cancel, Move previous, Remove from toolbar
+	36 close button
+	37 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	38 minimize button
+	39 text Daily Summary
+40 menu bar
+	41 Suzzme
+	42 Edit
+	43 View
+	44 Companion
+	45 Window
+	46 Help
+
+The focused UI element is 0 standard window Daily Summary, ID: main, Secondary Actions: Raise

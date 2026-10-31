@@ -1,0 +1,644 @@
+--- before/Suzzme/Suzzme/App/AppRouter.swift
++++ after/Suzzme/Suzzme/App/AppRouter.swift
+@@ -6,7 +6,7 @@
+     var id: Self { self }
+     var title: String {
+         switch self {
+-        case .home: "Today"
++        case .home: "Home"
+         case .today: "Today"
+         case .briefing: "Daily Summary"
+         case .memory: "Memory"
+@@ -17,7 +17,7 @@
+     }
+     var symbol: String {
+         switch self {
+-        case .home: "sun.max"
++        case .home: "house"
+         case .today: "sun.max"
+         case .briefing: "text.alignleft"
+         case .memory: "square.stack.3d.up"
+@@ -30,7 +30,7 @@
+ 
+ @MainActor @Observable
+ final class AppRouter {
+-    var selection: AppDestination = .today
++    var selection: AppDestination = .home
+ }
+ 
+ struct DestinationView: View {
+--- before/Suzzme/Suzzme/App/SuzzmeApp.swift
++++ after/Suzzme/Suzzme/App/SuzzmeApp.swift
+@@ -31,6 +31,10 @@
+                 .tint(SuzzmeTheme.accent)
+         }
+         .defaultSize(width: 1080, height: 820)
++        MenuBarExtra("Suzzme", systemImage: "waveform") {
++            MacMenuBarView().environment(environment).environment(globalInvocation)
++        }
++        .menuBarExtraStyle(.window)
+         Settings {
+             NavigationStack { SettingsView() }
+                 .environment(environment)
+--- before/Suzzme/Suzzme/DesignSystem/Theme/SuzzmeTheme.swift
++++ after/Suzzme/Suzzme/DesignSystem/Theme/SuzzmeTheme.swift
+@@ -68,6 +68,10 @@
+ 
+     /// Content measures, independent of a particular device or window size.
+     enum Layout {
++        static let companionWidth: CGFloat = 600
++        static let suggestionWidth: CGFloat = 360
++        static let companionFace: CGFloat = 104
++        static let menuBarWidth: CGFloat = 320
+         static let readingWidth: CGFloat = 680
+         static let workspaceWidth: CGFloat = 920
+         static let primaryColumnMinimum: CGFloat = 420
+--- before/Suzzme/Suzzme/Features/Home/AskSuzzmeView.swift
++++ after/Suzzme/Suzzme/Features/Home/AskSuzzmeView.swift
+@@ -17,10 +17,12 @@
+     @State private var readAnswerAloud = false
+     @FocusState private var inputFocused: Bool
+     private let focusInput: Bool
+-
+-    init(initialText: String = "", focusInput: Bool = false) {
++    private let submitOnAppear: Bool
++
++    init(initialText: String = "", focusInput: Bool = false, submitOnAppear: Bool = false) {
+         _text = State(initialValue: initialText)
+         self.focusInput = focusInput || !initialText.isEmpty
++        self.submitOnAppear = submitOnAppear
+     }
+ 
+     private var isProcessing: Bool {
+@@ -126,6 +128,11 @@
+                 result = environment.lastUnderstandingResult
+             }
+             if focusInput && !focusedSession && !awaitsAction { inputFocused = true }
++        }
++        .task {
++            if submitOnAppear && submittedQuestion.isEmpty && !text.isEmpty {
++                await understand()
++            }
+         }
+         .onChange(of: environment.voice.finalizedSessionID) { _, _ in
+             if let transcript = environment.voice.finalTranscript, !transcript.isEmpty {
+--- before/Suzzme/Suzzme/Features/Home/CompanionHomeView.swift
++++ after/Suzzme/Suzzme/Features/Home/CompanionHomeView.swift
+@@ -0,0 +1,177 @@
++import SwiftUI
++
++/// The prototype's focused entrance, backed by the same companion as every surface.
++struct HomeView: View {
++    @Environment(AppEnvironment.self) private var environment
++    @Environment(AppRouter.self) private var router
++    @Environment(\.colorScheme) private var colorScheme
++    @State private var draft = ""
++    @State private var submittedDraft = ""
++    @State private var showsAssistant = false
++    @State private var showsContext = false
++
++    var body: some View {
++        GeometryReader { geometry in
++            ScrollView {
++                VStack(spacing: SuzzmeTheme.Spacing.large) {
++                    VStack(spacing: SuzzmeTheme.Spacing.small) {
++                        Text("A little space to think.")
++                            .font(.subheadline).foregroundStyle(SuzzmeTheme.textSecondary)
++                        Text("What’s on your mind?")
++                            .font(.largeTitle.weight(.semibold))
++                            .multilineTextAlignment(.center)
++                            .accessibilityAddTraits(.isHeader)
++                    }
++                    .padding(.top, SuzzmeTheme.Spacing.large)
++                    SuzzmeFace(state: environment.presenceState,
++                        color: environment.invocation.presenceTheme.colors(for: colorScheme).face,
++                        lineWidth: 4, animation: environment.invocation.presenceAnimation,
++                        audioLevel: environment.voice.audioLevel,
++                        speechProgress: environment.voice.speechProgress)
++                        .frame(width: SuzzmeTheme.Layout.companionFace, height: SuzzmeTheme.Layout.companionFace)
++                        .accessibilityHidden(true)
++                    Text(environment.presenceState == .idle ? "Ready when you are" : SuzzmeAssistantPresentation.make(for: environment.presenceState).systemStatus)
++                        .font(.subheadline).foregroundStyle(SuzzmeTheme.textSecondary)
++                    Button(action: talk) {
++                        Label("Talk to Suzzme", systemImage: "mic.fill")
++                            .font(.headline).padding(.horizontal, SuzzmeTheme.Layout.compactInset)
++                            .frame(minHeight: SuzzmeTheme.Layout.touchTarget)
++                    }
++                    .buttonStyle(.borderedProminent)
++                    .tint(SuzzmeTheme.intelligencePrimary)
++                    .suzzmeProminentContrast()
++                    .keyboardShortcut("t", modifiers: [.command, .shift])
++                    VStack(spacing: SuzzmeTheme.Spacing.xxs) {
++                        suggestion("What’s ahead today?", symbol: "sun.max") { router.selection = .today }
++                        suggestion("Summarize my day", symbol: "text.alignleft") { router.selection = .briefing }
++                        suggestion("Choose useful context", symbol: "plus.circle") { showsContext = true }
++                    }
++                    .frame(maxWidth: SuzzmeTheme.Layout.suggestionWidth)
++                    Spacer(minLength: SuzzmeTheme.Spacing.large)
++                    composer
++                }
++                .padding(.horizontal, SuzzmeTheme.Layout.pageInset)
++                .padding(.vertical, SuzzmeTheme.Layout.compactInset)
++                .frame(maxWidth: SuzzmeTheme.Layout.companionWidth)
++                .frame(minHeight: max(0, geometry.size.height), alignment: .top)
++                .frame(maxWidth: .infinity)
++            }
++            .scrollBounceBehavior(.basedOnSize)
++        }
++        .background(SuzzmeTheme.pageBackground.ignoresSafeArea())
++        .sheet(isPresented: $showsAssistant) {
++            AskSuzzmeView(initialText: submittedDraft, focusInput: !submittedDraft.isEmpty, submitOnAppear: !submittedDraft.isEmpty)
++                #if os(macOS)
++                .frame(minWidth: 440, idealWidth: 560, minHeight: 560)
++                #endif
++        }
++        .sheet(isPresented: $showsContext) { ContextChooserView() }
++    }
++
++    private var composer: some View {
++        VStack(spacing: SuzzmeTheme.Spacing.small) {
++            HStack(alignment: .bottom, spacing: SuzzmeTheme.Spacing.xs) {
++                Button { showsContext = true } label: {
++                    Image(systemName: "plus").frame(width: SuzzmeTheme.Layout.touchTarget, height: SuzzmeTheme.Layout.touchTarget)
++                }
++                .buttonStyle(.plain).accessibilityLabel("Choose context")
++                TextField("Ask anything…", text: $draft, axis: .vertical)
++                    .textFieldStyle(.plain).lineLimit(1...4)
++                    .padding(.vertical, SuzzmeTheme.Spacing.small)
++                    .onSubmit(send)
++                    .accessibilityLabel("Your question")
++                Button(action: send) {
++                    Image(systemName: "arrow.up").font(.body.weight(.semibold))
++                        .frame(width: SuzzmeTheme.Layout.touchTarget, height: SuzzmeTheme.Layout.touchTarget)
++                }
++                .buttonStyle(.borderedProminent).tint(SuzzmeTheme.intelligencePrimary)
++                .suzzmeProminentContrast()
++                .disabled(draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
++                .accessibilityLabel("Send question")
++            }
++            .padding(SuzzmeTheme.Spacing.xs)
++            .background(SuzzmeTheme.backgroundSecondary, in: RoundedRectangle(cornerRadius: SuzzmeTheme.Radius.largeSurface))
++            .overlay { RoundedRectangle(cornerRadius: SuzzmeTheme.Radius.largeSurface).strokeBorder(SuzzmeTheme.separator) }
++            Text("Context is used only through sources you allow.")
++                .font(.caption).foregroundStyle(SuzzmeTheme.textSecondary)
++                .multilineTextAlignment(.center)
++        }
++    }
++
++    private func suggestion(_ title: String, symbol: String, action: @escaping () -> Void) -> some View {
++        Button(action: action) {
++            HStack(spacing: SuzzmeTheme.Spacing.small) {
++                Image(systemName: symbol).frame(width: SuzzmeTheme.Spacing.large)
++                Text(title).fixedSize(horizontal: false, vertical: true)
++                Spacer(minLength: 0)
++                Image(systemName: "chevron.right").font(.caption)
++            }.frame(minHeight: SuzzmeTheme.Layout.touchTarget)
++        }
++        .buttonStyle(.plain).foregroundStyle(SuzzmeTheme.textSecondary)
++    }
++
++    private func send() {
++        let question = draft.trimmingCharacters(in: .whitespacesAndNewlines)
++        guard !question.isEmpty else { return }
++        submittedDraft = question
++        draft = ""
++        showsAssistant = true
++    }
++
++    private func talk() {
++        submittedDraft = ""
++        showsAssistant = true
++        Task { _ = await environment.invokeSuzzme() }
++    }
++}
++
++/// Context choices expose their actual retention and permissions before use.
++struct ContextChooserView: View {
++    @Environment(\.dismiss) private var dismiss
++    @Environment(AppEnvironment.self) private var environment
++    var body: some View {
++        NavigationStack {
++            Form {
++                Section {
++                    SuzzmeScreenIntroduction(title: "Choose what Suzzme knows", message: "Add only the information you want to use. Each source explains its permissions and how to remove its data.")
++                }
++                Section("On this device") {
++                    NavigationLink { SourcesView() } label: {
++                        Label("Calendar, Reminders & Contacts", systemImage: "tray.2")
++                    }
++                    NavigationLink {
++                        Form { SelectedMessageImportView() }.suzzmeSettingsForm().navigationTitle("Selected text")
++                    } label: { Label("Paste selected text", systemImage: "doc.on.clipboard") }
++                    NavigationLink { MemoryView() } label: {
++                        Label("Personal Memory", systemImage: "square.stack.3d.up")
++                    }
++                }
++                #if os(macOS)
++                Section {
++                    Button {
++                        dismiss()
++                        Task { await environment.askAboutCurrentScreen() }
++                    } label: { Label("Ask about this screen", systemImage: "rectangle.dashed") }
++                } footer: {
++                    Text("Suzzme asks for consent before capturing screen context for a question. You can cancel the request at any time.")
++                }
++                #endif
++                Section {
++                    NavigationLink { SourcesView() } label: { Label("Manage connected services", systemImage: "link") }
++                } footer: {
++                    Text("Pasted Messages text is stored locally for up to 7 days. Files and continuous screen sharing are not available in this version.")
++                }
++            }
++            .suzzmeSettingsForm()
++            .navigationTitle("Context")
++            .toolbar { ToolbarItem(placement: .cancellationAction) { Button("Done") { dismiss() } } }
++        }
++        #if os(macOS)
++        .frame(minWidth: 460, minHeight: 500)
++        #endif
++    }
++}
++
++#Preview("Home") {
++    NavigationStack { HomeView() }.environment(AppEnvironment.preview).environment(AppRouter())
++}
+--- before/Suzzme/Suzzme/Features/Home/HomeView.swift
++++ after/Suzzme/Suzzme/Features/Home/HomeView.swift
+@@ -1,7 +1,7 @@
+ import SwiftUI
+ 
+ /// Presents the core's current day without creating another intelligence store.
+-struct HomeView: View {
++struct DailyContextView: View {
+     @Environment(AppEnvironment.self) private var environment
+     @Environment(\.colorScheme) private var colorScheme
+     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+@@ -366,23 +366,19 @@
+     }
+ }
+ 
+-/// Existing Today links resolve to the same useful landing as the Home route.
+-struct DailyContextView: View {
+-    var body: some View { HomeView() }
+-}
+ 
+ #Preview("Today · Light") {
+-    NavigationStack { HomeView() }.environment(AppEnvironment.preview).preferredColorScheme(.light)
++    NavigationStack { DailyContextView() }.environment(AppEnvironment.preview).preferredColorScheme(.light)
+ }
+ #Preview("Today · Dark") {
+-    NavigationStack { HomeView() }.environment(AppEnvironment.preview).preferredColorScheme(.dark)
++    NavigationStack { DailyContextView() }.environment(AppEnvironment.preview).preferredColorScheme(.dark)
+ }
+ #Preview("Today · Accessible type") {
+-    NavigationStack { HomeView() }.environment(AppEnvironment.preview).environment(\.dynamicTypeSize, .accessibility3)
++    NavigationStack { DailyContextView() }.environment(AppEnvironment.preview).environment(\.dynamicTypeSize, .accessibility3)
+ }
+ #Preview("Today · Small iPhone") {
+-    NavigationStack { HomeView() }.environment(AppEnvironment.preview).frame(width: 320, height: 568)
++    NavigationStack { DailyContextView() }.environment(AppEnvironment.preview).frame(width: 320, height: 568)
+ }
+ #Preview("Today · Pro Max") {
+-    NavigationStack { HomeView() }.environment(AppEnvironment.preview).frame(width: 440, height: 956)
+-}
++    NavigationStack { DailyContextView() }.environment(AppEnvironment.preview).frame(width: 440, height: 956)
++}
+--- before/Suzzme/Suzzme/Platform/iOS/MobileRootView.swift
++++ after/Suzzme/Suzzme/Platform/iOS/MobileRootView.swift
+@@ -3,112 +3,39 @@
+ 
+ struct MobileRootView: View {
+     @Environment(AppRouter.self) private var router
+-    @Environment(\.horizontalSizeClass) private var sizeClass
+     private let primaryDestinations: [AppDestination] = [.today, .memory, .sources, .settings]
+-
+-    private var primarySelection: AppDestination {
+-        primaryDestinations.contains(router.selection) ? router.selection : .today
++    private var route: Binding<[AppDestination]> {
++        Binding(get: { router.selection == .home ? [] : [router.selection] },
++                set: { router.selection = $0.last ?? .home })
+     }
+-
+     var body: some View {
+-        if sizeClass == .regular {
+-            NavigationSplitView {
+-                List(selection: Binding<AppDestination?>(
+-                    get: { primarySelection },
+-                    set: { router.selection = $0 ?? .today }
+-                )) {
+-                    Section {
+-                        sidebarRow(.today)
++        NavigationStack(path: route) {
++            HomeView()
++                .navigationTitle("Suzzme")
++                .navigationBarTitleDisplayMode(.inline)
++                .toolbar {
++                    ToolbarItem(placement: .topBarLeading) {
++                        Menu {
++                            ForEach(primaryDestinations + [.briefing, .history]) { destination in
++                                Button { router.selection = destination } label: {
++                                    Label(destination.title, systemImage: destination.symbol)
++                                }
++                            }
++                        } label: { Image(systemName: "line.3.horizontal") }
++                        .accessibilityLabel("Navigate Suzzme")
+                     }
+-                    Section("Your information") {
+-                        ForEach(primaryDestinations.filter { $0 == .memory || $0 == .sources }) { destination in
+-                            sidebarRow(destination)
+-                        }
+-                    }
+-                    Section {
+-                        sidebarRow(.settings)
++                    ToolbarItemGroup(placement: .topBarTrailing) {
++                        Button { router.selection = .history } label: { Image(systemName: "clock.arrow.circlepath") }
++                            .accessibilityLabel("History")
++                        Button { router.selection = .settings } label: { Image(systemName: "gearshape") }
++                            .accessibilityLabel("Settings")
+                     }
+                 }
+-                .listStyle(.sidebar)
+-                .tint(SuzzmeTheme.textPrimary)
+-                .navigationTitle("Suzzme")
+-                .safeAreaInset(edge: .top, spacing: 0) {
+-                    sidebarBrand
++                .navigationDestination(for: AppDestination.self) { destination in
++                    DestinationView(destination: destination).navigationBarTitleDisplayMode(.inline)
+                 }
+-                .navigationSplitViewColumnWidth(
+-                    min: SuzzmeTheme.Layout.sidebarMin,
+-                    ideal: SuzzmeTheme.Layout.sidebarIdeal,
+-                    max: SuzzmeTheme.Layout.sidebarMax
+-                )
+-            } detail: {
+-                NavigationStack {
+-                    DestinationView(destination: router.selection)
+-                        .tint(SuzzmeTheme.textPrimary)
+-                        .navigationBarTitleDisplayMode(.inline)
+-                }
+-            }
+-            .navigationSplitViewStyle(.balanced)
+-            .tint(SuzzmeTheme.textPrimary)
+-        } else {
+-            TabView(selection: Binding(get: { primarySelection }, set: { router.selection = $0 })) {
+-                ForEach(primaryDestinations) { destination in
+-                    NavigationStack {
+-                        DestinationView(destination: destination)
+-                            .tint(SuzzmeTheme.textPrimary)
+-                            .navigationBarTitleDisplayMode(.inline)
+-                            .navigationDestination(isPresented: secondaryPresentation(for: destination)) {
+-                                DestinationView(destination: router.selection)
+-                                    .tint(SuzzmeTheme.textPrimary)
+-                                    .navigationBarTitleDisplayMode(.inline)
+-                            }
+-                    }
+-                    .tabItem {
+-                        Label(destination.title, systemImage: destination.symbol)
+-                    }
+-                    .tag(destination)
+-                }
+-            }
+-            .tint(SuzzmeTheme.textPrimary)
+-            .toolbarBackground(.regularMaterial, for: .tabBar)
+-            .toolbarBackground(.visible, for: .tabBar)
+         }
+-    }
+-
+-    private var sidebarBrand: some View {
+-        HStack(spacing: SuzzmeTheme.Spacing.small) {
+-            SuzzmeMark()
+-                .frame(width: SuzzmeTheme.Spacing.extraLarge, height: SuzzmeTheme.Spacing.extraLarge)
+-                .accessibilityHidden(true)
+-            Text("Your personal companion")
+-                .font(.subheadline)
+-                .foregroundStyle(SuzzmeTheme.textSecondary)
+-                .fixedSize(horizontal: false, vertical: true)
+-            Spacer(minLength: 0)
+-        }
+-        .padding(.horizontal, SuzzmeTheme.Spacing.medium)
+-        .padding(.vertical, SuzzmeTheme.Spacing.medium)
+-        .accessibilityElement(children: .combine)
+-    }
+-
+-    private func sidebarRow(_ destination: AppDestination) -> some View {
+-        Label(destination.title, systemImage: destination.symbol)
+-            .frame(minHeight: SuzzmeTheme.Spacing.hero)
+-            .tag(destination)
+-    }
+-
+-    /// Secondary routes open above Today so a native Back action can return home.
+-    private func secondaryPresentation(for destination: AppDestination) -> Binding<Bool> {
+-        Binding(
+-            get: {
+-                destination == .today && router.selection != .home
+-                    && !primaryDestinations.contains(router.selection)
+-            },
+-            set: { isPresented in
+-                guard destination == .today, !isPresented, router.selection != .home,
+-                      !primaryDestinations.contains(router.selection) else { return }
+-                router.selection = .today
+-            }
+-        )
++        .tint(SuzzmeTheme.textPrimary)
+     }
+ }
+ #endif
+--- before/Suzzme/Suzzme/Platform/macOS/MacMenuBarView.swift
++++ after/Suzzme/Suzzme/Platform/macOS/MacMenuBarView.swift
+@@ -0,0 +1,55 @@
++#if os(macOS)
++import SwiftUI
++
++struct MacMenuBarView: View {
++    @Environment(AppEnvironment.self) private var environment
++    @Environment(\.openWindow) private var openWindow
++    @Environment(\.colorScheme) private var colorScheme
++    @State private var showsAssistant = false
++    @State private var draft = ""
++    @State private var submittedDraft = ""
++
++    var body: some View {
++        VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.medium) {
++            HStack(spacing: SuzzmeTheme.Spacing.small) {
++                SuzzmeFace(state: environment.presenceState,
++                    color: environment.invocation.presenceTheme.colors(for: colorScheme).face,
++                    animation: environment.invocation.presenceAnimation)
++                    .frame(width: SuzzmeTheme.Layout.touchTarget, height: SuzzmeTheme.Layout.touchTarget).accessibilityHidden(true)
++                VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.xxs) {
++                    Text("Suzzme").font(.headline)
++                    Text(environment.presenceState == .idle ? "Ready when you are" : SuzzmeAssistantPresentation.make(for: environment.presenceState).systemStatus)
++                        .font(.caption).foregroundStyle(SuzzmeTheme.textSecondary)
++                }
++            }
++            HStack {
++                TextField("Ask anything…", text: $draft).textFieldStyle(.roundedBorder).onSubmit(send)
++                Button(action: send) { Image(systemName: "arrow.up") }
++                    .disabled(draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
++                    .accessibilityLabel("Send question")
++            }
++            Button {
++                Task { await environment.invokeTransientVoice() }
++            } label: { Label("Talk to Suzzme", systemImage: "mic.fill").frame(maxWidth: .infinity, minHeight: SuzzmeTheme.Layout.touchTarget) }
++                .buttonStyle(.borderedProminent).tint(SuzzmeTheme.intelligencePrimary).suzzmeProminentContrast()
++            Divider()
++            HStack {
++                Button("Open Suzzme") { openWindow(id: "main") }
++                Spacer()
++                SettingsLink { Image(systemName: "gearshape") }.accessibilityLabel("Settings")
++            }
++        }
++        .padding(SuzzmeTheme.Layout.compactInset).frame(width: SuzzmeTheme.Layout.menuBarWidth)
++        .sheet(isPresented: $showsAssistant) {
++            AskSuzzmeView(initialText: submittedDraft, submitOnAppear: true).frame(width: 500, height: 600)
++        }
++    }
++    private func send() {
++        let question = draft.trimmingCharacters(in: .whitespacesAndNewlines)
++        guard !question.isEmpty else { return }
++        submittedDraft = question
++        draft = ""
++        showsAssistant = true
++    }
++}
++#endif
+--- before/Suzzme/Suzzme/Platform/macOS/MacRootView.swift
++++ after/Suzzme/Suzzme/Platform/macOS/MacRootView.swift
+@@ -1,116 +1,47 @@
+ #if os(macOS)
+-import AppKit
+ import SwiftUI
+ 
+ struct MacRootView: View {
+     @Environment(AppRouter.self) private var router
+-    @Environment(AppEnvironment.self) private var environment
+     @State private var showsAssistant = false
+-    private let primaryDestinations: [AppDestination] = [.today, .memory, .sources]
++    @State private var columns: NavigationSplitViewVisibility = .detailOnly
+ 
+     var body: some View {
+-        NavigationSplitView {
+-            List(selection: Binding<AppDestination?>(
+-                get: { router.selection == .home ? .today : router.selection }, set: { router.selection = $0 ?? .today }
+-            )) {
+-                Section {
+-                    sidebarRow(.today)
+-                }
+-                Section("Your information") {
+-                    ForEach(primaryDestinations.filter { $0 != .today }) { destination in
+-                        sidebarRow(destination)
+-                    }
++        NavigationSplitView(columnVisibility: $columns) {
++            List(selection: Binding<AppDestination?>(get: { router.selection }, set: { router.selection = $0 ?? .home })) {
++                ForEach(AppDestination.allCases) { destination in
++                    Label(destination.title, systemImage: destination.symbol)
++                        .frame(minHeight: SuzzmeTheme.Layout.touchTarget)
++                        .tag(destination)
+                 }
+             }
+             .listStyle(.sidebar)
+-            .tint(SuzzmeTheme.textPrimary)
+-            .safeAreaInset(edge: .top, spacing: 0) {
+-                sidebarBrand
+-            }
+-            .safeAreaInset(edge: .bottom) {
+-                VStack(spacing: 0) {
+-                    Divider()
+-                    SettingsLink {
+-                        Label("Settings", systemImage: "gearshape")
+-                            .frame(maxWidth: .infinity, minHeight: SuzzmeTheme.Spacing.hero, alignment: .leading)
+-                            .contentShape(Rectangle())
+-                    }
+-                    .buttonStyle(.plain)
+-                    .foregroundStyle(SuzzmeTheme.textPrimary)
+-                    .padding(.horizontal, SuzzmeTheme.Spacing.medium)
+-                    .padding(.vertical, SuzzmeTheme.Spacing.xs)
+-                    .help("Open Suzzme settings")
+-                }
+-            }
+-            .navigationSplitViewColumnWidth(
+-                min: SuzzmeTheme.Layout.sidebarMin,
+-                ideal: SuzzmeTheme.Layout.sidebarIdeal,
+-                max: SuzzmeTheme.Layout.sidebarMax
+-            )
++            .navigationTitle("Suzzme")
++            .navigationSplitViewColumnWidth(min: SuzzmeTheme.Layout.sidebarMin, ideal: SuzzmeTheme.Layout.sidebarIdeal, max: SuzzmeTheme.Layout.sidebarMax)
+         } detail: {
+             NavigationStack {
+                 DestinationView(destination: router.selection)
+                     .tint(SuzzmeTheme.textPrimary)
+-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+-                    .background(SuzzmeTheme.pageBackground)
++                    .toolbar {
++                        ToolbarItemGroup(placement: .primaryAction) {
++                            if router.selection != .home {
++                                Button { router.selection = .home } label: { Label("Home", systemImage: "house") }
++                            }
++                            Button { router.selection = .history } label: { Label("History", systemImage: "clock.arrow.circlepath") }
++                            Button { router.selection = .settings } label: { Label("Settings", systemImage: "gearshape") }
++                            Button { showsAssistant = true } label: { Label("Ask Suzzme", systemImage: "waveform") }
++                                .keyboardShortcut("k", modifiers: .command)
++                        }
++                    }
+             }
+         }
+         .navigationSplitViewStyle(.balanced)
+         .tint(SuzzmeTheme.textPrimary)
+         .frame(minWidth: SuzzmeTheme.Layout.windowMinWidth, minHeight: SuzzmeTheme.Layout.windowMinHeight)
+-        .toolbar {
+-            ToolbarItemGroup(placement: .primaryAction) {
+-                Button { showsAssistant = true } label: {
+-                    Label("Ask Suzzme", systemImage: "bubble.left")
+-                }
+-                .tint(SuzzmeTheme.textPrimary)
+-                .help("Open a voice or text conversation")
+-                Button {
+-                    Task { await environment.askAboutCurrentScreen() }
+-                } label: {
+-                    Label("Ask about this screen", systemImage: "viewfinder")
+-                }
+-                .tint(SuzzmeTheme.textPrimary)
+-                .help("Talk to Suzzme about the current screen")
+-            }
+-        }
++        .background(SuzzmeTheme.pageBackground)
+         .sheet(isPresented: $showsAssistant) {
+-            AskSuzzmeView()
+-                .tint(SuzzmeTheme.textPrimary)
+-                .frame(minWidth: 420, minHeight: 500)
++            AskSuzzmeView(focusInput: true).frame(minWidth: 440, minHeight: 560)
+         }
+     }
+-
+-    private func sidebarRow(_ destination: AppDestination) -> some View {
+-        Label(destination.title, systemImage: destination.symbol)
+-            .font(.body)
+-            .frame(minHeight: SuzzmeTheme.Spacing.hero)
+-            .tag(destination)
+-    }
+-
+-    private var sidebarBrand: some View {
+-        HStack(spacing: SuzzmeTheme.Spacing.small) {
+-            SuzzmeMark()
+-                .frame(width: SuzzmeTheme.Spacing.extraLarge, height: SuzzmeTheme.Spacing.extraLarge)
+-                .accessibilityHidden(true)
+-            VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.xxs) {
+-                Text("Suzzme").font(.title3.weight(.semibold))
+-                Text("Your personal companion")
+-                    .font(.caption)
+-                    .foregroundStyle(SuzzmeTheme.textSecondary)
+-                    .fixedSize(horizontal: false, vertical: true)
+-            }
+-            Spacer(minLength: 0)
+-        }
+-        .padding(.horizontal, SuzzmeTheme.Spacing.medium)
+-        .padding(.vertical, SuzzmeTheme.Spacing.large)
+-        .accessibilityElement(children: .combine)
+-    }
+-
+-}
+-
+-#Preview("Mac layout") {
+-    MacRootView().environment(AppRouter()).environment(AppEnvironment.preview)
+-        .frame(width: 1080, height: 820)
+ }
+ #endif

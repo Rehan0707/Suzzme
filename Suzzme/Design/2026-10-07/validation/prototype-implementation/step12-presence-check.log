@@ -1,0 +1,59 @@
+PASS quiet idle retracts after three seconds
+PASS success has bounded visibility
+PASS error stays readable before retracting
+PASS active work and confirmations never auto-hide
+PASS notch placement overlays from the physical display top
+PASS notch overlay remains inside display bounds
+PASS non-notch placement stays inside the visible frame
+PASS attachment covers physical notch center
+PASS expanded black wings attach directly to the display top
+PASS expanded black wings remain continuous into the lower body
+PASS concave outer top corners retain clear space outside the silhouette
+PASS the black surface has no gap across either expanded upper wing
+PASS physical notch inset does not consume assistant content height
+PASS idle Presence matches physical-notch availability
+PASS notch Presence overlays the menu-bar cutout
+PASS notch Presence aligns with the physical display top
+PASS long press dismissal hides the current Presence
+PASS identical idle updates do not undo dismissal
+PASS notch pointer entry restores hidden idle Presence
+PASS stationary pointer cannot undo hold-to-hide
+PASS leaving and re-entering restores the same panel
+PASS new assistant activity restores dismissed Presence
+PASS first invocation creates one visible panel
+PASS collapsing Presence cannot receive stale clicks
+PASS assistant state changes preserve one SwiftUI host
+PASS new activity cancels stale collapse completion
+PASS restored Presence accepts interaction inside its silhouette
+PASS transparent notch corner leaves native clicks to the underlying app
+PASS exact bezel edge retains the first-click target
+PASS outside movement restores click-through without polling
+PASS expansion and collapse preserve the top anchor
+PASS minimal motion dismissal is immediate
+PASS 100 complete lifecycle cycles reuse one panel
+PASS idle keeps one reusable notch affordance
+PASS expanded and compact geometry actually changes
+PASS quiet idle Presence auto-hides
+PASS idle refresh cannot undo auto-hide
+PASS completed result actually auto-hides
+PASS repeated success update cannot reopen dismissed result
+PASS confirmation restores Presence and never auto-hides
+PASS Presence centers on physical notch rather than Dock-adjusted workspace
+PASS activation and deactivation retain one nonactivating Presence panel
+PASS reveal restores public Spaces behavior on the same panel
+PASS presentation update repairs displaced geometry
+MEASUREMENT lifecycle RSS samples bytes: [101154816, 109608960, 105037824, 105414656, 105725952]
+MEASUREMENT fullscreen entered=true panels=1 visible=true active=true
+PASS fullscreen Space transition keeps one visible Presence panel
+PASS return from fullscreen Space preserves compact Presence
+MEASUREMENT idle elapsed=31.642913958999998 seconds cpuSeconds=0.027175999999999867 RSSBefore=58015744 RSSAfter=8437760
+MEASUREMENT compact elapsed=10.597084333 seconds cpuSeconds=0.0008909999999997531 RSSBefore=30081024 RSSAfter=25542656
+MEASUREMENT expanded elapsed=10.530082208 seconds cpuSeconds=0.0009250000000000647 RSSBefore=31178752 RSSAfter=26247168
+MEASUREMENT motion-disabled elapsed=10.642572457999998 seconds cpuSeconds=0.0016740000000001753 RSSBefore=26722304 RSSAfter=17940480
+PASS runtime panel remains inside its intended display bounds
+PASS unchanged presentation preserves hosting view
+PASS controller releases after owner destruction
+PASS owner destruction closes panel
+PASS 100 shortcut monitor start/stop cycles release owner
+Presence runtime checks passed: 51
+Presence runtime checks failed: 0

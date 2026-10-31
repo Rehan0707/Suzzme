@@ -1,0 +1,491 @@
+{
+  "metadataSource": "https://github.com/simple-icons/simple-icons/blob/develop/data/simple-icons.json",
+  "logos": [
+    {
+      "asset": "Integration-airtable.imageset",
+      "title": "Airtable",
+      "primaryColor": "#18BFFF",
+      "source": "https://airtable.com/newsroom"
+    },
+    {
+      "asset": "Integration-asana.imageset",
+      "title": "Asana",
+      "primaryColor": "#F06A6A",
+      "source": "https://asana.com/brand"
+    },
+    {
+      "asset": "Integration-basecamp.imageset",
+      "title": "Basecamp",
+      "primaryColor": "#1D2D35",
+      "source": "https://basecamp.com/about/press"
+    },
+    {
+      "asset": "Integration-bitbucket.imageset",
+      "title": "Bitbucket",
+      "primaryColor": "#0052CC",
+      "source": "https://atlassian.design/resources/logo-library"
+    },
+    {
+      "asset": "Integration-box.imageset",
+      "title": "Box",
+      "primaryColor": "#0061D5",
+      "source": "https://www.box.com/en-gb/about-us/press"
+    },
+    {
+      "asset": "Integration-cal-com.imageset",
+      "title": "Cal.com",
+      "primaryColor": "#292929",
+      "source": "https://design.cal.com/assets/logos"
+    },
+    {
+      "asset": "Integration-calendly.imageset",
+      "title": "Calendly",
+      "primaryColor": "#006BFF",
+      "source": "https://calendly.com/newsroom"
+    },
+    {
+      "asset": "Integration-clickup.imageset",
+      "title": "ClickUp",
+      "primaryColor": "#7B68EE",
+      "source": "https://clickup.com/brand"
+    },
+    {
+      "asset": "Integration-confluence.imageset",
+      "title": "Confluence",
+      "primaryColor": "#172B4D",
+      "source": "https://www.atlassian.com/company/news/press-kit"
+    },
+    {
+      "asset": "Integration-contentful.imageset",
+      "title": "Contentful",
+      "primaryColor": "#2478CC",
+      "source": "https://press.contentful.com/media_kits"
+    },
+    {
+      "asset": "Integration-crowdin.imageset",
+      "title": "Crowdin",
+      "primaryColor": "#2E3340",
+      "source": "https://support.crowdin.com/using-logo/"
+    },
+    {
+      "asset": "Integration-dart.imageset",
+      "title": "Dart",
+      "primaryColor": "#0175C2",
+      "source": "https://github.com/dart-lang/site-shared/tree/18458ff440afd3d06f04e5cb871c4c5eda29c9d5/src/_assets/image/dart/logo"
+    },
+    {
+      "asset": "Integration-discord-bot.imageset",
+      "title": "Discord",
+      "primaryColor": "#5865F2",
+      "source": "https://discord.com/branding"
+    },
+    {
+      "asset": "Integration-discord.imageset",
+      "title": "Discord",
+      "primaryColor": "#5865F2",
+      "source": "https://discord.com/branding"
+    },
+    {
+      "asset": "Integration-dropbox.imageset",
+      "title": "Dropbox",
+      "primaryColor": "#0061FF",
+      "source": "https://www.dropbox.com/branding"
+    },
+    {
+      "asset": "Integration-facebook.imageset",
+      "title": "Facebook",
+      "primaryColor": "#0866FF",
+      "source": "https://about.meta.com/brand/resources/facebook/logo"
+    },
+    {
+      "asset": "Integration-fathom.imageset",
+      "title": "Fathom",
+      "primaryColor": "#9187FF",
+      "source": "https://usefathom.com/brand"
+    },
+    {
+      "asset": "Integration-figma.imageset",
+      "title": "Figma",
+      "primaryColor": "#F24E1E",
+      "source": "https://www.figma.com/using-the-figma-brand/"
+    },
+    {
+      "asset": "Integration-github.imageset",
+      "title": "GitHub",
+      "primaryColor": "#181717",
+      "source": "https://github.com/logos"
+    },
+    {
+      "asset": "Integration-gitlab.imageset",
+      "title": "GitLab",
+      "primaryColor": "#FC6D26",
+      "source": "https://about.gitlab.com/press/press-kit/"
+    },
+    {
+      "asset": "Integration-gmail.imageset",
+      "title": "Gmail",
+      "primaryColor": "#EA4335",
+      "source": "https://fonts.gstatic.com/s/i/productlogos/gmail_2020q4/v8/192px.svg"
+    },
+    {
+      "asset": "Integration-google-ads.imageset",
+      "title": "Google Ads",
+      "primaryColor": "#4285F4",
+      "source": "https://ads.google.com/home/"
+    },
+    {
+      "asset": "Integration-google-analytics.imageset",
+      "title": "Google Analytics",
+      "primaryColor": "#E37400",
+      "source": "https://marketingplatform.google.com/intl/en_uk/about/analytics/"
+    },
+    {
+      "asset": "Integration-google-bigquery.imageset",
+      "title": "Google BigQuery",
+      "primaryColor": "#669DF6",
+      "source": "https://cloud.google.com/icons"
+    },
+    {
+      "asset": "Integration-google-calendar.imageset",
+      "title": "Google Calendar",
+      "primaryColor": "#4285F4",
+      "source": "https://fonts.gstatic.com/s/i/productlogos/calendar_2020q4/v8/192px.svg"
+    },
+    {
+      "asset": "Integration-google-classroom.imageset",
+      "title": "Google Classroom",
+      "primaryColor": "#0F9D58",
+      "source": "https://classroom.google.com"
+    },
+    {
+      "asset": "Integration-google-docs.imageset",
+      "title": "Google Docs",
+      "primaryColor": "#4285F4",
+      "source": "https://www.google.com/docs/about"
+    },
+    {
+      "asset": "Integration-google-drive.imageset",
+      "title": "Google Drive",
+      "primaryColor": "#4285F4",
+      "source": "https://developers.google.com/drive/web/branding"
+    },
+    {
+      "asset": "Integration-google-maps.imageset",
+      "title": "Google Maps",
+      "primaryColor": "#4285F4",
+      "source": "https://commons.wikimedia.org/wiki/File:Google_Maps_icon.svg"
+    },
+    {
+      "asset": "Integration-google-meet.imageset",
+      "title": "Google Meet",
+      "primaryColor": "#00897B",
+      "source": "https://about.google/brand-resource-center/logos-list/"
+    },
+    {
+      "asset": "Integration-google-photos.imageset",
+      "title": "Google Photos",
+      "primaryColor": "#4285F4",
+      "source": "https://partnermarketinghub.withgoogle.com/brands/google-photos/visual-identity/visual-identity/icon/"
+    },
+    {
+      "asset": "Integration-google-search-console.imageset",
+      "title": "Google Search Console",
+      "primaryColor": "#458CF5",
+      "source": "https://search.google.com/search-console"
+    },
+    {
+      "asset": "Integration-google-sheets.imageset",
+      "title": "Google Sheets",
+      "primaryColor": "#34A853",
+      "source": "https://sheets.google.com"
+    },
+    {
+      "asset": "Integration-google-slides.imageset",
+      "title": "Google Slides",
+      "primaryColor": "#FBBC04",
+      "source": "https://slides.google.com"
+    },
+    {
+      "asset": "Integration-google-tasks.imageset",
+      "title": "Google Tasks",
+      "primaryColor": "#2684FC",
+      "source": "https://assistant.google.com/tasks"
+    },
+    {
+      "asset": "Integration-greenhouse.imageset",
+      "title": "Greenhouse",
+      "primaryColor": "#24A47F",
+      "source": "https://brand.greenhouse.io/brand-portal/p/6"
+    },
+    {
+      "asset": "Integration-gumroad.imageset",
+      "title": "Gumroad",
+      "primaryColor": "#FF90E8",
+      "source": "https://gumroad.com"
+    },
+    {
+      "asset": "Integration-hubspot.imageset",
+      "title": "HubSpot",
+      "primaryColor": "#FF7A59",
+      "source": "https://www.hubspot.com/style-guide"
+    },
+    {
+      "asset": "Integration-hugging-face.imageset",
+      "title": "Hugging Face",
+      "primaryColor": "#FFD21E",
+      "source": "https://huggingface.co/brand"
+    },
+    {
+      "asset": "Integration-instagram.imageset",
+      "title": "Instagram",
+      "primaryColor": "#FF0069",
+      "source": "https://about.meta.com/brand/resources/instagram"
+    },
+    {
+      "asset": "Integration-intercom.imageset",
+      "title": "Intercom",
+      "primaryColor": "#6AFDEF",
+      "source": "https://www.intercom.com/press"
+    },
+    {
+      "asset": "Integration-jira.imageset",
+      "title": "Jira",
+      "primaryColor": "#0052CC",
+      "source": "https://atlassian.design/resources/logo-library"
+    },
+    {
+      "asset": "Integration-kit.imageset",
+      "title": "Kit",
+      "primaryColor": "#000000",
+      "source": "https://kit.co"
+    },
+    {
+      "asset": "Integration-linear.imageset",
+      "title": "Linear",
+      "primaryColor": "#5E6AD2",
+      "source": "https://linear.app"
+    },
+    {
+      "asset": "Integration-mailchimp.imageset",
+      "title": "MailChimp",
+      "primaryColor": "#FFE01B",
+      "source": "https://mailchimp.com/about/brand-assets"
+    },
+    {
+      "asset": "Integration-miro.imageset",
+      "title": "Miro",
+      "primaryColor": "#050038",
+      "source": "https://miro.com"
+    },
+    {
+      "asset": "Integration-mural.imageset",
+      "title": "Mural",
+      "primaryColor": "#FF4B4B",
+      "source": "https://www.mural.co/brand-assets"
+    },
+    {
+      "asset": "Integration-notion.imageset",
+      "title": "Notion",
+      "primaryColor": "#000000",
+      "source": "https://www.notion.so"
+    },
+    {
+      "asset": "Integration-pagerduty.imageset",
+      "title": "PagerDuty",
+      "primaryColor": "#06AC38",
+      "source": "https://www.pagerduty.com/brand/"
+    },
+    {
+      "asset": "Integration-pinterest-ads.imageset",
+      "title": "Pinterest",
+      "primaryColor": "#BD081C",
+      "source": "https://business.pinterest.com/en/brand-guidelines"
+    },
+    {
+      "asset": "Integration-pinterest.imageset",
+      "title": "Pinterest",
+      "primaryColor": "#BD081C",
+      "source": "https://business.pinterest.com/en/brand-guidelines"
+    },
+    {
+      "asset": "Integration-prisma.imageset",
+      "title": "Prisma",
+      "primaryColor": "#2D3748",
+      "source": "https://github.com/prisma/presskit/tree/4bcb64181f266723439d955d60afa1c55fefa715"
+    },
+    {
+      "asset": "Integration-pushbullet.imageset",
+      "title": "Pushbullet",
+      "primaryColor": "#4AB367",
+      "source": "https://www.pushbullet.com/press"
+    },
+    {
+      "asset": "Integration-quickbooks.imageset",
+      "title": "QuickBooks",
+      "primaryColor": "#2CA01C",
+      "source": "https://design.intuit.com/quickbooks/brand"
+    },
+    {
+      "asset": "Integration-reddit-ads.imageset",
+      "title": "Reddit",
+      "primaryColor": "#FF4500",
+      "source": "https://www.redditinc.com/brand"
+    },
+    {
+      "asset": "Integration-sentry.imageset",
+      "title": "Sentry",
+      "primaryColor": "#362D59",
+      "source": "https://sentry.io/branding/"
+    },
+    {
+      "asset": "Integration-shopify.imageset",
+      "title": "Shopify",
+      "primaryColor": "#7AB55C",
+      "source": "https://www.shopify.com/brand-assets"
+    },
+    {
+      "asset": "Integration-square.imageset",
+      "title": "Square",
+      "primaryColor": "#3E4348",
+      "source": "https://squareup.com"
+    },
+    {
+      "asset": "Integration-stack-exchange.imageset",
+      "title": "Stack Exchange",
+      "primaryColor": "#1E5397",
+      "source": "https://stackoverflow.com/company/logos"
+    },
+    {
+      "asset": "Integration-stripe.imageset",
+      "title": "Stripe",
+      "primaryColor": "#635BFF",
+      "source": "https://stripe.com/newsroom/information"
+    },
+    {
+      "asset": "Integration-supabase.imageset",
+      "title": "Supabase",
+      "primaryColor": "#3FCF8E",
+      "source": "https://github.com/supabase/supabase/blob/4031a7549f5d46da7bc79c01d56be4177dc7c114/packages/common/assets/images/supabase-logo-wordmark--light.svg"
+    },
+    {
+      "asset": "Integration-ticketmaster.imageset",
+      "title": "Ticketmaster",
+      "primaryColor": "#026CDF",
+      "source": "https://design.ticketmaster.com/brand/overview/"
+    },
+    {
+      "asset": "Integration-ticktick.imageset",
+      "title": "TickTick",
+      "primaryColor": "#4772FA",
+      "source": "https://ticktick.com"
+    },
+    {
+      "asset": "Integration-tiktok-ads.imageset",
+      "title": "TikTok",
+      "primaryColor": "#000000",
+      "source": "https://tiktok.com"
+    },
+    {
+      "asset": "Integration-todoist.imageset",
+      "title": "Todoist",
+      "primaryColor": "#E44332",
+      "source": "https://doist.com/press"
+    },
+    {
+      "asset": "Integration-trello.imageset",
+      "title": "Trello",
+      "primaryColor": "#0052CC",
+      "source": "https://atlassian.design/resources/logo-library"
+    },
+    {
+      "asset": "Integration-twitch.imageset",
+      "title": "Twitch",
+      "primaryColor": "#9146FF",
+      "source": "https://brand.twitch.tv"
+    },
+    {
+      "asset": "Integration-typeform.imageset",
+      "title": "Typeform",
+      "primaryColor": "#262627",
+      "source": "https://www.typeform.com"
+    },
+    {
+      "asset": "Integration-wakatime.imageset",
+      "title": "WakaTime",
+      "primaryColor": "#000000",
+      "source": "https://wakatime.com/legal/logos-and-trademark-usage"
+    },
+    {
+      "asset": "Integration-webex.imageset",
+      "title": "Webex",
+      "primaryColor": "#000000",
+      "source": "https://github.com/momentum-design/momentum-ui/blob/970c5bec962a3f72e17e0b7ed69f2c38d298c405/icons-rebrand/svg/webex-helix-filled.svg"
+    },
+    {
+      "asset": "Integration-whatsapp.imageset",
+      "title": "WhatsApp",
+      "primaryColor": "#25D366",
+      "source": "https://about.meta.com/brand/resources/whatsapp/whatsapp-brand"
+    },
+    {
+      "asset": "Integration-youtube.imageset",
+      "title": "YouTube",
+      "primaryColor": "#FF0000",
+      "source": "https://www.youtube.com/howyoutubeworks/resources/brand-resources/#logos-icons-and-colors"
+    },
+    {
+      "asset": "Integration-zendesk.imageset",
+      "title": "Zendesk",
+      "primaryColor": "#03363D",
+      "source": "https://brandland.zendesk.com"
+    },
+    {
+      "asset": "Integration-zoho-bigin.imageset",
+      "title": "Zoho",
+      "primaryColor": "#E42527",
+      "source": "https://www.zoho.com/branding"
+    },
+    {
+      "asset": "Integration-zoho-books.imageset",
+      "title": "Zoho",
+      "primaryColor": "#E42527",
+      "source": "https://www.zoho.com/branding"
+    },
+    {
+      "asset": "Integration-zoho-desk.imageset",
+      "title": "Zoho",
+      "primaryColor": "#E42527",
+      "source": "https://www.zoho.com/branding"
+    },
+    {
+      "asset": "Integration-zoho-inventory.imageset",
+      "title": "Zoho",
+      "primaryColor": "#E42527",
+      "source": "https://www.zoho.com/branding"
+    },
+    {
+      "asset": "Integration-zoho-invoice.imageset",
+      "title": "Zoho",
+      "primaryColor": "#E42527",
+      "source": "https://www.zoho.com/branding"
+    },
+    {
+      "asset": "Integration-zoho-mail.imageset",
+      "title": "Zoho",
+      "primaryColor": "#E42527",
+      "source": "https://www.zoho.com/branding"
+    },
+    {
+      "asset": "Integration-zoho.imageset",
+      "title": "Zoho",
+      "primaryColor": "#E42527",
+      "source": "https://www.zoho.com/branding"
+    },
+    {
+      "asset": "Integration-zoom.imageset",
+      "title": "Zoom",
+      "primaryColor": "#0B5CFF",
+      "source": "https://brand.zoom.us/media-library/"
+    }
+  ]
+}

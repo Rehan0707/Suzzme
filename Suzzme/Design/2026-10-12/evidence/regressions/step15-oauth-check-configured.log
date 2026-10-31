@@ -1,0 +1,66 @@
+Validation/Step15OAuthChecks.m:49:21: warning: 'resumeExternalUserAgentFlowWithURL:' is deprecated: Use resumeExternalUserAgentFlowWithURL:error: instead. Swift: Use the throwing resumeExternalUserAgentFlow(_:) [-Wdeprecated-declarations]
+   49 |     check(![session resumeExternalUserAgentFlowWithURL:[NSURL URLWithString:@"other:/oauthredirect?state=x&code=x"]] && callbacks == 0, "wrong callback scheme cannot resume flow");
+      |                     ^
+/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/AppAuth-iOS/Sources/AppAuthCore/OIDExternalUserAgentSession.h:55:3: note: 'resumeExternalUserAgentFlowWithURL:' has been explicitly marked deprecated here
+   55 |   __deprecated_msg("Use resumeExternalUserAgentFlowWithURL:error: instead. "
+      |   ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/usr/include/sys/cdefs.h:227:48: note: expanded from macro '__deprecated_msg'
+  227 |         #define __deprecated_msg(_msg) __attribute__((__deprecated__(_msg)))
+      |                                                       ^
+Validation/Step15OAuthChecks.m:50:20: warning: 'resumeExternalUserAgentFlowWithURL:' is deprecated: Use resumeExternalUserAgentFlowWithURL:error: instead. Swift: Use the throwing resumeExternalUserAgentFlow(_:) [-Wdeprecated-declarations]
+   50 |     check([session resumeExternalUserAgentFlowWithURL:[NSURL URLWithString:@"suzzme-fixture:/oauthredirect?state=wrong&code=synthetic"]], "matching redirect receives state validation");
+      |                    ^
+/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/AppAuth-iOS/Sources/AppAuthCore/OIDExternalUserAgentSession.h:55:3: note: 'resumeExternalUserAgentFlowWithURL:' has been explicitly marked deprecated here
+   55 |   __deprecated_msg("Use resumeExternalUserAgentFlowWithURL:error: instead. "
+      |   ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/usr/include/sys/cdefs.h:227:48: note: expanded from macro '__deprecated_msg'
+  227 |         #define __deprecated_msg(_msg) __attribute__((__deprecated__(_msg)))
+      |                                                       ^
+Validation/Step15OAuthChecks.m:52:21: warning: 'resumeExternalUserAgentFlowWithURL:' is deprecated: Use resumeExternalUserAgentFlowWithURL:error: instead. Swift: Use the throwing resumeExternalUserAgentFlow(_:) [-Wdeprecated-declarations]
+   52 |     check(![session resumeExternalUserAgentFlowWithURL:[NSURL URLWithString:@"suzzme-fixture:/oauthredirect?state=wrong&code=synthetic"]] && callbacks == 1, "duplicate callback cannot authorize twice");
+      |                     ^
+/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/AppAuth-iOS/Sources/AppAuthCore/OIDExternalUserAgentSession.h:55:3: note: 'resumeExternalUserAgentFlowWithURL:' has been explicitly marked deprecated here
+   55 |   __deprecated_msg("Use resumeExternalUserAgentFlowWithURL:error: instead. "
+      |   ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/usr/include/sys/cdefs.h:227:48: note: expanded from macro '__deprecated_msg'
+  227 |         #define __deprecated_msg(_msg) __attribute__((__deprecated__(_msg)))
+      |                                                       ^
+Validation/Step15OAuthChecks.m:56:20: warning: 'resumeExternalUserAgentFlowWithURL:' is deprecated: Use resumeExternalUserAgentFlowWithURL:error: instead. Swift: Use the throwing resumeExternalUserAgentFlow(_:) [-Wdeprecated-declarations]
+   56 |     check([session resumeExternalUserAgentFlowWithURL:correct] && callbacks == 1 && response != nil && error == nil, "correct owned state returns authorization code without exchange");
+      |                    ^
+/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/AppAuth-iOS/Sources/AppAuthCore/OIDExternalUserAgentSession.h:55:3: note: 'resumeExternalUserAgentFlowWithURL:' has been explicitly marked deprecated here
+   55 |   __deprecated_msg("Use resumeExternalUserAgentFlowWithURL:error: instead. "
+      |   ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/usr/include/sys/cdefs.h:227:48: note: expanded from macro '__deprecated_msg'
+  227 |         #define __deprecated_msg(_msg) __attribute__((__deprecated__(_msg)))
+      |                                                       ^
+Validation/Step15OAuthChecks.m:57:21: warning: 'resumeExternalUserAgentFlowWithURL:' is deprecated: Use resumeExternalUserAgentFlowWithURL:error: instead. Swift: Use the throwing resumeExternalUserAgentFlow(_:) [-Wdeprecated-declarations]
+   57 |     check(![session resumeExternalUserAgentFlowWithURL:correct] && callbacks == 1, "completed authorization callback cannot replay");
+      |                     ^
+/Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages/checkouts/AppAuth-iOS/Sources/AppAuthCore/OIDExternalUserAgentSession.h:55:3: note: 'resumeExternalUserAgentFlowWithURL:' has been explicitly marked deprecated here
+   55 |   __deprecated_msg("Use resumeExternalUserAgentFlowWithURL:error: instead. "
+      |   ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/usr/include/sys/cdefs.h:227:48: note: expanded from macro '__deprecated_msg'
+  227 |         #define __deprecated_msg(_msg) __attribute__((__deprecated__(_msg)))
+      |                                                       ^
+5 warnings generated.
+PASS per-request unpredictable OAuth state
+PASS PKCE verifier meets RFC length
+PASS distinct per-request PKCE verifier
+PASS PKCE uses S256
+PASS challenge derives from actual verifier
+PASS RFC7636 S256 vector
+PASS authorization URL carries state and challenge
+PASS authorization URL excludes secret verifier
+PASS SDK refresh targets configured token endpoint by POST
+PASS SDK constructs actual refresh grant body
+PASS public-client refresh excludes URL credentials and client secret
+PASS SDK response expiry is observable before token use
+PASS wrong callback scheme cannot resume flow
+PASS matching redirect receives state validation
+PASS mismatched state rejects authorization
+PASS duplicate callback cannot authorize twice
+PASS correct owned state returns authorization code without exchange
+PASS completed authorization callback cannot replay
+PASS cancellation terminates authorization without token
+Step 15 OAuth SDK: 19 passed / 0 failed. No Google sign-in, token exchange or live account acceptance.

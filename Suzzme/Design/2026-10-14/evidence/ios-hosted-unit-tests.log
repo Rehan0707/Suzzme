@@ -1,0 +1,192 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -project /tmp/SuzzmeNativePlatformAcceptanceProject/Suzzme.xcodeproj -scheme NativePlatformAcceptance -configuration Debug -destination "platform=iOS Simulator,id=BF97982B-6BF2-4C6D-B647-2CC5A387A30B" -derivedDataPath /tmp/SuzzmeNativePlatformIOSBuild -clonedSourcePackagesDirPath /Users/rehan/Library/Developer/Xcode/DerivedData/Suzzme-ezecbrxiujzzmzdwyukzqbdrphxv/SourcePackages -disableAutomaticPackageResolution -skipPackageUpdates CODE_SIGNING_ALLOWED=NO -parallel-testing-enabled NO "-only-testing:NativePlatformUnitTests" -resultBundlePath /tmp/SuzzmeNativeFinalHosted-20261014.xcresult test-without-building
+
+Build settings from command line:
+    CODE_SIGNING_ALLOWED = NO
+
+Resolve Package Graph
+
+
+Resolved source packages:
+  swift-log: https://github.com/apple/swift-log.git @ 1.6.2
+  GTMAppAuth: https://github.com/google/GTMAppAuth.git @ 6.0.0
+  AppCheck: https://github.com/google/app-check.git @ 11.3.2
+  swift-system: https://github.com/apple/swift-system.git @ 1.8.1
+  swift-collections: https://github.com/apple/swift-collections.git @ 1.7.2
+  GTMSessionFetcher: https://github.com/google/gtm-session-fetcher.git @ 5.3.1
+  mcp-swift-sdk: https://github.com/modelcontextprotocol/swift-sdk @ 0.12.1
+  swift-nio: https://github.com/apple/swift-nio.git @ 2.104.0
+  EventSource: https://github.com/mattt/eventsource.git @ 1.5.1
+  GoogleUtilities: https://github.com/google/GoogleUtilities.git @ 8.1.4
+  AppAuth: https://github.com/openid/AppAuth-iOS.git @ 3.0.0
+  Promises: https://github.com/google/promises.git @ 2.4.1
+  GoogleSignIn: https://github.com/google/GoogleSignIn-iOS @ 10.0.0
+  InteropForGoogle: https://github.com/google/interop-ios-for-google-sdks.git @ 101.0.0
+  swift-atomics: https://github.com/apple/swift-atomics.git @ 1.3.1
+
+Writing result bundle at path:
+	/tmp/SuzzmeNativeFinalHosted-20261014.xcresult
+
+2026-10-14 09:03:36.564278+0530 Suzzme[2827:679955] [XPCErrors] non-launching port is incompatible with service identifier "com.apple.PointerUI.pointeruid.default-service"
+2026-10-14 09:03:38.698164+0530 Suzzme[2827:679955] [API] cannot add handler to 0 from 0 - dropping
+2026-10-14 09:03:38.699220+0530 Suzzme[2827:679955] [API] cannot add handler to 0 from 0 - dropping
+Test Suite 'All tests' started at 2026-10-14 09:03:38.705.
+Test Suite 'NativePlatformUnitTests.xctest' started at 2026-10-14 09:03:38.707.
+Test Suite 'ConversationContinuityTests' started at 2026-10-14 09:03:38.707.
+Test Case '-[NativePlatformUnitTests.ConversationContinuityTests testAnUnwindingGenerationKeepsItsDistinctRetryError]' started.
+Test Case '-[NativePlatformUnitTests.ConversationContinuityTests testAnUnwindingGenerationKeepsItsDistinctRetryError]' passed (0.006 seconds).
+Test Case '-[NativePlatformUnitTests.ConversationContinuityTests testEnvironmentUsesItsExistingProviderForCapabilityAndAnswers]' started.
+2026-10-14 09:03:38.734720+0530 Suzzme[2827:680268] [as_client] AVAudioSessionImpl_Simulator.mm:139   Unsupported property: SupportsInterruptionEndedAfterActivationError
+Test Case '-[NativePlatformUnitTests.ConversationContinuityTests testEnvironmentUsesItsExistingProviderForCapabilityAndAnswers]' passed (0.085 seconds).
+Test Case '-[NativePlatformUnitTests.ConversationContinuityTests testExplanationRetainsOnlyBoundedCurrentSafeConversation]' started.
+Test Case '-[NativePlatformUnitTests.ConversationContinuityTests testExplanationRetainsOnlyBoundedCurrentSafeConversation]' passed (0.009 seconds).
+Test Suite 'ConversationContinuityTests' passed at 2026-10-14 09:03:38.810.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.101 (0.103) seconds
+Test Suite 'FinalUIHostedBehaviorTests' started at 2026-10-14 09:03:38.810.
+Test Case '-[NativePlatformUnitTests.FinalUIHostedBehaviorTests testPreservedUIAssertionsAndConversationOwnership]' started.
+PASS shared semantic mapping: idle
+PASS shared semantic mapping: listening
+PASS shared semantic mapping: transcribing
+PASS shared semantic mapping: understanding
+PASS shared semantic mapping: gatheringContext
+PASS shared semantic mapping: reasoning
+PASS shared semantic mapping: planning
+PASS shared semantic mapping: awaitingConfirmation
+PASS shared semantic mapping: acting
+PASS shared semantic mapping: speaking
+PASS shared semantic mapping: success
+PASS shared semantic mapping: error
+PASS idle hidden
+PASS success collapses
+PASS generic request completion never claims mutation done
+PASS minimal has no continuous motion
+PASS five distinct named themes
+PASS face adapts: suzzmePurple
+PASS face adapts: burgundy
+PASS face adapts: deepBlue
+PASS face adapts: silver
+PASS face adapts: graphite
+PASS no fabricated Live Activity: assistantInteraction
+PASS no fabricated Live Activity: dailySummaryReady
+PASS no fabricated Live Activity: opportunityReady
+PASS no fabricated Live Activity: timeCriticalNotice
+PASS navigation: home
+PASS navigation: today
+PASS navigation: briefing
+PASS navigation: memory
+PASS navigation: sources
+PASS navigation: history
+PASS navigation: settings
+PASS specific destructive verbs
+PASS permission availability distinctions
+PASS presence geometry bounded: (316.0, 102.0), attached false
+PASS presence geometry bounded: (316.0, 102.0), attached true
+PASS presence geometry bounded: (380.0, 300.0), attached false
+PASS presence geometry bounded: (380.0, 300.0), attached true
+PASS presence geometry bounded: (10.0, 10.0), attached false
+PASS presence geometry bounded: (10.0, 10.0), attached true
+PASS central action projected into Presence
+PASS wrong action rejected
+PASS wrong owner rejected
+PASS stale callbacks cannot mutate
+PASS cancel clears confirmation projection
+PASS cancel preserves target
+PASS cancelled confirmation rejected
+PASS new proposal has new identity
+PASS valid UI confirmation reaches central execution
+PASS duplicate confirmation rejected
+PASS cancellation removes private presentation
+PASS cancelled Core memory proposal cannot revive through text
+PASS an untouched Ask presentation owns no global request
+PASS typed presentation captures its request before dispatch
+PASS navigation reappearance cannot adopt a newer global request
+PASS a stale voice revision cannot adopt an arbitrary current request
+PASS dismissing an older Ask presentation preserves the actual newer Core response
+PASS dismissing an untouched Ask presentation cannot cancel a later global invocation
+PASS dismissing the owned Ask presentation still retires its actual Core response
+PASS Talk dismissed before dispatch cannot invoke a microphone session
+PASS cancelled Talk dispatch changes neither request ownership nor VoiceSessionController
+PASS local Talk captures its request before microphone suspension
+PASS foreign voice sessions cannot restore a presentation confirmation
+PASS superseding global requests cannot steal local Talk ownership
+PASS an owned voice confirmation restores its known original Core request
+PASS Ask initially displaying an active voice confirmation retains original action ownership
+PASS a typed follow-up drops old voice confirmation ownership
+PASS production Core answer enters only its matching conversation turn
+PASS a real follow-up keeps the earlier question and completed answer visible
+PASS conversation attribution preserves the real Core route without a model claim
+PASS a superseding request cannot replace another turn's response
+PASS late model output cannot resurrect a cancelled conversation turn
+PASS cancelled read-only generation retains its exact question for deliberate retry
+PASS an uncertain mutation is editable but never offered as automatic retry
+PASS a failed confirmation cannot replay an old action approval
+PASS conversation history never extends retention of restricted voice input
+PASS visible exchanges stay within the existing Core session-turn bound
+PASS conversation projection expires with the existing Core session policy
+PASS a cleared conversation cannot receive a late owned answer
+Final UI passed: 80
+Final UI failed: 0
+Test Case '-[NativePlatformUnitTests.FinalUIHostedBehaviorTests testPreservedUIAssertionsAndConversationOwnership]' passed (14.143 seconds).
+Test Suite 'FinalUIHostedBehaviorTests' passed at 2026-10-14 09:03:52.967.
+	 Executed 1 test, with 0 failures (0 unexpected) in 14.143 (14.157) seconds
+Test Suite 'SharedApplicationLifecycleTests' started at 2026-10-14 09:03:52.977.
+Test Case '-[NativePlatformUnitTests.SharedApplicationLifecycleTests testAggregateBackgroundRetiresTheOwnedRequestBeforeCompletingCleanup]' started.
+Test Case '-[NativePlatformUnitTests.SharedApplicationLifecycleTests testAggregateBackgroundRetiresTheOwnedRequestBeforeCompletingCleanup]' passed (0.318 seconds).
+Test Case '-[NativePlatformUnitTests.SharedApplicationLifecycleTests testAggregateInactiveAndActivePreserveTheActualRequest]' started.
+Test Case '-[NativePlatformUnitTests.SharedApplicationLifecycleTests testAggregateInactiveAndActivePreserveTheActualRequest]' passed (0.029 seconds).
+Test Case '-[NativePlatformUnitTests.SharedApplicationLifecycleTests testForegroundCancelsQueuedBackgroundCleanupBeforeANewerRequest]' started.
+Test Case '-[NativePlatformUnitTests.SharedApplicationLifecycleTests testForegroundCancelsQueuedBackgroundCleanupBeforeANewerRequest]' passed (0.044 seconds).
+Test Case '-[NativePlatformUnitTests.SharedApplicationLifecycleTests testReadinessAppliesTheBackgroundPhaseRecordedDuringPreparation]' started.
+Test Case '-[NativePlatformUnitTests.SharedApplicationLifecycleTests testReadinessAppliesTheBackgroundPhaseRecordedDuringPreparation]' passed (0.014 seconds).
+Test Case '-[NativePlatformUnitTests.SharedApplicationLifecycleTests testTwoStartupRootsShareOneRuntimeAndLiveActivityOwner]' started.
+Test Case '-[NativePlatformUnitTests.SharedApplicationLifecycleTests testTwoStartupRootsShareOneRuntimeAndLiveActivityOwner]' passed (0.016 seconds).
+Test Suite 'SharedApplicationLifecycleTests' passed at 2026-10-14 09:03:53.399.
+	 Executed 5 tests, with 0 failures (0 unexpected) in 0.421 (0.423) seconds
+Test Suite 'StartupRecoveryTests' started at 2026-10-14 09:03:53.399.
+Test Case '-[NativePlatformUnitTests.StartupRecoveryTests testColdLaunchURLsAreBoundedAndTransferredOnce]' started.
+Test Case '-[NativePlatformUnitTests.StartupRecoveryTests testColdLaunchURLsAreBoundedAndTransferredOnce]' passed (0.004 seconds).
+Test Case '-[NativePlatformUnitTests.StartupRecoveryTests testContinueSupersedesALateSuccessfulPreparation]' started.
+Test Case '-[NativePlatformUnitTests.StartupRecoveryTests testContinueSupersedesALateSuccessfulPreparation]' passed (0.015 seconds).
+Test Case '-[NativePlatformUnitTests.StartupRecoveryTests testDelayedPreparationLeavesAVisibleInteractiveStartup]' started.
+2026-10-14 09:03:53.434552+0530 Suzzme[2827:679955] [Invalid Configuration] Cannot use Scene methods for URL, NSUserActivity, and other External Events without using SwiftUI Lifecycle. Without SwiftUI Lifecycle, advertising and handling External Events wastes resources, and will have unpredictable results.
+2026-10-14 09:03:54.183439+0530 Suzzme[2827:679955] [Invalid Configuration] Unable to render flattened version of PlatformViewRepresentableAdaptor<CircularUIKitProgressView>.
+IOSurfaceClientSetSurfaceNotify failed e00002c7
+2026-10-14 09:03:54.258636+0530 Suzzme[2827:679955] [Invalid Configuration] Cannot use Scene methods for URL, NSUserActivity, and other External Events without using SwiftUI Lifecycle. Without SwiftUI Lifecycle, advertising and handling External Events wastes resources, and will have unpredictable results.
+2026-10-14 09:03:54.261650+0530 Suzzme[2827:679955] [Invalid Configuration] Cannot use Scene methods for URL, NSUserActivity, and other External Events without using SwiftUI Lifecycle. Without SwiftUI Lifecycle, advertising and handling External Events wastes resources, and will have unpredictable results.
+SwiftUICore/Logging.swift:232: Fatal error: no current update to enqueue action to
+2026-10-14 09:03:54.559703+0530 Suzzme[2827:679955] SwiftUICore/Logging.swift:232: Fatal error: no current update to enqueue action to
+2026-10-14 09:04:06.866365+0530 Suzzme[2965:681458] [XPCErrors] non-launching port is incompatible with service identifier "com.apple.PointerUI.pointeruid.default-service"
+2026-10-14 09:04:07.948825+0530 Suzzme[2965:681458] [API] cannot add handler to 0 from 0 - dropping
+2026-10-14 09:04:07.949941+0530 Suzzme[2965:681458] [API] cannot add handler to 0 from 0 - dropping
+
+Restarting after unexpected exit, crash, or test timeout; summary will include totals from previous launches.
+
+Test Suite 'Selected tests' started at 2026-10-14 09:04:08.832.
+Test Suite 'NativePlatformUnitTests.xctest' started at 2026-10-14 09:04:08.833.
+Test Suite 'StartupRecoveryTests' started at 2026-10-14 09:04:08.834.
+Test Case '-[NativePlatformUnitTests.StartupRecoveryTests testMultipleSceneRequestsShareOnePreparation]' started.
+Test Case '-[NativePlatformUnitTests.StartupRecoveryTests testMultipleSceneRequestsShareOnePreparation]' passed (0.040 seconds).
+Test Case '-[NativePlatformUnitTests.StartupRecoveryTests testRetryPreservesAnOpenedStoreAndRetiresTheOldRequest]' started.
+2026-10-14 09:04:08.916337+0530 Suzzme[2965:681629] [as_client] AVAudioSessionImpl_Simulator.mm:139   Unsupported property: SupportsInterruptionEndedAfterActivationError
+Test Case '-[NativePlatformUnitTests.StartupRecoveryTests testRetryPreservesAnOpenedStoreAndRetiresTheOldRequest]' passed (0.132 seconds).
+Test Case '-[NativePlatformUnitTests.StartupRecoveryTests testStorageFailureRequiresExplicitRecoveryChoice]' started.
+Test Case '-[NativePlatformUnitTests.StartupRecoveryTests testStorageFailureRequiresExplicitRecoveryChoice]' passed (0.005 seconds).
+Test Suite 'StartupRecoveryTests' passed at 2026-10-14 09:04:09.013.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.177 (0.180) seconds
+Test Suite 'NativePlatformUnitTests.xctest' passed at 2026-10-14 09:04:09.014.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.177 (0.181) seconds
+Test Suite 'Selected tests' passed at 2026-10-14 09:04:09.014.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.177 (0.183) seconds
+2026-10-14 09:04:31.234 xcodebuild[2719:679077] [MT] IDETestOperationsObserverDebug: 77.899 elapsed -- Testing started completed.
+2026-10-14 09:04:31.236 xcodebuild[2719:679077] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start
+2026-10-14 09:04:31.236 xcodebuild[2719:679077] [MT] IDETestOperationsObserverDebug: 77.900 sec, +77.900 sec -- end
+
+Test session results, code coverage, and logs:
+	/tmp/SuzzmeNativeFinalHosted-20261014.xcresult
+
+Failing tests:
+	StartupRecoveryTests.testDelayedPreparationLeavesAVisibleInteractiveStartup()
+
+** TEST EXECUTE FAILED **
+
+Testing started

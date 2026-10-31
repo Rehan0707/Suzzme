@@ -1,0 +1,90 @@
+Window: "Integrations", App: Suzzme.
+0 standard window Integrations, ID: main, Secondary Actions: Raise
+	1 split group main, SidebarNavigationSplitView
+		2 scroll area
+			3 list Sidebar
+				4 row (selectable)
+				5 row (selectable) Suzzme, Your personal companion
+				6 row (selectable) Your day
+				7 row (selectable) Home
+				8 row (selectable) Today
+				9 row (selectable) Daily Summary
+				10 row (selectable) Your information
+				11 row (selectable) Personal Memory
+				12 row (selectable) Sources
+				13 row (selectable) History
+				14 row (selectable)
+				15 row (selected) Settings
+		16 splitter (disabled, settable, float) 232
+		17 scroll area Secondary Actions: Scroll Up, Scroll Down, Cancel
+			18 heading Apps and integrations
+			19 text Choose a connection and review its access. Status reflects what is available in this build.
+			20 text field (settable) Description: Search integrations, Placeholder: Search apps, ID: suzzme-integration-search
+			21 disclosure triangle Description: How access works, Value: on
+			22 container
+				23 text On-device reasoning, Prompts and approved excerpts use Apple’s on-device model when available, with Suzzme’s local fallback when it isn’t. Source access, Calendar and Reminders use local permissions. GitHub, Notion, Linear and Gmail fetch allowed data over the internet. LinkedIn uses only screen context you explicitly share. WhatsApp chat access is not used.
+			24 text 0 of 16 stored provider accounts. Google authorization is managed separately. Connecting does not enable automatic intake or actions.
+			25 checkbox Description: Include catalog-only apps (92), Help: Shows reference entries that cannot connect in this build. Search always includes them., Value: 0, ID: suzzme-integration-catalog-toggle
+			26 button Browser pairing
+			27 heading Development and data
+			28 text 3 apps
+			29 collection Secondary Actions: AXScrollToTop, AXScrollToBottom
+				30 button Setup required, GitHub, Read-only access to repositories you allow., Connect
+				31 button Setup required, GitLab, Read authorized GitLab information with a verified account and explicit scope., Connect
+			32 heading Productivity
+			33 text 11 apps
+			34 collection Secondary Actions: AXScrollToTop, AXScrollToBottom
+				35 button Setup required, Airtable, Read authorized Airtable information with a verified account and explicit scope., Connect
+				36 button Setup required, Google Classroom, Read authorized Google Classroom information with a verified account and explicit scope., Setup
+				37 button Setup required, Google Docs, Read authorized Google Docs information with a verified account and explicit scope., Setup
+				38 button Setup required, Google Drive, Read authorized Google Drive information with a verified account and explicit scope., Setup
+			39 heading Project management
+			40 text 3 apps
+			41 heading Communication and social
+			42 text 2 apps
+			43 heading Marketing and publishing
+			44 text 1 app
+			45 heading Analytics
+			46 text 3 apps
+			47 heading Finance
+			48 text 2 apps
+			49 heading Scheduling and meetings
+			50 text 2 apps
+			51 heading Design and content
+			52 text 2 apps
+			53 heading On this device
+			54 button Calendar, Connected, Events from calendars on this device., Manage
+			55 button Reminders, Connected, Tasks and deadlines you authorize., Manage
+			56 button Messages, Shared text only, Choose an excerpt to use locally. No live inbox access., Import
+			57 heading Custom connectors
+			58 button Custom MCP server, Explicit server and tool approval, Pinned HTTPS · read-only · request-local, Manage
+			59 text Catalog-only entries do not connect an account or grant Suzzme access. You choose the access Connected credentials stay in Keychain. External writes are disabled.
+			60 collection Secondary Actions: AXScrollToTop, AXScrollToBottom
+			61 collection Secondary Actions: AXScrollToTop, AXScrollToBottom
+			62 collection Secondary Actions: AXScrollToTop, AXScrollToBottom
+			63 collection Secondary Actions: AXScrollToTop, AXScrollToBottom
+			64 collection Secondary Actions: AXScrollToTop, AXScrollToBottom
+			65 collection Secondary Actions: AXScrollToTop, AXScrollToBottom
+			66 collection Secondary Actions: AXScrollToTop, AXScrollToBottom
+			67 scroll bar (settable, float) 0
+				68 value indicator (settable, float) 0
+				69 increment arrow button
+				70 decrement arrow button
+				71 increment page button
+				72 decrement page button
+	73 toolbar
+		74 button Description: Hide Sidebar, Secondary Actions: Increment, Decrement, Delete, Cancel
+		75 button Description: Back, ID: chevron.backward, Secondary Actions: Increment, Decrement, Delete, Cancel, Move previous, Remove from toolbar
+	76 close button
+	77 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	78 minimize button
+	79 text Integrations
+80 menu bar
+	81 Suzzme
+	82 Edit
+	83 View
+	84 Companion
+	85 Window
+	86 Help
+
+The focused UI element is 0 standard window Integrations, ID: main, Secondary Actions: Raise

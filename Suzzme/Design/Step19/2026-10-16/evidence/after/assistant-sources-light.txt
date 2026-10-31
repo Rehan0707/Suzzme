@@ -1,0 +1,41 @@
+Window: "", App: Suzzme.
+0 sheet Secondary Actions: Raise
+	1 container
+		2 button Description: Back, ID: chevron.backward, Secondary Actions: Cancel
+		3 text Value: Sources, Secondary Actions: Cancel
+		4 scroll area Secondary Actions: Scroll Up, Scroll Down
+			5 list Secondary Actions: Cancel
+				6 row (selectable)
+				7 row (selectable) Description: Context, with your permission, Value: Choose what Suzzme may check. Review access and recent updates for each source.
+				8 row (selectable) On this device
+				9 row (selectable) Calendar, Access allowed, Your schedule and what is coming next, Checked successfully, Last checked 16 Oct 2026 at 11:31 PM
+				10 row (selectable) Reminders, Access allowed, Unfinished work and upcoming commitments, Checked successfully, Last checked 16 Oct 2026 at 11:31 PM
+				11 row (selectable) Contacts, Access allowed, The people you ask Suzzme about
+				12 row (selectable) Connected accounts and shared text
+				13 row (selectable) Gmail, Unavailable in this build, Recent inbox headers · Uses Google services, Recent updates off
+				14 row (selectable) Shared messages, Manual sharing, Messages and other apps · Only text you share, Recent updates off
+				15 row (selectable) App integrations
+				16 row (selectable) Integrations, Review capabilities, GitHub account reads and supported service connections
+				17 row (selectable) Description: Connected apps recent updates, Value: Updates off
+Turning updates off stops intake and hides stored updates. Source items and Personal Memory are not deleted.
+					18 checkbox (disabled) Description: Connected apps recent updates, Value: 0
+				19 row (selectable) Pages
+				20 row (selectable) Watched Links, No pages added, Checking paused for network safety, Recent updates off
+				21 row (selectable) Your controls
+				22 row (selectable) Recent information, Review and clear saved source updates
+				23 row (selectable) Access and recent updates are separate. Turning updates off stops intake; it does not change source items or Personal Memory.
+			24 scroll bar (settable, float) 0
+				25 value indicator (settable, float) 0
+				26 increment arrow button
+				27 decrement arrow button
+				28 increment page button
+				29 decrement page button
+30 menu bar
+	31 Suzzme
+	32 Edit
+	33 View
+	34 Companion
+	35 Window
+	36 Help
+
+The focused UI element is 0 sheet Secondary Actions: Raise

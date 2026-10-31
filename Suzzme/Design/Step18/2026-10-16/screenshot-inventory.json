@@ -1,0 +1,731 @@
+[
+  {
+    "file": "Mac-UI/assistant-answer.jpg",
+    "available": true,
+    "size": [
+      940,
+      1456
+    ],
+    "sha256": "d18269d331162ad18cce16c7a26a77039ff6cbd600b02765d4141005b9217558"
+  },
+  {
+    "file": "Mac-UI/daily-summary.jpg",
+    "available": true,
+    "size": [
+      2160,
+      1640
+    ],
+    "sha256": "0ce812551ca470b326692fd573ef31ae723e91ad31d5f8f4d134fc52c57ab04d"
+  },
+  {
+    "file": "Mac-UI/history.jpg",
+    "available": true,
+    "size": [
+      2160,
+      1640
+    ],
+    "sha256": "f422aad153955444397ebd0e488713fbe30084c908088da9f9eab0bc8e7a395e"
+  },
+  {
+    "file": "Mac-UI/home.jpg",
+    "available": true,
+    "size": [
+      2160,
+      1640
+    ],
+    "sha256": "e1a3e9006de16cac8a648694c24650568afbb00a00150c18c8a18905022bd544"
+  },
+  {
+    "file": "Mac-UI/isolated-apple-availability.jpg",
+    "available": true,
+    "size": [
+      940,
+      730
+    ],
+    "sha256": "d444a7a107529910a608ab510269ae6a025dd8483ce72ca290b04a1c397a8960"
+  },
+  {
+    "file": "Mac-UI/isolated-follow-up-state.jpg",
+    "available": true,
+    "size": [
+      940,
+      1456
+    ],
+    "sha256": "be562e2c4c7b93e5d0e074e4f7f351a1327e1413a4a41cad9c943f1d462f2e84"
+  },
+  {
+    "file": "Mac-UI/isolated-google-availability.jpg",
+    "available": true,
+    "size": [
+      940,
+      730
+    ],
+    "sha256": "db36e4530d576d7ee56d25058c8caacbbc432bc3caf44433fffd93b74dd9a744"
+  },
+  {
+    "file": "Mac-UI/isolated-home.jpg",
+    "available": true,
+    "size": [
+      2160,
+      1640
+    ],
+    "sha256": "379545996483c7b139c58de6dcaf10c9e1dc623d574e6ac5cbab44619c62d8eb"
+  },
+  {
+    "file": "Mac-UI/isolated-need-a-hand.jpg",
+    "available": true,
+    "size": [
+      940,
+      730
+    ],
+    "sha256": "fbff76707b2adc852d17f5de33bba53aa63704973da10606200a7545a0ac9c00"
+  },
+  {
+    "file": "Mac-UI/isolated-onboarding-1.jpg",
+    "available": true,
+    "size": [
+      2160,
+      1640
+    ],
+    "sha256": "4c9e30c10e037e9e140ddc7f6e679f16bf78b91a78e7e89435c7314c403dcbd6"
+  },
+  {
+    "file": "Mac-UI/isolated-onboarding-2.jpg",
+    "available": true,
+    "size": [
+      2160,
+      1640
+    ],
+    "sha256": "3ce9ddf9b9843ee6ffbbd95dc05c497585392eb665eea0770d47938d58d7ac25"
+  },
+  {
+    "file": "Mac-UI/isolated-onboarding-3.jpg",
+    "available": true,
+    "size": [
+      2160,
+      1640
+    ],
+    "sha256": "09183088d3f8dba5dc87462bc278b1708594e7fa3ecd3e1928343e0b26f7b90e"
+  },
+  {
+    "file": "Mac-UI/isolated-onboarding-4.jpg",
+    "available": true,
+    "size": [
+      2160,
+      1640
+    ],
+    "sha256": "1307d1870a9df790577667bbde70eda823fae0f0069ab5fe28d4307b3f772674"
+  },
+  {
+    "file": "Mac-UI/isolated-onboarding-5.jpg",
+    "available": true,
+    "size": [
+      2160,
+      1640
+    ],
+    "sha256": "683edf1c4a59f600e7382d6b91a5c8aa6f747b585c8b1bdc9ce1ca301143faf7"
+  },
+  {
+    "file": "Mac-UI/isolated-onboarding-6.jpg",
+    "available": true,
+    "size": [
+      2160,
+      1640
+    ],
+    "sha256": "98624a59c5742e0a3b3e8fa12ebe79bfeb85b23c02d6f5cae1a10fc06ba42dce"
+  },
+  {
+    "file": "Mac-UI/isolated-onboarding-7.jpg",
+    "available": true,
+    "size": [
+      2160,
+      1640
+    ],
+    "sha256": "ac9a34d37125b35d31f2235de0d31f6a87117a71641789658c23d069609c9420"
+  },
+  {
+    "file": "Mac-UI/isolated-privacy-policy.jpg",
+    "available": true,
+    "size": [
+      940,
+      730
+    ],
+    "sha256": "11fea89f91d1b117c73958b687c9c4894706d06adf7d45a7330c73cb6b646aa1"
+  },
+  {
+    "file": "Mac-UI/isolated-sign-in.jpg",
+    "available": true,
+    "size": [
+      2160,
+      1640
+    ],
+    "sha256": "9f30ccacd55c4bf48ea79456a2f8475888e279ad5200a03907d5699af9a3af7b"
+  },
+  {
+    "file": "Mac-UI/isolated-terms-of-service.jpg",
+    "available": true,
+    "size": [
+      940,
+      730
+    ],
+    "sha256": "80dc74336f911aa3e9fd5e9c32aff861755ad21698748678d6e9f4a7009b8b5d"
+  },
+  {
+    "file": "Mac-UI/personal-memory.jpg",
+    "available": true,
+    "size": [
+      2160,
+      1640
+    ],
+    "sha256": "a907b4e820425a5aa6c8884689343890ccfbda739805d4448f2cc38fa76567ca"
+  },
+  {
+    "file": "Mac-UI/settings-about-suzzme.jpg",
+    "available": true,
+    "size": [
+      2160,
+      1640
+    ],
+    "sha256": "d9515e0164203ed6a45b9ef9098d86fdbe4f4855abe8d9e76ecf0cf51584b037"
+  },
+  {
+    "file": "Mac-UI/settings-accessibility.jpg",
+    "available": true,
+    "size": [
+      2160,
+      1640
+    ],
+    "sha256": "c86600420b2ef2dd35fae99994779f9459471d6b8c8b2a359bbfe687b8112ae2"
+  },
+  {
+    "file": "Mac-UI/settings-daily-summary.jpg",
+    "available": true,
+    "size": [
+      2160,
+      1640
+    ],
+    "sha256": "db54fb7896780fc34d048baa7f541efc92825d5d16890231f4ec6c747a4654f7"
+  },
+  {
+    "file": "Mac-UI/settings-integrations.jpg",
+    "available": true,
+    "size": [
+      2160,
+      1640
+    ],
+    "sha256": "9ee60239a17677c9e7852fcead29e96a01e06e9b85e6e2b2498805efceec6aed"
+  },
+  {
+    "file": "Mac-UI/settings-notifications.jpg",
+    "available": true,
+    "size": [
+      2160,
+      1640
+    ],
+    "sha256": "73cc10b9137a33f7279ff89dbab44661f1e914bea0175367931c383599a25f4a"
+  },
+  {
+    "file": "Mac-UI/settings-presence.jpg",
+    "available": true,
+    "size": [
+      2160,
+      1640
+    ],
+    "sha256": "98c5583e528e0a49958c2977b7f470f7d873456d53d7a54f803c4f0e41ff790b"
+  },
+  {
+    "file": "Mac-UI/settings-privacy.jpg",
+    "available": true,
+    "size": [
+      2160,
+      1640
+    ],
+    "sha256": "c24e5f0c2a9434fbd971e727988d5ca66d61bca43f68f8450203e19c77739d51"
+  },
+  {
+    "file": "Mac-UI/settings-profile.jpg",
+    "available": true,
+    "size": [
+      2160,
+      1640
+    ],
+    "sha256": "beff2522680eef6c84ae2ddd1cbfbb8fce24f7218f085ad35099be2a519a2e08"
+  },
+  {
+    "file": "Mac-UI/settings-talk-to-suzzme.jpg",
+    "available": true,
+    "size": [
+      2160,
+      1640
+    ],
+    "sha256": "6749d9be5089407a90505e1b5e198217d399673e82f566691d665ba5f91ce1c6"
+  },
+  {
+    "file": "Mac-UI/settings-voice.jpg",
+    "available": true,
+    "size": [
+      2160,
+      1640
+    ],
+    "sha256": "d634387618551d9912b1b374047f117ca6b1464d86d44707926f643a2934d1b3"
+  },
+  {
+    "file": "Mac-UI/settings.jpg",
+    "available": true,
+    "size": [
+      2160,
+      1640
+    ],
+    "sha256": "d29ced793aa357baa7e909819c255e10b2ec4cf15c9d1638d18dbb4600132e53"
+  },
+  {
+    "file": "Mac-UI/sources.jpg",
+    "available": true,
+    "size": [
+      2160,
+      1640
+    ],
+    "sha256": "9c106624c541c3b8c8d0ec449d48fbb3c7680622e56de564fcdc88432a4e69e0"
+  },
+  {
+    "file": "Mac-UI/today.jpg",
+    "available": true,
+    "size": [
+      2160,
+      1640
+    ],
+    "sha256": "e7bd421562eb880cf41902c3071292e3ef76dad1959499917895748439434615"
+  },
+  {
+    "file": "PresencePreviews/Dark-acting.png",
+    "available": true,
+    "size": [
+      1080,
+      1200
+    ],
+    "sha256": "19827bd5890e018c69e2e889f0793aba92b909cfceaabc41ab1ded354e9ac28a"
+  },
+  {
+    "file": "PresencePreviews/Dark-awaitingConfirmation.png",
+    "available": true,
+    "size": [
+      1080,
+      1200
+    ],
+    "sha256": "a4bd3498bd1453260a78dba8c831d32913c602d471ca70de09079b5fa6a93070"
+  },
+  {
+    "file": "PresencePreviews/Dark-error.png",
+    "available": true,
+    "size": [
+      1080,
+      1200
+    ],
+    "sha256": "40616cd42278692ed11190729e04ec66339c6363da61e63c2ea7e60c7db5b1b1"
+  },
+  {
+    "file": "PresencePreviews/Dark-gatheringContext.png",
+    "available": true,
+    "size": [
+      1080,
+      1200
+    ],
+    "sha256": "2b439c90e0e6e1e39657b136d8dcc3e2651ae200bfc61250009d4db314e4e1a1"
+  },
+  {
+    "file": "PresencePreviews/Dark-idle.png",
+    "available": true,
+    "size": [
+      1080,
+      1200
+    ],
+    "sha256": "8a3da08ad5bb03a09783bb2486c4db7c27bb06a1c356efe96b30d7e30088591c"
+  },
+  {
+    "file": "PresencePreviews/Dark-listening.png",
+    "available": true,
+    "size": [
+      1080,
+      1200
+    ],
+    "sha256": "48126820ba35a03e3a96db6a74bcc1171287c702110285e0717051d9a86076ef"
+  },
+  {
+    "file": "PresencePreviews/Dark-planning.png",
+    "available": true,
+    "size": [
+      1080,
+      1200
+    ],
+    "sha256": "075db9a745a523f3ae40339b185935d5a5c844506a6623bd519a3801a4f2cc52"
+  },
+  {
+    "file": "PresencePreviews/Dark-reasoning.png",
+    "available": true,
+    "size": [
+      1080,
+      1200
+    ],
+    "sha256": "521f869aa4c4ecbad5ba60525e7530229446cb8b56cf4011de984f100f3ebdd5"
+  },
+  {
+    "file": "PresencePreviews/Dark-speaking.png",
+    "available": true,
+    "size": [
+      1080,
+      1200
+    ],
+    "sha256": "0870dc6b296a270ea023f98d73aa50d95a69b82fb4df81342785e93f85434a90"
+  },
+  {
+    "file": "PresencePreviews/Dark-success.png",
+    "available": true,
+    "size": [
+      1080,
+      1200
+    ],
+    "sha256": "d10078977cf69a910b917e0ed4ade10423ed4c07133f00d4ca0b8df231172123"
+  },
+  {
+    "file": "PresencePreviews/Dark-transcribing.png",
+    "available": true,
+    "size": [
+      1080,
+      1200
+    ],
+    "sha256": "74f70edf38c896bb57751dfd70090a578620372506cd3089125ee26ba26e742d"
+  },
+  {
+    "file": "PresencePreviews/Dark-understanding.png",
+    "available": true,
+    "size": [
+      1080,
+      1200
+    ],
+    "sha256": "212be4f6cde523840662a8ee343b36df27d8c236b88ee3cc76fd89c2fe6faa7c"
+  },
+  {
+    "file": "PresencePreviews/GitHub-Fallback-Allowed-Dark.png",
+    "available": true,
+    "size": [
+      752,
+      680
+    ],
+    "sha256": "4866c431a1abd50303028ccac42e89f01fdb518cdbd9c261c235ec70caeb7209"
+  },
+  {
+    "file": "PresencePreviews/GitHub-Fallback-Allowed-LargeType.png",
+    "available": true,
+    "size": [
+      752,
+      680
+    ],
+    "sha256": "4866c431a1abd50303028ccac42e89f01fdb518cdbd9c261c235ec70caeb7209"
+  },
+  {
+    "file": "PresencePreviews/GitHub-Fallback-Allowed-Light.png",
+    "available": true,
+    "size": [
+      752,
+      680
+    ],
+    "sha256": "312f17b07b89f7350832ab7d55fa2ec847871b8fba2687bc103a520a655fce71"
+  },
+  {
+    "file": "PresencePreviews/GitHub-Fallback-Request-Dark.png",
+    "available": true,
+    "size": [
+      752,
+      680
+    ],
+    "sha256": "e00c38e169bcea53128bb6486ecb4665aa4e044c7a41efcaf297d0ca7cae52e3"
+  },
+  {
+    "file": "PresencePreviews/GitHub-Fallback-Request-LargeType.png",
+    "available": true,
+    "size": [
+      752,
+      680
+    ],
+    "sha256": "c0f37471df2fa53c4a9ac1a7af91b8f3e86e73b96faa15478a5a84f5b3826887"
+  },
+  {
+    "file": "PresencePreviews/GitHub-Fallback-Request-Light.png",
+    "available": true,
+    "size": [
+      752,
+      680
+    ],
+    "sha256": "db2458c57ee2188a6a6963b4b22f36898d56d89c8fe1bc0ac8fbefb46e6406c4"
+  },
+  {
+    "file": "PresencePreviews/GitHub-Notch-Allowed-Dark.png",
+    "available": true,
+    "size": [
+      752,
+      744
+    ],
+    "sha256": "a93d2b53389d9d3a903a0678eecd0980542b4b00f7e60d12d1f4251a826d194d"
+  },
+  {
+    "file": "PresencePreviews/GitHub-Notch-Allowed-LargeType.png",
+    "available": true,
+    "size": [
+      752,
+      744
+    ],
+    "sha256": "a93d2b53389d9d3a903a0678eecd0980542b4b00f7e60d12d1f4251a826d194d"
+  },
+  {
+    "file": "PresencePreviews/GitHub-Notch-Allowed-Light.png",
+    "available": true,
+    "size": [
+      752,
+      744
+    ],
+    "sha256": "b80c8e5984561091b792e2aee998f024070af374edb6489e99d8b1ab5f404855"
+  },
+  {
+    "file": "PresencePreviews/GitHub-Notch-Request-Dark.png",
+    "available": true,
+    "size": [
+      752,
+      744
+    ],
+    "sha256": "e1754c077228c00d613d7b7d4404bc5631fb450e2f48661f70643eb0897d1418"
+  },
+  {
+    "file": "PresencePreviews/GitHub-Notch-Request-LargeType.png",
+    "available": true,
+    "size": [
+      752,
+      744
+    ],
+    "sha256": "e1754c077228c00d613d7b7d4404bc5631fb450e2f48661f70643eb0897d1418"
+  },
+  {
+    "file": "PresencePreviews/GitHub-Notch-Request-Light.png",
+    "available": true,
+    "size": [
+      752,
+      744
+    ],
+    "sha256": "3d12653e495992a4cbf0030fde7865bb26311c7b5bffcc83dc812d6cb4f0bc7c"
+  },
+  {
+    "file": "PresencePreviews/LargeType-acting.png",
+    "available": true,
+    "size": [
+      1080,
+      1200
+    ],
+    "sha256": "19827bd5890e018c69e2e889f0793aba92b909cfceaabc41ab1ded354e9ac28a"
+  },
+  {
+    "file": "PresencePreviews/LargeType-awaitingConfirmation.png",
+    "available": true,
+    "size": [
+      1080,
+      1200
+    ],
+    "sha256": "1902311ea596328ca02ada2e813771d5f0f5b08d92ff4516b1b27a19f29c2fee"
+  },
+  {
+    "file": "PresencePreviews/LargeType-error.png",
+    "available": true,
+    "size": [
+      1080,
+      1200
+    ],
+    "sha256": "40616cd42278692ed11190729e04ec66339c6363da61e63c2ea7e60c7db5b1b1"
+  },
+  {
+    "file": "PresencePreviews/LargeType-gatheringContext.png",
+    "available": true,
+    "size": [
+      1080,
+      1200
+    ],
+    "sha256": "2b439c90e0e6e1e39657b136d8dcc3e2651ae200bfc61250009d4db314e4e1a1"
+  },
+  {
+    "file": "PresencePreviews/LargeType-idle.png",
+    "available": true,
+    "size": [
+      1080,
+      1200
+    ],
+    "sha256": "ca75a2d34696a18f14c1daeaa9c0188e7b8a8a4978e8cad02535ffbe4c573c4e"
+  },
+  {
+    "file": "PresencePreviews/LargeType-listening.png",
+    "available": true,
+    "size": [
+      1080,
+      1200
+    ],
+    "sha256": "ee512876287782ed5bf73b4ee820360a34d171b346d3fa23c546744abe3b8d9e"
+  },
+  {
+    "file": "PresencePreviews/LargeType-planning.png",
+    "available": true,
+    "size": [
+      1080,
+      1200
+    ],
+    "sha256": "075db9a745a523f3ae40339b185935d5a5c844506a6623bd519a3801a4f2cc52"
+  },
+  {
+    "file": "PresencePreviews/LargeType-reasoning.png",
+    "available": true,
+    "size": [
+      1080,
+      1200
+    ],
+    "sha256": "521f869aa4c4ecbad5ba60525e7530229446cb8b56cf4011de984f100f3ebdd5"
+  },
+  {
+    "file": "PresencePreviews/LargeType-speaking.png",
+    "available": true,
+    "size": [
+      1080,
+      1200
+    ],
+    "sha256": "bdadd2703ef846e30f9665420c03f4f1e50bb5ee1c035a129cd51f7df4acba01"
+  },
+  {
+    "file": "PresencePreviews/LargeType-success.png",
+    "available": true,
+    "size": [
+      1080,
+      1200
+    ],
+    "sha256": "4bbc0d4e1a47e7a09c7b037efe1bfc88e6f2cff54e364004c041eda24e71031f"
+  },
+  {
+    "file": "PresencePreviews/LargeType-transcribing.png",
+    "available": true,
+    "size": [
+      1080,
+      1200
+    ],
+    "sha256": "74f70edf38c896bb57751dfd70090a578620372506cd3089125ee26ba26e742d"
+  },
+  {
+    "file": "PresencePreviews/LargeType-understanding.png",
+    "available": true,
+    "size": [
+      1080,
+      1200
+    ],
+    "sha256": "212be4f6cde523840662a8ee343b36df27d8c236b88ee3cc76fd89c2fe6faa7c"
+  },
+  {
+    "file": "PresencePreviews/Light-acting.png",
+    "available": true,
+    "size": [
+      1080,
+      1200
+    ],
+    "sha256": "8e4959b361649a583a21cbbe4fecf10bfcf8209dcbc1381ca97cb6110e0f06d9"
+  },
+  {
+    "file": "PresencePreviews/Light-awaitingConfirmation.png",
+    "available": true,
+    "size": [
+      1080,
+      1200
+    ],
+    "sha256": "0ae39e9073a6683545ca928790deede91607f49064918f7cb65a9c6ea3b7e150"
+  },
+  {
+    "file": "PresencePreviews/Light-error.png",
+    "available": true,
+    "size": [
+      1080,
+      1200
+    ],
+    "sha256": "ade764ba34a89fb5fd597c2d874f995dd8290ece8965acfcc0323b7dec342331"
+  },
+  {
+    "file": "PresencePreviews/Light-gatheringContext.png",
+    "available": true,
+    "size": [
+      1080,
+      1200
+    ],
+    "sha256": "13abdda430115ec6f9b2984f1396b78ceb36649ecc86b158a4845c96fa0649d6"
+  },
+  {
+    "file": "PresencePreviews/Light-idle.png",
+    "available": true,
+    "size": [
+      1080,
+      1200
+    ],
+    "sha256": "bf5ac4e375bf9dc64ded44cacf121a32bbb256725498bb1048eceb4cc11ee07f"
+  },
+  {
+    "file": "PresencePreviews/Light-listening.png",
+    "available": true,
+    "size": [
+      1080,
+      1200
+    ],
+    "sha256": "0056fac6bbce8dbbe910160bcb0f6274e83f62b4bb0fe94a5cedb4e0cb49a9f5"
+  },
+  {
+    "file": "PresencePreviews/Light-planning.png",
+    "available": true,
+    "size": [
+      1080,
+      1200
+    ],
+    "sha256": "2491794847a01de987f4cc0cb0fd665020876c59ff0656fb277fecf7b8f62014"
+  },
+  {
+    "file": "PresencePreviews/Light-reasoning.png",
+    "available": true,
+    "size": [
+      1080,
+      1200
+    ],
+    "sha256": "1010fa6d282adb09e66d2c5659edf9dd4d796369b6a0a41f09a156ff0f0f8f22"
+  },
+  {
+    "file": "PresencePreviews/Light-speaking.png",
+    "available": true,
+    "size": [
+      1080,
+      1200
+    ],
+    "sha256": "b89b639858e93440997e5fbdefd6cafdee8c99419adcb5601e209d21b674a454"
+  },
+  {
+    "file": "PresencePreviews/Light-success.png",
+    "available": true,
+    "size": [
+      1080,
+      1200
+    ],
+    "sha256": "ed3fb9dcead0760220f9e93c89bcb405356b6a4c139abef230b9cc6305d5c184"
+  },
+  {
+    "file": "PresencePreviews/Light-transcribing.png",
+    "available": true,
+    "size": [
+      1080,
+      1200
+    ],
+    "sha256": "d650a89ca6fc3b937af161f630e27604ee838fe23e4a7a014761872e2ee8e396"
+  },
+  {
+    "file": "PresencePreviews/Light-understanding.png",
+    "available": true,
+    "size": [
+      1080,
+      1200
+    ],
+    "sha256": "b3bbef5ce872f2ffb8865931693988e325682955fd0710666fcec5998b9bc1df"
+  }
+]

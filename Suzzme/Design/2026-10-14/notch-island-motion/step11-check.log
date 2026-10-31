@@ -1,0 +1,227 @@
+PASS 1 single core extension stays bounded
+PASS 2 single voice controller type
+PASS 3 context engine available
+PASS 4 information engine available
+PASS 5 proactive engine reused
+PASS 6 Step 8 capability boundary preserved
+PASS 7 Step 7 presence mapping reused
+PASS 8 locked theme set reused
+PASS 9 no replacement brain
+PASS 10 watched page extends source registry
+PASS 11 daily context created
+PASS 12 daily context replaced by update
+PASS 13 daily context bounded
+PASS 14 temporary context represented
+PASS 15 durable candidate boundary
+PASS 16 supersession is compact
+PASS 17 correction represented
+PASS 18 cancellation represented
+PASS 19 completion represented
+PASS 20 expired information removed
+PASS 21 day rollover
+PASS 22 future commitment carried
+PASS 23 source health included
+PASS 24 restricted content excluded
+PASS 25 snapshot is not an event log
+PASS 26 valid HTTPS
+PASS 27 invalid URL
+PASS 28 unsupported scheme
+PASS 29 localhost blocked
+PASS 30 loopback blocked
+PASS 31 private address policy
+PASS 32 redirect URL validation
+PASS 33 enable default
+PASS 34 disable
+PASS 35 remove
+PASS 36 manual refresh eligibility
+PASS 37 configuration persistence
+PASS 38 stable source identity
+PASS 39 selected pages supported
+PASS 40 link bounds
+PASS 41 successful fetch
+PASS 42 timeout
+PASS 43 network failure
+PASS 44 404
+PASS 45 server error
+PASS 46 redirect accepted only after policy
+PASS 47 oversized response
+PASS 48 malformed content
+PASS 49 content extraction
+PASS 50 boilerplate reduction
+PASS 51 deterministic fingerprint
+PASS 52 unchanged page stops
+PASS 53 changed page processes
+PASS 54 changed section keeps identity
+PASS 55 web provenance
+PASS 56 observation timestamp
+PASS 57 stale truth
+PASS 58 offline never reports success
+PASS 59 failure backoff
+PASS 60 no continuous polling
+PASS 61 prompt injection is data
+PASS 62 fake system message has no date authority
+PASS 63 self-declared urgency ignored
+PASS 64 action instruction blocked
+PASS 65 memory instruction retained only as inert data
+PASS 66 settings instruction lacks command channel
+PASS 67 source-add text does not add source
+PASS 68 cross-source scope blocked
+PASS 69 script excluded
+PASS 70 malicious redirect blocked
+PASS 71 file URL blocked
+PASS 72 custom scheme blocked
+PASS 73 safe diagnostics
+PASS 74 bounded extraction input
+PASS 75 no browser automation or crawl
+PASS 76 timetable extraction
+PASS 77 date extraction
+PASS 78 start time extraction
+PASS 79 end time extraction
+PASS 80 room extraction
+PASS 81 cancellation extraction
+PASS 82 location change
+PASS 83 deadline extraction
+PASS 84 correction extraction
+PASS 85 missing values not invented
+PASS 86 conflicting facts conservative
+PASS 87 deterministic fallback
+PASS 88 model has no authority
+PASS 89 summary time command
+PASS 90 summary enable
+PASS 91 summary disable
+PASS 92 time-critical enable
+PASS 93 time-critical disable
+PASS 94 prepared assistance
+PASS 95 theme command
+PASS 96 animation command
+PASS 97 ambiguous time
+PASS 98 timezone retained
+PASS 99 DST-safe scheduling
+PASS 100 settings registry is bounded
+PASS 101 settings policy
+PASS 102 settings execution
+PASS 103 settings verification
+PASS 104 truthful exactly-once success
+PASS 105 idle
+PASS 106 listening
+PASS 107 transcribing
+PASS 108 understanding
+PASS 109 gathering
+PASS 110 reasoning
+PASS 111 planning
+PASS 112 confirmation
+PASS 113 acting
+PASS 114 speaking
+PASS 115 success
+PASS 116 error
+PASS 117 compact presence
+PASS 118 expanded presence
+PASS 119 collapse
+PASS 120 Reduce Motion fallback
+PASS 121 notch placement
+PASS 122 non-notch placement
+PASS 123 external display selection
+PASS 124 space display policy stable
+PASS 125 App Intent invocation flag
+PASS 126 App Shortcut summary path
+PASS 127 Action Button-compatible App Intent path
+PASS 128 in-app presence states
+PASS 129 no fake Island
+PASS 130 no hardware recolor
+PASS 131 legitimate ActivityKit eligibility gate
+PASS 132 unsupported activity rejected
+PASS 133 privacy-safe system copy
+PASS 134 summary ready
+PASS 135 time-critical signal
+PASS 136 opportunity signal
+PASS 137 confirmation state
+PASS 138 accessible presence labels
+PASS 139 iPhone Reduce Motion
+PASS 140 invocation cancellation
+PASS 141 sync eligibility
+PASS 142 device-local policy
+PASS 143 sync allowed
+PASS 144 sync redacted
+PASS 145 never sync
+PASS 146 restricted blocked
+PASS 147 duplicate identity
+PASS 148 deterministic conflict
+PASS 149 summary delivery dedup
+PASS 150 dismissal metadata semantics
+PASS 151 setting conflict tie-break
+PASS 152 device capability matrix
+PASS 153 source on one device
+PASS 154 offline device excluded
+PASS 155 truthful continuity selects available device
+PASS 156 daily context has no memory mutation
+PASS 157 memory candidate is explicit proposal
+PASS 158 memory privacy
+PASS 159 temporary data expiration
+PASS 160 raw webpage not durable
+PASS 161 audio not synced
+PASS 162 transcript not synced
+PASS 163 prompt not synced
+PASS 164 chain-of-thought absent
+PASS 165 safe diagnostics
+PASS 166 provenance retained
+PASS 167 source removal boundary
+PASS 168 privacy setting race
+PASS 169 web content cannot execute
+PASS 170 daily context cannot execute
+PASS 171 opportunity cannot execute
+PASS 172 settings use capabilities
+PASS 173 confirmation preserved
+PASS 174 destructive confirmation
+PASS 175 exactly once
+PASS 176 target fingerprint structure
+PASS 177 cancellation
+PASS 178 request ownership
+PASS 179 verification
+PASS 180 no silent repeated action
+PASS 181 success only after verification
+PASS 182 locked UI skill behavior
+PASS 183 Purpose
+PASS 184 Agency
+PASS 185 Responsibility
+PASS 186 Familiarity
+PASS 187 Flexibility
+PASS 188 Simplicity
+PASS 189 Craft
+PASS 190 VoiceOver
+PASS 191 Dynamic Type copy bound
+PASS 192 Reduce Motion
+PASS 193 contrast and transparency semantics
+PASS 194 light and dark theme definitions
+PASS 195 idle presence cost
+PASS 196 animation stops idle
+PASS 197 bounded fetch
+PASS 198 bounded model input
+PASS 199 fetch cancellation boundary
+PASS 200 duplicate refresh protection
+PASS 201 background delay
+PASS 202 app activation readiness
+PASS 203 Mac lifecycle
+PASS 204 iPhone lifecycle
+PASS 205 cleanup retention
+PASS 206 restart
+PASS 207 migration schema
+PASS 208 Step 3 regression surface
+PASS 209 Step 4 regression surface
+PASS 210 Step 5 voice separation
+PASS 211 Step 6 boundary
+PASS 212 Step 7 regression
+PASS 213 Step 8 regression
+PASS 214 Step 9 regression
+PASS 215 Step 10 regression
+PASS 216 UI Recovery regression
+PASS 217 iOS build behavior
+PASS 218 macOS build behavior
+PASS 219 Swift 6 sendability
+PASS 220 public API policy
+PASS 221 Gmail metadata extracts sender and subject only
+PASS 222 Gmail header becomes an email observation
+PASS 223 Gmail body content is not retained
+Step 11 behavioral checks passed: 223
+Step 11 behavioral checks failed: 0
+Step 11 production behavioral checks passed: 223
+Step 11 production behavioral checks failed: 0

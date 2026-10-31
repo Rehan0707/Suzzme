@@ -1,0 +1,39 @@
+Application, 0x112ae7e80, pid: 37637, label: 'Suzzme' <App element pid: 37637>
+  Window (Main), 0x112b90000, {{0.0, 0.0}, {402.0, 874.0}} <AX element pid: 37637, elementOrHash.elementID: 4402611200.4>
+    Other, 0x112b90140, {{0.0, 0.0}, {402.0, 874.0}} <AX element pid: 37637, elementOrHash.elementID: 4417163264.5>
+      Other, 0x112b90280, {{0.0, 0.0}, {402.0, 874.0}} <AX element pid: 37637, elementOrHash.elementID: 4417120896.6>
+        Other, 0x112b903c0, {{0.0, 0.0}, {402.0, 874.0}} <AX element pid: 37637, elementOrHash.elementID: 4402610176.7>
+          Other, 0x112b90500, {{0.0, 0.0}, {402.0, 874.0}} <AX element pid: 37637, elementOrHash.elementID: 4622907296.8>
+            Other, 0x112b90640, {{0.0, 0.0}, {402.0, 874.0}} <AX element pid: 37637, elementOrHash.elementID: 4623813120.9>
+              NavigationBar, 0x112b90780, {{0.0, 62.0}, {402.0, 54.0}}, identifier: 'Saved Activity' <AX element pid: 37637, elementOrHash.elementID: 4504815872.10>
+                Button, 0x112b908c0, {{16.0, 62.0}, {44.0, 44.0}}, identifier: 'BackButton', label: 'Suzzme' <AX element pid: 37637, elementOrHash.elementID: 4627825280.104>
+                StaticText, 0x112b90a00, {{144.3, 73.7}, {113.0, 20.7}}, label: 'Saved Activity' <AX element pid: 37637, elementOrHash.elementID: 4416719936.546>
+              Other, 0x112b90b40, {{0.0, 0.0}, {402.0, 874.0}} <AX element pid: 37637, elementOrHash.elementID: 4403974080.11>
+                Other, 0x112b90c80, {{0.0, 0.0}, {402.0, 874.0}} <AX element pid: 37637, elementOrHash.elementID: 4403980352.16>
+                  Other, 0x112b90dc0, {{0.0, 0.0}, {402.0, 874.0}} <AX element pid: 37637, elementOrHash.elementID: 4402533632.547>
+                    Other, 0x112b90f00, {{0.0, 0.0}, {402.0, 874.0}} <AX element pid: 37637, elementOrHash.elementID: 4701884000.549>
+                      ScrollView, 0x112b91040, {{0.0, 0.0}, {402.0, 874.0}} <AX element pid: 37637, elementOrHash.elementID: 4624832512.551>
+                        Other, 0x112b91180, {{0.0, 0.0}, {402.0, 874.0}} <AX element pid: 37637, elementOrHash.elementID: 4416602560.553>
+                          Other, 0x112b912c0, {{0.0, 0.0}, {402.0, 156.0}} <AX element pid: 37637, elementOrHash.elementID: 4416719488.558>
+                          Other, 0x112b91400, {{0.0, 748.0}, {402.0, 126.0}} <AX element pid: 37637, elementOrHash.elementID: 4416772672.559>
+                        Other, 0x112b91540, {{0.0, 0.0}, {402.0, 874.0}} <AX element pid: 37637, elementOrHash.elementID: 4416602112.554>
+                        Other, 0x112b91680, {{0.0, 116.0}, {402.0, 345.0}} <AX element pid: 37637, elementOrHash.elementID: 4701906944.555>
+                          Other, 0x112b917c0, {{20.0, 140.0}, {361.0, 76.3}} <AX element pid: 37637, elementOrHash.elementID: 4701881760.560>
+                            StaticText, 0x112b91900, {{20.0, 140.0}, {194.3, 26.3}}, label: 'Saved with Suzzme' <AX element pid: 37637, elementOrHash.elementID: 4701889600.565>
+                            StaticText, 0x112b91a40, {{20.0, 178.3}, {361.0, 38.0}}, label: 'Structured information you chose to keep, stored on this device.' <AX element pid: 37637, elementOrHash.elementID: 4701896320.566>
+                          StaticText, 0x112b91b80, {{20.0, 320.3}, {180.0, 26.3}}, label: 'Nothing saved yet' <AX element pid: 37637, elementOrHash.elementID: 4701888800.561>
+                          StaticText, 0x112b91cc0, {{20.0, 358.7}, {336.3, 42.3}}, label: 'Ask Suzzme to understand something, then choose what to keep.' <AX element pid: 37637, elementOrHash.elementID: 4701891520.562>
+                        Other, 0x112b91e00, {{369.0, 116.0}, {30.0, 696.0}}, label: 'Vertical scroll bar, 1 page', value: 0% <AX element pid: 37637, elementOrHash.elementID: 4701901312.556>
+                          Other, 0x112b91f40, {{396.0, 446.0}, {3.0, 363.0}} <AX element pid: 37637, elementOrHash.elementID: 4416608384.563>
+                        Other, 0x112b92080, {{369.0, 116.0}, {30.0, 696.0}}, label: 'Vertical scroll bar, 1 page', value: 0% <AX element pid: 37637, elementOrHash.elementID: 4701901312.556>
+                          Other, 0x112b921c0, {{396.0, 446.0}, {3.0, 363.0}} <AX element pid: 37637, elementOrHash.elementID: 4416608384.563>
+              Toolbar, 0x112b92300, {{0.0, 0.0}, {402.0, 874.0}}, identifier: 'Toolbar', label: 'Toolbar' <AX element pid: 37637, elementOrHash.elementID: 4623813632.12>
+                Other, 0x112b92440, {{0.0, 0.0}, {402.0, 874.0}} <AX element pid: 37637, elementOrHash.elementID: 4623814144.17>
+                  Other, 0x112b92580, {{0.0, 62.0}, {402.0, 812.0}} <AX element pid: 37637, elementOrHash.elementID: 4416767296.548>
+                    Other, 0x112b926c0, {{0.0, 62.0}, {402.0, 812.0}} <AX element pid: 37637, elementOrHash.elementID: 4416766848.550>
+                      Other, 0x112b92800, {{0.0, 62.0}, {0.0, 0.0}} <AX element pid: 37637, elementOrHash.elementID: 4416775360.552>
+                        Other, 0x112b92940, {{28.0, 798.0}, {346.0, 48.0}} <AX element pid: 37637, elementOrHash.elementID: 4676997632.557>
+                          Other, 0x112b92a80, {{28.0, 798.0}, {346.0, 48.0}} <AX element pid: 37637, elementOrHash.elementID: 4416771328.564>
+                            Other, 0x112b92bc0, {{28.0, 808.0}, {346.0, 28.0}} <AX element pid: 37637, elementOrHash.elementID: 4670433024.567>
+                              SearchField, 0x112b92d00, {{28.0, 808.0}, {346.0, 28.0}}, label: 'Search saved items', placeholderValue: 'Search saved items' <AX element pid: 37637, elementOrHash.elementID: 4677238784.568>
+                                Image, 0x112b92e40, {{40.0, 812.0}, {20.7, 19.3}}, identifier: 'magnifyingglass', label: 'Search' <AX element pid: 37637, elementOrHash.elementID: 4670493696.569>

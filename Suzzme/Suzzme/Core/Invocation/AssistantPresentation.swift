@@ -125,16 +125,18 @@ enum SuzzmeSystemPresenceState: String, Sendable, Codable, CaseIterable {
 }
 
 enum SuzzmeKeyboardShortcut: String, CaseIterable, Codable, Sendable {
+    case controlOption
     case commandOptionSpace
     case commandShiftSpace
     case commandOptionReturn
     case disabled
 
-    static let defaultValue: Self = .commandOptionSpace
+    static let defaultValue: Self = .controlOption
     static let defaultsKey = "suzzme.invocation.shortcut"
 
     var title: String {
         switch self {
+        case .controlOption: "⌃⌥ Control + Option"
         case .commandOptionSpace: "⌘⌥ Space"
         case .commandShiftSpace: "⌘⇧ Space"
         case .commandOptionReturn: "⌘⌥ Return"
@@ -154,6 +156,100 @@ enum SuzzmeInvocationBeginResult: Sendable, Equatable {
     case alreadyActive(UUID)
 }
 
+enum MacGlobalShortcutStatus: Sendable, Equatable {
+    case disabled, needsPermission, ready, unavailable
+
+    var title: String {
+        switch self {
+        case .disabled: "Off"
+        case .needsPermission: "Needs Input Monitoring permission"
+        case .ready: "Ready"
+        case .unavailable: "Shortcut unavailable"
+        }
+    }
+
+    var detail: String {
+        switch self {
+        case .disabled: "Global push to talk is off."
+        case .needsPermission: "Allow Suzzme to observe its shortcut in other apps. Normal keyboard input continues to reach them."
+        case .ready: "The shortcut is active. Follow the instructions above to start and send your voice request."
+        case .unavailable: "macOS could not start the shortcut monitor. Review Input Monitoring access, then try again."
+        }
+    }
+}
+
+struct SuzzmeShortcutModifiers: OptionSet, Sendable, Equatable {
+    let rawValue: UInt8
+    static let control = Self(rawValue: 1 << 0)
+    static let option = Self(rawValue: 1 << 1)
+    static let command = Self(rawValue: 1 << 2)
+    static let shift = Self(rawValue: 1 << 3)
+}
+
+struct SuzzmePushToTalkKeyEvent: Sendable, Equatable {
+    enum Kind: Sendable { case flagsChanged, keyDown, keyUp, reset }
+    let kind: Kind
+    var keyCode: UInt16 = 0
+    var modifiers: SuzzmeShortcutModifiers = []
+    var isRepeat = false
+}
+
+/// Physical keyboard edges only. Voice and assistant state remain owned by
+/// VoiceSessionController and AssistantStateController.
+struct SuzzmePushToTalkEdgeReducer: Sendable {
+    enum Transition: Sendable, Equatable { case none, pressed, released, cancelled }
+    private(set) var isPressed = false
+    private var primaryKeyIsDown = false
+    private var requiresRelease = false
+
+    mutating func handle(_ event: SuzzmePushToTalkKeyEvent, shortcut: SuzzmeKeyboardShortcut) -> Transition {
+        let requiredModifiers: SuzzmeShortcutModifiers
+        let primaryKey: UInt16?
+        switch shortcut {
+        case .controlOption: requiredModifiers = [.control, .option]; primaryKey = nil
+        case .commandOptionSpace: requiredModifiers = [.command, .option]; primaryKey = 49
+        case .commandShiftSpace: requiredModifiers = [.command, .shift]; primaryKey = 49
+        case .commandOptionReturn: requiredModifiers = [.command, .option]; primaryKey = 36
+        case .disabled:
+            let wasPressed = isPressed
+            self = Self()
+            return wasPressed ? .cancelled : .none
+        }
+        let modifiersHeld = event.modifiers.isSuperset(of: requiredModifiers)
+        if event.kind == .reset {
+            let wasPressed = isPressed
+            isPressed = false
+            primaryKeyIsDown = false
+            // A recovered tap or Escape must not restart an already held chord.
+            requiresRelease = modifiersHeld
+            return wasPressed ? .cancelled : .none
+        }
+        if let primaryKey, event.keyCode == primaryKey {
+            if event.kind == .keyUp { primaryKeyIsDown = false }
+            if event.kind == .keyDown, !event.isRepeat { primaryKeyIsDown = true }
+        }
+        if requiresRelease {
+            if !modifiersHeld || (primaryKey != nil && event.kind == .keyUp && event.keyCode == primaryKey) {
+                requiresRelease = false
+            }
+            return .none
+        }
+        if isPressed {
+            if !modifiersHeld || (primaryKey != nil && !primaryKeyIsDown) {
+                isPressed = false
+                return .released
+            }
+            return .none
+        }
+        let mayBegin = primaryKey == nil
+            ? event.kind == .flagsChanged
+            : event.kind == .keyDown && event.keyCode == primaryKey && !event.isRepeat
+        guard mayBegin, event.modifiers == requiredModifiers else { return .none }
+        isPressed = true
+        return .pressed
+    }
+}
+
 /// Owns invocation identity and the locally persisted keyboard preference.
 /// It never performs intelligence work; AppEnvironment forwards work to the
 /// existing VoiceSessionController and SuzzmeCore path.
@@ -164,27 +260,36 @@ final class InvocationCoordinator {
     var keyboardShortcut: SuzzmeKeyboardShortcut {
         didSet { defaults.set(keyboardShortcut.rawValue, forKey: SuzzmeKeyboardShortcut.defaultsKey) }
     }
+    var globalPushToTalkEnabled: Bool {
+        didSet { defaults.set(globalPushToTalkEnabled, forKey: Self.globalPushToTalkEnabledKey) }
+    }
     var presenceTheme: SuzzmePresenceTheme {
         didSet { defaults.set(presenceTheme.rawValue, forKey: Self.presenceThemeKey) }
     }
     var presenceAnimation: SuzzmePresenceAnimation {
         didSet { defaults.set(presenceAnimation.rawValue, forKey: Self.presenceAnimationKey) }
     }
+    var cursorCompanionEnabled: Bool {
+        didSet { defaults.set(cursorCompanionEnabled, forKey: Self.cursorCompanionEnabledKey) }
+    }
+    nonisolated static let globalPushToTalkEnabledKey = "suzzme.invocation.globalPushToTalkEnabled"
     nonisolated static let presenceThemeKey = "suzzme.presence.theme"
     nonisolated static let presenceAnimationKey = "suzzme.presence.animation"
+    nonisolated static let cursorCompanionEnabledKey = "suzzme.presence.cursorCompanion"
 
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
         self.keyboardShortcut = SuzzmeKeyboardShortcut.stored(in: defaults)
+        self.globalPushToTalkEnabled = defaults.object(forKey: Self.globalPushToTalkEnabledKey) as? Bool ?? true
         self.presenceTheme = defaults.string(forKey: Self.presenceThemeKey).flatMap(SuzzmePresenceTheme.init(rawValue:)) ?? .suzzmePurple
         self.presenceAnimation = defaults.string(forKey: Self.presenceAnimationKey).flatMap(SuzzmePresenceAnimation.init(rawValue:)) ?? .gentle
+        self.cursorCompanionEnabled = defaults.bool(forKey: Self.cursorCompanionEnabledKey)
     }
 
     var isActive: Bool { activeRequestID != nil }
 
-    func begin() -> SuzzmeInvocationBeginResult {
+    func begin(requestID: UUID = UUID()) -> SuzzmeInvocationBeginResult {
         if let activeRequestID { return .alreadyActive(activeRequestID) }
-        let requestID = UUID()
         activeRequestID = requestID
         return .started(requestID)
     }

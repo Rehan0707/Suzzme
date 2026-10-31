@@ -1,0 +1,89 @@
+[
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "BF97982B-6BF2-4C6D-B647-2CC5A387A30B",
+        "deviceName" : "iPhone 18 Pro",
+        "exportedFileName" : "51F0F7D4-D74E-40D0-AC9B-5BBEB1F26DAC.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "11-settings-detail-Suzzme Brain Lab_0_BE7E270E-48DF-422D-B1B9-203562354AB9.png",
+        "timestamp" : 1791949458.773
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "BF97982B-6BF2-4C6D-B647-2CC5A387A30B",
+        "deviceName" : "iPhone 18 Pro",
+        "exportedFileName" : "4BE9D59B-3086-48A8-A800-4CE702EAF383.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "11-settings-detail-About Suzzme_0_EE04A811-DB68-4E25-87E9-D85B88E9F5E5.png",
+        "timestamp" : 1791949453.555
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "BF97982B-6BF2-4C6D-B647-2CC5A387A30B",
+        "deviceName" : "iPhone 18 Pro",
+        "exportedFileName" : "2C3869B0-4F6F-43E2-8FA0-1ADF01FFB920.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "11-settings-detail-Profile_0_DAB151EB-391E-4BC8-BF2A-FEE6DB1276FE.png",
+        "timestamp" : 1791949449.727
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "BF97982B-6BF2-4C6D-B647-2CC5A387A30B",
+        "deviceName" : "iPhone 18 Pro",
+        "exportedFileName" : "610181C6-2FB3-464D-B70A-0BC82A497E7E.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "11-settings-detail-Accessibility_0_EC047528-3101-44F5-A752-D1EFA31AF7DA.png",
+        "timestamp" : 1791949443.182
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "BF97982B-6BF2-4C6D-B647-2CC5A387A30B",
+        "deviceName" : "iPhone 18 Pro",
+        "exportedFileName" : "F1CC22D4-F39D-494F-8E4B-86F827B98019.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "11-settings-detail-Notifications_0_3D035312-13E2-41AC-8D52-8B7B4166726E.png",
+        "timestamp" : 1791949436.745
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "BF97982B-6BF2-4C6D-B647-2CC5A387A30B",
+        "deviceName" : "iPhone 18 Pro",
+        "exportedFileName" : "2843FCB8-CE4B-4820-B4C3-5629ECAC50AC.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "11-settings-detail-Privacy_0_F993EC6B-3E66-4018-95BC-CA5ABC6A421C.png",
+        "timestamp" : 1791949432.945
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "BF97982B-6BF2-4C6D-B647-2CC5A387A30B",
+        "deviceName" : "iPhone 18 Pro",
+        "exportedFileName" : "F17AD55E-3008-4438-85E5-45CE9F0CD200.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "11-settings-detail-Daily Summary_0_289642DA-5BC3-4D08-B05A-8436304C5CD5.png",
+        "timestamp" : 1791949426.461
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "BF97982B-6BF2-4C6D-B647-2CC5A387A30B",
+        "deviceName" : "iPhone 18 Pro",
+        "exportedFileName" : "29FD2451-3265-47EA-AE7A-4D91C6B5D97E.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "11-settings-detail-Talk to Suzzme_0_B4E4F84F-2785-4585-9839-164131BD6EB8.png",
+        "timestamp" : 1791949417.316
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "BF97982B-6BF2-4C6D-B647-2CC5A387A30B",
+        "deviceName" : "iPhone 18 Pro",
+        "exportedFileName" : "53812CDC-CB57-4565-B5DF-C351050DB612.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "11-settings-detail-Presence_0_09AF2878-EEC7-40B7-964B-246E93CCE651.png",
+        "timestamp" : 1791949413.475
+      }
+    ],
+    "testIdentifier" : "NativePlatformUITests/test05SecondarySettingsRemainReachable()",
+    "testIdentifierURL" : "test://com.apple.xcode/Suzzme/NativePlatformUITests/NativePlatformUITests/test05SecondarySettingsRemainReachable"
+  }
+]

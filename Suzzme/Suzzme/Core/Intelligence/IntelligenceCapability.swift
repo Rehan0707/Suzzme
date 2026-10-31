@@ -6,6 +6,7 @@ enum IntelligenceCapability: Sendable, Equatable {
     case unsupportedDevice
     case appleIntelligenceDisabled
     case modelNotReady
+    case companionOnly
 
     var usesFoundationModels: Bool { self == .available }
 
@@ -16,6 +17,7 @@ enum IntelligenceCapability: Sendable, Equatable {
         case .unsupportedDevice: "This device is not eligible for Apple Intelligence."
         case .appleIntelligenceDisabled: "Apple Intelligence is not enabled on this device."
         case .modelNotReady: "The on-device language model is still preparing."
+        case .companionOnly: "Your Mac prepares the summary. This iPhone receives and reads it."
         }
     }
 }

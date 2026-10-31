@@ -4,12 +4,30 @@ import Foundation
 enum InformationRequest {
     static func query(for text: String) -> InformationQuery? {
         let text = text.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
-        let knownRequest = text.hasPrefix("what changed")
+        let sourceTerms = ["calendar", "reminder", "gmail", "email", "mail", "message", "whatsapp", "chat",
+                           "github", "notion", "linear", "slack", "local knowledge", "document", "notes",
+                           "google drive", "google docs", "google sheets", "google tasks"]
+        let updateTerms = ["recent", "update", "changed", "change", "today"]
+        let scopedUpdateRequest = sourceTerms.contains(where: text.contains) && updateTerms.contains(where: text.contains)
+        let knownRequest = text.hasPrefix("what changed") || scopedUpdateRequest
+            || ["do i have important emails", "do i have important emails?", "show selected gmail headers", "do i have unread emails", "do i have unread emails?"].contains(text)
             || ["recent updates", "show recent updates", "show recent changes"].contains(text)
         guard knownRequest, text.count < 160 else { return nil }
         var query = InformationQuery(limit: 5)
         if text.contains("calendar") { query.sources = [.calendar] }
         else if text.contains("reminder") { query.sources = [.reminders] }
+        else if text.contains("whatsapp") || text.contains("chat") { query.sources = [.whatsapp] }
+        else if text.contains("local knowledge") || text.contains("document") || text.contains("notes") { query.sources = [.localKnowledge] }
+        else if text.contains("github") { query.sources = [.connectedApps]; query.entity = "github" }
+        else if text.contains("notion") { query.sources = [.connectedApps]; query.entity = "notion" }
+        else if text.contains("linear") { query.sources = [.connectedApps]; query.entity = "linear" }
+        else if text.contains("slack") { query.sources = [.connectedApps]; query.entity = "slack" }
+        else if text.contains("google tasks") { query.sources = [.connectedApps]; query.entity = "googleTasks" }
+        else if text.contains("google drive") { query.sources = [.connectedApps]; query.entity = "googleDrive" }
+        else if text.contains("google docs") { query.sources = [.connectedApps]; query.entity = "googleDocs" }
+        else if text.contains("google sheets") { query.sources = [.connectedApps]; query.entity = "googleSheets" }
+        else if text.contains("gmail") || text.contains("email") || text.contains("mail") { query.sources = [.gmail] }
+        else if text.contains("message") { query.sources = [.messages] }
         return query
     }
 

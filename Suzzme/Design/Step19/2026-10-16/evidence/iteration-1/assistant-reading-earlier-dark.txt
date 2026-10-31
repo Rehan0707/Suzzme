@@ -1,0 +1,38 @@
+Window: "", App: Suzzme.
+0 sheet Secondary Actions: Raise
+	1 container
+		2 text Value: Ask Suzzme, Secondary Actions: Cancel
+		3 text field (settable) Description: Question for Suzzme, Placeholder: Ask Suzzme or follow up, ID: suzzme-assistant-input, Secondary Actions: Cancel
+		4 button (disabled) Description: Send question, ID: suzzme-assistant-submit, Secondary Actions: Cancel
+		5 button Description: Start voice conversation, Secondary Actions: Cancel
+		6 switch Read answers aloud, Help: Speak Suzzme’s answers to typed questions, Value: off, Secondary Actions: Cancel
+		7 scroll area Secondary Actions: Scroll Up, Scroll Down, Cancel
+			8 list Secondary Actions: AXScrollToTop, AXScrollToBottom
+				9 text Suzzme status: Ready when you are Apple Intelligence is ready on this device.
+				10 unknown Description: You said: Explain how photosynthesis works in six short paragraphs., ID: suzzme-turn-AEFC3189-523E-4213-81BD-1303B3B53DD5-user
+				11 unknown ID: suzzme-turn-AEFC3189-523E-4213-81BD-1303B3B53DD5-assistant, Description: Suzzme answered: Photosynthesis is the process plants use to create energy. Plants capture sunlight, which gives energy to their cells. They also take in carbon dioxide from the air. Water is absorbed from the soil. Inside the plant, sunlight helps split water molecules. Oxygen is released as a byproduct. The plant uses the energy to build sugars for growth.
+				12 text Generated on this device Using authorized context
+				13 button Share
+				14 button Read aloud
+				15 unknown Description: You said: What role does chlorophyll play in that process?, ID: suzzme-turn-17CD0007-8715-4EC6-96CB-C115073BD726-user
+				16 unknown ID: suzzme-turn-17CD0007-8715-4EC6-96CB-C115073BD726-assistant, Description: Suzzme answered: Chlorophyll helps capture sunlight, which plants use to create energy during photosynthesis.
+				17 text Generated on this device Using authorized context
+				18 button Share
+				19 button Read aloud
+			20 scroll bar (settable, float) 0
+				21 value indicator (settable, float) 0
+				22 increment arrow button
+				23 decrement arrow button
+				24 increment page button
+				25 decrement page button
+		26 button Done
+		27 button Manage sources
+28 menu bar
+	29 Suzzme
+	30 Edit
+	31 View
+	32 Companion
+	33 Window
+	34 Help
+
+The focused UI element is 0 sheet Secondary Actions: Raise

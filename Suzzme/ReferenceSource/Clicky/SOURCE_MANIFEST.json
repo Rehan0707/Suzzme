@@ -1,0 +1,408 @@
+{
+  "source": "/Users/rehan/Documents/Projects/clicky",
+  "revision": "a80fa80721a8aebe51a170a7780705024ebc6e46",
+  "purpose": "Licensed public source snapshot; not compiled or bundled in Suzzme. Cloud clients remain reference-only.",
+  "excluded": "Git history, caches, local secrets, signing credentials, user Xcode state and reference agent instructions",
+  "files": [
+    {
+      "path": ".gitignore",
+      "sha256": "cc9f2458b45c333cbf0e62dcc05e337ae09d0d8a71a54363c674736618ddf705",
+      "bytes": 102
+    },
+    {
+      "path": "LICENSE",
+      "sha256": "3eb6241cdc30b83a6fac3ffed7c36d2be666e8c852260846dcbd92d678b96011",
+      "bytes": 1062
+    },
+    {
+      "path": "README.md",
+      "sha256": "f2f0a7c8b64c062d4aeeff7c7a560549b94ac3392f1dc3c9c0071fe85c6d7a98",
+      "bytes": 6074
+    },
+    {
+      "path": "appcast.xml",
+      "sha256": "1cabd4b0ac4c82172091eab36270d9d150434de8cfaad3f21cc183a4f65f3b75",
+      "bytes": 2031
+    },
+    {
+      "path": "clicky-demo.gif",
+      "sha256": "e8097419124a986ad2fdace0af6b23b7abfba85d266cc44d3262641696e44e29",
+      "bytes": 2368861
+    },
+    {
+      "path": "dmg-background.png",
+      "sha256": "6aa3855c788d8edb9a323c2dfccb6c2e2cbee4010b2687a617eb417893cb1802",
+      "bytes": 2484
+    },
+    {
+      "path": "leanring-buddy/AppBundleConfiguration.swift",
+      "sha256": "01a864a94098a0d354d5e3f42b0efe5535b3769b2139736de9f2c4dbae4b49cf",
+      "bytes": 934
+    },
+    {
+      "path": "leanring-buddy/AppleSpeechTranscriptionProvider.swift",
+      "sha256": "8e2b2ff1dcc2d37ac95fb49a8c2febda8d67f395fd01a1395e9ea44e62a42c15",
+      "bytes": 4781
+    },
+    {
+      "path": "leanring-buddy/AssemblyAIStreamingTranscriptionProvider.swift",
+      "sha256": "756ff79da94a98bff1dae81925357c5b785543f61602edca26101e3f18a714e4",
+      "bytes": 17661
+    },
+    {
+      "path": "leanring-buddy/Assets.xcassets/AccentColor.colorset/Contents.json",
+      "sha256": "9af65086fa30b49252fae1a1225731691de794f7775af74d71befeb507d12b7c",
+      "bytes": 123
+    },
+    {
+      "path": "leanring-buddy/Assets.xcassets/AppIcon.appiconset/1024-mac.png",
+      "sha256": "effae3a808d7f95cbbc338b2c08eb816bbb74eaf16407763d5e19ebe2d28bfd6",
+      "bytes": 193646
+    },
+    {
+      "path": "leanring-buddy/Assets.xcassets/AppIcon.appiconset/128-mac.png",
+      "sha256": "21be3fc8d2a49e6d5bc8d676c15c5fc9e6ded9818dfaa84ca288090e53ee7886",
+      "bytes": 8338
+    },
+    {
+      "path": "leanring-buddy/Assets.xcassets/AppIcon.appiconset/16-mac.png",
+      "sha256": "15a91b2d0939e1bb38f69c1bc2e535c573d562dfd7b91b34b66f9e2b5437821a",
+      "bytes": 525
+    },
+    {
+      "path": "leanring-buddy/Assets.xcassets/AppIcon.appiconset/256-mac.png",
+      "sha256": "614342590dfbc9796024ece18f69914b46bf68310c57a989b3a1bf2f33525062",
+      "bytes": 24126
+    },
+    {
+      "path": "leanring-buddy/Assets.xcassets/AppIcon.appiconset/32-mac.png",
+      "sha256": "7e885a74358bacf08532c5957808df0e15dae1a603a77667fce14e92badf2d46",
+      "bytes": 1149
+    },
+    {
+      "path": "leanring-buddy/Assets.xcassets/AppIcon.appiconset/512-mac.png",
+      "sha256": "c993944d7d4ebd2c5b2e3827746b22ba62cd572ff3c0addd3cfec9cbc25b251d",
+      "bytes": 69877
+    },
+    {
+      "path": "leanring-buddy/Assets.xcassets/AppIcon.appiconset/64-mac.png",
+      "sha256": "5d77afa57c6709a5f3f9234e184e39c292c1df7909144df95f230b32a7f4aa76",
+      "bytes": 2891
+    },
+    {
+      "path": "leanring-buddy/Assets.xcassets/AppIcon.appiconset/Contents.json",
+      "sha256": "f3d84b44503d9932bc36d7c5f460b3b33256320fab09bf4f1450de71578e73b1",
+      "bytes": 1371
+    },
+    {
+      "path": "leanring-buddy/Assets.xcassets/Contents.json",
+      "sha256": "0fd49ba3c3585c709678e0046a821c3c60685ec7063720d30d3a3448be3a208b",
+      "bytes": 63
+    },
+    {
+      "path": "leanring-buddy/Assets.xcassets/add-a-project-in-codex-from-sidebar.imageset/Contents.json",
+      "sha256": "fc2bf8c908cb2f4cf3750ab4456ccf0bf4acb24d578bbb79ef90644055ac8e40",
+      "bytes": 303
+    },
+    {
+      "path": "leanring-buddy/Assets.xcassets/add-a-project-in-codex-from-sidebar.imageset/Image.png",
+      "sha256": "2106b9e47c8193c8bf547aaf1fc8d5b31effc6f2eb7bbb51e1e4f69564e49593",
+      "bytes": 40345
+    },
+    {
+      "path": "leanring-buddy/Assets.xcassets/add-a-project-in-codex.imageset/Contents.json",
+      "sha256": "f1e6ccd1983cde9e99a533206e865a90fec1ca6171ac012478b1605dedd534f3",
+      "bytes": 320
+    },
+    {
+      "path": "leanring-buddy/Assets.xcassets/add-a-project-in-codex.imageset/add-a-project-in-codex.png",
+      "sha256": "d070af93ac06715ff3db1e9b608df734961d86a3e78ea61acab01c207f401725",
+      "bytes": 55432
+    },
+    {
+      "path": "leanring-buddy/Assets.xcassets/codex-app-screenshot.imageset/Contents.json",
+      "sha256": "8485c9d6265e5e4c9cb81be7e3a394ee64c6781ecec08fc1986fcd3806b87744",
+      "bytes": 318
+    },
+    {
+      "path": "leanring-buddy/Assets.xcassets/codex-app-screenshot.imageset/codex-app-screenshot.jpg",
+      "sha256": "40e1837597fbc70f688ded900b96504227ec430e7ea5b425862939808c06af11",
+      "bytes": 60050
+    },
+    {
+      "path": "leanring-buddy/Assets.xcassets/codex-home-screen.imageset/Contents.json",
+      "sha256": "d3fa6392fb898af60f6314d6138ac9bb01268a41a2b3a112409665a8412d7400",
+      "bytes": 315
+    },
+    {
+      "path": "leanring-buddy/Assets.xcassets/codex-home-screen.imageset/codex-home-screen.png",
+      "sha256": "66043b9b70bd00b825f55a3b5807c900924f1d7ac76a3d7880c86250178eefac",
+      "bytes": 329523
+    },
+    {
+      "path": "leanring-buddy/Assets.xcassets/codex-permissions.imageset/Contents.json",
+      "sha256": "4750f015bfef482e647cf98be524325cc2d334658d7fdd87cc2aea9c8a61177d",
+      "bytes": 315
+    },
+    {
+      "path": "leanring-buddy/Assets.xcassets/codex-permissions.imageset/codex-permissions.png",
+      "sha256": "185454db1de8c008ef757b718044bb9b414104492aa44f4bd5f769cb2379d604",
+      "bytes": 164785
+    },
+    {
+      "path": "leanring-buddy/Assets.xcassets/discord-logo.imageset/Contents.json",
+      "sha256": "90e375c632c3dc42921cd330d2fed3247a278d14578e2f3ea05f174c82dc892d",
+      "bytes": 425
+    },
+    {
+      "path": "leanring-buddy/Assets.xcassets/discord-logo.imageset/discord-logo.svg",
+      "sha256": "a38be216964511d344447f1fa6062ae119d75740d4a26dc262c5af30b411b89a",
+      "bytes": 1210
+    },
+    {
+      "path": "leanring-buddy/Assets.xcassets/git-tools-prompt.imageset/Contents.json",
+      "sha256": "622da5f9a3e2ce69a05d05b36302b71a7c29f88cc3d77f7013d7658ab99bf2bf",
+      "bytes": 314
+    },
+    {
+      "path": "leanring-buddy/Assets.xcassets/git-tools-prompt.imageset/git-tools-prompt.png",
+      "sha256": "47d1ed7637aa72850f5bf04b2ed00008ad229c1f3919ee83c7d2fc7d5f4c0b20",
+      "bytes": 35486
+    },
+    {
+      "path": "leanring-buddy/Assets.xcassets/google-logo.imageset/Contents.json",
+      "sha256": "a4e88853c86211a6c846091299f569933a787c90d39d25caf9862e83644fa15c",
+      "bytes": 276
+    },
+    {
+      "path": "leanring-buddy/Assets.xcassets/google-logo.imageset/google-logo.svg",
+      "sha256": "3df6d41d37f2f09f5a1a1488f4934a8d670162b786b0b40ea7bd17bc5282a61e",
+      "bytes": 813
+    },
+    {
+      "path": "leanring-buddy/Assets.xcassets/inside-the-makesomething-project-folder.imageset/Contents.json",
+      "sha256": "f6e434ea54379445f3425d3c60395aedca9beb30bd33683ffdbf238c65e37422",
+      "bytes": 337
+    },
+    {
+      "path": "leanring-buddy/Assets.xcassets/inside-the-makesomething-project-folder.imageset/inside-the-makesomething-project-folder.png",
+      "sha256": "1b2942e66c29d2b0aa8de8e40204c1851e9b6f4b94d0ff76eebdec80ce94a1c3",
+      "bytes": 554226
+    },
+    {
+      "path": "leanring-buddy/Assets.xcassets/makesomething-project-folder-in-downloads.imageset/Contents.json",
+      "sha256": "5f5ce2ad62852a703e15817399d444469a598eea03e190e954ea0beddd1ed5de",
+      "bytes": 339
+    },
+    {
+      "path": "leanring-buddy/Assets.xcassets/makesomething-project-folder-in-downloads.imageset/makesomething-project-folder-in-downloads.png",
+      "sha256": "633d8ba5848cd5585e2222188a28f199194b7b00b84afb0a4b8d56ba65120f68",
+      "bytes": 495559
+    },
+    {
+      "path": "leanring-buddy/Assets.xcassets/steve.imageset/Contents.json",
+      "sha256": "7f7ede8f6884d61d316f7aa3de07ef35419e31daf7982df88832809caed8a8af",
+      "bytes": 155
+    },
+    {
+      "path": "leanring-buddy/Assets.xcassets/steve.imageset/steve.jpg",
+      "sha256": "eccc99d79b064cd9f110f6d1b9a0275f251c482eaf479141cb6abc52350f23fd",
+      "bytes": 123680
+    },
+    {
+      "path": "leanring-buddy/Assets.xcassets/steve.jpg",
+      "sha256": "eccc99d79b064cd9f110f6d1b9a0275f251c482eaf479141cb6abc52350f23fd",
+      "bytes": 123680
+    },
+    {
+      "path": "leanring-buddy/BuddyAudioConversionSupport.swift",
+      "sha256": "efc2afb1b2915cee01cf3c822aaf1252c2ec969c1ebb4e6e4424ebda7d514417",
+      "bytes": 3946
+    },
+    {
+      "path": "leanring-buddy/BuddyDictationManager.swift",
+      "sha256": "13e17a0d54a53e8bcab7af3e23e1f35c051c7492f2782e47aa668d44a740a490",
+      "bytes": 32596
+    },
+    {
+      "path": "leanring-buddy/BuddyTranscriptionProvider.swift",
+      "sha256": "b2d42b383287f40bd9c0619543d7d5e9b041a84e76e2b6f7f747d9965fc67e17",
+      "bytes": 3256
+    },
+    {
+      "path": "leanring-buddy/ClaudeAPI.swift",
+      "sha256": "c14741c138371e4c6e3097ecfa56292667dc65ac97fb17d0d9a2820e09f512fe",
+      "bytes": 11660
+    },
+    {
+      "path": "leanring-buddy/ClickyAnalytics.swift",
+      "sha256": "3608b84bfc358147d2b1304e2bb2be9b663de6e67376abc69570cb9ac1f3b46c",
+      "bytes": 3921
+    },
+    {
+      "path": "leanring-buddy/CompanionManager.swift",
+      "sha256": "f7814ee23f41692d426fa7ee48db902f49541f069cb83a089a1fd5317ada997e",
+      "bytes": 51762
+    },
+    {
+      "path": "leanring-buddy/CompanionPanelView.swift",
+      "sha256": "240a2192f2e48e869bfa93e13f315feb993658abaf5873d19f4850a081d1fbc8",
+      "bytes": 28790
+    },
+    {
+      "path": "leanring-buddy/CompanionResponseOverlay.swift",
+      "sha256": "c0a77e856eb7ff00f6811c5c984ff8e3a6c952eeb11e57e3adcc27c3195cac65",
+      "bytes": 8198
+    },
+    {
+      "path": "leanring-buddy/CompanionScreenCaptureUtility.swift",
+      "sha256": "7dfa5d8cc9b60b0671e46810b1c1c6bc800739889d0188368eff0826101813aa",
+      "bytes": 5909
+    },
+    {
+      "path": "leanring-buddy/DesignSystem.swift",
+      "sha256": "ad7d4832ca55292994bdd0c4674c756faa6a2e309338383777bfed98bd8c246a",
+      "bytes": 36959
+    },
+    {
+      "path": "leanring-buddy/ElementLocationDetector.swift",
+      "sha256": "8fdad9e45ca1a8ba5c66e3e53b45386f98cb65c63d0b6685cf28a320e2c74dde",
+      "bytes": 15417
+    },
+    {
+      "path": "leanring-buddy/ElevenLabsTTSClient.swift",
+      "sha256": "36982fff26ebb567cb98082b97ebb919931e68b0caa592a56a561b3b1282e3d1",
+      "bytes": 2808
+    },
+    {
+      "path": "leanring-buddy/GlobalPushToTalkShortcutMonitor.swift",
+      "sha256": "63f97202207573e4767e210f97ea92441dc74c82e1e31ebc587324ef0af8b5a1",
+      "bytes": 4782
+    },
+    {
+      "path": "leanring-buddy/Info.plist",
+      "sha256": "0f91a363a1223e795c92972a0c555887e3cfe3f13a0087f7e8705ddcc2dbaa7b",
+      "bytes": 885
+    },
+    {
+      "path": "leanring-buddy/MenuBarPanelManager.swift",
+      "sha256": "0c58eda36944e13c2466c6514368ea2f55d002057182c74f987c145b42487241",
+      "bytes": 8538
+    },
+    {
+      "path": "leanring-buddy/OpenAIAPI.swift",
+      "sha256": "03d8c9817538eed53e241aaeb4358a096ac7e28d37d9aab0e09915ee6ca4ec70",
+      "bytes": 5528
+    },
+    {
+      "path": "leanring-buddy/OpenAIAudioTranscriptionProvider.swift",
+      "sha256": "61b3ff947ce1ad6ab69a0b914c933eed2abafaa394debdfcf118de807076d7b8",
+      "bytes": 10771
+    },
+    {
+      "path": "leanring-buddy/OverlayWindow.swift",
+      "sha256": "7716532dcbf3556db2150c3ee79de06aa04a9cff08bed680da2f0b6df2218956",
+      "bytes": 38199
+    },
+    {
+      "path": "leanring-buddy/WindowPositionManager.swift",
+      "sha256": "a1a2557bc2c259d5a660eaebccb516ab23f7d81ee6648bdd875e39729d7039a1",
+      "bytes": 11386
+    },
+    {
+      "path": "leanring-buddy/codex-add-project.png",
+      "sha256": "396a8d835418cc413e0e6d452caea94591b62e27d432b56f3d4c2c9c86549dc7",
+      "bytes": 47038
+    },
+    {
+      "path": "leanring-buddy/enter.mp3",
+      "sha256": "ecafac1786d6fe7b5114f16d2586b868ac010be967128c58bfe9f1115ec1b426",
+      "bytes": 5821
+    },
+    {
+      "path": "leanring-buddy/eshop.mp3",
+      "sha256": "d21e5a43a1d278922212548860e8612564a9bc1b3bc9cf55fd4373e4e69e2072",
+      "bytes": 68221
+    },
+    {
+      "path": "leanring-buddy/ff.mp3",
+      "sha256": "7342606dc8369462400ea4adacdf05b753b4de1e5478452900bf31d96232f34d",
+      "bytes": 8176672
+    },
+    {
+      "path": "leanring-buddy/leanring-buddy.entitlements",
+      "sha256": "60cde7912f6eee2c00b6ffaa3aaa12f20b7da16e2d07f8596c4fc562e3186564",
+      "bytes": 556
+    },
+    {
+      "path": "leanring-buddy/leanring_buddyApp.swift",
+      "sha256": "f6c1f45420d9fedbbf1d7cb38c00d9d2b10b11de6a3d8e477e9c8963c96de9a2",
+      "bytes": 3253
+    },
+    {
+      "path": "leanring-buddy/steve.jpg",
+      "sha256": "eccc99d79b064cd9f110f6d1b9a0275f251c482eaf479141cb6abc52350f23fd",
+      "bytes": 123680
+    },
+    {
+      "path": "leanring-buddy.xcodeproj/project.pbxproj",
+      "sha256": "bd5700208aa450d74f89af514d5075b3311a45d36496e22b6238afc910a6b9b6",
+      "bytes": 22671
+    },
+    {
+      "path": "leanring-buddy.xcodeproj/project.xcworkspace/contents.xcworkspacedata",
+      "sha256": "7f3b00b5c3fdb45242d7b87e1e5c4e25d1fa8129a16c94295ecc4e8ea2235c5f",
+      "bytes": 135
+    },
+    {
+      "path": "leanring-buddy.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved",
+      "sha256": "b213df0dfda18cd3d1c623db366ad39aa6954039d454bb0ec18a8eb5ef95b101",
+      "bytes": 937
+    },
+    {
+      "path": "leanring-buddyTests/leanring_buddyTests.swift",
+      "sha256": "cbbb3834ed37d7c044ec0dfb446a75a648d2e4579ea136ae4775ba32b4357966",
+      "bytes": 1246
+    },
+    {
+      "path": "leanring-buddyUITests/leanring_buddyUITests.swift",
+      "sha256": "da33cbe3e025f463a00fde86a29bb16c5bb02d970f2ed4e5dbe8bbf560a593f6",
+      "bytes": 1320
+    },
+    {
+      "path": "leanring-buddyUITests/leanring_buddyUITestsLaunchTests.swift",
+      "sha256": "3ae53acdd809d33a513b287cfe012fbb25fa6648cb745fa075134b8d15ee56f4",
+      "bytes": 833
+    },
+    {
+      "path": "scripts/README.md",
+      "sha256": "c12e59ec56ab7f8a58b420e4ef68d1a6b2b27d020be4013053d2ce26bb996f71",
+      "bytes": 2171
+    },
+    {
+      "path": "scripts/release.sh",
+      "sha256": "2023045bfef8131f99be2090054b88879a268f84d2a86930deb034aaf069df09",
+      "bytes": 12108
+    },
+    {
+      "path": "worker/package-lock.json",
+      "sha256": "53749d22da3a0744e7e537e37bf0b3d5ca1ac72a526d07dc792b05eac1c08f77",
+      "bytes": 53070
+    },
+    {
+      "path": "worker/package.json",
+      "sha256": "f9eb63fc7ce28ab04ec1fb24471dd19fc32f4cd98e47f7086918600b3bf09c65",
+      "bytes": 180
+    },
+    {
+      "path": "worker/src/index.ts",
+      "sha256": "3ff5dde307e408780e700e89cdd78a643204202a63db7df5dadd52d497072e47",
+      "bytes": 3781
+    },
+    {
+      "path": "worker/wrangler.toml",
+      "sha256": "6f4b9a909aafd9cf73b3436da7da2e36c91251a614f181b9878ca00e99037430",
+      "bytes": 131
+    }
+  ]
+}

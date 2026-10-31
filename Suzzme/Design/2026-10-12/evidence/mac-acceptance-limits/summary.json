@@ -1,0 +1,69 @@
+{
+  "recordedAt": "2026-10-12T15:06:46.878645+00:00",
+  "productionLaunch": {
+    "bundleIdentifier": "rehan.Suzzme",
+    "appPath": "/tmp/SuzzmeNativePlatformMacBuild/Build/Products/Debug/Suzzme.app",
+    "sandboxEntitled": true,
+    "entryPointReplaced": false,
+    "environmentInjected": false,
+    "runtimeEvidence": "../mac-production-launch/production-runtime.json",
+    "ownedWindowCaptures": [
+      "../mac-production-launch/suzzme-window-1508.png",
+      "../mac-production-launch/suzzme-window-1509.png"
+    ]
+  },
+  "isolatedCopy": {
+    "bundleIdentifier": "dev.suzzme.NativeAcceptance",
+    "appPath": "/tmp/SuzzmeNativePlatformMacAcceptanceBuild/Build/Products/Debug/Suzzme.app",
+    "sourceFilesMatchingCheckoutAtSnapshot": 341,
+    "sourceManifest": "../mac-current-source-manifest.json",
+    "entryPointReplaced": false,
+    "environmentInjected": false,
+    "sandboxEntitled": true,
+    "launchSucceeded": false,
+    "captureProduced": false,
+    "launchError": {
+      "domain": "NSCocoaErrorDomain",
+      "code": 256,
+      "underlyingDomain": "RBSRequestErrorDomain",
+      "underlyingCode": 5
+    },
+    "currentDevelopmentCertificateTrustVerification": "CSSMERR_TP_NOT_TRUSTED"
+  },
+  "nativeMacUITests": {
+    "testCasesExecuted": 0,
+    "automationInitialization": "Timed out while enabling automation mode",
+    "adhocRunnerResult": "/tmp/SuzzmeNativePlatformMacAcceptance-20261012-runtime.xcresult",
+    "developmentRunnerResult": "/tmp/SuzzmeNativePlatformMacAcceptance-20261012-development-runner.xcresult",
+    "uiJourneyAcceptance": "unverified"
+  },
+  "nativeDriverPermissions": {
+    "accessibilityTrusted": false,
+    "screenCaptureAuthorized": true,
+    "permissionsRequested": false
+  },
+  "targetedChecks": {
+    "menuController": {
+      "passed": 48,
+      "failed": 0,
+      "scope": "Actual native status item/panel owners; environment/view doubles"
+    },
+    "shortcutMonitor": {
+      "passed": 79,
+      "scope": "Exact production monitor callback and reducer; resource syscalls/permissions doubled"
+    }
+  },
+  "limits": [
+    "No Mac UI case executed because XCTest automation initialization timed out.",
+    "No isolated light/dark capture was produced because the dev app could not spawn.",
+    "Physical Control + Option, microphone, native TTS and haptics acceptance remain unverified.",
+    "The source manifest records its observed snapshot before the latest model-grounding change; root final build records final source."
+  ],
+  "changesToHost": {
+    "tccGrants": false,
+    "certificateTrustChanges": false,
+    "newProvisioningProfiles": false,
+    "userPreferenceResets": false,
+    "userDataResets": false
+  }
+}

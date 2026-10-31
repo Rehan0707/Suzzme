@@ -40,6 +40,8 @@ struct DailyContextEntry: Identifiable, Codable, Sendable, Equatable {
     let confidence: Double
     /// A proposal boundary only. The Daily Context layer never writes memory.
     let mayBeDurableCandidate: Bool
+    // Optional preserves decoding of the validated pre-existing JSON records.
+    var isAllDay: Bool? = nil
 }
 
 struct DailyContextSnapshot: Codable, Sendable, Equatable {
@@ -98,12 +100,14 @@ struct ProactiveCandidate: Identifiable, Codable, Sendable, Equatable {
     let sourceReference: String
     let effectiveAt: Date?
     let effectiveUntil: Date?
+    let sourceUpdatedAt: Date?
     let entities: [String]
     let sensitivity: SuzzmeContextSensitivity
     let freshness: ProactiveCandidateFreshness
     let isCompleted: Bool
     let sourceHealthy: Bool
     let confidence: Double
+    let isAllDay: Bool?
 
     init(
         id: String,
@@ -114,12 +118,14 @@ struct ProactiveCandidate: Identifiable, Codable, Sendable, Equatable {
         sourceReference: String,
         effectiveAt: Date? = nil,
         effectiveUntil: Date? = nil,
+        sourceUpdatedAt: Date? = nil,
         entities: [String] = [],
         sensitivity: SuzzmeContextSensitivity = .personal,
         freshness: ProactiveCandidateFreshness = .current,
         isCompleted: Bool = false,
         sourceHealthy: Bool = true,
-        confidence: Double = 1
+        confidence: Double = 1,
+        isAllDay: Bool = false
     ) {
         self.id = id
         self.kind = kind
@@ -129,12 +135,14 @@ struct ProactiveCandidate: Identifiable, Codable, Sendable, Equatable {
         self.sourceReference = sourceReference
         self.effectiveAt = effectiveAt
         self.effectiveUntil = effectiveUntil
+        self.sourceUpdatedAt = sourceUpdatedAt
         self.entities = Array(entities.prefix(5))
         self.sensitivity = sensitivity
         self.freshness = freshness
         self.isCompleted = isCompleted
         self.sourceHealthy = sourceHealthy
         self.confidence = min(max(confidence, 0), 1)
+        self.isAllDay = isAllDay
     }
 }
 
@@ -199,12 +207,39 @@ struct ProactiveBriefingItem: Identifiable, Codable, Sendable, Equatable {
     let confidence: Double
     let sensitivity: SuzzmeContextSensitivity
     let delivery: ProactiveDeliveryClassification
+    var isAllDay: Bool? = nil
+}
+
+enum ProactiveDatePresentation {
+    static func label(_ date: Date, isAllDay: Bool, relativeTo now: Date = .now, calendar: Calendar = .current) -> String {
+        let formatter = DateFormatter()
+        formatter.calendar = calendar
+        formatter.timeZone = calendar.timeZone
+        formatter.dateStyle = calendar.isDate(date, inSameDayAs: now) ? .none : .medium
+        formatter.timeStyle = isAllDay ? .none : .short
+        if isAllDay {
+            return formatter.dateStyle == .none ? "All day" : "\(formatter.string(from: date)) · All day"
+        }
+        return formatter.string(from: date)
+    }
 }
 
 struct ProactiveBriefingSection: Identifiable, Codable, Sendable, Equatable {
     let kind: ProactiveBriefingSectionKind
     let items: [ProactiveBriefingItem]
     var id: ProactiveBriefingSectionKind { kind }
+}
+
+/// Bounded provenance for derived watched-page text. No page body is duplicated.
+struct ProactiveWatchedReference: Codable, Sendable, Hashable {
+    let externalID: String
+    let fingerprint: String
+
+    var isValid: Bool {
+        !externalID.isEmpty && externalID.count <= 512 && externalID.hasPrefix("web:https://")
+            && fingerprint.utf8.count == 64
+            && fingerprint.utf8.allSatisfy { (48...57).contains($0) || (97...102).contains($0) }
+    }
 }
 
 struct ProactiveBriefing: Identifiable, Codable, Sendable, Equatable {
@@ -217,8 +252,11 @@ struct ProactiveBriefing: Identifiable, Codable, Sendable, Equatable {
     let liveContextEvidence: [String]
     let memoryEvidence: [String]
     let healthLimitations: [String]
-    let narration: String
+    var narration: String
     var deliveryState: ProactiveBriefingState
+    /// nil identifies a legacy cache with incomplete watched-source provenance.
+    /// [] records that this newly generated artifact used no watched facts.
+    var watchedSourceReferences: [ProactiveWatchedReference]? = nil
 
     var items: [ProactiveBriefingItem] { sections.flatMap(\.items) }
     var isPartial: Bool { !healthLimitations.isEmpty }
@@ -255,6 +293,7 @@ struct SuzzmeOpportunity: Identifiable, Codable, Sendable, Equatable {
     let freshness: ProactiveCandidateFreshness
     let confidence: Double
     var state: SuzzmeOpportunityState
+    var watchedSourceReferences: [ProactiveWatchedReference]? = nil
 }
 
 struct ProactiveHealthLimitation: Codable, Sendable, Equatable {
