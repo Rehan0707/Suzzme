@@ -34,18 +34,19 @@ Suzzme solves personal AI through a clear division of responsibility between you
 ## 📸 Interface & Visual Showcase
 
 ### macOS Experience
-| Home & Focus Face | Daily Summary Briefing |
+| Home & Context Composer | Sidebar & Liquid Glass Interface |
 | :---: | :---: |
-| <img src="App-Screenshots/macOS/01-home.jpg" alt="macOS Home" width="460" /> | <img src="App-Screenshots/macOS/03-daily-summary.jpg" alt="Daily Summary" width="460" /> |
+| <img src="docs/Previews/home-summarize-day-composer-mac.png" alt="macOS Home" width="460" /> | <img src="docs/Previews/sidebar-mascot-glass-mac.png" alt="Sidebar & Interface" width="460" /> |
 
-| Ask Suzzme & Context | Notch Companion Presence & Controls |
-| :---: | :---: |
-| <img src="App-Screenshots/macOS/19-ask-suzzme-response.jpg" alt="Ask Suzzme Response" width="460" /> | <img src="App-Screenshots/macOS/28-companion-panel.jpg" alt="Notch Companion Panel" width="460" /> |
+<p align="center">
+  <em>Interactive Notch Presence on modern MacBook displays:</em><br/>
+  <img src="docs/Previews/mac-notch-listening.png" alt="MacBook Notch Presence" width="380" />
+</p>
 
 ### iOS Companion & Dynamic Island
-| iPhone Production Home | Conversational Context & Grounding | Dynamic Island & Lock Screen Live Activity |
+| iPhone Companion Screen | Today & Schedule Overview | Dynamic Island & Lock Screen Live Activity |
 | :---: | :---: | :---: |
-| <img src="App-Screenshots/iOS/Main-Screens/03-production-home-light.png" alt="iOS Home" width="280" /> | <img src="App-Screenshots/iOS/Main-Screens/04-real-core-conversation.png" alt="iOS Conversation" width="280" /> | <img src="dynamic-island-lab/companion-preview.jpg" alt="Dynamic Island Preview" width="280" /> |
+| <img src="docs/Previews/iphone-companion-current.png" alt="iOS Companion" width="280" /> | <img src="docs/Previews/iphone-today-guest.png" alt="iOS Today Schedule" width="280" /> | <img src="dynamic-island-lab/companion-preview.jpg" alt="Dynamic Island Preview" width="280" /> |
 
 ---
 
@@ -95,8 +96,7 @@ Suzzme/
 ├── Suzzme/BrowserExtension/   # Chrome / Brave extension for local native messaging bridge
 ├── voice-gateway/             # Cloudflare Worker proxy for AssemblyAI & ElevenLabs voice streams
 ├── supabase/                  # Edge functions and schemas for companion summary push delivery
-├── dynamic-island-lab/        # Interactive design prototype testbed for Dynamic Island & widgets
-└── App-Screenshots/           # Full gallery of verified macOS and iOS production captures
+└── dynamic-island-lab/        # Interactive design prototype testbed for Dynamic Island & widgets
 ```
 
 ---
@@ -195,7 +195,6 @@ zsh Suzzme/Validation/companion-native-render.sh
 * 🚦 [Launch Readiness & Acceptance Gate Status](Suzzme/LAUNCH_READINESS.md)
 * 🔐 [Watched Links Network & Security Architecture](Suzzme/WATCHED_LINKS_SECURITY.md)
 * ✅ [Validation Guide & Test Inventory](Suzzme/Validation/README.md)
-* 🖼️ [Full Labeled App Screenshots Gallery](App-Screenshots/README.md)
 
 ---
 
