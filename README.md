@@ -43,10 +43,10 @@ Suzzme solves personal AI through a clear division of responsibility between you
   <img src="docs/Previews/mac-notch-listening.png" alt="MacBook Notch Presence" width="380" />
 </p>
 
-### iOS Companion & Dynamic Island
-| iPhone Companion Screen | Today & Schedule Overview | Dynamic Island & Lock Screen Live Activity |
-| :---: | :---: | :---: |
-| <img src="docs/Previews/iphone-companion-current.png" alt="iOS Companion" width="280" /> | <img src="docs/Previews/iphone-today-guest.png" alt="iOS Today Schedule" width="280" /> | <img src="dynamic-island-lab/companion-preview.jpg" alt="Dynamic Island Preview" width="280" /> |
+### iOS Companion Experience
+| iPhone Companion Screen | Today & Schedule Overview |
+| :---: | :---: |
+| <img src="docs/Previews/iphone-companion-current.png" alt="iOS Companion" width="340" /> | <img src="docs/Previews/iphone-today-guest.png" alt="iOS Today Schedule" width="340" /> |
 
 ---
 
