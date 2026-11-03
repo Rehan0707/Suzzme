@@ -268,6 +268,12 @@ actor ComposioInformationSource: InformationSource {
         let effectiveAt: Date?
         var state: InformationObjectState = .active
         switch excerpt.service {
+        case "gmail", "outlook":
+            guard let summary = try await summarize(excerpt.text), let compact = Self.safeSummary(summary) else { return nil }
+            title = "\(excerpt.service == "gmail" ? "Gmail" : "Outlook") inbox: \(compact)"
+            modifiedAt = now
+            effectiveAt = now
+
         case "github":
             guard lines.count > 1, lines[0].hasPrefix("Title: "), lines[1].hasPrefix("State: "),
                   let issueTitle = Self.value(after: "Title: ", in: [lines[0]]), !issueTitle.isEmpty,

@@ -2,11 +2,13 @@ import SwiftUI
 
 private enum IntegrationSetupSheet: Identifiable {
     case direct(IntegrationID)
+    case whatsapp
     case composio(IntegrationID)
     case sharedLinkedIn
     var id: String {
         switch self {
         case .direct(let service): "direct-\(service.rawValue)"
+        case .whatsapp: "whatsapp"
         case .composio(let service): "composio-\(service.rawValue)"
         case .sharedLinkedIn: "shared-linkedin"
         }
@@ -204,6 +206,12 @@ struct IntegrationsView: View {
                             }
                         }
                 }
+            case .whatsapp:
+                #if os(macOS)
+                WhatsAppLocalView().environment(environment)
+                #else
+                Text("Connect WhatsApp Web on your Mac.")
+                #endif
             case .composio(let service):
                 ComposioIntegrationsView(initialServiceID: service.rawValue).environment(environment)
             }
@@ -223,8 +231,10 @@ struct IntegrationsView: View {
             setupSheet = .direct(.notion)
         case .linkedin:
             setupSheet = .sharedLinkedIn
-        case .slack:
-            setupSheet = .composio(.slack)
+        case .slack, .gmail, .outlook:
+            setupSheet = .composio(request.service)
+        case .whatsapp:
+            setupSheet = .whatsapp
         default:
             break
         }

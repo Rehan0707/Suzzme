@@ -1,10 +1,42 @@
 # Optional Composio account connections
 
+## Composio MCP integration (2 November 2026)
+
+The native Composio connector now initializes MCP, discovers the configured read tools, and calls them at `POST /v1/mcp`. Existing Connect → provider sign-in → confirmation-code verification and separate Daily Summary source selection remain in place. Both one-off questions and opted-in summary refreshes use the new transport through `ComposioConnector.read`.
+
+The full path is **Suzzme → authenticated Suzzme MCP gateway → account-pinned Composio hosted MCP session → provider API → validated excerpt → Apple Foundation Models**. No cloud model is used. The client never receives the Composio project key or hosted session URL.
+
+| Configured app | Tool exposed to Suzzme | Read scope |
+| --- | --- | --- |
+| GitHub | `suzzme_read_github_issue` | One exact issue URL |
+| Slack | `suzzme_read_slack_message` | One channel-message permalink, after workspace/channel checks |
+| Notion | `suzzme_read_notion_page` | Selected page's top-level text, with existing metadata checks |
+
+Only configured apps appear in discovery. This does not enable the entire Composio catalog, mail ingestion, writes, or arbitrary model-selected tools. Gmail, calendar and other existing direct integrations are independent.
+
+`composio-mcp.mjs` creates a hosted session using `/api/v3.1/tool_router/session`, with exactly one toolkit, auth config, owner ID and connected account. It verifies the returned account scope before initializing the returned MCP URL. The URL must share the API origin; redirects are never followed. Connections management, sandbox, instant usage, search and multi-execution are disabled. The server alone calls `COMPOSIO_PROXY_EXECUTE` using the existing deterministic read recipes. This general-purpose upstream tool is never exposed to the native client or the model. Tool hint filters do not restrict proxy execution: the server's fixed recipes are the read boundary.
+
+Hosted sessions are cached in memory for at most five minutes per account, capped at 100 entries. They are discarded locally on failure; there is no automatic retry or silent REST fallback. Provider ownership/access is still checked before and after every read, including reads with a cached session. Both JSON and SSE upstream responses are bounded to 256 KiB. Remote sampling/elicitation is not supported and cannot authorize an operation. Source results remain capped at 4,500 characters. No source excerpts are cached by this module.
+
+### Upgrade and live acceptance
+
+Deploy the updated connector before using this native build's Composio source reads. The gateway keeps `/v1/read` for older clients; new clients use MCP and report an update-required error when the endpoint is absent. Existing owner URLs and device tokens do not need to change.
+
+The server project key needs **Session management**, **Session tool execution**, **Proxy execute**, and the existing connected-account read/write permissions. Confirm the exact scopes in Composio's dashboard; keep the key on the server. Keep the existing OAuth verifier and provider auth configs. Each supported provider still requires its own successful consent and account verification.
+
+Run `npm test` for the server, worker, deployment-bundle and hosted-MCP fixtures. Run `zsh Suzzme/Validation/composio-client-check.sh` from the repository root for native transport checks. These tests use fictional accounts and are not live OAuth acceptance. On 2 November, 72 server tests and 62 native checks passed, the Mac app built, and Wrangler validated and deployed Worker version `b1b77bec-08ea-4707-956f-4fc7d6d979e5`. The live configuration enables Slack only; GitHub and Notion need their auth configs added. Real hosted-session permissions, provider consent and source reads remain unverified. The supplied `clicky-main` source files were cloud placeholders and could not be read during this implementation, so this is based on Suzzme's existing flow and Composio's official contracts, not a verified copy of Clicky's implementation.
+
+Post-deployment checks returned HTTP 200 for public health, 401 for unauthenticated MCP discovery, and 403 for a browser-origin request. The rebuilt Mac app opened the configured connector, loaded its Slack status and successfully generated a secure Composio sign-in link. It reported **No verified connection**; no provider permission was granted and no real message was fetched during this check.
+
+Live acceptance remaining: complete provider verification in Suzzme, read a selected source, confirm the displayed account and source, opt that source into Daily Summary, then disconnect/revoke and verify subsequent reads fail. Test another account with the same provider to verify explicit account selection. This remains a **single-owner connector**, not shared sign-in isolation for a public multi-user service; do not distribute the same device token to different users.
+
+References checked for this change: [Composio sessions via MCP](https://docs.composio.dev/docs/sessions-via-mcp), [session creation REST schema](https://docs.composio.dev/reference/api-reference/tool-router/postToolRouterSession), [MCP proxy tool](https://docs.composio.dev/toolkits/meta-tools/proxy_execute), [MCP HTTP transport](https://modelcontextprotocol.io/specification/2025-11-25/basic/transports).
+
 ## Cloudflare free deployment preparation
 
 `worker.mjs` adapts the reviewed bridge routes to Cloudflare Workers. The SQLite-backed Durable Object binding in `wrangler.toml` is eligible for Workers Free and keeps one owner's short-lived OAuth attempts together. It writes no provider excerpts, credentials, or confirmation codes to Durable Object storage. An evicted instance loses pending sign-ins; restart the connection flow in that case. Request logging is disabled. Free quotas still apply.
 
-The Suzzme workspace project key was created with owner approval and encrypted as `COMPOSIO_API_KEY` in the existing Cloudflare Secrets Store. It is not in this repository or the app. The Slack auth config `ac_ZFadHeq1Ix9k` requests only `channels:read` and `channels:history`; no Slack account has yet been verified by Suzzme. The adapter has passed Node boundary tests and a local Cloudflare-runtime setup-required health check. The Worker is deployed at https://suzzme-connector.suzzmeai.workers.dev and its separate device secret has been stored. Callback verifier configuration, app setup import, provider consent, and live reads remain pending. Production health currently reports setup-required. `SUZZME_CALLBACK_VERIFIER_CONFIGURED` deliberately remains `no` until the real callback is configured. Do not label setup-required health as a working connection.
+Earlier deployment work stored the project key as `COMPOSIO_API_KEY` in Cloudflare Secrets Store and deployed the Worker at https://suzzme-connector.suzzmeai.workers.dev with a separate device secret. The configured Slack auth config is `ac_ZFadHeq1Ix9k`. The checked-in verifier flag is now `yes`; that flag and a healthy endpoint alone do not prove provider consent, MCP permissions or a working source read. Live MCP acceptance remains unverified for this change. No secrets are included in the repository or native app.
 
 Deploy with Wrangler from this folder only after the owner approves its deployment permissions. Configure the project's OAuth verification URL to the deployed `/oauth/verify` address, add a separate strong `SUZZME_DEVICE_TOKEN` Worker secret, and set the verifier flag only after that callback setting is saved. Keep the project key on the backend; the app receives the separate device token through its existing Keychain setup form. This is still a single-owner bridge, not a public multi-user account service.
 
@@ -54,7 +86,7 @@ Run `node --test server.test.mjs` for fictional upstream fixtures and a temporar
 - [LinkedIn OpenID Connect](https://learn.microsoft.com/linkedin/consumer/integrations/self-serve/sign-in-with-linkedin-v2)
 - [GitHub issue read API](https://docs.github.com/en/rest/issues/issues#get-an-issue)
 
-The v3.1 REST API is used explicitly. No retired `initiate()` flow or model-discovered unrestricted tools are used. Composio recommends sessions for general agents; deterministic Proxy Execute keeps this build's fixed read policy independent of agent tooling.
+The v3.1 REST API manages authorization and account validation. New native reads use hosted MCP sessions with deterministic Proxy Execute; the legacy REST read route remains for older clients. No retired `initiate()` flow or model-discovered unrestricted tools are used.
 
 ## Slack message reads
 
@@ -96,7 +128,7 @@ Setup creates `.env.local` with mode `0600`, a random opaque owner ID and a sepa
 
 `npm run check` prints readiness booleans only. An `INCOMPLETE` result and exit 1 are expected until the project key, HTTPS origin, enabled auth-config IDs and callback verification are configured. A `CONFIGURED` result validates local syntax only; it does not establish OAuth success, provider access, public HTTPS reachability or a rendered app screen. Keep the callback flag `no` until the actual project verifier is set correctly. When configured, `npm start` starts the existing loopback-only backend on port 7079. No public deployment or host is created by these commands.
 
-For the current fixed bridge, prepare a scoped project API key with **Connected accounts: Read + Write** and **Proxy execute (Legacy): Write**. Leave unrelated permission areas off; auth configs can be created separately in the dashboard. Connected-account write supports initiating/managing authorization; proxy-write is Composio's permission name for raw API execution, including this bridge's fixed provider reads. The key itself can perform broader API operations than the bridge exposes, so it belongs only on the server. [Official scoped-key permissions](https://docs.composio.dev/reference/authenticating-to-composio/project-api-key-permissions).
+For MCP, add **Session management** and **Session tool execution** to the bridge key's existing **Connected accounts: Read + Write** and **Proxy execute** permissions. Auth configs can be created separately in the dashboard. Connected-account write supports initiating/managing authorization; proxy execution includes this bridge's fixed provider reads. The key can perform broader API operations than the bridge exposes, so it belongs only on the server. [Official scoped-key permissions](https://docs.composio.dev/reference/authenticating-to-composio/project-api-key-permissions).
 
 Dashboard inspection on 20 October 2026 found two-factor authentication enabled, OAuth user verification unset, and Zero Data Retention off on the current project. Its UI states that request/response payloads are stored in logs. Suzzme's transient local excerpts do not imply zero retention by Composio. Review project retention before connecting private accounts; no billing upgrade or retention change was made. GitHub's managed OAuth draft also selected seven scopes by default, including `repo`, `workflow` and `codespace`; that draft was not saved or authorized. Review scopes explicitly rather than accepting those defaults as read-only.
 

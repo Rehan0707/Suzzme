@@ -364,12 +364,20 @@ private struct MacKnowledgeSourcesView: View {
                     .fixedSize(horizontal: false, vertical: true)
             }
 
-            NavigationLink {
-                GoogleAccountSourcesView()
-            } label: {
-                Label("Manage Google account and services", systemImage: "person.crop.circle.badge.checkmark")
+            HStack(spacing: SuzzmeTheme.Spacing.medium) {
+                NavigationLink {
+                    GoogleAccountSourcesView()
+                } label: {
+                    Label("Google account", systemImage: "person.crop.circle.badge.checkmark")
+                }
+                NavigationLink {
+                    ComposioIntegrationsView()
+                } label: {
+                    Label("Connect apps", systemImage: "app.connected.to.app.below.fill")
+                }
             }
-            .frame(minHeight: 44)
+            .buttonStyle(.bordered)
+            .frame(minHeight: SuzzmeTheme.Layout.touchTarget)
 
             sourceGroup("Email & calendar", note: "Each tile shows live setup and summary status. Connectors marked unavailable are catalog references, not working integrations.") {
                 sourceLink("Gmail", symbol: "envelope.fill", detail: "Recent inbox headers · optional on-device message summaries", included: environment.gmailAccount.isConnected && environment.gmailAccount.hasBodyAccess && environment.gmailAccount.gmailSelection()?.includeBodies == true && included(.gmail),
@@ -419,8 +427,10 @@ private struct MacKnowledgeSourcesView: View {
                 googleSource("Google Docs", service: .googleDocs, symbol: "doc.text", detail: "One verified document ID")
                 googleSource("Google Sheets", service: .googleSheets, symbol: "tablecells", detail: "One verified sheet range")
                 googleSource("Google Tasks", service: .googleTasks, symbol: "checkmark.circle", detail: "One verified task list")
-                sourceLink("Slack", symbol: "number", detail: "Composio supports one selected channel message for direct questions, not Daily Summary intake", included: false,
-                           status: integrationStatus(.slack)) { IntegrationsView() }
+                sourceLink("Slack", symbol: "number", detail: "Selected channel messages · summary requires separate consent",
+                           included: connectedSummary(.slack), status: integrationStatus(.slack)) {
+                    ComposioIntegrationsView(initialServiceID: "slack")
+                }
                 unavailable("Figma", symbol: "paintbrush.pointed", detail: "Catalog-only here · no working read connector")
                 sourceLink("Local Knowledge", symbol: "books.vertical", detail: "Selected text, Markdown, and one-time folder imports",
                            included: !environment.localKnowledge.notes.isEmpty && included(.localKnowledge),
@@ -493,10 +503,17 @@ private struct MacKnowledgeSourcesView: View {
 
     private func sourceGroup<Content: View>(_ title: String, note: String, compact: Bool = false, @ViewBuilder content: () -> Content) -> some View {
         VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.medium) {
-            Text(title)
-                .font(.title3.weight(.semibold))
-                .foregroundStyle(SuzzmeTheme.textPrimary)
-                .accessibilityAddTraits(.isHeader)
+            HStack {
+                Text(title)
+                    .font(.title3.weight(.semibold))
+                    .foregroundStyle(SuzzmeTheme.textPrimary)
+                    .accessibilityAddTraits(.isHeader)
+                Spacer()
+                if title == "Email & calendar" {
+                    Label("Recommended", systemImage: "sparkle")
+                        .font(.caption).foregroundStyle(SuzzmeTheme.textSecondary)
+                }
+            }
             LazyVGrid(columns: compact ? compactColumns : columns, alignment: .leading,
                       spacing: compact ? SuzzmeTheme.Spacing.xs : SuzzmeTheme.Spacing.small) { content() }
             Label(note, systemImage: "lock")
@@ -551,7 +568,7 @@ private struct MacKnowledgeSourcesView: View {
                     .foregroundStyle(available ? SuzzmeTheme.textPrimary : SuzzmeTheme.textSecondary)
                     .lineLimit(1)
                 Spacer(minLength: 0)
-                Image(systemName: included ? "checkmark.circle.fill" : available ? "arrow.up.right.circle" : "minus.circle")
+                Image(systemName: included ? "checkmark" : available ? "plus" : "minus")
                     .font(.caption.weight(.medium))
                     .foregroundStyle(included ? SuzzmeTheme.success : SuzzmeTheme.textSecondary)
                     .accessibilityHidden(true)
@@ -565,7 +582,7 @@ private struct MacKnowledgeSourcesView: View {
                 .lineLimit(2).fixedSize(horizontal: false, vertical: true)
         }
         .padding(SuzzmeTheme.Spacing.medium)
-        .frame(maxWidth: .infinity, minHeight: 112, alignment: .leading)
+        .frame(maxWidth: .infinity, minHeight: 88, alignment: .leading)
         .suzzmeContentSurface(cornerRadius: SuzzmeTheme.Radius.largeSurface,
                               tint: available ? (included ? SuzzmeTheme.success : SuzzmeTheme.controlAccent) : SuzzmeTheme.textSecondary)
         .overlay(RoundedRectangle(cornerRadius: SuzzmeTheme.Radius.largeSurface)

@@ -2,6 +2,9 @@ import SwiftUI
 import SwiftData
 import Observation
 import os
+#if os(iOS)
+import WidgetKit
+#endif
 
 /// Containers are Sendable in SwiftData; their contexts are created only after
 /// preparation returns to the main actor. Existing store locations are retained.
@@ -122,6 +125,11 @@ struct SuzzmePersistencePreparation: Sendable {
             guard let self, self.applicationPhase == .background, !Task.isCancelled else { return }
             await self.environment.cancelVoiceSession()
             guard self.applicationPhase == .background, !Task.isCancelled else { return }
+            // A suspended scene may not run a view's observation task. Publish
+            // cancellation through this lifecycle owner before suspension.
+            self.updateLiveActivity(reduceMotion: self.reduceMotion)
+            await self.presentationTask?.value
+            guard self.applicationPhase == .background, !Task.isCancelled else { return }
             await self.environment.cancelInformationIntake(respectingTaskCancellation: true)
             guard self.applicationPhase == .background, !Task.isCancelled else { return }
             await self.environment.cancelProactivePreparation(respectingTaskCancellation: true)
@@ -133,6 +141,23 @@ struct SuzzmePersistencePreparation: Sendable {
     /// scene callback never supplies an old phase, session or foreground flag.
     func updateLiveActivity(reduceMotion: Bool) {
         self.reduceMotion = reduceMotion
+        // Publish a status-only timeline entry on real content changes. The
+        // widget extension has no account, network, or assistant authority.
+        let voice = environment.voice
+        let state: SuzzmeAssistantState = voice.isPreparingSpeech && !voice.isPreviewing ? .planning : environment.presenceState
+        let sessionID = environment.presenceRequestID ?? voice.speechOutputID
+        let now = Date.now
+        let summary = environment.companionSummary
+        let generated = summary.flatMap { $0.isValid && $0.generatedAt <= now ? $0.generatedAt : nil }
+        let expires = generated?.addingTimeInterval(ProactiveLimits.briefingFreshness)
+        let snapshot = SuzzmeCompanionSnapshot(
+            phase: sessionID == nil ? nil : SuzzmeLiveActivityController.phase(for: state),
+            sessionID: sessionID,
+            appearance: SuzzmeLiveActivityAppearance(rawValue: SuzzmeMascotAppearance.shared.color.rawValue) ?? .blue,
+            updatedAt: now, summaryGeneratedAt: generated, summaryExpiresAt: expires)
+        if SuzzmeCompanionSnapshotStore.save(snapshot) {
+            WidgetCenter.shared.reloadTimelines(ofKind: SuzzmeCompanionSnapshot.widgetKind)
+        }
         presentationTask?.cancel()
         presentationTask = Task { [weak self] in
             guard let self, !Task.isCancelled else { return }
@@ -146,9 +171,13 @@ struct SuzzmePersistencePreparation: Sendable {
             let recent = date.map { Date.now.timeIntervalSince($0) >= 0 && Date.now.timeIntervalSince($0) < 3600 } ?? false
             let design = SuzzmeLiveActivityDesign(rawValue: UserDefaults.standard.string(
                 forKey: SuzzmeLiveActivityDesign.defaultsKey) ?? "") ?? .companion
-            await self.liveActivity.update(self.environment.presenceState,
+            let enabled = UserDefaults.standard.object(forKey: SuzzmeLiveActivityPhase.enabledDefaultsKey) as? Bool ?? true
+            guard enabled else { await self.liveActivity.reset(); return }
+            let voice = self.environment.voice
+            let state: SuzzmeAssistantState = voice.isPreparingSpeech && !voice.isPreviewing ? .planning : self.environment.presenceState
+            await self.liveActivity.update(state,
                 theme: SuzzmeMascotAppearance.shared.color.rawValue,
-                sessionID: self.environment.presenceRequestID,
+                sessionID: self.environment.presenceRequestID ?? voice.speechOutputID,
                 design: design,
                 motionEnabled: !self.reduceMotion && self.environment.invocation.presenceAnimation != .minimal,
                 foreground: self.applicationPhase != .background,

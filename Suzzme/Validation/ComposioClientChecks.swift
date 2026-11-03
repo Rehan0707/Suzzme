@@ -2,7 +2,7 @@ import Foundation
 import Synchronization
 
 private final class ConnectorFixtureProtocol: URLProtocol, @unchecked Sendable {
-    struct State: Sendable { var body = Data(); var status = 200; var requests: [URLRequest] = [] }
+    struct State: Sendable { var body = Data(); var status = 200; var requests: [URLRequest] = []; var fault = "" }
     static let state = Mutex(State())
     static func configure(_ object: Any, status: Int = 200) throws {
         let data = try JSONSerialization.data(withJSONObject: object)
@@ -11,7 +11,53 @@ private final class ConnectorFixtureProtocol: URLProtocol, @unchecked Sendable {
     override class func canInit(with request: URLRequest) -> Bool { true }
     override class func canonicalRequest(for request: URLRequest) -> URLRequest { request }
     override func startLoading() {
-        let (body, status) = Self.state.withLock { state in state.requests.append(request); return (state.body, state.status) }
+        var captured = request
+        if captured.httpBody == nil, let stream = captured.httpBodyStream {
+            stream.open(); defer { stream.close() }
+            var data = Data(); var buffer = [UInt8](repeating: 0, count: 1024)
+            while stream.hasBytesAvailable {
+                let count = stream.read(&buffer, maxLength: buffer.count)
+                if count <= 0 { break }; data.append(contentsOf: buffer.prefix(count))
+            }
+            captured.httpBody = data
+        }
+        var (body, status, fault) = Self.state.withLock { state in
+            state.requests.append(captured); return (state.body, state.status, state.fault)
+        }
+        if request.url?.path == "/v1/mcp", status == 200,
+           let payload = captured.httpBody, let rpc = try? JSONSerialization.jsonObject(with: payload) as? [String: Any] {
+            let method = rpc["method"] as? String
+            if method == "notifications/initialized" { status = fault == "notification" ? 200 : 202; body = Data() }
+            else {
+                let result: [String: Any]
+                if method == "initialize" {
+                    result = ["protocolVersion": fault == "version" ? "unknown" : "2025-11-25", "capabilities": ["tools": [:]]]
+                } else if method == "tools/list" {
+                    let names = ["suzzme_read_github_issue", "suzzme_read_slack_message", "suzzme_read_notion_page"]
+                    var listing: [String: Any] = ["tools": names.map { name in
+                        ["name": fault == "unknown-tool" ? "COMPOSIO_MULTI_EXECUTE_TOOL" : name,
+                         "annotations": ["readOnlyHint": fault != "writable", "destructiveHint": false],
+                         "inputSchema": ["type": "object", "additionalProperties": fault == "schema",
+                            "required": ["accountID", "resource"], "properties": [
+                                "accountID": ["type": "string", "minLength": 1, "maxLength": 160],
+                                "resource": ["type": "string", "minLength": 1, "maxLength": 512]]]] as [String: Any]
+                    }]
+                    if fault == "pagination" { listing["nextCursor"] = "more" }
+                    result = listing
+                } else {
+                    let excerpt = (try? JSONSerialization.jsonObject(with: body)) ?? [:]
+                    if fault == "tool-error" {
+                        result = ["isError": true, "content": [["type": "text", "text": "Read failed."]],
+                            "structuredContent": ["error": ["status": 409]]]
+                    } else {
+                        result = ["isError": false, "structuredContent": excerpt,
+                            "content": [["type": "text", "text": fault == "content" ? "{}" : String(decoding: body, as: UTF8.self)]]]
+                    }
+                }
+                body = try! JSONSerialization.data(withJSONObject: ["jsonrpc": "2.0",
+                    "id": fault == "id" ? "wrong-id" : (rpc["id"] ?? "missing"), "result": result])
+            }
+        }
         client?.urlProtocol(self, didReceive: HTTPURLResponse(url: request.url!, statusCode: status, httpVersion: nil,
             headerFields: ["Content-Type": "application/json"])!, cacheStoragePolicy: .notAllowed)
         client?.urlProtocol(self, didLoad: body); client?.urlProtocolDidFinishLoading(self)
@@ -69,7 +115,7 @@ private final class ConnectorFixtureProtocol: URLProtocol, @unchecked Sendable {
         try ConnectorFixtureProtocol.configure(["text": "Wrong workspace.", "source": slackResource.replacingOccurrences(of: "fixture.slack.com", with: "other.slack.com"),
             "service": "slack", "accountID": slack.id, "fetchedAt": "2026-10-19T16:00:00Z"])
         try await rejects("Slack source substitution rejected") { _ = try await client.read(account: slack, resource: slackResource) }
-        for (status, expected) in [(422, ComposioError.resource), (429, ComposioError.rateLimited)] {
+        for (status, expected) in [(422, ComposioError.resource), (429, ComposioError.rateLimited), (404, ComposioError.mcpSetup)] {
             try ConnectorFixtureProtocol.configure(["error": "fixture"], status: status)
             do { _ = try await client.read(account: slack, resource: slackResource); try check(false, "expected connector recovery error") }
             catch { try check((error as? ComposioError)?.localizedDescription == expected.localizedDescription, "HTTP \(status) has actionable recovery") }
@@ -97,6 +143,26 @@ private final class ConnectorFixtureProtocol: URLProtocol, @unchecked Sendable {
         var excerpt: [String: String] = ["text": "Meet in Studio Cedar.", "source": resource, "service": "github", "accountID": account.id, "fetchedAt": "2026-10-19T16:00:00.123Z"]
         try ConnectorFixtureProtocol.configure(excerpt)
         try check(try await client.read(account: account, resource: resource).text == "Meet in Studio Cedar.", "exact source and retrieval time accepted")
+        let mcpRequests = ConnectorFixtureProtocol.state.withLock { $0.requests }
+        let rpcBodies = try mcpRequests.map { try JSONSerialization.jsonObject(with: $0.httpBody!) as! [String: Any] }
+        try check(rpcBodies.compactMap { $0["method"] as? String } == ["initialize", "notifications/initialized", "tools/list", "tools/call"],
+            "MCP initialization, notification, discovery and selected read occur in order")
+        try check(mcpRequests.allSatisfy { $0.url?.path == "/v1/mcp" && $0.value(forHTTPHeaderField: "MCP-Protocol-Version") == "2025-11-25" },
+            "MCP uses the authenticated connector endpoint and negotiated protocol header")
+        let callParams = rpcBodies.last?["params"] as? [String: Any]
+        try check(callParams?["name"] as? String == "suzzme_read_github_issue"
+            && callParams?["arguments"] as? [String: String] == ["accountID": account.id, "resource": resource],
+            "MCP call contains only selected account and resource, never owner or project key")
+        for fault in ["version", "id", "notification", "unknown-tool", "writable", "schema", "pagination", "content", "tool-error"] {
+            try ConnectorFixtureProtocol.configure(excerpt)
+            ConnectorFixtureProtocol.state.withLock { $0.fault = fault }
+            try await rejects("reject MCP \(fault)") { _ = try await client.read(account: account, resource: resource) }
+            if !["content", "tool-error"].contains(fault) {
+                let bodies = ConnectorFixtureProtocol.state.withLock { $0.requests.compactMap(\.httpBody) }
+                try check(!bodies.contains { String(decoding: $0, as: UTF8.self).contains("tools/call") },
+                    "invalid MCP \(fault) stops before execution")
+            }
+        }
         for (key, value) in [("accountID", "ca_foreign"), ("service", "linkedin"), ("source", "https://evil.example"), ("text", "api_key: secret"), ("text", token), ("text", String(repeating: "a", count: 4501)), ("fetchedAt", "not-a-date")] {
             var invalid = excerpt; invalid[key] = value; try ConnectorFixtureProtocol.configure(invalid)
             try await rejects("reject invalid connected excerpt \(key)") { _ = try await client.read(account: account, resource: resource) }

@@ -19,6 +19,9 @@ actor SuzzmeLiveActivityController {
     private var isUpdating = false
     private var didCleanUp = false
     private var monitoringTask: Task<Void, Never>?
+    private var lastApplied: Presentation?
+    private var foregroundAllowed = false
+    private var completionPhase: SuzzmeLiveActivityPhase?
 
     deinit { monitoringTask?.cancel() }
 
@@ -31,8 +34,13 @@ actor SuzzmeLiveActivityController {
         // An ongoing conversation remains visible when the user leaves the
         // app. ActivityKit owns the Island; background updates may continue,
         // but a new activity is only requested while foregrounded.
-        let phase = Self.phase(for: state) ?? (summarySessionID == nil ? nil : .summaryReady)
-        let sessionID = phase == .summaryReady ? summarySessionID : sessionID
+        let phase = Self.phase(for: state)
+        // Availability of a cached summary is a widget update, not a new task.
+        // Success ends an owned session; it never creates a ready-only activity.
+        foregroundAllowed = foreground
+        // Finishing playback completes the session; it does not mean that a
+        // new Daily Summary was generated. Availability remains a widget fact.
+        completionPhase = state == .success ? .completed : nil
         let ongoing = phase != nil
         let shouldPresent = lifetime.update(sessionID: sessionID, ongoing: ongoing)
         if shouldPresent, let phase, let sessionID {
@@ -45,54 +53,53 @@ actor SuzzmeLiveActivityController {
         defer { isUpdating = false }
         if !didCleanUp {
             didCleanUp = true
-            if desired?.phase == .summaryReady,
-               let existing = Activity<SuzzmeLiveActivityAttributes>.activities.first(where: {
-                   ($0.content.state.phase == .summaryReady || $0.content.state.phase == .urgentReady)
-                     && ($0.activityState == .active || $0.activityState == .stale)
-               }) {
-                activityID = existing.id; activitySessionID = desired?.sessionID
-                if let sessionID = desired?.sessionID {
-                    monitoringTask = Self.monitorActivity(id: existing.id, sessionID: sessionID, owner: self)
-                }
-            } else { await Self.endExistingActivities() }
+            // Remote delivery can arrive as a summary-ready activity. Its task
+            // is already complete, so retain only the final Lock Screen card.
+            await Self.finishExistingActivities(retainSummaries: summarySessionID != nil)
         }
+        await Self.finishDeliveredSummaries(excluding: activityID, retain: summarySessionID != nil)
         while true {
             let version = revision
             if let presentation = desired, ActivityAuthorizationInfo().areActivitiesEnabled {
                 if let previous = activityID, activitySessionID != presentation.sessionID {
-                    activityID = nil; activitySessionID = nil
+                    activityID = nil; activitySessionID = nil; lastApplied = nil
                     monitoringTask?.cancel(); monitoringTask = nil
                     await Self.endActivity(id: previous)
                     if version != revision { continue }
+                }
+                if lastApplied == presentation, activityID != nil {
+                    if version == revision { break }
+                    continue
                 }
                 let content = ActivityContent(
                     state: SuzzmeLiveActivityAttributes.ContentState(phase: presentation.phase,
                         appearance: presentation.appearance, motionEnabled: presentation.motionEnabled,
                         design: presentation.design),
-                    staleDate: Date.now.addingTimeInterval(presentation.phase == .summaryReady ? 3600 : 90)
+                    staleDate: Date.now.addingTimeInterval(presentation.phase == .speaking ? 15 * 60 : 90)
                 )
                 if let id = activityID {
                     let updated = await Self.updateActivity(id: id, content: content)
                     if version != revision { continue }
                     if !updated {
                         // Absence after ownership means system/user dismissal; don't resurrect this request.
-                        activityID = nil; activitySessionID = nil
+                        activityID = nil; activitySessionID = nil; lastApplied = nil
                         monitoringTask?.cancel(); monitoringTask = nil
                         lifetime.dismiss(sessionID: presentation.sessionID)
                         desired = nil
-                    }
-                } else if foreground {
+                    } else { lastApplied = presentation }
+                } else if foregroundAllowed {
                     let attributes = SuzzmeLiveActivityAttributes(startedAt: lifetime.startedAt ?? .now)
                     activityID = await Self.requestActivity(attributes: attributes, content: content)
                     if let id = activityID {
                         activitySessionID = presentation.sessionID
+                        lastApplied = presentation
                         monitoringTask = Self.monitorActivity(id: id, sessionID: presentation.sessionID, owner: self)
                     }
                 }
             } else if let previous = activityID {
-                activityID = nil; activitySessionID = nil
+                activityID = nil; activitySessionID = nil; lastApplied = nil
                 monitoringTask?.cancel(); monitoringTask = nil
-                await Self.endActivity(id: previous)
+                await Self.endActivity(id: previous, finalPhase: completionPhase)
             }
             if version == revision { break }
         }
@@ -105,7 +112,7 @@ actor SuzzmeLiveActivityController {
 
     private func activityEnded(id: String, sessionID: UUID) {
         guard activityID == id, lifetime.sessionID == sessionID else { return }
-        activityID = nil; activitySessionID = nil
+        activityID = nil; activitySessionID = nil; lastApplied = nil
         lifetime.dismiss(sessionID: sessionID)
         desired = nil
         revision += 1
@@ -118,8 +125,7 @@ actor SuzzmeLiveActivityController {
         // Standard activities keep an active conversation in the Island when
         // the app leaves the foreground. The lifecycle owner ends it when the
         // assistant returns to idle.
-        let pushType: PushType? = content.state.phase == .summaryReady && CompanionPushRegistration.isPushEnabled ? .token : nil
-        return try? Activity.request(attributes: attributes, content: content, pushType: pushType).id
+        return try? Activity.request(attributes: attributes, content: content, pushType: nil).id
     }
 
     nonisolated private static func monitorActivity(id: String, sessionID: UUID, owner: SuzzmeLiveActivityController) -> Task<Void, Never> {
@@ -142,9 +148,30 @@ actor SuzzmeLiveActivityController {
         return true
     }
 
-    nonisolated private static func endActivity(id: String) async {
+    nonisolated private static func endActivity(id: String, finalPhase: SuzzmeLiveActivityPhase? = nil) async {
         if let activity = Activity<SuzzmeLiveActivityAttributes>.activities.first(where: { $0.id == id }) {
-            await activity.end(nil, dismissalPolicy: .immediate)
+            if let finalPhase {
+                let previous = activity.content.state
+                let final = ActivityContent(state: SuzzmeLiveActivityAttributes.ContentState(
+                    phase: finalPhase, appearance: previous.appearance,
+                    motionEnabled: previous.motionEnabled, design: previous.design), staleDate: nil)
+                await activity.end(final, dismissalPolicy: .after(.now.addingTimeInterval(15 * 60)))
+            } else { await activity.end(nil, dismissalPolicy: .immediate) }
+        }
+    }
+
+    nonisolated private static func finishExistingActivities(retainSummaries: Bool) async {
+        for activity in Activity<SuzzmeLiveActivityAttributes>.activities where activity.activityState == .active || activity.activityState == .stale {
+            let phase = activity.content.state.phase
+            await endActivity(id: activity.id, finalPhase: retainSummaries && phase.isTerminal ? phase : nil)
+        }
+    }
+
+    nonisolated private static func finishDeliveredSummaries(excluding ownedID: String?, retain: Bool) async {
+        for activity in Activity<SuzzmeLiveActivityAttributes>.activities
+            where activity.id != ownedID && activity.content.state.phase.isTerminal
+                && (activity.activityState == .active || activity.activityState == .stale) {
+            await endActivity(id: activity.id, finalPhase: retain ? activity.content.state.phase : nil)
         }
     }
 

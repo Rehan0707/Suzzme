@@ -1,4 +1,4 @@
-# Suzme
+# Suzzme
 
 Native Mac assistant with an iPhone/iPad companion. The Mac connects sources and prepares AI summaries; the signed-in phone receives and reads the prepared result without a local language model or source-intake runtime. Open `Suzzme.xcodeproj`, select **Suzzme**, then an iOS simulator or My Mac. One shared application target and an iOS WidgetKit extension; Swift 6; minimum iOS 17 / macOS 14. Current validation uses Xcode 27 / Swift 6.4. Google account sign-in connects the same account across devices; Gmail source access is a separate Mac permission.
 

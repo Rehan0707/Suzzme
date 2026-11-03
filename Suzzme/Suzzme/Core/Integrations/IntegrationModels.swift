@@ -1,7 +1,7 @@
 import Foundation
 
 enum IntegrationID: String, Codable, CaseIterable, Sendable, Identifiable {
-    case github, linkedin, notion, linear, slack, googleDocs, googleCalendar, customMCP
+    case gmail, whatsapp, github, linkedin, notion, linear, slack, googleDocs, googleCalendar, customMCP
     case airtable, asana, clickUp, contentful, eventbrite, figma, gitlab, harvest, moneybird, pushbullet, todoist, typeform, wakatime, ynab
     case dropbox, outlook, oneDrive, excel, microsoftTeams, sharePoint
     case googleDrive, googleClassroom, googleMeet, googleSheets, googleSlides, googleTasks, googleSearchConsole, googleAnalytics, googleBigQuery, googlePhotos
@@ -58,7 +58,7 @@ struct IntegrationDescriptor: Identifiable, Sendable {
                     ? "A verified personal credential and the stated resource scope are required. Reads stay in the current request."
                     : "Registered Google OAuth clients and explicit service authorization are required. Reads stay in the current request.")
         }
-        let names: [IntegrationID: String] = [.moneybird: "Moneybird", .dropbox: "Dropbox",
+        let names: [IntegrationID: String] = [.gmail: "Gmail", .whatsapp: "WhatsApp", .moneybird: "Moneybird", .dropbox: "Dropbox",
             .outlook: "Outlook", .oneDrive: "OneDrive", .excel: "Excel",
             .microsoftTeams: "Microsoft Teams", .sharePoint: "SharePoint", .googlePhotos: "Google Photos"]
         let name = names[id] ?? id.rawValue

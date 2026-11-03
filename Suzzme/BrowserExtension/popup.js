@@ -5,7 +5,7 @@ const status = document.querySelector("#status");
 const buttons = [...document.querySelectorAll("button")].filter(button => button.id !== "request-github");
 const autoDetectionButton = document.querySelector("#toggle-auto-detection");
 const autoDetectionStatus = document.querySelector("#auto-detection-status");
-const serviceNames = {github: "GitHub", linkedin: "LinkedIn", notion: "Notion", slack: "Slack"};
+const serviceNames = {gmail: "Gmail", outlook: "Outlook", whatsapp: "WhatsApp", github: "GitHub", linkedin: "LinkedIn", notion: "Notion", slack: "Slack"};
 function show(message) { status.textContent = message; }
 async function perform(message) {
   buttons.forEach(button => { button.disabled = true; });
@@ -120,7 +120,7 @@ async function recognizeIntegration() {
       integrationStatus.textContent = `${name} tab detected`;
       integrationButton.hidden = false;
       integrationButton.textContent = `Request ${name} connection in Suzzme`;
-    } else { integrationStatus.textContent = "No supported app tab detected. Supported tabs: GitHub, LinkedIn, Notion, and Slack."; }
+    } else { integrationStatus.textContent = "No supported app tab detected. Supported tabs: Gmail, Outlook, WhatsApp, GitHub, LinkedIn, Notion, and Slack."; }
   } catch { integrationStatus.textContent = "This tab’s app identity is unavailable. Open the extension on a supported HTTPS app tab."; }
 }
 await Promise.all([refreshAutoDetection(), recognizeIntegration(), recognizeRepository(), perform({method: "status"})]);

@@ -231,6 +231,13 @@ private struct ComposioConnectionForm: View {
                 }
                 if let selected {
                     Section("Daily Summary") {
+                        if ["gmail", "outlook"].contains(selected.service) {
+                            Text("Include recent inbox previews from the last 24 hours in scheduled on-device summaries. Up to 20 messages per refresh; full threads and attachments are excluded. More messages may exist.")
+                            Button("Include Recent Inbox in Daily Summary") {
+                                let url = selected.service == "gmail" ? "https://mail.google.com/mail/u/0/" : "https://outlook.office.com/mail/"
+                                controller.setSummaryResources(account: selected, urls: [url])
+                            }.disabled(controller.isWorking)
+                        }
                         Text("Choose up to four exact \(selected.serviceTitle) links for this account, with eight selected links across Composio accounts. Suzzme checks only these links when summaries refresh. It keeps titles, status, and short on-device summaries; source excerpts aren’t stored.")
                             .font(.footnote).foregroundStyle(SuzzmeTheme.textSecondary)
                         Text(summarySelectionStatus)

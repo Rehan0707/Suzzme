@@ -20,18 +20,14 @@ export function makePush(job: Job, device: Device, bundle: string, now = Date.no
     collapseID: `suzzme-${job.kind}` };
   if (device.activity_token) {
     return { ...common, token: device.activity_token, tokenColumn: "activity_token", body: { aps: {
-      ...content, event: job.kind === "end" ? "end" : "update",
-      ...(job.kind === "end" ? { "dismissal-date": timestamp } : urgent ? { alert: { title: "Suzzme", body: title, sound: "default" } } : {})
+      ...content, event: "end",
+      "dismissal-date": job.kind === "end" ? timestamp : timestamp + 15 * 60,
+      ...(urgent ? { alert: { title: "Suzzme", body: title, sound: "default" } } : {})
     } } };
   }
   if (job.kind === "end") return null;
-  if (device.start_token) {
-    return { ...common, token: device.start_token, tokenColumn: "start_token", body: { aps: {
-      ...content, event: "start", "attributes-type": "SuzzmeLiveActivityAttributes",
-      attributes: { startedAt: timestamp - 978307200 }, "input-push-token": 1,
-      alert: { title: "Suzzme", body: title, sound: "default" }
-    } } };
-  }
+  // Receipt is completion, not the beginning of an ongoing task. Keep legacy
+  // start-token records compatible, but deliver new ready summaries as alerts.
   if (!device.device_token) return null;
   return { token: device.device_token, tokenColumn: "device_token", topic: bundle, pushType: "alert",
     collapseID: `suzzme-${job.kind}`, body: { aps: {

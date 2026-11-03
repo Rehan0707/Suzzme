@@ -11,10 +11,8 @@ import UserNotifications
     static let received = Notification.Name("suzzme.companion.pushReceived")
     private(set) var status = "Notifications have not been enabled."
     private var deviceToken: String?
-    private var startToken: String?
     private var activityToken: String?
     private var activityID: String?
-    private var startUpdates: Task<Void, Never>?
     private var activityUpdates: Task<Void, Never>?
     private var tokenUpdates: Task<Void, Never>?
     private var stateUpdates: Task<Void, Never>?
@@ -77,8 +75,9 @@ import UserNotifications
 
     private func persistRegistration() async {
         guard Self.isPushEnabled, let uid = CompanionSummaryStore.currentUser?.uid else { return }
+        let liveActivitiesEnabled = UserDefaults.standard.object(forKey: SuzzmeLiveActivityPhase.enabledDefaultsKey) as? Bool ?? true
         let value = CompanionDeviceRegistration(p_installation_id: installationID, p_device_token: deviceToken,
-            p_start_token: startToken, p_activity_token: activityToken, p_activity_id: activityID,
+            p_start_token: nil, p_activity_token: liveActivitiesEnabled ? activityToken : nil, p_activity_id: liveActivitiesEnabled ? activityID : nil,
             p_environment: Self.environment, p_routine: CompanionPlaybackPreferences.routineEnabled(for: uid),
             p_urgent: CompanionPlaybackPreferences.urgentEnabled(for: uid))
         guard registeredUID != uid || lastRegistration != value else { return }
@@ -88,7 +87,7 @@ import UserNotifications
             try await CompanionAccountDeliveryStore.register(value, uid: uid)
             guard owner == revision, CompanionSummaryStore.currentUser?.uid == uid else { return }
             registeredUID = uid; lastRegistration = value
-            status = deviceToken == nil && startToken == nil ? "Waiting for Apple push registration…" : "Registered for summary and urgent updates."
+            status = deviceToken == nil ? "Waiting for Apple push registration…" : "Registered for summary and urgent updates."
         } catch {
             guard owner == revision, !Task.isCancelled else { return }
             status = "Push registration has not reached your account. Try enabling notifications again."
@@ -115,15 +114,6 @@ import UserNotifications
     }
 
     private func observeTokens() {
-        if #available(iOS 17.2, *), startUpdates == nil {
-            startUpdates = Task { [weak self] in
-                for await token in Activity<SuzzmeLiveActivityAttributes>.pushToStartTokenUpdates {
-                    guard let self, !Task.isCancelled else { return }
-                    self.startToken = Self.hex(token)
-                    await self.synchronize()
-                }
-            }
-        }
         if activityUpdates == nil {
             activityUpdates = Task { [weak self] in
                 for activity in Activity<SuzzmeLiveActivityAttributes>.activities { self?.observe(activity) }

@@ -1,5 +1,9 @@
 // App identity is derived from HTTPS hostnames only; no page content is queried.
 const hosts = new Map([
+  ["mail.google.com", "gmail"],
+  ["outlook.office.com", "outlook"],
+  ["outlook.live.com", "outlook"],
+  ["web.whatsapp.com", "whatsapp"],
   ["github.com", "github"],
   ["linkedin.com", "linkedin"],
   ["notion.so", "notion"],

@@ -28,6 +28,7 @@ struct ContentView: View {
     @Environment(\.suzzmeApplicationRuntime) private var applicationRuntime
     @Environment(\.suzzmeApplicationPhase) private var applicationPhase
     @State private var showsActivityConversation = false
+    @State private var pendingSummaryLink = false
     #elseif os(macOS)
     @Environment(MacGlobalInvocationController.self) private var globalInvocation
     #endif
@@ -240,7 +241,10 @@ struct ContentView: View {
         } else if url.scheme == "suzzme", url.host == "ask" {
             showsActivityConversation = true
         } else if url.scheme == "suzzme", url.host == "summary" {
-            router.selection = .briefing
+            // A cold widget/ActivityKit launch can arrive before Firebase's
+            // initial account callback. Keep the route behind authentication.
+            pendingSummaryLink = launchPhase != .app
+            if !pendingSummaryLink { router.selection = .briefing }
         } else { environment.handleGmailSignInURL(url) }
         #else
         globalInvocation.handleOpenURL(url)
@@ -291,6 +295,12 @@ struct ContentView: View {
         .task(id: activityPresentationKey) {
             applicationRuntime?.updateLiveActivity(reduceMotion: reduceMotion)
         }
+        .onAppear {
+            if pendingSummaryLink {
+                pendingSummaryLink = false
+                router.selection = .briefing
+            }
+        }
         .sheet(isPresented: $showsActivityConversation) {
             AskSuzzmeView()
         }
@@ -336,7 +346,7 @@ struct ContentView: View {
 
     #if os(iOS)
     private var activityPresentationKey: String {
-        "\(environment.presenceRequestID?.uuidString ?? "")|\(environment.presenceState.rawValue)|\(environment.companionSummary?.generatedAt.timeIntervalSince1970 ?? 0)|\(environment.hasCheckedCompanionSummary)|\(observedAccountID ?? "")|\(SuzzmeMascotAppearance.shared.color.rawValue)|\(environment.invocation.presenceAnimation.rawValue)|\(reduceMotion)|\(applicationPhase)"
+        "\(environment.presenceRequestID?.uuidString ?? "")|\(environment.presenceState.rawValue)|\(environment.voice.speechOutputID?.uuidString ?? "")|\(environment.voice.isPreparingSpeech)|\(environment.companionSummary?.generatedAt.timeIntervalSince1970 ?? 0)|\(environment.hasCheckedCompanionSummary)|\(observedAccountID ?? "")|\(SuzzmeMascotAppearance.shared.color.rawValue)|\(environment.invocation.presenceAnimation.rawValue)|\(reduceMotion)|\(applicationPhase)"
     }
     #endif
 }
@@ -393,8 +403,10 @@ private struct IOSBrowserIntegrationInvitation: View {
             NotionConnectionSheet().environment(environment)
         case .linkedin:
             ComposioIntegrationsView(initialServiceID: "linkedin").environment(environment)
-        case .slack:
-            ComposioIntegrationsView(initialServiceID: "slack").environment(environment)
+        case .slack, .gmail, .outlook:
+            ComposioIntegrationsView(initialServiceID: route.service.rawValue).environment(environment)
+        case .whatsapp:
+            WhatsAppLocalView().environment(environment)
         default:
             ContentUnavailableView("Connection unavailable", systemImage: "puzzlepiece.extension",
                                    description: Text("This app connection is not enabled in the current build."))

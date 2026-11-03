@@ -33,3 +33,15 @@ test('Worker preserves authentication and bounded request bodies', async () => {
     method: 'POST', headers: { 'content-type': 'application/json' }, body: 'invalid json',
   }))).status, 400);
 });
+test('Worker transports MCP discovery and notifications with authenticated HTTP semantics', async () => {
+  const worker = fixture(true);
+  const headers = { Authorization: 'Bearer ' + 'b'.repeat(43), 'Content-Type': 'application/json', 'MCP-Protocol-Version': '2025-11-25' };
+  const send = body => worker.fetch(new Request(origin + '/v1/mcp', { method: 'POST', headers, body: JSON.stringify(body) }));
+  const discovery = await send({ jsonrpc: '2.0', id: '1', method: 'tools/list' });
+  assert.equal(discovery.status, 200);
+  assert.deepEqual((await discovery.json()).result.tools.map(tool => tool.name), ['suzzme_read_slack_message']);
+  const notification = await send({ jsonrpc: '2.0', method: 'notifications/initialized' });
+  assert.equal(notification.status, 202); assert.equal(await notification.text(), '');
+  headers['MCP-Protocol-Version'] = 'unknown';
+  assert.equal((await send({ jsonrpc: '2.0', id: '2', method: 'ping' })).status, 400);
+});

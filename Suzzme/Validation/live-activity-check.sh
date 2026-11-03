@@ -5,6 +5,7 @@ output=$(mktemp -d)
 trap 'rm -rf "$output"' EXIT
 xcrun swiftc -swift-version 6 -parse-as-library \
   PresenceShared/SuzzmeLiveActivityPhase.swift \
+  PresenceShared/SuzzmeCompanionSnapshot.swift \
   Suzzme/Core/Models/SuzzmeAssistantState.swift \
   Validation/LiveActivityChecks.swift -o "$output/LiveActivityChecks"
 "$output/LiveActivityChecks"

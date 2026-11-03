@@ -111,6 +111,9 @@ final class VoiceSessionController: NSObject {
     private(set) var isSpeaking = false
     private(set) var isPreviewing = false
     private(set) var speechProgress = 0.0
+    /// Presentation identity for this real output, including summary playback
+    /// without a conversation request. Voice previews never receive an ID.
+    private(set) var speechOutputID: UUID?
     private(set) var partialTranscript = ""
     private(set) var finalTranscript: String?
     private(set) var isListening = false
@@ -789,6 +792,7 @@ final class VoiceSessionController: NSObject {
     }
 
     func stopSpeech(interruptBriefing: Bool = true) {
+        speechOutputID = nil
         let ownsPreparation = speechPreparationRevision == assistant.revision
         speechPreparationRevision = nil
         if interruptBriefing, let activeBriefingID {
@@ -862,6 +866,7 @@ final class VoiceSessionController: NSObject {
     /// Generation and playback retain the same controller and cancellation
     /// owner as native speech. Late buffers never revive a retired request.
     private func startSpeechOutput(_ text: String, preview: Bool, useNatural: Bool, style: DeliveryStyle? = nil) {
+        speechOutputID = preview ? nil : UUID()
         // A response owns its preparation presentation until audible playback
         // begins. Cancelling it may settle that exact phase, never a newer one.
         speechPreparationRevision = preview ? nil : assistant.revision
@@ -1003,6 +1008,7 @@ final class VoiceSessionController: NSObject {
     }
 
     private func completeSpeech(preview: Bool) {
+        speechOutputID = nil
         speechPreparationRevision = nil
         isSpeaking = false
         isPreviewing = false

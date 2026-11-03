@@ -8,6 +8,7 @@ struct PresenceSettingsView: View {
     @Environment(\.suzzmeApplicationRuntime) private var applicationRuntime
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @AppStorage(SuzzmeLiveActivityDesign.defaultsKey) private var liveActivityDesignRawValue = SuzzmeLiveActivityDesign.companion.rawValue
+    @AppStorage(SuzzmeLiveActivityPhase.enabledDefaultsKey) private var liveActivitiesEnabled = true
     @State private var previewStep = 0
     #endif
 
@@ -53,7 +54,7 @@ struct PresenceSettingsView: View {
                 }
 
                 #if os(iOS)
-                dynamicIslandSettings
+                liveActivitySettings
                 #endif
 
                 VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.medium) {
@@ -105,6 +106,10 @@ struct PresenceSettingsView: View {
         .onChange(of: liveActivityDesignRawValue) { _, _ in
             applicationRuntime?.updateLiveActivity(reduceMotion: reduceMotion)
         }
+        .onChange(of: liveActivitiesEnabled) { _, _ in
+            applicationRuntime?.updateLiveActivity(reduceMotion: reduceMotion)
+            Task { await CompanionPushRegistration.shared.synchronize() }
+        }
         #endif
     }
 
@@ -121,11 +126,14 @@ struct PresenceSettingsView: View {
         }
     }
 
-    private var dynamicIslandSettings: some View {
+    private var liveActivitySettings: some View {
         VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.medium) {
-            Text("Dynamic Island")
+            Text("Live Activities")
                 .font(.headline)
                 .accessibilityAddTraits(.isHeader)
+            Toggle("Show Live Activities", isOn: $liveActivitiesEnabled)
+            Text("Shows status for active sessions on the Lock Screen and supported Dynamic Island. Your Home Screen widget keeps a separate snapshot. You can also manage Live Activities in iPhone Settings.")
+                .font(.caption).foregroundStyle(.secondary)
             Picker("Live Activity design", selection: $liveActivityDesignRawValue) {
                 ForEach(SuzzmeLiveActivityDesign.allCases) { design in
                     Text(design.title).tag(design.rawValue)
@@ -134,7 +142,7 @@ struct PresenceSettingsView: View {
             .pickerStyle(.segmented)
             Text(liveActivityDesign.description)
                 .font(.caption).foregroundStyle(.secondary)
-            SuzzmeDynamicIslandDesignPreview(design: liveActivityDesign, phase: previewPhase)
+            SuzzmePresenceStylePreview(design: liveActivityDesign, phase: previewPhase)
             HStack {
                 Button("Animate preview", systemImage: "play.fill") {
                     withAnimation(reduceMotion ? nil : .spring(response: 0.42, dampingFraction: 0.82)) {
@@ -162,63 +170,31 @@ struct PresenceSettingsView: View {
 }
 
 #if os(iOS)
-private struct SuzzmeDynamicIslandDesignPreview: View {
+/// A regular app-owned style example, not a replica of system Island geometry.
+private struct SuzzmePresenceStylePreview: View {
     let design: SuzzmeLiveActivityDesign
     let phase: SuzzmeLiveActivityPhase
 
-    private var leadingSymbol: String {
-        switch design {
-        case .companion: "face.smiling.fill"
-        case .briefing: "sun.horizon.fill"
-        case .focus: phase.symbol
-        }
-    }
-    private var trailingText: String {
-        design == .briefing ? phase.compactLabel : "Suzzme"
-    }
-
     var body: some View {
-        VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.small) {
-            Label("Design preview only", systemImage: "eye")
-                .font(.caption.weight(.semibold)).foregroundStyle(.secondary)
-            HStack(alignment: .center, spacing: SuzzmeTheme.Spacing.small) {
-                Text("Minimal").font(.caption2).frame(width: 54, alignment: .leading)
-                Image(systemName: design == .briefing ? "sun.horizon.fill" : design == .companion ? "face.smiling.fill" : phase.symbol)
-                    .font(.system(size: 17, weight: .semibold)).foregroundStyle(.white)
-                    .frame(width: 42, height: 42).background(.black, in: Circle())
-                    .accessibilityLabel("Minimal Dynamic Island preview")
-                Text("Compact").font(.caption2).frame(width: 56, alignment: .leading)
-                HStack(spacing: 9) {
-                    Image(systemName: leadingSymbol).font(.system(size: 15, weight: .semibold))
-                    Text(trailingText).font(.caption2.weight(.semibold)).lineLimit(1)
-                }
-                .foregroundStyle(.white).padding(.horizontal, 12).frame(height: 40)
-                .background(.black, in: Capsule())
-                .accessibilityElement(children: .combine)
-                .accessibilityLabel("Compact Dynamic Island preview, \(design.title)")
+        HStack(alignment: .top, spacing: SuzzmeTheme.Spacing.small) {
+            if design == .companion {
+                SuzzmeCharacterArtwork().frame(width: 40, height: 40)
+            } else {
+                Image(systemName: design == .briefing ? "sun.horizon.fill" : phase.symbol)
+                    .font(.title2).foregroundStyle(SuzzmeTheme.intelligencePrimary)
+                    .frame(width: 40, height: 40).accessibilityHidden(true)
             }
-            HStack(alignment: .top, spacing: SuzzmeTheme.Spacing.small) {
-                Text("Expanded").font(.caption2).frame(width: 54, alignment: .leading).padding(.top, 14)
-                HStack(alignment: .top, spacing: 12) {
-                    Image(systemName: leadingSymbol).font(.system(size: 18, weight: .semibold))
-                        .foregroundStyle(SuzzmeTheme.intelligencePrimary)
-                        .frame(width: 32, height: 32).background(.white.opacity(0.12), in: Circle())
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(design == .briefing ? "Daily briefing" : "Suzzme")
-                            .font(.caption.weight(.semibold)).foregroundStyle(.white.opacity(0.72))
-                        Text(phase.title).font(.subheadline.weight(.semibold)).foregroundStyle(.white)
-                        Text(phase.detail).font(.caption2).foregroundStyle(.white.opacity(0.72)).lineLimit(2)
-                    }
-                    Spacer(minLength: 0)
-                }
-                .padding(14).frame(maxWidth: .infinity, alignment: .leading)
-                .background(.black, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
-                .accessibilityElement(children: .combine)
-                .accessibilityLabel("Expanded Dynamic Island preview, \(design.title), \(phase.title)")
+            VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.xs) {
+                Text(phase.title).font(.headline)
+                Text(phase.detail).font(.caption).foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
+            Spacer(minLength: 0)
         }
         .padding(SuzzmeTheme.Spacing.medium)
-        .background(SuzzmeTheme.surface, in: RoundedRectangle(cornerRadius: SuzzmeTheme.Radius.largeSurface))
+        .background(SuzzmeTheme.surface, in: RoundedRectangle(cornerRadius: SuzzmeTheme.Radius.card))
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Style example, \(design.title), \(phase.title)")
     }
 }
 #endif

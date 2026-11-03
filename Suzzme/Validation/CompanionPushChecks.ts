@@ -7,22 +7,24 @@ const job: Job={id:1,firebase_uid:'alice',installation_id:'one',event_key:'routi
 const device: Device={installation_id:'one',firebase_uid:'alice',device_token:'a'.repeat(64),start_token:'b'.repeat(64),
  activity_token:null,activity_id:null,environment:'sandbox',routine_enabled:true,urgent_enabled:true};
 let push=makePush(job,device,'rehan.Suzzme',now)!;
-check(push.pushType==='liveactivity');check(push.token===device.start_token);
-check((push.body as any).aps.event==='start');check((push.body as any).aps['input-push-token']===1);
-check((push.body as any).aps.attributes.startedAt===Math.floor(now/1000)-978307200);
+check(push.pushType==='alert');check(push.token===device.device_token);
+check((push.body as any).aps.event===undefined);check((push.body as any).aps['input-push-token']===undefined);
+check((push.body as any).aps.attributes===undefined);
 check(!JSON.stringify(push.body).includes('alice'));
 check(makePush(job,{...device,firebase_uid:'bob'},'rehan.Suzzme',now)===null);
 check(makePush(job,{...device,installation_id:'two'},'rehan.Suzzme',now)===null);
 check(makePush({...job,expires_at:new Date(now-1).toISOString()},device,'rehan.Suzzme',now)===null);
 check(makePush(job,{...device,routine_enabled:false},'rehan.Suzzme',now)===null);
 push=makePush({...job,kind:'urgent'},{...device,activity_token:'c'.repeat(64)},'rehan.Suzzme',now)!;
-check((push.body as any).aps.event==='update');check((push.body as any).aps['content-state'].phase==='urgentReady');
+check((push.body as any).aps.event==='end');check((push.body as any).aps['content-state'].phase==='urgentReady');
+check((push.body as any).aps['dismissal-date']===Math.floor(now/1000)+900);
 check(!!(push.body as any).aps.alert);
 check(makePush({...job,kind:'urgent'},{...device,urgent_enabled:false},'rehan.Suzzme',now)===null);
 push=makePush(job,{...device,start_token:null},'rehan.Suzzme',now)!;
 check(push.pushType==='alert');check((push.body as any)['suzzme.destination']==='daily-summary');
 check((push.body as any).aps['content-available']===1);
 check(makePush(job,{...device,start_token:null,device_token:null},'rehan.Suzzme',now)===null);
+check(makePush(job,{...device,device_token:null},'rehan.Suzzme',now)===null);
 check(makePush({...job,kind:'end'},device,'rehan.Suzzme',now)===null);
 push=makePush({...job,kind:'end'},{...device,activity_token:'c'.repeat(64)},'rehan.Suzzme',now)!;
 check((push.body as any).aps.event==='end');check((push.body as any).aps['dismissal-date']===Math.floor(now/1000));
@@ -59,6 +61,6 @@ env.delete('APNS_PRIVATE_KEY');check((await handler!(request())).status===503);c
 let result=await handler!(request());check(result.status===200);check((await result.json()).accepted===1);check(finishes[0].state==='sent');
 check(calls.some(x=>x.includes('api.sandbox.push.apple.com')));
 appleStatus=410;finishes=[];calls=[];await handler!(request());check(finishes[0].state==='pending');
-check(calls.some(x=>x.includes('start_token=eq.')));
+check(calls.some(x=>x.includes('device_token=eq.')));
 globalThis.fetch=originalFetch;
 console.log(`Companion push checks: ${count} passed / 0 failed`);

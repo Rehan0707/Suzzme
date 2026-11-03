@@ -1,6 +1,9 @@
 import Foundation
 import FirebaseAuth
 import Observation
+#if os(iOS)
+import WidgetKit
+#endif
 
 @MainActor @Observable
 final class AppEnvironment {
@@ -1597,6 +1600,8 @@ final class AppEnvironment {
         companionDeliveryPreferences = nil
         companionDeliveryError = nil
         #if os(iOS)
+        SuzzmeCompanionSnapshotStore.clear()
+        WidgetCenter.shared.reloadTimelines(ofKind: SuzzmeCompanionSnapshot.widgetKind)
         CompanionPushRegistration.shared.accountCleared()
         #endif
         companionError = nil

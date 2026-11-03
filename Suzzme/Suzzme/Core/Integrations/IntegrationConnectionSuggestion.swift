@@ -21,7 +21,7 @@ struct BrowserIntegrationRoute: Equatable, Sendable {
         self.repository = repository
     }
 
-    static let browserConnectableServices: Set<IntegrationID> = [.github, .linkedin, .notion, .slack]
+    static let browserConnectableServices: Set<IntegrationID> = [.github, .linkedin, .notion, .slack, .gmail, .outlook, .whatsapp]
 
     static func parse(_ url: URL) -> Self? {
         guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
@@ -116,6 +116,9 @@ struct BrowserIntegrationHandoff: Sendable {
         var repository: String? { route.repository }
         var displayName: String {
             switch service {
+            case .gmail: "Gmail"
+            case .outlook: "Outlook"
+            case .whatsapp: "WhatsApp"
             case .github: "GitHub"
             case .linkedin: "LinkedIn"
             case .notion: "Notion"

@@ -1,10 +1,11 @@
 import Foundation
 
 enum SuzzmeLiveActivityPhase: String, Codable, Hashable, Sendable {
-    case listening, understanding, checking, confirmation, working, speaking, summaryReady, urgentReady
+    case listening, understanding, checking, confirmation, working, speaking, summaryReady, urgentReady, completed
 
     var title: String {
         switch self {
+        case .completed: "Session complete"
         case .urgentReady: "An important update is ready"
         case .summaryReady: "Your summary is ready"
         case .listening: "Listening"
@@ -18,6 +19,7 @@ enum SuzzmeLiveActivityPhase: String, Codable, Hashable, Sendable {
 
     var symbol: String {
         switch self {
+        case .completed: "checkmark.circle.fill"
         case .urgentReady: "exclamationmark.bubble.fill"
         case .summaryReady: "text.alignleft"
         case .listening: "mic.fill"
@@ -30,6 +32,7 @@ enum SuzzmeLiveActivityPhase: String, Codable, Hashable, Sendable {
 
     var detail: String {
         switch self {
+        case .completed: "Open Suzzme to continue."
         case .urgentReady: "Prepared on your Mac. Tap to review it."
         case .summaryReady: "Prepared on your Mac. Tap to read your day."
         case .listening: "Your voice session is active"
@@ -43,6 +46,7 @@ enum SuzzmeLiveActivityPhase: String, Codable, Hashable, Sendable {
 
     var compactLabel: String {
         switch self {
+        case .completed: "Done"
         case .urgentReady: "Review"
         case .summaryReady: "Ready"
         case .listening: "Listen"

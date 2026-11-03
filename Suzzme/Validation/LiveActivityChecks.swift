@@ -51,6 +51,39 @@ import Foundation
         let appearance = try JSONDecoder().decode(SuzzmeLiveActivityAppearance.self, from: publicPayload)
         check(appearance == .deepBlue)
         check(publicPayload.count < 100)
+        let now = Date(timeIntervalSince1970: 10_000)
+        let summaryExpiry = now.addingTimeInterval(7200)
+        let snapshot = SuzzmeCompanionSnapshot(phase: .speaking, updatedAt: now,
+            summaryGeneratedAt: now, summaryExpiresAt: summaryExpiry)
+        check(snapshot.visiblePhase(at: now) == .speaking)
+        check(snapshot.visiblePhase(at: now.addingTimeInterval(179)) == .speaking)
+        check(snapshot.visiblePhase(at: now.addingTimeInterval(180)) == .summaryReady)
+        check(snapshot.visiblePhase(at: summaryExpiry) == nil)
+        check(snapshot.visiblePhase(at: now.addingTimeInterval(-61)) == nil)
+        check(snapshot.transitionDates(after: now) == [now.addingTimeInterval(180), summaryExpiry])
+        check(snapshot.transitionDates(after: summaryExpiry).isEmpty)
+        let idle = SuzzmeCompanionSnapshot(phase: nil, updatedAt: now)
+        check(idle.visiblePhase(at: now) == nil)
+        check(idle.transitionDates(after: now).isEmpty)
+        let expiredSession = SuzzmeCompanionSnapshot(phase: .understanding, updatedAt: now)
+        check(expiredSession.visiblePhase(at: now.addingTimeInterval(180)) == nil)
+        let complete = SuzzmeCompanionSnapshot(phase: .completed, updatedAt: now)
+        check(complete.visiblePhase(at: now) == nil)
+        var unchanged = snapshot
+        unchanged.updatedAt = now.addingTimeInterval(30)
+        check(unchanged.hasSameContent(as: snapshot))
+        unchanged.phase = .checking
+        check(!unchanged.hasSameContent(as: snapshot))
+        unchanged = snapshot
+        unchanged.sessionID = UUID()
+        check(!unchanged.hasSameContent(as: snapshot))
+        let encoded = try JSONEncoder().encode(snapshot)
+        check(try JSONDecoder().decode(SuzzmeCompanionSnapshot.self, from: encoded) == snapshot)
+        let fields = try JSONSerialization.jsonObject(with: encoded) as! [String: Any]
+        check(Set(fields.keys) == Set(["phase", "appearance", "updatedAt", "summaryGeneratedAt", "summaryExpiresAt"]))
+        check(encoded.count < 1024)
+        check(SuzzmeLiveActivityPhase.completed.isTerminal)
+        check(!SuzzmeLiveActivityPhase.speaking.isTerminal)
         print("Live Activity checks: \(passed) passed / 0 failed")
     }
 }

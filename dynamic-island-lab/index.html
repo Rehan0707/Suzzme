@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#f6f5f8"><meta name="description" content="Suzzme Companion: interactive Lock Screen Live Activity and square widget design previews.">
+  <title>Suzzme — Companion, everywhere</title><link rel="icon" href="assets/icon.png">
+  <link rel="stylesheet" href="companion.css"><script src="companion.js" defer></script>
+</head>
+<body>
+  <svg class="svg-library" aria-hidden="true"><defs>
+    <symbol id="icon-play" viewBox="0 0 24 24"><path d="m9 5 11 7-11 7Z" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="icon-pause" viewBox="0 0 24 24"><path d="M9 6v12M16 6v12" stroke-width="3"/></symbol>
+    <symbol id="icon-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-5-5 5 5-5 5"/></symbol>
+    <symbol id="icon-check" viewBox="0 0 24 24"><path d="m5 12 5 5L20 7"/></symbol>
+    <symbol id="icon-reset" viewBox="0 0 24 24"><path d="M4 9a8 8 0 1 1 0 6M4 4v5h5"/></symbol>
+    <symbol id="icon-lock" viewBox="0 0 24 24"><rect x="6" y="10" width="12" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></symbol>
+    <symbol id="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></symbol>
+    <symbol id="icon-cloud" viewBox="0 0 24 24"><path d="M7 18a5 5 0 0 1-.5-10A6 6 0 0 1 18 9a4.5 4.5 0 0 1 0 9Z"/></symbol>
+    <symbol id="icon-calendar" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="16" rx="3"/><path d="M8 3v4m8-4v4M4 11h16m-11 4h2m2 0h2"/></symbol>
+    <symbol id="icon-note" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="3"/><path d="M8 8h8M8 12h8M8 16h5"/></symbol>
+    <symbol id="icon-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m4 7 8 6 8-6"/></symbol>
+    <symbol id="icon-wave" viewBox="0 0 24 24"><path d="M4 10v4m4-7v10m4-14v18m4-14v10m4-7v4"/></symbol>
+    <symbol id="icon-think" viewBox="0 0 24 24"><circle cx="6" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="18" cy="12" r="1"/></symbol>
+    <symbol id="icon-camera" viewBox="0 0 24 24"><path d="m7 7 2-3h6l2 3h3v13H4V7Z"/><circle cx="12" cy="13" r="4"/></symbol>
+    <symbol id="icon-torch" viewBox="0 0 24 24"><path d="M7 3h10v5l-3 4v9h-4v-9L7 8Zm0 4h10m-5 7v3"/></symbol>
+    <symbol id="icon-phone" viewBox="0 0 24 24"><path d="m7 3 4 5-3 3a15 15 0 0 0 5 5l3-3 5 4-2 4C10 21 3 14 3 5Z"/></symbol>
+    <symbol id="icon-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m15 8-2 6-5 2 2-6Z"/></symbol>
+    <symbol id="icon-music" viewBox="0 0 24 24"><path d="M10 17V5l10-2v12M10 8l10-2"/><ellipse cx="7" cy="18" rx="3" ry="2"/><ellipse cx="17" cy="16" rx="3" ry="2"/></symbol>
+  </defs></svg>
+  <header class="site-header"><a class="brand" href="./"><img src="assets/mascot.png" alt=""><strong>suzzme</strong><span>/</span><span>companion lab</span></a><span class="collection">SURFACE STUDY <b>02</b></span><a href="island-study.html" class="previous">Island studies ↗</a></header>
+  <main>
+    <section class="intro"><div><div class="eyebrow"><span class="selected-dot"></span>01 / COMPANION · SELECTED DIRECTION</div><h1>A familiar presence.<br>Right where you need it.</h1><p>Your day, coming together. On your Lock Screen and at home.</p></div><div class="intro-aside"><span class="companion-seal"><img src="assets/mascot.png" alt=""></span><p>Same little companion.<br>Two thoughtful surfaces.</p></div></section>
+    <section class="studio" aria-label="Companion preview studio">
+      <aside class="control-panel">
+        <div class="panel-top"><span>PREVIEW CONTROLS</span><span class="local">LOCAL</span></div>
+        <fieldset><legend>Choose a moment</legend><div class="state-options" id="states">
+          <button data-state="summarizing" aria-pressed="true"><span class="state-icon"><svg><use href="#icon-note"/></svg></span><span>Summarizing the day<small>Gather. Connect. Distill.</small></span><i></i></button>
+          <button data-state="thinking" aria-pressed="false"><span class="state-icon"><svg><use href="#icon-think"/></svg></span><span>Thinking<small>A little space to understand.</small></span><i></i></button>
+          <button data-state="speaking" aria-pressed="false"><span class="state-icon"><svg><use href="#icon-wave"/></svg></span><span>Speaking<small>Your day, read back to you.</small></span><i></i></button>
+          <button data-state="ready" aria-pressed="false"><span class="state-icon"><svg><use href="#icon-check"/></svg></span><span>Summary ready<small>A calm view of what matters.</small></span><i></i></button>
+        </div></fieldset>
+        <div class="playback-controls"><button class="primary" id="play"><svg><use href="#icon-play"/></svg><span>Play full sequence</span></button><div class="action-pair"><button id="replay"><svg><use href="#icon-reset"/></svg>Replay moment</button><button id="reset">Reset</button></div><div class="timeline-label"><label for="timeline">Session timeline</label><output for="timeline" id="elapsed">00:04 / 00:20</output></div><input type="range" id="timeline" min="0" max="200" value="40" aria-label="Session timeline"><div class="timeline-steps"><span>Summary</span><span>Think</span><span>Speak</span><span>Ready</span></div><div class="setting"><label for="speed">Playback speed</label><select id="speed"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select></div></div>
+        <fieldset class="appearance-field"><legend>Surface appearance</legend><div class="segmented" id="appearance"><button data-appearance="light" aria-pressed="false">Light</button><button data-appearance="dark" aria-pressed="true">Dark</button></div></fieldset>
+        <div class="setting"><label for="always-on">Always-On preview</label><input type="checkbox" id="always-on" role="switch"></div>
+        <details class="accessibility"><summary>Accessibility options</summary><div class="setting"><label for="reduce">Reduce motion</label><input id="reduce" type="checkbox" role="switch"></div><div class="setting"><label for="large-type">Larger text</label><input id="large-type" type="checkbox" role="switch"></div><div class="setting"><label for="contrast">Increase contrast</label><input id="contrast" type="checkbox" role="switch"></div></details>
+        <div class="status-callout"><span></span><div><strong id="status-title">Summarizing your day</strong><p id="status-detail">A finite, user initiated session.</p></div></div>
+        <p class="simulation-note">Illustrative session · No microphone or personal data. Animations preview content updates.</p>
+      </aside>
+      <div class="preview-area">
+        <div class="phone-column"><div class="preview-heading"><span><b>01</b> Lock Screen</span><span class="surface-tag">LIVE ACTIVITY</span></div><div class="phone-mount" id="lock-phone"></div><div class="surface-caption"><span class="caption-dot"></span>Live status, without opening the app.</div></div>
+        <div class="phone-column"><div class="preview-heading"><span><b>02</b> Home Screen</span><span class="surface-tag">SMALL WIDGET</span></div><div class="phone-mount" id="home-phone"></div><div class="surface-caption"><span class="caption-dot"></span>A snapshot of the last meaningful update.</div></div>
+      </div>
+    </section>
+    <div class="studio-footer"><span>iPhone 18 Pro · Silver · 402 × 874 pt display proportions</span><span>Browser design prototype · Sample content</span></div>
+    <section class="detail-section" aria-label="Surface design details"><div class="detail-intro"><div class="eyebrow">A GLANCE IS ENOUGH</div><h2>Present, without<br>taking over.</h2><p>The cloud stays familiar. A short status does the talking. Detail stays inside Suzzme.</p><a href="#guidance">Read the design decisions ↓</a></div><article class="detail-card"><div class="detail-label"><span>LOCK SCREEN / LIVE ACTIVITY</span><span>374 × 152 pt</span></div><div id="activity-detail" class="detail-render activity-render"></div><p>14 pt content margins. One relevant action. No private summary text on the Lock Screen.</p></article><article class="detail-card widget-detail-card"><div class="detail-label"><span>HOME SCREEN / SMALL</span><span>170 × 170 pt</span></div><div id="widget-detail" class="detail-render widget-render"></div><div class="widget-inspector"><span id="snapshot-label">Timeline snapshot</span><button id="refresh-widget" title="Simulate a WidgetKit timeline refresh"><svg><use href="#icon-reset"/></svg>Refresh snapshot</button></div><p>16 pt margins. Meaningful timeline updates. Tap anywhere to continue in Suzzme.</p></article></section>
+    <section class="guidance" id="guidance"><div><div class="eyebrow">APPLE GUIDELINES, IN PRACTICE</div><h2>Different surfaces.<br>One clear purpose.</h2></div><div class="guidance-grid"><article><span>01</span><h3>A bounded activity</h3><p>A summary starts when requested, progresses through understanding and speech, then ends. A completed card can remain briefly on the Lock Screen.</p></article><article><span>02</span><h3>A widget is a snapshot</h3><p>Preset controls simulate a new timeline entry. During playback the square updates at state changes, without a live percentage or continuous voice meter.</p></article><article><span>03</span><h3>Motion with meaning</h3><p>Content transitions are 250 ms. Thinking and speech have a finite 1.2 second update cue. Always-On and Reduce Motion keep the character and indicators still.</p></article><article><span>04</span><h3>Privacy at a glance</h3><p>Public surfaces show session status. Reading the summary opens its app destination. Larger text simplifies supporting content to protect the hierarchy.</p></article></div></section>
+    <nav class="references" aria-label="Apple design references"><span>RESEARCH & REFERENCES</span><a href="https://developer.apple.com/design/human-interface-guidelines/live-activities" target="_blank" rel="noreferrer">Live Activities ↗</a><a href="https://developer.apple.com/design/human-interface-guidelines/widgets" target="_blank" rel="noreferrer">Widgets ↗</a><a href="https://developer.apple.com/documentation/widgetkit/animating-data-updates-in-widgets-and-live-activities" target="_blank" rel="noreferrer">Content animation ↗</a><a href="https://www.apple.com/iphone-18-pro/specs/" target="_blank" rel="noreferrer">Device specifications ↗</a></nav>
+  </main>
+  <footer><span>suzzme / companion studies</span><span>Original device rendering · Illustrative hardware geometry · Native integration is separate</span></footer>
+  <div class="sr-only" id="announcement" role="status" aria-live="polite"></div>
+</body></html>

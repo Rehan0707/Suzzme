@@ -3,10 +3,15 @@ import SwiftUI
 import UIKit
 import WidgetKit
 
+#if !SUZZME_PRESENCE_RENDER
 @main
 struct SuzzmePresenceWidgets: WidgetBundle {
-    var body: some Widget { SuzzmeSessionActivity() }
+    var body: some Widget {
+        SuzzmeSessionActivity()
+        SuzzmeCompanionWidget()
+    }
 }
+#endif
 
 struct SuzzmeSessionActivity: Widget {
     var body: some WidgetConfiguration {
@@ -70,13 +75,14 @@ private struct SuzzmeIslandLeading: View {
 
 private struct SuzzmeIslandTrailing: View {
     let context: ActivityViewContext<SuzzmeLiveActivityAttributes>
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     @ViewBuilder var body: some View {
         switch context.state.design {
         case .companion, .focus:
-            Text("Suzzme").font(.headline).foregroundStyle(.white)
+            Text("Suzzme").font(typeSize.isAccessibilitySize ? .caption : .headline).lineLimit(1).foregroundStyle(.white)
         case .briefing:
-            Text("Daily briefing").font(.headline).foregroundStyle(.white)
+            Text("Daily briefing").font(typeSize.isAccessibilitySize ? .caption : .headline).lineLimit(1).foregroundStyle(.white)
         }
     }
 }
@@ -127,6 +133,7 @@ private struct SuzzmeIslandMinimal: View {
     let color: Color
 
     @ViewBuilder var body: some View {
+        HStack(spacing: 0) {
         switch context.state.design {
         case .companion:
             SuzzmeActivityFace(phase: context.state.phase, color: color,
@@ -141,65 +148,22 @@ private struct SuzzmeIslandMinimal: View {
                 .font(.system(size: 16, weight: .semibold)).foregroundStyle(color)
                 .accessibilityLabel(context.isStale ? "Open Suzzme to continue" : context.state.phase.title)
         }
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Suzzme")
+        .accessibilityValue(context.isStale ? "Open Suzzme to continue" : context.state.phase.title)
     }
 }
 
 private struct SuzzmeSessionLockScreen: View {
     let context: ActivityViewContext<SuzzmeLiveActivityAttributes>
     @Environment(\.colorScheme) private var scheme
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-
     var body: some View {
-        let color = context.state.appearance.color(dark: scheme == .dark)
-        HStack(alignment: .top, spacing: 14) {
-            SuzzmeActivityFace(phase: context.state.phase, color: color,
-                motionEnabled: context.state.motionEnabled, stale: context.isStale)
-                .padding(10).frame(width: 44, height: 44)
-                .background(color.opacity(0.10), in: Circle())
-                .accessibilityHidden(true)
-            VStack(alignment: .leading, spacing: 5) {
-                if !dynamicTypeSize.isAccessibilitySize {
-                    HStack {
-                        Text("Suzzme").font(.caption.weight(.semibold)).foregroundStyle(.secondary)
-                        Spacer(minLength: 6)
-                        if !context.isStale && context.state.phase != .summaryReady && context.state.phase != .urgentReady {
-                            Text(context.attributes.startedAt, style: .timer).font(.caption.monospacedDigit()).foregroundStyle(.secondary)
-                                .accessibilityLabel("Session elapsed time")
-                        }
-                    }
-                }
-                Text(context.state.phase.displayTitle(stale: context.isStale,
-                    accessibilitySize: dynamicTypeSize.isAccessibilitySize))
-                    .font(.headline).fixedSize(horizontal: false, vertical: true)
-                    .modifier(SuzzmeActivityContentMotion(phase: context.state.phase,
-                        enabled: context.state.motionEnabled, stale: context.isStale))
-                if !context.isStale && !dynamicTypeSize.isAccessibilitySize {
-                    Text(context.state.phase.detail).font(.caption).foregroundStyle(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .modifier(SuzzmeActivityContentMotion(phase: context.state.phase,
-                            enabled: context.state.motionEnabled, stale: context.isStale))
-                }
-                if (context.state.phase == .summaryReady || context.state.phase == .urgentReady), let destination = URL(string: "suzzme://summary") {
-                    Link("Read summary", destination: destination)
-                        .font(.subheadline.weight(.semibold)).frame(minHeight: 44)
-                }
-                if context.state.phase == .confirmation, let destination = URL(string: "suzzme://ask") {
-                    Link(dynamicTypeSize.isAccessibilitySize ? "Review" : "Review in Suzzme", destination: destination)
-                        .font(.subheadline.weight(.semibold)).frame(minHeight: 44)
-                        .transition(.opacity)
-                        .foregroundStyle(color)
-                        .accessibilityLabel("Review in Suzzme")
-                }
-            }
-        }
-        .padding(16)
-        .activityBackgroundTint(Color(uiColor: .secondarySystemBackground))
-        .activitySystemActionForegroundColor(color)
-        .foregroundStyle(Color(uiColor: .label))
-        .modifier(SuzzmeActivityContentMotion(phase: context.state.phase,
-            enabled: context.state.motionEnabled, stale: context.isStale))
-        .accessibilityElement(children: .contain)
-        .accessibilityLabel("Suzzme session")
+        SuzzmeCompanionActivityCard(phase: context.state.phase,
+            appearance: context.state.appearance, startedAt: context.attributes.startedAt,
+            motionEnabled: context.state.motionEnabled, stale: context.isStale)
+            .activityBackgroundTint(Color(uiColor: .secondarySystemBackground))
+            .activitySystemActionForegroundColor(context.state.appearance.color(dark: scheme == .dark))
     }
 }
 
@@ -210,7 +174,8 @@ private struct SuzzmeSessionExpanded: View {
         VStack(alignment: .leading, spacing: 5) {
             Text(context.state.phase.displayTitle(stale: context.isStale,
                 accessibilitySize: dynamicTypeSize.isAccessibilitySize))
-                .font(.headline).fixedSize(horizontal: false, vertical: true)
+                .font(dynamicTypeSize.isAccessibilitySize ? .caption : .headline)
+                .lineLimit(1).fixedSize(horizontal: false, vertical: true)
                     .modifier(SuzzmeActivityContentMotion(phase: context.state.phase,
                         enabled: context.state.motionEnabled, stale: context.isStale))
             if !context.isStale && !dynamicTypeSize.isAccessibilitySize {
@@ -219,11 +184,11 @@ private struct SuzzmeSessionExpanded: View {
             }
             if (context.state.phase == .summaryReady || context.state.phase == .urgentReady), let destination = URL(string: "suzzme://summary") {
                     Link("Read summary", destination: destination)
-                        .font(.subheadline.weight(.semibold)).frame(minHeight: 44)
+                        .font(dynamicTypeSize.isAccessibilitySize ? .caption.weight(.semibold) : .subheadline.weight(.semibold)).frame(minHeight: 44)
                 }
                 if context.state.phase == .confirmation, let destination = URL(string: "suzzme://ask") {
                 Link(dynamicTypeSize.isAccessibilitySize ? "Review" : "Review in Suzzme", destination: destination)
-                    .font(.subheadline.weight(.semibold)).frame(minHeight: 44)
+                    .font(dynamicTypeSize.isAccessibilitySize ? .caption.weight(.semibold) : .subheadline.weight(.semibold)).frame(minHeight: 44)
                         .transition(.opacity)
                     .foregroundStyle(context.state.appearance.islandColor)
                     .accessibilityLabel("Review in Suzzme")
@@ -251,55 +216,12 @@ private struct SuzzmeActivityContentMotion: ViewModifier {
     func body(content: Content) -> some View {
         content
             .contentTransition(animates ? .opacity : .identity)
-            .animation(animates ? .smooth(duration: 0.32) : nil, value: phase)
+            .animation(animates ? .smooth(duration: 0.25) : nil, value: phase)
             .animation(animates ? .smooth(duration: 0.24) : nil, value: stale)
-            .transaction { if !animates { $0.disablesAnimations = true } }
     }
 }
 
-private struct SuzzmeActivityFace: View {
-    let phase: SuzzmeLiveActivityPhase
-    let color: Color
-    let motionEnabled: Bool
-    let stale: Bool
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @Environment(\.colorSchemeContrast) private var contrast
-    @Environment(\.isLuminanceReduced) private var luminanceReduced
-
-    private var animates: Bool { motionEnabled && !stale && !reduceMotion && !luminanceReduced }
-
-    private var tilt: Double {
-        guard animates else { return 0 }
-        switch phase {
-        case .understanding: return -3
-        case .checking: return 3
-        default: return 0
-        }
-    }
-
-    private var scale: CGFloat {
-        guard animates else { return 1 }
-        switch phase {
-        case .listening: return 1.04
-        case .understanding: return 0.96
-        case .checking: return 1.02
-        case .confirmation, .summaryReady, .urgentReady: return 1
-        case .working: return 0.98
-        case .speaking: return 1.03
-        }
-    }
-
-    var body: some View {
-        SuzzmeCharacterArtwork()
-            .scaleEffect(scale)
-            .rotationEffect(.degrees(tilt))
-            .animation(animates ? .spring(duration: 0.42, bounce: 0.12) : nil, value: phase)
-            .transaction { if !animates { $0.disablesAnimations = true } }
-            .accessibilityLabel("Suzzme")
-            .accessibilityValue(stale ? "Open Suzzme to continue" : phase.title)
-    }
-}
-
+#if !SUZZME_PRESENCE_RENDER
 #Preview("Session · Lock Screen", as: .content, using: SuzzmeLiveActivityAttributes()) {
     SuzzmeSessionActivity()
 } contentStates: {
@@ -334,53 +256,26 @@ private struct SuzzmeActivityFace: View {
     SuzzmeLiveActivityAttributes.ContentState(phase: .confirmation, appearance: .graphite, motionEnabled: false, design: .focus)
 }
 
-private struct SuzzmeActivitySymbol: View {
-    let phase: SuzzmeLiveActivityPhase
-    let stale: Bool
-    let color: Color
-    let motionEnabled: Bool
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @Environment(\.isLuminanceReduced) private var luminanceReduced
-
-    var body: some View {
-        let animates = motionEnabled && !stale && !reduceMotion && !luminanceReduced
-        Image(systemName: stale ? "moon" : phase.symbol)
-            .font(.system(size: 14, weight: .semibold))
-            .foregroundStyle(color)
-            .contentTransition(animates ? .symbolEffect(.replace) : .identity)
-            .animation(animates ? .easeInOut(duration: 0.3) : nil, value: phase)
-            .transaction { if !animates { $0.disablesAnimations = true } }
-            .accessibilityLabel(stale ? "Open Suzzme to continue" : phase.title)
-    }
-}
-
-private extension SuzzmeLiveActivityAppearance {
-    var islandColor: Color { color(dark: true) }
-    func color(dark: Bool) -> Color {
-        switch self {
-        case .blue: dark ? Color(red: 0.49, green: 0.74, blue: 0.98) : Color(red: 0.12, green: 0.43, blue: 0.82)
-        case .pink: dark ? Color(red: 0.98, green: 0.49, blue: 0.72) : Color(red: 0.69, green: 0.20, blue: 0.43)
-        case .red: dark ? Color(red: 0.98, green: 0.49, blue: 0.52) : Color(red: 0.76, green: 0.22, blue: 0.27)
-        case .orange: dark ? Color(red: 0.98, green: 0.66, blue: 0.49) : Color(red: 0.72, green: 0.34, blue: 0.12)
-        case .yellow: dark ? Color(red: 0.98, green: 0.87, blue: 0.49) : Color(red: 0.54, green: 0.40, blue: 0.04)
-        case .green: dark ? Color(red: 0.50, green: 0.98, blue: 0.49) : Color(red: 0.16, green: 0.48, blue: 0.20)
-        case .teal: dark ? Color(red: 0.49, green: 0.98, blue: 0.89) : Color(red: 0.02, green: 0.48, blue: 0.46)
-        case .purple: dark ? Color(red: 0.76, green: 0.49, blue: 0.98) : Color(red: 0.48, green: 0.25, blue: 0.70)
-        case .suzzmePurple: dark ? Color(red: 0.80, green: 0.68, blue: 1) : Color(red: 0.38, green: 0.12, blue: 0.62)
-        case .burgundy: dark ? Color(red: 0.94, green: 0.57, blue: 0.54) : Color(red: 0.50, green: 0.12, blue: 0.23)
-        case .deepBlue: dark ? Color(red: 0.52, green: 0.77, blue: 1) : Color(red: 0.08, green: 0.25, blue: 0.57)
-        case .silver: dark ? Color(red: 0.82, green: 0.86, blue: 0.91) : Color(red: 0.38, green: 0.42, blue: 0.49)
-        case .graphite: dark ? Color(red: 0.88, green: 0.90, blue: 0.96) : Color(red: 0.17, green: 0.19, blue: 0.24)
-        }
-    }
-}
+#endif
 
 private extension SuzzmeLiveActivityPhase {
     /// Keep the system's bounded surface legible at larger text sizes; the
     /// complete request and confirmation remain available in the app.
     func displayTitle(stale: Bool, accessibilitySize: Bool) -> String {
         if stale { return accessibilitySize ? "Open Suzzme" : "Open Suzzme to continue" }
-        if accessibilitySize && self == .confirmation { return "Review needed" }
+        if accessibilitySize {
+            switch self {
+            case .listening: return "Listening"
+            case .understanding: return "Thinking"
+            case .checking: return "Checking"
+            case .confirmation: return "Review"
+            case .working: return "Working"
+            case .speaking: return "Speaking"
+            case .summaryReady: return "Ready"
+            case .urgentReady: return "Update ready"
+            case .completed: return "Complete"
+            }
+        }
         return title
     }
 }

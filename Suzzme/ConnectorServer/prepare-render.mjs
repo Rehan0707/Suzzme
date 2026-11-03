@@ -3,8 +3,8 @@ import { constants } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { pathToFileURL } from 'node:url';
 
-export const deploymentFiles = Object.freeze(['server.mjs', 'notion-read.mjs', 'hosted.mjs', 'package.json',
-  'setup.mjs', 'setup.test.mjs', 'server.test.mjs', 'deployment.test.mjs', 'prepare-render.mjs',
+export const deploymentFiles = Object.freeze(['server.mjs', 'mcp.mjs', 'mcp.test.mjs', 'composio-mcp.mjs', 'composio-mcp.test.mjs', 'notion-read.mjs', 'hosted.mjs', 'package.json',
+  'setup.mjs', 'setup.test.mjs', 'server.test.mjs', 'deployment.test.mjs', 'worker.mjs', 'worker.test.mjs', 'prepare-render.mjs',
   '.env.example', 'check-config.mjs', 'render.yaml', 'README.md', 'RENDER-DEPLOYMENT.md']);
 export async function prepareDeployment(destination) {
   await mkdir(destination); // Refuse existing destinations rather than merge unknown files.

@@ -12,8 +12,8 @@ private final class BrowserExchangeReceiver: NSObject, BrowserMessageExchange, S
         task?.cancel()
     }
     let engine: BrowserBridgeEngine
-    let deliver: @MainActor @Sendable (BrowserBridgeDelivery) -> Bool
-    init(engine: BrowserBridgeEngine, deliver: @escaping @MainActor @Sendable (BrowserBridgeDelivery) -> Bool) {
+    let deliver: @MainActor @Sendable (BrowserBridgeDelivery) async -> Bool
+    init(engine: BrowserBridgeEngine, deliver: @escaping @MainActor @Sendable (BrowserBridgeDelivery) async -> Bool) {
         self.engine = engine; self.deliver = deliver
     }
     func exchange(_ message: Data, origin: String, reply: @escaping @Sendable (Data) -> Void) {
@@ -91,7 +91,7 @@ private final class BrowserAppListener: NSObject, NSXPCListenerDelegate {
         let epoch = UUID(); connectionEpoch = epoch
         let receiver = BrowserExchangeReceiver(engine: engine) { [weak self] delivery in
             guard self?.connectionEpoch == epoch else { return false }
-            return self?.deliver(delivery) ?? false
+            return await self?.deliver(delivery) ?? false
         }
         let delegate = BrowserAppListener(receiver)
         let listener = NSXPCListener.anonymous()
@@ -148,6 +148,7 @@ private final class BrowserAppListener: NSObject, NSXPCListenerDelegate {
         let epoch = connectionEpoch
         do {
             try await engine.revoke()
+            await WhatsAppWebAccess.shared.clear()
             guard connectionEpoch == epoch else { return }
             pairingCode = nil; pairingExpiry?.cancel(); retireRequest()
             if let config = try? BrowserBridgeConfiguration.load(verifyIdentity: BrowserBridgeConfiguration.appID) { start(config) }
@@ -157,8 +158,12 @@ private final class BrowserAppListener: NSObject, NSXPCListenerDelegate {
             status = "Pairings could not be revoked. Try again when the current browser operation finishes."
         }
     }
-    private func deliver(_ value: BrowserBridgeDelivery) -> Bool {
+    private func deliver(_ value: BrowserBridgeDelivery) async -> Bool {
         guard isReady, let integrations else { return false }
+        if value.kind == .whatsapp {
+            guard let chatID = value.chatID, let text = value.chatText else { return false }
+            return await WhatsAppWebAccess.shared.receive(chatID: chatID, text: text)
+        }
         if value.kind == .invalidate {
             if requestOwner?.pairing == value.pairingID, requestOwner?.context == value.contextID, requestOwner?.version == value.version { retireRequest() }
             return true

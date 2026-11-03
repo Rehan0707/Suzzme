@@ -31,7 +31,7 @@ struct MobileRootView: View {
                 .tag(MobileTab.settings)
         }
         .tint(SuzzmeTheme.controlAccent)
-        .onChange(of: router.selection) { _, destination in
+        .onChange(of: router.selection, initial: true) { _, destination in
             selectedTab = destination == .settings ? .settings : destination == .briefing ? .summary : .today
             if destination == .home {
                 todayPath.removeAll()

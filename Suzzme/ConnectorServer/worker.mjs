@@ -58,7 +58,8 @@ export class SuzzmeConnector {
         try { body = JSON.parse(Buffer.concat(chunks).toString('utf8')); }
         catch { throw new Failure(400, 'Invalid request.'); }
       }
-      const result = await this.bridge.route(request.method, url.pathname + url.search, body, request.headers.get('authorization') ?? '');
+      const result = await this.bridge.route(request.method, url.pathname + url.search, body, request.headers.get('authorization') ?? '', request.headers.get('mcp-protocol-version'));
+      if (result.accepted) return new Response(null, { status: 202, headers });
       return new Response(result.html || JSON.stringify(result), {
         headers: { ...headers, 'Content-Type': result.html ? 'text/html; charset=utf-8' : 'application/json' },
       });

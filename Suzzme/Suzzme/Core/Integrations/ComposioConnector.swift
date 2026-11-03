@@ -1,9 +1,9 @@
 import Foundation
 
 struct ComposioService: Decodable, Identifiable, Sendable {
-    static let connectableIDs: Set<String> = ["github", "slack", "notion"]
+    static let connectableIDs: Set<String> = ["github", "slack", "notion", "gmail", "outlook"]
     // Legacy account records remain visible for revocation. LinkedIn cannot connect or read.
-    static let supportedIDs: Set<String> = ["github", "linkedin", "slack", "notion"]
+    static let supportedIDs: Set<String> = ["github", "linkedin", "slack", "notion", "gmail", "outlook"]
     let id: String
     let title: String
     let detail: String
@@ -16,6 +16,8 @@ struct ComposioAccount: Decodable, Identifiable, Sendable {
     var isActive: Bool { status == "ACTIVE" }
     var serviceTitle: String {
         switch service {
+        case "gmail": "Gmail"
+        case "outlook": "Outlook"
         case "github": "GitHub"
         case "linkedin": "LinkedIn"
         case "slack": "Slack"
@@ -40,7 +42,7 @@ struct ComposioExcerpt: Decodable, Sendable {
     let fetchedAt: String
 }
 enum ComposioError: LocalizedError {
-    case configuration, unavailable, invalidResponse, authorization, tooLarge, expired, resource, rateLimited
+    case configuration, unavailable, invalidResponse, authorization, tooLarge, expired, resource, rateLimited, mcpSetup
     var errorDescription: String? {
         switch self {
         case .configuration: "Enter the HTTPS address and device token from your Suzzme connector server."
@@ -51,6 +53,7 @@ enum ComposioError: LocalizedError {
         case .expired: "This account or connection attempt is no longer available. Connect again."
         case .resource: "This source isn’t available. Check the link and account access. Choose supported text from a single source."
         case .rateLimited: "The service rate limit was reached. Wait before trying again."
+        case .mcpSetup: "Update your Suzzme connector server to enable MCP, then try this source again."
         }
     }
 }
@@ -100,6 +103,8 @@ enum ComposioSummaryPolicy {
               components.fragment == nil else { return nil }
 
         switch service {
+        case "gmail": return value == "https://mail.google.com/mail/u/0/" ? value : nil
+        case "outlook": return value == "https://outlook.office.com/mail/" ? value : nil
         case "github":
             guard components.host?.lowercased() == "github.com", components.query == nil,
                   let match = value.firstMatch(#"^https://github\.com/([A-Za-z0-9_-]{1,39})/([A-Za-z0-9_.-]{1,100})/issues/([1-9][0-9]{0,9})$"#),
@@ -247,8 +252,27 @@ actor ComposioConnector {
         try await request("/v1/complete", body: ["attempt": attempt, "code": code])
     }
     func read(account: ComposioAccount, resource: String) async throws -> ComposioExcerpt {
-        guard ComposioService.connectableIDs.contains(account.service) else { throw ComposioError.resource }
-        let result: ComposioExcerpt = try await request("/v1/read", body: ["accountID": account.id, "service": account.service, "resource": resource])
+        guard ComposioService.connectableIDs.contains(account.service), account.isActive else { throw ComposioError.resource }
+        guard !resource.contains(configuration.token), !account.id.contains(configuration.token) else { throw ComposioError.invalidResponse }
+        let initialized: MCPInitialization = try await rpc("initialize", params: MCPInitializeParameters())
+        guard initialized.protocolVersion == "2025-11-25", initialized.capabilities.tools != nil else { throw ComposioError.invalidResponse }
+        let notification = MCPRequest(id: nil, method: "notifications/initialized", params: MCPEmpty())
+        _ = try await transport("/v1/mcp", payload: JSONEncoder().encode(notification), notification: true)
+        let discovery: MCPDiscovery = try await rpc("tools/list", params: MCPEmpty())
+        guard let name = Self.toolNames[account.service], discovery.nextCursor == nil, discovery.tools.count <= Self.toolNames.count,
+              Set(discovery.tools.map(\.name)).count == discovery.tools.count,
+              discovery.tools.allSatisfy({ Self.toolNames.values.contains($0.name) }),
+              let tool = discovery.tools.first(where: { $0.name == name }), tool.isSupported else { throw ComposioError.invalidResponse }
+        let reply: MCPReadResult = try await rpc("tools/call", params: MCPCallParameters(name: name,
+            arguments: ["accountID": account.id, "resource": resource]))
+        if reply.isError == true { throw Self.responseError(reply.structuredContent?.error?.status ?? 502) }
+        guard let result = reply.structuredContent?.excerpt,
+              reply.content.count == 1, reply.content[0].type == "text",
+              let contentData = reply.content[0].text.data(using: .utf8),
+              let contentExcerpt = try? JSONDecoder().decode(ComposioExcerpt.self, from: contentData),
+              contentExcerpt.text == result.text, contentExcerpt.source == result.source,
+              contentExcerpt.accountID == result.accountID, contentExcerpt.service == result.service,
+              contentExcerpt.fetchedAt == result.fetchedAt else { throw ComposioError.invalidResponse }
         guard result.accountID == account.id, result.service == account.service, !result.text.isEmpty,
               result.text.count <= 4_500, result.source.count <= 512, result.fetchedAt.count <= 64,
               ISO8601DateFormatter().date(from: result.fetchedAt) != nil || Self.fractionalDate(result.fetchedAt) != nil,
@@ -262,37 +286,130 @@ actor ComposioConnector {
         let formatter = ISO8601DateFormatter(); formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
         return formatter.date(from: value)
     }
+    private static let toolNames = ["gmail": "suzzme_read_gmail_inbox", "outlook": "suzzme_read_outlook_inbox", "github": "suzzme_read_github_issue", "slack": "suzzme_read_slack_message", "notion": "suzzme_read_notion_page"]
+    private struct MCPEmpty: Codable, Sendable { }
+    private struct MCPRequest<Parameters: Encodable & Sendable>: Encodable, Sendable {
+        let jsonrpc = "2.0"
+        let id: String?
+        let method: String
+        let params: Parameters
+    }
+    private struct MCPInitializeParameters: Encodable, Sendable {
+        let protocolVersion = "2025-11-25"
+        let capabilities = MCPEmpty()
+        let clientInfo = ["name": "Suzzme", "version": "1.0.0"]
+    }
+    private struct MCPInitialization: Decodable, Sendable {
+        struct Capabilities: Decodable, Sendable { let tools: MCPEmpty? }
+        let protocolVersion: String
+        let capabilities: Capabilities
+    }
+    private struct MCPEnvelope<Result: Decodable & Sendable>: Decodable, Sendable {
+        struct ErrorValue: Decodable, Sendable { let code: Int }
+        let jsonrpc: String
+        let id: String
+        let result: Result?
+        let error: ErrorValue?
+    }
+    private struct MCPDiscovery: Decodable, Sendable {
+        struct Tool: Decodable, Sendable {
+            struct Annotations: Decodable, Sendable { let readOnlyHint: Bool?; let destructiveHint: Bool? }
+            struct Schema: Decodable, Sendable {
+                struct Property: Decodable, Sendable { let type: String; let minLength: Int?; let maxLength: Int? }
+                let type: String
+                let additionalProperties: Bool
+                let required: [String]
+                let properties: [String: Property]
+            }
+            let name: String
+            let annotations: Annotations?
+            let inputSchema: Schema
+            var isSupported: Bool {
+                annotations?.readOnlyHint == true && annotations?.destructiveHint == false
+                    && inputSchema.type == "object" && !inputSchema.additionalProperties
+                    && inputSchema.required.count == 2 && Set(inputSchema.required) == ["accountID", "resource"]
+                    && Set(inputSchema.properties.keys) == ["accountID", "resource"]
+                    && inputSchema.properties.values.allSatisfy { $0.type == "string" && $0.minLength == 1 }
+                    && inputSchema.properties["accountID"]?.maxLength == 160
+                    && inputSchema.properties["resource"]?.maxLength == 512
+            }
+        }
+        let tools: [Tool]
+        let nextCursor: String?
+    }
+    private struct MCPCallParameters: Encodable, Sendable { let name: String; let arguments: [String: String] }
+    private struct MCPReadResult: Decodable, Sendable {
+        struct Content: Decodable, Sendable { let type: String; let text: String }
+        struct Structured: Decodable, Sendable {
+            struct ReadError: Decodable, Sendable { let status: Int }
+            let error: ReadError?
+            let excerpt: ComposioExcerpt?
+            enum CodingKeys: String, CodingKey { case error }
+            init(from decoder: any Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                error = try container.decodeIfPresent(ReadError.self, forKey: .error)
+                excerpt = error == nil ? try ComposioExcerpt(from: decoder) : nil
+            }
+        }
+        let isError: Bool?
+        let content: [Content]
+        let structuredContent: Structured?
+    }
+    private func rpc<Result: Decodable & Sendable, Parameters: Encodable & Sendable>(
+        _ method: String, params: Parameters
+    ) async throws -> Result {
+        let id = UUID().uuidString
+        let payload = try JSONEncoder().encode(MCPRequest(id: id, method: method, params: params))
+        let data = try await transport("/v1/mcp", payload: payload)
+        guard let reply = try? JSONDecoder().decode(MCPEnvelope<Result>.self, from: data),
+              reply.jsonrpc == "2.0", reply.id == id, reply.error == nil, let result = reply.result else {
+            throw ComposioError.invalidResponse
+        }
+        return result
+    }
+    private static func responseError(_ status: Int) -> ComposioError {
+        switch status {
+        case 401, 403: .authorization
+        case 409: .expired
+        case 413: .tooLarge
+        case 400, 422: .resource
+        case 429: .rateLimited
+        default: .unavailable
+        }
+    }
     private func request<T: Decodable & Sendable>(_ path: String, body: [String: String]? = nil) async throws -> T {
+        let data = try await transport(path, payload: body.map { try JSONEncoder().encode($0) })
+        do { return try JSONDecoder().decode(T.self, from: data) }
+        catch { throw ComposioError.invalidResponse }
+    }
+    private func transport(_ path: String, payload: Data? = nil, notification: Bool = false) async throws -> Data {
         try Task.checkCancellation()
         guard let url = URL(string: configuration.address + path) else { throw ComposioError.configuration }
         var request = URLRequest(url: url)
-        request.httpMethod = body == nil ? "GET" : "POST"
+        request.httpMethod = payload == nil ? "GET" : "POST"
         request.setValue("Bearer " + configuration.token, forHTTPHeaderField: "Authorization")
-        request.setValue("application/json", forHTTPHeaderField: "Accept")
-        if let body {
-            guard !body.values.contains(where: { $0.contains(configuration.token) }) else { throw ComposioError.invalidResponse }
-            request.httpBody = try JSONEncoder().encode(body)
+        request.setValue(path == "/v1/mcp" ? "application/json, text/event-stream" : "application/json", forHTTPHeaderField: "Accept")
+        if path == "/v1/mcp" { request.setValue("2025-11-25", forHTTPHeaderField: "MCP-Protocol-Version") }
+        if let payload {
+            guard !String(decoding: payload, as: UTF8.self).contains(configuration.token) else { throw ComposioError.invalidResponse }
+            request.httpBody = payload
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         }
         let (bytes, response) = try await session.bytes(for: request)
         defer { bytes.task.cancel() }
         guard let http = response as? HTTPURLResponse else { throw ComposioError.invalidResponse }
-        switch http.statusCode {
-        case 200: break
-        case 401, 403: throw ComposioError.authorization
-        case 409: throw ComposioError.expired
-        case 413: throw ComposioError.tooLarge
-        case 422: throw ComposioError.resource
-        case 429: throw ComposioError.rateLimited
-        default: throw ComposioError.unavailable
+        if notification {
+            guard http.statusCode == 202 else { throw Self.responseError(http.statusCode) }
+            return Data()
         }
+        if path == "/v1/mcp", http.statusCode == 404 || http.statusCode == 405 { throw ComposioError.mcpSetup }
+        guard http.statusCode == 200 else { throw Self.responseError(http.statusCode) }
         guard http.value(forHTTPHeaderField: "Content-Type")?.hasPrefix("application/json") == true else { throw ComposioError.invalidResponse }
         var data = Data()
         for try await byte in bytes {
             try Task.checkCancellation()
             guard data.count < 65_536 else { throw ComposioError.tooLarge }; data.append(byte)
         }
-        do { return try JSONDecoder().decode(T.self, from: data) }
-        catch { throw ComposioError.invalidResponse }
+        return data
     }
 }

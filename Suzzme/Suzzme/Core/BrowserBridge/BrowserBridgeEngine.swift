@@ -13,7 +13,7 @@ protocol BrowserPairingVault: Sendable {
     func save(_ records: [BrowserPairing]) async throws
 }
 struct BrowserBridgeDelivery: Sendable, Equatable {
-    enum Kind: Sendable, Equatable { case github, connection, invalidate }
+    enum Kind: Sendable, Equatable { case github, connection, whatsapp, invalidate }
     let kind: Kind
     let pairingID: String
     let taskID: String
@@ -21,6 +21,8 @@ struct BrowserBridgeDelivery: Sendable, Equatable {
     let version: Int
     var service: String? = "github"
     let repository: String?
+    var chatID: String? = nil
+    var chatText: String? = nil
 }
 struct BrowserBridgeReply: Sendable {
     let data: Data
@@ -133,7 +135,7 @@ actor BrowserBridgeEngine {
                 let transcript = ["suzzme-browser-server-v1", peerExtension, pairingID, id, client, session, nonce, String(expiry)].joined(separator: "\n")
                 return try reply(id, payload: ["sessionID": session, "serverNonce": nonce, "expiresAt": expiry, "proof": mac(transcript, pair.secret)])
             }
-            guard ["github.connection", "integration.connection", "context.invalidate"].contains(method),
+            guard ["github.connection", "integration.connection", "whatsapp.sync", "context.invalidate"].contains(method),
                   keys(frame, ["protocolVersion", "requestID", "taskID", "extensionID", "method", "pairingID", "sessionID", "serverNonce", "payloadBytes", "authentication"]),
                   let pairingID = frame["pairingID"] as? String, let session = frame["sessionID"] as? String,
                   let nonce = frame["serverNonce"] as? String, let bytes = frame["payloadBytes"] as? String,
@@ -143,15 +145,26 @@ actor BrowserBridgeEngine {
                   let pair = records.first(where: { $0.id == pairingID && $0.extensionID == peerExtension }) else { throw BridgeFailure.authentication }
             let transcript = ["suzzme-browser-request-v1", "1", peerExtension, pairingID, session, nonce, id, task, method, bytes].joined(separator: "\n")
             guard HMAC<SHA256>.isValidAuthenticationCode(signature, authenticating: Data(transcript.utf8), using: SymmetricKey(data: pair.secret)),
-                  let decoded = Self.decoded(bytes), decoded.count <= 4096,
+                  let decoded = Self.decoded(bytes), decoded.count <= (method == "whatsapp.sync" ? 16384 : 4096),
                   let payload = try JSONSerialization.jsonObject(with: decoded) as? [String: Any],
                   let contextID = payload["contextID"] as? String, Self.validID(contextID),
                   let version = number(payload["contextVersion"]), version >= 1, version <= 9_007_199_254_740_991 else { throw BridgeFailure.invalid }
             let contextKey = pairingID + ":" + contextID
             var repository: String?
             var service: String?
-            if method == "github.connection" || method == "integration.connection" {
-                let allowedServices: Set<String> = ["github", "linkedin", "notion", "slack"]
+            var chatID: String?
+            var chatText: String?
+            if method == "whatsapp.sync" {
+                guard keys(payload, ["contextID", "contextVersion", "capturedAt", "chatID", "text"]),
+                      let time = payload["capturedAt"] as? Double, time.isFinite,
+                      time <= now.timeIntervalSince1970, now.timeIntervalSince1970 - time <= 30,
+                      let chat = payload["chatID"] as? String, Self.validID(chat),
+                      let text = payload["text"] as? String, !text.isEmpty, text.utf8.count <= 12000,
+                      !text.contains("\0"), contexts[contextKey] == nil, contexts.count < 128 else { throw BridgeFailure.invalid }
+                chatID = chat; chatText = text; service = "whatsapp"
+                contexts[contextKey] = (version, task, now.addingTimeInterval(180))
+            } else if method == "github.connection" || method == "integration.connection" {
+                let allowedServices: Set<String> = ["github", "linkedin", "notion", "slack", "gmail", "outlook", "whatsapp"]
                 if method == "github.connection" {
                 guard keys(payload, ["contextID", "contextVersion", "capturedAt", "repository"]),
                       let time = payload["capturedAt"] as? Double, time.isFinite, time <= now.timeIntervalSince1970, now.timeIntervalSince1970 - time <= 30,
@@ -176,9 +189,9 @@ actor BrowserBridgeEngine {
             try Task.checkCancellation()
             let accepted: [String: Any] = ["accepted": true, "contextID": contextID, "contextVersion": version,
                 "proof": mac(["suzzme-browser-response-v1", session, id, method, "true", contextID, String(version)].joined(separator: "\n"), pair.secret)]
-            let kind: BrowserBridgeDelivery.Kind = method == "context.invalidate" ? .invalidate : method == "github.connection" ? .github : .connection
+            let kind: BrowserBridgeDelivery.Kind = method == "whatsapp.sync" ? .whatsapp : method == "context.invalidate" ? .invalidate : method == "github.connection" ? .github : .connection
             return try reply(id, payload: accepted, delivery: .init(kind: kind,
-                pairingID: pairingID, taskID: task, contextID: contextID, version: version, service: service, repository: repository))
+                pairingID: pairingID, taskID: task, contextID: contextID, version: version, service: service, repository: repository, chatID: chatID, chatText: chatText))
         } catch {
             let code = (error as? BridgeFailure)?.rawValue ?? (error is CancellationError ? "cancelled" : "unavailable")
             let failure: [String: Any] = ["protocolVersion": 1, "requestID": requestID, "ok": false, "error": ["code": code]]

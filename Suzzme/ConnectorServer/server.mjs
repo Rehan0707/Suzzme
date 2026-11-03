@@ -2,11 +2,16 @@ import { createServer } from 'node:http';
 import { Buffer } from 'node:buffer';
 import { randomBytes, timingSafeEqual } from 'node:crypto';
 import { pathToFileURL } from 'node:url';
+import { readMailbox } from './mail-read.mjs';
 import { readNotion } from './notion-read.mjs';
+import { handleMCP, supportsProtocol } from './mcp.mjs';
+import { createComposioMCP } from './composio-mcp.mjs';
 
 // Owner-operated, single-user bridge. Never embed COMPOSIO_API_KEY in an app.
 const origin = 'https://backend.composio.dev/api/v3.1';
 const services = Object.freeze({
+  gmail: { title: 'Gmail', detail: 'Read recent inbox previews from the last 24 hours for on-device summaries.', readable: true },
+  outlook: { title: 'Outlook', detail: 'Read recent inbox previews from the last 24 hours for on-device summaries.', readable: true },
   github: { title: 'GitHub', detail: 'Read one issue by its exact URL.', readable: true },
   linkedin: { title: 'LinkedIn', detail: 'Unavailable. Use explicitly shared content in the app.', readable: false },
   slack: { title: 'Slack', detail: 'Read one channel message by its permalink. Replies and attachments are excluded.', readable: true },
@@ -69,6 +74,7 @@ export function createBridge(config, fetcher = fetch, clock = Date.now) {
     });
     return jsonResponse(response);
   }
+  const hostedMCPRead = createComposioMCP(config, api, fetcher, requireValue, clock);
   function safeAccount(account, service) {
     requireValue(validID(account?.id) && account.user_id === config.userID
       && account.toolkit?.slug === service && account.auth_config?.id === config.configs[service]
@@ -81,6 +87,14 @@ export function createBridge(config, fetcher = fetch, clock = Date.now) {
     requireValue(result.status === 'ACTIVE', 409, 'Reconnect this account before reading.'); return result;
   }
   async function proxy(selected, endpoint, method = 'GET') {
+    if (selected.mcp) {
+      const response = await hostedMCPRead(selected, endpoint, method, selected.service === 'notion'
+        ? [{ name: 'Notion-Version', value: '2026-03-11', in: 'header' }] : []);
+      requireValue(response.status !== 429 && response.data?.error !== 'ratelimited', 429,
+        'The service rate limit was reached. Wait before trying again.');
+      requireValue(response.status >= 200 && response.status < 300, 502, 'The provider refused this read. Check granted permissions.');
+      return response.data;
+    }
     const response = await api('/tools/execute/proxy', { connected_account_id: selected.id,
       user_id: config.userID, endpoint, method, ...(method === 'POST' ? { body: {} } : {}),
       ...(selected.service === 'notion' ? { parameters: [{ name: 'Notion-Version', value: '2026-03-11', in: 'header' }] } : {}) });
@@ -90,7 +104,7 @@ export function createBridge(config, fetcher = fetch, clock = Date.now) {
       && response.data && typeof response.data === 'object', 502, 'The provider refused this read. Check granted permissions.');
     return response.data;
   }
-  async function route(method, path, body = {}, authorization = '') {
+  async function route(method, path, body = {}, authorization = '', mcpProtocol, hostedMCP = false) {
     prune();
     if (method === 'GET' && path === '/healthz') return { status: 'ok' };
     if (method === 'GET' && path === '/oauth/verify') {
@@ -113,6 +127,11 @@ export function createBridge(config, fetcher = fetch, clock = Date.now) {
     }
     const actual = Buffer.from(authorization); const expected = Buffer.from('Bearer ' + config.token);
     requireValue(actual.length === expected.length && timingSafeEqual(actual, expected), 401, 'Connector authorization is required.');
+    if (path === '/v1/mcp') {
+      requireValue(method === 'POST', 405, 'This MCP endpoint uses POST requests.');
+      requireValue(supportsProtocol(mcpProtocol), 400, 'Unsupported MCP protocol version.');
+      return handleMCP(body, Object.keys(config.configs), args => route('POST', '/v1/read', args, authorization, undefined, true));
+    }
     if (method === 'GET' && path === '/v1/accounts') {
       const query = new URLSearchParams({ user_ids: config.userID, limit: '100' });
       const response = await api('/connected_accounts?' + query);
@@ -149,8 +168,12 @@ export function createBridge(config, fetcher = fetch, clock = Date.now) {
         && !body.resource.includes(config.apiKey) && !body.resource.includes(config.token), 422,
       'Choose a source link without credential material.');
       const selected = await account(body.accountID, body.service);
+      selected.mcp = hostedMCP;
       let endpoint; let source; let recipe; let slackTimestamp; let notionText;
-      if (body.service === 'notion') {
+      if (['gmail', 'outlook'].includes(body.service)) {
+        notionText = await readMailbox(body.service, body.resource, endpoint => proxy(selected, endpoint), requireValue, clock());
+        source = body.resource; recipe = 'notion-page';
+      } else if (body.service === 'notion') {
         notionText = await readNotion(body.resource, endpoint => proxy(selected, endpoint), requireValue);
         source = body.resource; recipe = 'notion-page';
       } else if (body.service === 'github') {
@@ -238,7 +261,8 @@ export function serverFor(bridge) {
         requireValue(request.method === 'POST' && request.headers['content-type']?.startsWith('application/json'));
         try { body = JSON.parse(Buffer.concat(chunks).toString('utf8')); } catch { throw new Failure(400, 'Invalid request.'); }
       }
-      const result = await bridge.route(request.method, request.url, body, request.headers.authorization);
+      const result = await bridge.route(request.method, request.url, body, request.headers.authorization, request.headers['mcp-protocol-version']);
+      if (result.accepted) { response.writeHead(202, headers); response.end(); return; }
       response.writeHead(200, { ...headers, 'Content-Type': result.html ? 'text/html; charset=utf-8' : 'application/json' });
       response.end(result.html || JSON.stringify(result));
     } catch (error) {
