@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <strong>Your daily morning briefing on Mac and iPhone — powered by on-device AI.</strong>
+  <strong>Summarize and plan your day on Mac and iPhone — powered by on-device AI.</strong>
 </p>
 
 <p align="center">
@@ -19,18 +19,21 @@
 
 ## ☀️ What is Suzzme?
 
-**Suzzme** is a personal assistant app for **macOS and iOS** that connects to your everyday tools (Calendar, Reminders, WhatsApp, Gmail, Slack, Notion) and **summarizes your entire day at a specific time you choose**.
+**Suzzme** is a personal assistant app for **macOS and iOS** that connects to your everyday tools (Calendar, Reminders, WhatsApp, Gmail, Slack, Notion) to **summarize and plan your day** at a specific time you choose.
 
 ### The Morning Routine
 
-Suppose you schedule your daily briefing for **8:00 AM**. At 8:00 AM sharp, Suzzme greets you:
+Suppose you schedule Suzzme for **8:00 AM**. At 8:00 AM sharp, Suzzme greets you with a concise summary and a clear plan:
 
-> *"Hey Rehan, how are you doing? Here are your important updates for today..."*
+> *"Hey Rehan, how are you doing? Here is your summary and plan for today..."*
 >
 > 🗓️ **3 meetings today** — First one starts at 10:30 AM with the design team.  
 > ✉️ **2 urgent emails** — Project sign-off request from Sarah.  
-> 💬 **WhatsApp updates** — Family group lunch plans confirmed for 1:00 PM.  
-> ✅ **Tasks due** — Review pull request #14 before 5:00 PM.
+> 💬 **WhatsApp updates** — Lunch plans confirmed for 1:00 PM.  
+> 📋 **Your Plan for Today**:
+> * **9:00 AM – 10:15 AM**: Focus time to review PR #14 before the team meeting.
+> * **10:30 AM – 11:30 AM**: Design team sync.
+> * **2:00 PM**: Send project sign-off to Sarah.
 
 ---
 
@@ -38,8 +41,8 @@ Suppose you schedule your daily briefing for **8:00 AM**. At 8:00 AM sharp, Suzz
 
 Suzzme uses a smart, battery-friendly approach across your Apple devices:
 
-1. **Mac prepares the summary**: Your Mac connects to your permitted sources (Calendar, Reminders, WhatsApp chats, Gmail, Slack, Notion) and uses on-device AI (Apple's Foundation Models) to create your daily briefing.
-2. **iPhone syncs automatically**: Sign in with the same Google account on your Mac and iPhone. Suzzme securely shares the prepared summary with your iPhone companion.
+1. **Mac summarizes & plans**: Your Mac connects to your permitted sources (Calendar, Reminders, WhatsApp chats, Gmail, Slack, Notion) and uses on-device AI (Apple's Foundation Models) to analyze your day, organize priorities, and create a realistic plan.
+2. **iPhone syncs automatically**: Sign in with the same Google account on your Mac and iPhone. Suzzme securely shares the prepared summary and schedule plan with your iPhone companion.
 3. **Zero battery drain**: Your iPhone doesn't need to burn battery scanning apps or running heavy AI models in the background. It simply presents your prepared briefing the moment you pick up your phone, complete with Lock Screen widgets and Live Activities.
 
 ---
@@ -65,7 +68,7 @@ Suzzme uses a smart, battery-friendly approach across your Apple devices:
 
 ## ✨ Key Features
 
-* ⏰ **Scheduled Daily Briefings**: Set your preferred time (morning or evening) to get a calm, accurate summary of your schedule, tasks, and messages.
+* ⏰ **Summarize & Plan Your Day**: Set your preferred briefing time to get a calm, accurate summary of your schedule, tasks, and messages alongside a focused daily plan.
 * 🗣️ **Ask Suzzme (Voice & Text)**: Chat naturally with Suzzme. Ask questions about your upcoming meetings, tasks, or notes using voice or keyboard.
 * 💻 **Mac Notch Companion**: Snaps right under the MacBook screen notch, with quick global shortcuts and menu bar access.
 * 📱 **iPhone Dynamic Island & Widgets**: Track voice conversations and summary updates directly on your Lock Screen and Dynamic Island.
