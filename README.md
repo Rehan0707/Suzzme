@@ -96,7 +96,6 @@ Suzzme/
 ├── voice-gateway/             # Cloudflare Worker proxy for AssemblyAI & ElevenLabs voice streams
 ├── supabase/                  # Edge functions and schemas for companion summary push delivery
 ├── dynamic-island-lab/        # Interactive design prototype testbed for Dynamic Island & widgets
-├── suzzme web/                # Marketing and waitlist product site with Three.js mascot
 └── App-Screenshots/           # Full gallery of verified macOS and iOS production captures
 ```
 
@@ -158,18 +157,6 @@ npm install
 npm test
 ```
 All 72+ automated verification tests run against strict security policies, verifying that token overrides, arbitrary tool execution, and query injections are rejected.
-
----
-
-### 4. Run the Suzzme Product Website
-
-To run the interactive responsive product showcase and waitlist server locally:
-
-```sh
-cd "suzzme web"
-python3 server.py
-```
-Open **[http://127.0.0.1:4173](http://127.0.0.1:4173)**.
 
 ---
 

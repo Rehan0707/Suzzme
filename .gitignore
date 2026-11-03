@@ -35,11 +35,7 @@ node_modules/
 # Validation reports & test output
 Suzzme/Validation/Reports/
 
-# Local Suzzme website waitlist data
-suzzme web/data/
-
-# Website preview captures and local verification artifacts
-/suzzme web/output/
+# Local verification artifacts
 /output/
 
 # Generated connector deployment bundles
