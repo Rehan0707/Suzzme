@@ -20,14 +20,18 @@
 
 ## 🌟 Overview
 
-**Suzzme** is an honest, privacy-first personal assistant designed specifically for Apple platforms. It synthesizes what is happening across your authorized digital tools, remembers what matters, delivers calm daily briefings, and safely executes verified actions—all without continuous background tracking, opaque cloud pipelines, or fabricated hallucinations.
+**Suzzme** is a native macOS and iOS personal assistant that connects to the authorized sources on your device, local AI, Apple’s Foundation Models, and your productivity tools to summarize your entire day at a specific time you choose.
 
-### The Dual-Device Architecture
+### How It Works: Your Day, Summarized
 
-Suzzme solves personal AI through a clear division of responsibility between your Mac and iPhone:
+Suppose you set Suzzme to summarize your day at **8:00 AM**. At 8:00 AM in the morning, Suzzme delivers your personalized daily briefing:
 
-* **Mac as the Intelligence Engine**: Your Mac orchestrates context normalization, connects to permitted local and cloud sources (Calendar, Reminders, Contacts, Local WhatsApp, Gmail headers, Notion, Slack, GitHub), queries local Apple Foundation Models, and prepares deterministic Daily Summaries.
-* **iPhone as the Companion**: Your iPhone acts as a focused, battery-friendly companion surface. It receives pre-computed summaries through secure, signed handoff and presents real-time assistant state via **Live Activities**, the **Dynamic Island**, and **Home Screen Widgets**—without running heavy local model inference or continuous source background scrapers.
+> *"Hey Rehan, how are you doing? Here are your important updates for today..."*
+
+Behind the scenes:
+* **Mac Orchestrates Intelligence**: Your Mac connects to your permitted sources (Calendar, Reminders, Contacts, Local WhatsApp, Gmail headers, Notion, Slack, GitHub), processes context using Apple Foundation Models and local intelligence, and prepares your grounded briefing.
+* **Unified iPhone Companion**: Sign in with the same Google account on both your Mac and iPhone. Suzzme seamlessly transfers that same summarized context to your iPhone, so your morning briefing is ready on your phone the moment you wake up or head out.
+* **Calm & Battery-Friendly**: Your iPhone receives the prepared briefing without burning battery on heavy model execution or background scraping. It presents your day through native **Live Activities**, the **Dynamic Island**, and **Home Screen Widgets**.
 
 ---
 
