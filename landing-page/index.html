@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#08090c">
+  <meta name="description" content="Suzzme — Summarize and plan your day on Mac and iPhone. Powered by on-device Apple Intelligence and authorized local sources.">
+  <title>Suzzme — Summarize and Plan Your Day</title>
+  <link rel="icon" href="assets/icon.png">
+  
+  <!-- Premium Typography: Geist, Instrument Serif & Geist Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&family=Geist:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <!-- Ambient background glow effects -->
+  <div class="ambient-glow glow-top" aria-hidden="true"></div>
+  <div class="ambient-glow glow-right" aria-hidden="true"></div>
+
+  <!-- Floating Frosted Glass Navbar -->
+  <header class="navbar">
+    <div class="nav-container">
+      <a class="nav-brand" href="#hero">
+        <img src="assets/mascot.png" alt="Suzzme" class="brand-mascot">
+        <span class="brand-title">Suzzme<span class="brand-dot">.</span></span>
+      </a>
+
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="#routine">The 8 AM Routine</a>
+        <a href="#dual-device">Mac & iPhone</a>
+        <a href="#features">Capabilities</a>
+        <a href="#privacy">Privacy</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="https://github.com/Rehan0707/Suzzme" target="_blank" rel="noopener noreferrer" class="btn btn-ghost">
+          <svg class="gh-icon" viewBox="0 0 16 16" width="16" height="16" fill="currentColor">
+            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+          </svg>
+          <span>GitHub</span>
+        </a>
+        <a href="#routine" class="btn btn-primary">Try Interactive Demo</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO SECTION -->
+    <section class="hero-section" id="hero">
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        <span>ON-DEVICE PERSONAL INTELLIGENCE FOR MAC & IPHONE</span>
+      </div>
+
+      <h1 class="hero-title">
+        Summarize your day.<br>
+        Plan <span class="serif-italic">what matters.</span>
+      </h1>
+
+      <p class="hero-subtitle">
+        Set your time — like <strong>8:00 AM</strong>. Suzzme gathers your calendar, emails, WhatsApp messages, and tasks on your Mac, summarizes what’s important, creates your daily plan, and syncs seamlessly to your iPhone.
+      </p>
+
+      <div class="hero-cta-group">
+        <a href="#routine" class="btn btn-primary btn-large">
+          <span>See Today's Plan in Action</span>
+          <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor">
+            <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+          </svg>
+        </a>
+        <button id="listen-briefing-btn" class="btn btn-glass btn-large">
+          <span class="play-icon">▶</span>
+          <span id="listen-text">Listen to 8:00 AM Briefing</span>
+        </button>
+      </div>
+
+      <!-- Mascot Interactive Anchor -->
+      <div class="hero-mascot-container" id="hero-mascot-anchor">
+        <div class="mascot-orbit orbit-1"></div>
+        <div class="mascot-orbit orbit-2"></div>
+        <img src="assets/mascot.png" alt="Suzzme Companion" class="hero-mascot-img" id="hero-mascot">
+        <div class="mascot-tag">
+          <span class="pulse-indicator"></span>
+          <span>Apple Intelligence & Foundation Models</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- LIVE 8:00 AM BRIEFING SIMULATOR -->
+    <section class="simulator-section" id="routine">
+      <div class="section-header">
+        <div class="section-tag">01 / THE MORNING ROUTINE</div>
+        <h2 class="section-title">
+          At 8:00 AM, clarity greets you.<br>
+          <span class="serif-italic">No noise. Just your day.</span>
+        </h2>
+        <p class="section-desc">
+          Choose a time scenario below to see how Suzzme synthesizes events, messages, and priorities into an actionable schedule.
+        </p>
+      </div>
+
+      <!-- Interactive Scenario Selector -->
+      <div class="scenario-selector">
+        <button class="scenario-pill active" data-time="8:00 AM" data-scenario="morning">
+          <span class="pill-dot"></span>
+          <span>8:00 AM · Morning Briefing & Plan</span>
+        </button>
+        <button class="scenario-pill" data-time="1:00 PM" data-scenario="midday">
+          <span class="pill-dot"></span>
+          <span>1:00 PM · Midday Sync & Changes</span>
+        </button>
+        <button class="scenario-pill" data-time="7:00 PM" data-scenario="evening">
+          <span class="pill-dot"></span>
+          <span>7:00 PM · Evening Wind-Down</span>
+        </button>
+      </div>
+
+      <!-- Simulator Stage -->
+      <div class="simulator-stage">
+        <!-- Floating simulated audio bar -->
+        <div class="audio-briefing-bar" id="audio-bar">
+          <button class="audio-play-toggle" id="audio-toggle" aria-label="Play spoken briefing">
+            <span class="audio-icon">▶</span>
+          </button>
+          <div class="audio-info">
+            <span class="audio-title">Spoken Briefing</span>
+            <span class="audio-quote" id="audio-quote">"Hey Rehan, how are you doing? Here is your summary and plan for today..."</span>
+          </div>
+          <div class="audio-waves" id="audio-waves" aria-hidden="true">
+            <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+          </div>
+          <span class="audio-time" id="audio-time">0:14</span>
+        </div>
+
+        <!-- Glass Mac Interface Container -->
+        <div class="mac-window-glass">
+          <div class="window-header">
+            <div class="traffic-lights">
+              <span class="light close"></span>
+              <span class="light min"></span>
+              <span class="light max"></span>
+            </div>
+            <div class="window-title-tab">
+              <img src="assets/mascot.png" alt="" class="tab-icon">
+              <span id="window-scenario-title">Suzzme — Tuesday, 8:00 AM Briefing</span>
+            </div>
+            <div class="window-status">
+              <span class="status-live-dot"></span>
+              <span>Syncing with iPhone</span>
+            </div>
+          </div>
+
+          <div class="window-tabs">
+            <button class="tab-btn active" data-tab="plan">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              <span>Your Plan Today</span>
+            </button>
+            <button class="tab-btn" data-tab="summary">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+              <span>Daily Summary</span>
+            </button>
+            <button class="tab-btn" data-tab="sources">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+              <span>Sources Checked (4)</span>
+            </button>
+          </div>
+
+          <div class="window-content-area" id="window-body">
+            <!-- Dynamically populated by app.js based on scenario & tab -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DUAL-DEVICE ARCHITECTURE (MAC + IPHONE) -->
+    <section class="dual-device-section" id="dual-device">
+      <div class="section-header">
+        <div class="section-tag">02 / CROSS-DEVICE HARMONY</div>
+        <h2 class="section-title">
+          Mac does the thinking.<br>
+          <span class="serif-italic">iPhone keeps it close.</span>
+        </h2>
+        <p class="section-desc">
+          Sign in with the same Google account. Your Mac coordinates context normalization and AI reasoning; your iPhone receives the prepared briefing with zero battery drain.
+        </p>
+      </div>
+
+      <div class="devices-bridge-grid">
+        <!-- Mac Card -->
+        <div class="device-card mac-card">
+          <div class="device-badge">
+            <span>⌘ &nbsp; MACOS ORCHESTRATION</span>
+          </div>
+          <h3 class="device-headline">The Local Intelligence Hub</h3>
+          <p class="device-text">
+            Runs locally on your Mac. Gathers permitted information from Calendar, Reminders, local WhatsApp folders, and Gmail headers. Uses Apple's Foundation Models to draft your summary and schedule.
+          </p>
+
+          <div class="preview-img-container">
+            <img src="assets/previews/home-summarize-day-composer-mac.png" alt="macOS Suzzme Interface" class="preview-img">
+          </div>
+
+          <div class="feature-bullets">
+            <div class="bullet-item">
+              <span class="check-icon">✓</span>
+              <span><strong>MacBook Notch Presence:</strong> Sits unobtrusively under the camera notch until invoked.</span>
+            </div>
+            <div class="bullet-item">
+              <span class="check-icon">✓</span>
+              <span><strong>On-Device First:</strong> Processing stays private without cloud prompt logging.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sync Bridge Visual -->
+        <div class="sync-bridge">
+          <div class="sync-line">
+            <div class="sync-particle"></div>
+          </div>
+          <div class="sync-badge">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            <span>Google Account Sync</span>
+          </div>
+          <div class="sync-line">
+            <div class="sync-particle delay"></div>
+          </div>
+        </div>
+
+        <!-- iPhone Card -->
+        <div class="device-card iphone-card">
+          <div class="device-badge">
+            <span>📱 &nbsp; IPHONE COMPANION</span>
+          </div>
+          <h3 class="device-headline">Effortless On-The-Go Companion</h3>
+          <p class="device-text">
+            Receives the Mac-prepared daily summary instantly. Presents your briefing with zero local AI battery consumption via Live Activities, the Dynamic Island, and widgets.
+          </p>
+
+          <!-- Interactive Dynamic Island / Lock Screen switcher -->
+          <div class="iphone-interactive-preview">
+            <div class="phone-frame">
+              <div class="phone-dynamic-island" id="interactive-island">
+                <img src="assets/mascot.png" alt="" class="island-icon">
+                <span class="island-label" id="island-state-label">8:00 AM · Summary Ready</span>
+                <span class="island-sound-indicator"><i></i><i></i><i></i></span>
+              </div>
+              
+              <div class="phone-lock-card">
+                <div class="lock-header">
+                  <img src="assets/mascot.png" alt="" class="lock-mascot">
+                  <span>SUZZME LIVE ACTIVITY</span>
+                  <span class="lock-badge">UPDATED</span>
+                </div>
+                <h4 class="lock-title" id="lock-title">Tuesday, 8:00 AM Briefing</h4>
+                <p class="lock-desc" id="lock-desc">3 meetings · 2 urgent emails · PR review plan ready</p>
+                <div class="lock-action-row">
+                  <span class="lock-tap-hint">Tap to listen or read ↗</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="feature-bullets">
+            <div class="bullet-item">
+              <span class="check-icon">✓</span>
+              <span><strong>Dynamic Island & Widgets:</strong> Glanceable updates on your Lock Screen and Home Screen.</span>
+            </div>
+            <div class="bullet-item">
+              <span class="check-icon">✓</span>
+              <span><strong>Zero Battery Strain:</strong> Doesn't run heavy background model scrapers.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BENTO GRID CAPABILITIES -->
+    <section class="bento-section" id="features">
+      <div class="section-header">
+        <div class="section-tag">03 / BUILT FOR CRAFT & TRUST</div>
+        <h2 class="section-title">
+          Designed like the finest Mac software.<br>
+          <span class="serif-italic">Built with strict boundaries.</span>
+        </h2>
+      </div>
+
+      <div class="bento-grid">
+        <!-- Bento 1: Notch Presence -->
+        <div class="bento-card bento-wide">
+          <div class="bento-content">
+            <span class="bento-tag">HARDWARE INTEGRATION</span>
+            <h3>MacBook Notch Companion</h3>
+            <p>Suzzme rests naturally under your MacBook’s physical display cutout. It expands fluidly when active, speaks your briefing, and recedes quietly into the background when you focus.</p>
+          </div>
+          <div class="bento-visual">
+            <img src="assets/previews/mac-notch-listening.png" alt="Mac Notch Presence" class="notch-img">
+          </div>
+        </div>
+
+        <!-- Bento 2: Honest Privacy -->
+        <div class="bento-card">
+          <div class="bento-icon-box">🔒</div>
+          <span class="bento-tag">HONEST BOUNDARIES</span>
+          <h3>Privacy-First Data Intake</h3>
+          <p>Gmail reads sender and subject headers only (never email bodies without consent). WhatsApp reads only the Mac chats you specifically pick from a local folder. No continuous screen capture.</p>
+        </div>
+
+        <!-- Bento 3: Deterministic Action Boundary -->
+        <div class="bento-card">
+          <div class="bento-icon-box">🛡️</div>
+          <span class="bento-tag">MUTATION SAFETY</span>
+          <h3>Actions Require Your Confirmation</h3>
+          <p>AI models have zero direct mutation authority. When Suzzme plans an event or adds a task, it follows a deterministic sequence: Plan → Confirm → Authorize → Execute → Verify.</p>
+        </div>
+
+        <!-- Bento 4: Voice Pipeline -->
+        <div class="bento-card bento-wide">
+          <div class="bento-content">
+            <span class="bento-tag">CONVERSATIONAL VOICE</span>
+            <h3>Ask Suzzme with Natural Speech</h3>
+            <p>Powered by short-lived AssemblyAI streaming tokens and ElevenLabs natural voice playback. Audio is processed ephemerally and never stored to disk.</p>
+          </div>
+          <div class="voice-wave-container">
+            <div class="voice-pill">
+              <span class="pulse-dot"></span>
+              <span>"What is my first meeting after lunch?"</span>
+            </div>
+            <div class="voice-response-pill">
+              <span>"Your 2:00 PM project sync with Sarah."</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SOURCES TABLE SECTION -->
+    <section class="sources-section" id="privacy">
+      <div class="section-header">
+        <div class="section-tag">04 / PERMISSION INTEGRITY</div>
+        <h2 class="section-title">
+          You stay in complete control.<br>
+          <span class="serif-italic">What Suzzme reads — and what it doesn't.</span>
+        </h2>
+      </div>
+
+      <div class="sources-table-container">
+        <table class="sources-table">
+          <thead>
+            <tr>
+              <th>Integration</th>
+              <th>How It Connects</th>
+              <th>What Suzzme Reads</th>
+              <th>What Is Kept Private</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Apple Calendar & Reminders</strong></td>
+              <td>Native EventKit permissions</td>
+              <td>Today's schedule, deadlines, priorities</td>
+              <td>No automatic writes without confirmation</td>
+            </tr>
+            <tr>
+              <td><strong>WhatsApp (macOS)</strong></td>
+              <td>User-selected local folder</td>
+              <td>Only the specific chats you choose</td>
+              <td>No WhatsApp Web scraping, no cloud upload</td>
+            </tr>
+            <tr>
+              <td><strong>Gmail</strong></td>
+              <td>Google OAuth restricted read</td>
+              <td>Sender, subject, date (up to 30 recent)</td>
+              <td>No message bodies or attachments read</td>
+            </tr>
+            <tr>
+              <td><strong>Slack, Notion & GitHub</strong></td>
+              <td>Local MCP Connector Server</td>
+              <td>Read-only issue titles and task items</td>
+              <td>Token-isolated, zero mutation rights</td>
+            </tr>
+            <tr>
+              <td><strong>Microphone & Audio</strong></td>
+              <td>System Audio Capture</td>
+              <td>Live transcription during active turn</td>
+              <td>Zero audio files saved or logged to disk</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- FINAL CTA / HERO FOOTER -->
+    <section class="footer-cta-section">
+      <div class="cta-glow" aria-hidden="true"></div>
+      <img src="assets/mascot.png" alt="Suzzme Mascot" class="cta-mascot">
+      <h2 class="cta-title">
+        Start your day with clarity.<br>
+        <span class="serif-italic">Summarized & planned, every morning.</span>
+      </h2>
+      <p class="cta-desc">
+        Native Swift 6 architecture for macOS 14+ and iOS 17+. Open-source foundation with strict on-device privacy.
+      </p>
+      <div class="cta-actions">
+        <a href="https://github.com/Rehan0707/Suzzme" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-large">
+          <svg class="gh-icon" viewBox="0 0 16 16" width="16" height="16" fill="currentColor">
+            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+          </svg>
+          <span>View on GitHub</span>
+        </a>
+        <a href="#routine" class="btn btn-glass btn-large">
+          <span>Explore 8:00 AM Routine ↑</span>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-container">
+      <div class="footer-left">
+        <span class="footer-logo">Suzzme<span class="brand-dot">.</span></span>
+        <span class="footer-copy">© 2026 Rehan Sanadi. Apple-native architecture for macOS & iOS.</span>
+      </div>
+      <div class="footer-right">
+        <span class="footer-tag">Swift 6 · ActivityKit · Apple Intelligence</span>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
