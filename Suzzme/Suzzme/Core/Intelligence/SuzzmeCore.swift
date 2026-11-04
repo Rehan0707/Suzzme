@@ -500,7 +500,7 @@ actor SuzzmeCore {
 
     func prepareProactiveBriefing(from sources: [any ContextSource], now: Date = .now, profileName: String? = nil, rememberInSession: Bool = true, calendar: Calendar = .current, summaryCutoff: Date? = nil) async throws -> ProactiveSnapshot {
         guard let proactive else { throw ProactiveError.invalidState }
-        let snapshot = try await proactive.prepare(from: sources, now: now, calendar: calendar, profileName: profileName, summaryCutoff: summaryCutoff ?? now)
+        let snapshot = try await proactive.prepare(from: sources, now: now, calendar: calendar, profileName: profileName, summaryCutoff: summaryCutoff)
         if rememberInSession, let briefing = snapshot.briefing {
             let context = briefing.items.prefix(ProactiveLimits.briefingItems).map { item in
                 let provenance = snapshot.dailyContext?.entries.first { $0.id == item.candidateID }

@@ -5,6 +5,7 @@ output=$(mktemp -d)
 trap 'rm -rf "$output"' EXIT
 xcrun swiftc -disable-sandbox -module-cache-path "$output/cache" -swift-version 6 -parse-as-library -framework SwiftUI \
  Suzzme/Core/Models/SuzzmeAssistantState.swift \
+ Suzzme/DesignSystem/Components/SuzzmeMascotArtwork.swift \
  Suzzme/Core/Invocation/AssistantPresentation.swift \
  Suzzme/Core/Invocation/SuzzmePresenceTheme.swift \
  Validation/GlobalShortcutChecks.swift -o "$output/GlobalShortcutChecks"

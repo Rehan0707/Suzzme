@@ -68,9 +68,15 @@ struct SlackIntegrationOptions: View {
 struct LinkedInIntegrationOptions: View {
     var body: some View {
         Form {
-            Section("Choose what to use") {
-                Text("Share selected text or a screenshot for local understanding. LinkedIn account, profile, feed and inbox retrieval are unavailable.")
+            Section("LinkedIn profile") {
+                Text("Suzzme can request the basic profile allowed by your LinkedIn OpenID profile consent. Feed, inbox, messages, contacts, and publishing are not supported.")
                     .font(.footnote).foregroundStyle(SuzzmeTheme.textSecondary)
+                NavigationLink { ComposioIntegrationsView(initialServiceID: "linkedin") } label: {
+                    Label("Connect LinkedIn", systemImage: "person.crop.square")
+                        .frame(minHeight: SuzzmeTheme.Layout.touchTarget)
+                }
+            }
+            Section("Shared content") {
                 NavigationLink { SharedAppContextView(initialSource: .linkedin) } label: {
                     Label("Ask about shared text or a screenshot", systemImage: "text.viewfinder")
                         .frame(minHeight: SuzzmeTheme.Layout.touchTarget)
@@ -85,16 +91,25 @@ struct ComposioIntegrationsView: View {
     var initialServiceID: String? = nil
     var initialResource: String? = nil
     var initialQuestion: String? = nil
-    var body: some View {
-        ComposioConnectionForm(controller: environment.makeComposioWorkspace(), initialServiceID: initialServiceID,
-                               initialResource: initialResource, initialQuestion: initialQuestion)
+    var workspace: ComposioWorkspace? = nil
+    @ViewBuilder var body: some View {
+        if let workspace {
+            ComposioConnectionForm(controller: workspace, initialServiceID: initialServiceID,
+                                   initialResource: initialResource, initialQuestion: initialQuestion)
+        } else {
+            ComposioConnectionForm(controller: environment.makeComposioWorkspace(), initialServiceID: initialServiceID,
+                                   initialResource: initialResource, initialQuestion: initialQuestion)
+        }
     }
 }
 
 private struct ComposioConnectionForm: View {
+    @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.openURL) private var openURL
     @State var controller: ComposioWorkspace
     let initialServiceID: String?
     @State private var didStartSuggestedConnection = false
+    @State private var openedAuthorizationAttempt: String?
     @State private var address = ""
     @State private var token = ""
     @State private var code = ""
@@ -178,8 +193,22 @@ private struct ComposioConnectionForm: View {
                         .frame(minHeight: SuzzmeTheme.Layout.touchTarget)
                 }
             }
+            if let initialServiceID, controller.configured, !controller.isWorking,
+               !controller.services.contains(where: { $0.id == initialServiceID }),
+               !controller.accounts.contains(where: { $0.service == initialServiceID && $0.isActive }) {
+                Section("Setup required") {
+                    Text("\(serviceTitle(for: initialServiceID)) is not enabled on this connector server. The server owner must add its reviewed Composio authorization configuration before Suzzme can start sign-in.")
+                        .font(.footnote).foregroundStyle(SuzzmeTheme.textSecondary)
+                }
+            }
             if let pending = controller.pending {
                 Section("Confirm \(controller.pendingService ?? "account")") {
+                    if pending.supportsStatus == true {
+                        Button("Check Sign-in") { controller.checkConnection() }
+                            .disabled(controller.isWorking).frame(minHeight: SuzzmeTheme.Layout.touchTarget)
+                        Text("After signing in, return here to verify the account. Some providers also require the confirmation code below.")
+                            .font(.footnote).foregroundStyle(SuzzmeTheme.textSecondary)
+                    }
                     Link("Open Secure Sign-in", destination: pending.url).frame(minHeight: SuzzmeTheme.Layout.touchTarget)
                     Text("Only confirm if you started this connection. After signing in, copy the code from your connector’s confirmation page.")
                         .font(.footnote).foregroundStyle(SuzzmeTheme.textSecondary)
@@ -190,12 +219,7 @@ private struct ComposioConnectionForm: View {
                         .frame(minHeight: SuzzmeTheme.Layout.touchTarget)
                 }
             }
-            if controller.accounts.contains(where: { $0.service == "linkedin" }) {
-                Section("Legacy LinkedIn authorization") {
-                    Text("LinkedIn account reads are disabled. Revoke any earlier authorization in LinkedIn and your connector server. Removing this device’s setup does not revoke provider access.")
-                        .font(.footnote).foregroundStyle(SuzzmeTheme.textSecondary)
-                }
-            }
+
             if !readableAccounts.isEmpty {
                 Section("Ask about a connected source") {
                     Picker("Account", selection: $selectedAccount) {
@@ -205,7 +229,7 @@ private struct ComposioConnectionForm: View {
                         }
                     }.disabled(controller.isWorking)
                     if selected?.service == "github" {
-                        TextField("Exact GitHub issue URL", text: $resource, axis: .vertical).lineLimit(2...3)
+                        TextField("GitHub issue or repository URL", text: $resource, axis: .vertical).lineLimit(2...3)
                             .disabled(controller.isWorking)
                     } else if selected?.service == "slack" {
                         TextField("Slack channel message link", text: $resource, axis: .vertical).lineLimit(2...3)
@@ -217,19 +241,26 @@ private struct ComposioConnectionForm: View {
                             .disabled(controller.isWorking).accessibilityIdentifier("suzzme-composio-notion-source")
                         Text("Use a notion.so or workspace.notion.site page link containing its page ID. Remove query parameters and fragments. Reads top-level text only; nested content, files and database content are excluded.")
                             .font(.footnote).foregroundStyle(SuzzmeTheme.textSecondary)
-
+                    } else if selected?.service == "linkedin" {
+                        Text("Reads only your own basic LinkedIn profile through the granted OpenID profile scope. Feed, inbox, messages, contacts, and publishing are unavailable.")
+                            .font(.footnote).foregroundStyle(SuzzmeTheme.textSecondary)
+                    } else if selected?.service == "googlecalendar" {
+                        Text("Reads only the primary calendar’s events within the next 48 hours. Event titles and times are sent through Composio; attendees, descriptions, locations, and attachments are excluded.")
+                            .font(.footnote).foregroundStyle(SuzzmeTheme.textSecondary)
                     }
                     TextField("Your question", text: $question, axis: .vertical).lineLimit(2...4)
                         .disabled(controller.isWorking).accessibilityIdentifier("suzzme-composio-question")
                     Text("\(question.count) of 700 characters").font(.caption).foregroundStyle(SuzzmeTheme.textSecondary)
                     Button("Read Source and Ask Suzzme") {
                         guard let selected else { return }
-                        controller.ask(account: selected, resource: resource, question: question)
+                        let source = selected.service == "linkedin" ? "profile"
+                            : selected.service == "googlecalendar" ? ComposioSummaryPolicy.googleCalendarResource : resource
+                        controller.ask(account: selected, resource: source, question: question)
                     }.keyboardShortcut(.return, modifiers: .command)
                         .disabled(controller.isWorking || selected == nil || question.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || question.count > 700)
                         .frame(minHeight: SuzzmeTheme.Layout.touchTarget)
                 }
-                if let selected {
+                if let selected, selected.service != "linkedin" {
                     Section("Daily Summary") {
                         if ["gmail", "outlook"].contains(selected.service) {
                             Text("Include recent inbox previews from the last 24 hours in scheduled on-device summaries. Up to 20 messages per refresh; full threads and attachments are excluded. More messages may exist.")
@@ -237,8 +268,17 @@ private struct ComposioConnectionForm: View {
                                 let url = selected.service == "gmail" ? "https://mail.google.com/mail/u/0/" : "https://outlook.office.com/mail/"
                                 controller.setSummaryResources(account: selected, urls: [url])
                             }.disabled(controller.isWorking)
+                        } else if selected.service == "googlecalendar" {
+                            Text("Include event titles and times from the primary calendar within the next 48 hours. Other event details are excluded.")
+                            Button("Include Primary Calendar in Daily Summary") {
+                                controller.setSummaryResources(account: selected, urls: [ComposioSummaryPolicy.googleCalendarResource])
+                            }.disabled(controller.isWorking)
+                        } else if selected.service == "github" {
+                            Text("For daily commits and pull requests, select the repository root URL, such as https://github.com/owner/repo. Suzzme reads today’s activity, keeps bounded titles and status locally, and adds a direct GitHub link to each summary item. Issue URLs still read one issue.")
                         }
-                        Text("Choose up to four exact \(selected.serviceTitle) links for this account, with eight selected links across Composio accounts. Suzzme checks only these links when summaries refresh. It keeps titles, status, and short on-device summaries; source excerpts aren’t stored.")
+                        Text(selected.service == "github"
+                            ? "Choose up to four exact GitHub links for this account, with eight selected links across Composio accounts. Suzzme checks only these links when summaries refresh. Activity titles and status are stored on this device; raw provider responses are not."
+                            : "Choose up to four exact \(selected.serviceTitle) links for this account, with eight selected links across Composio accounts. Suzzme checks only these links when summaries refresh. It keeps titles, status, and short on-device summaries; source excerpts aren’t stored.")
                             .font(.footnote).foregroundStyle(SuzzmeTheme.textSecondary)
                         Text(summarySelectionStatus)
                             .font(.caption).foregroundStyle(SuzzmeTheme.textSecondary)
@@ -285,7 +325,7 @@ private struct ComposioConnectionForm: View {
                 }
             }
             Section {
-                Text("This connector reads GitHub issues, selected Slack channel messages and selected Notion page excerpts. WhatsApp uses the separate local Mac source in Sources. LinkedIn account reads are unavailable. Nothing is sent, published or automatically added to memory.")
+                Text("This connector reads selected GitHub issues or a repository’s daily commits and pull requests, your own basic LinkedIn profile, selected Slack channel messages, selected Notion page excerpts, and configured inbox previews. LinkedIn feed, inbox, messages, contacts, and publishing are unavailable. WhatsApp uses the separate local Mac source in Sources. Nothing is sent, published or automatically added to memory.")
                     .font(.footnote).foregroundStyle(SuzzmeTheme.textSecondary)
                 if controller.configured {
                     Button("Remove Setup from This Device…", role: .destructive) { showsForget = true }
@@ -294,6 +334,7 @@ private struct ComposioConnectionForm: View {
             }
         }
         .formStyle(.grouped).navigationTitle("Connected apps")
+        .onChange(of: scenePhase) { _, phase in if phase == .active { controller.checkConnection() } }
         .fileImporter(isPresented: $showsSetupImport, allowedContentTypes: [.json]) { result in
             guard case .success(let url) = result else { return }
             let scoped = url.startAccessingSecurityScopedResource()
@@ -315,8 +356,11 @@ private struct ComposioConnectionForm: View {
         .onChange(of: controller.services.map(\.id)) { _, _ in startSuggestedConnectionIfReady() }
         .onChange(of: controller.accounts.map(\.id)) { _, _ in startSuggestedConnectionIfReady() }
         .onChange(of: controller.isWorking) { _, working in if !working { startSuggestedConnectionIfReady() } }
+        .onChange(of: controller.pending?.attempt) { _, _ in openPendingAuthorizationIfNeeded() }
         .onChange(of: selectedAccount) { _, accountID in
-            controller.invalidate(); resource = ""
+            controller.invalidate()
+            resource = controller.accounts.first(where: { $0.id == accountID })?.service == "googlecalendar"
+                ? ComposioSummaryPolicy.googleCalendarResource : ""
             summaryResourcesText = controller.summaryResources(for: accountID).joined(separator: "\n")
         }
         .onChange(of: resource) { controller.invalidate() }
@@ -333,5 +377,24 @@ private struct ComposioConnectionForm: View {
               let service = controller.services.first(where: { $0.id == initialServiceID }) else { return }
         didStartSuggestedConnection = true
         controller.connect(service)
+    }
+
+    private func openPendingAuthorizationIfNeeded() {
+        guard let pending = controller.pending, openedAuthorizationAttempt != pending.attempt else { return }
+        openedAuthorizationAttempt = pending.attempt
+        openURL(pending.url)
+    }
+
+    private func serviceTitle(for id: String) -> String {
+        switch id {
+        case "github": "GitHub"
+        case "linkedin": "LinkedIn"
+        case "slack": "Slack"
+        case "notion": "Notion"
+        case "gmail": "Gmail"
+        case "googlecalendar": "Google Calendar"
+        case "outlook": "Outlook"
+        default: id.capitalized
+        }
     }
 }

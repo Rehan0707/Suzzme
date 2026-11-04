@@ -2,7 +2,7 @@
 
 Step 14 implements a Chrome Manifest V3 extension, compiled Swift Native Messaging host, signed-peer XPC broker and app-owned pairing UI. Chrome is the supported target. Safari requires a separate Safari Web Extension/native-app target and is unavailable here. Chromium installations are not accepted by the installer in this pass.
 
-The Chrome extension supports explicit requests for GitHub, LinkedIn, Notion, and Slack. Optional automatic tab prompts are off by default. When enabled from the extension popup, Chrome asks for host access only to those supported HTTPS sites; tab activation is checked by hostname, and only the service ID (or canonical GitHub repository slug) crosses the authenticated native bridge. Query strings, fragments, page content, provider accounts, tokens, model requests, writes, and authorization grants are excluded. The extension rechecks active-tab identity, ignores incognito/loading tabs, and invalidates on navigation. General page/selection sharing remains disabled. Safari Web Extension pairing is not implemented. The separate native URL-only Share extension for iOS/macOS is described in [SHARE_HANDOFF.md](../SHARE_HANDOFF.md); it requires owner signing/App Group setup and explicit URL review.
+The Chrome extension supports explicit requests for Gmail, Outlook, WhatsApp, GitHub, LinkedIn, Notion, and Slack. Optional automatic tab prompts are off by default. When enabled from the extension popup, Chrome asks for host access only to those supported HTTPS sites; tab activation is checked by hostname, and only the service ID (or canonical GitHub repository slug) crosses the authenticated native bridge. Query strings, fragments, page content, provider accounts, tokens, model requests, writes, and authorization grants are excluded. The extension rechecks active-tab identity, ignores incognito/loading tabs, and invalidates on navigation. General page/selection sharing remains disabled. Safari Web Extension pairing is not implemented. The separate native URL-only Share extension for iOS/macOS is described in [SHARE_HANDOFF.md](../SHARE_HANDOFF.md); it requires owner signing/App Group setup and explicit URL review.
 
 ## Build and configure
 
@@ -27,7 +27,7 @@ The generator verifies the app and both nested signatures and emits an exact `al
 3. Copy the one-use 32-byte code only into that extension's pairing form. Never into a URL, terminal or chat.
 4. The app validates approval, extension identity, expiry and five-attempt bound. Pairing records live atomically in non-syncing, unlocked-device Keychain storage. Chrome's key is in trusted extension-local storage, never page/content-script storage.
 5. Either enable **Automatic tab prompts** and grant the supported-site permissions in Chrome, or open the extension on a supported tab and request the connection manually. The native handoff carries the app name or a canonical GitHub repository slug only. A one-use server challenge expires after eight seconds; both sides authenticate literal payload bytes with HMAC-SHA256. Request IDs, task ownership, 30-second observation age, context tombstones and frame/schema limits are enforced.
-6. Existing Presence shows No / Not now / Yes. Yes opens that service’s connection setup only. Provider sign-in and account access remain separate and require the service’s supported authorization flow.
+6. Existing Presence shows an app logo, supported-use hints, and No / Not now / Connect. Connect opens that service’s connection setup only. Provider sign-in and account access remain separate and require the service’s supported authorization flow.
 7. Revoke all pairings in Suzzme to delete the transport keys, close the old listener epoch and retire its pending request. Forget in Chrome removes only that browser's key. Restart drops challenges/leases; approved pairings remain in Keychain.
 
 ## Native facilities and boundaries
@@ -43,3 +43,9 @@ Official platform references reviewed: [Chrome Native Messaging](https://develop
 ## Validation and acceptance
 
 `node BrowserExtension/Tests/protocol-check.mjs`, `node BrowserExtension/Tests/github-connection-check.mjs`, `zsh Validation/browser-bridge-check.sh`, and existing Swift handoff/controller checks cover deterministic security and UI ownership. Real extension → signed host → signed broker → app → Presence → setup acceptance remains **PENDING** until genuine distribution configuration and human installation are available. iOS builds the app and its native URL-only Share extension. Signed, installed Share-menu/App Group acceptance remains pending separately from Chrome transport. Compilation, synthetic HMAC checks and code-requirement parsing do not prove installed IPC acceptance.
+
+## Notch connection presentation — 4 November 2026
+
+The app-owned notch panel shows the detected app logo, supported read suggestions and explicit No / Not now / Connect actions. Declines and snoozes use the existing handoff cooldowns. Successful OAuth completion followed by a second active-account check produces a 12-second connected notice. Mere browser redirects and cached account records do not produce this notice. Summary selection remains separate.
+
+`node BrowserExtension/Tests/integration-connection-check.mjs` validates all discovery domains, spoofed hosts, private/loading tabs and Outlook alias permission coverage. The native render harness now exports Gmail, Slack and GitHub light/dark/accessibility and notch/fallback samples. These samples do not prove installed browser pairing.

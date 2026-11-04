@@ -232,8 +232,14 @@ private struct BriefingItemView: View {
                         Text(ProactiveDatePresentation.label(time, isAllDay: item.isAllDay == true))
                             .font(.subheadline.weight(.medium))
                     }
-                    Text(item.summary).font(.headline)
+                    Text(ComposioGitHubDailyActivity.displayTitle(item.summary)).font(.headline)
                         .fixedSize(horizontal: false, vertical: true)
+                    if let sourceLink = ComposioGitHubDailyActivity.linkURL(in: item.summary) {
+                        Link(destination: sourceLink) {
+                            Label("Open on GitHub", systemImage: "arrow.up.right.square")
+                                .font(.footnote)
+                        }
+                    }
                     Text(item.whyRelevant)
                         .font(.subheadline)
                         .foregroundStyle(SuzzmeTheme.textSecondary)

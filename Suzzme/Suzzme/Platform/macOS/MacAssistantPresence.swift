@@ -21,10 +21,88 @@ struct MacBrowserConnectionRequest: Equatable, Sendable {
     let repository: String?
     var id = UUID()
     var alreadyAllowed = false
+    var isConnected = false
     var serviceName: String { IntegrationDescriptor.catalog.first(where: { $0.id == service })?.displayName ?? service.rawValue.capitalized }
 }
 
 typealias MacGitHubConnectionRequest = MacBrowserConnectionRequest
+
+/// A connection invitation is metadata-only. The setup screen owns OAuth and consent.
+struct MacBrowserConnectionCard: View {
+    let request: MacBrowserConnectionRequest
+    var onDecision: ((MacGitHubConnectionDecision) -> Void)?
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    private var hints: [String] {
+        switch request.service {
+        case .gmail, .outlook: ["Summarize recent inbox previews", "Include in Daily Summary"]
+        case .github: ["Read a selected issue", "Choose summary resources"]
+        case .notion: ["Understand a selected page", "Choose summary resources"]
+        case .slack: ["Read a selected message", "Choose summary resources"]
+        case .whatsapp: ["Choose local chats", "Summarize on this Mac"]
+        case .linkedin: ["Read your own basic profile", "Use explicitly shared content"]
+        default: ["Review read-only access", "Choose what to connect"]
+        }
+    }
+    private var detail: String {
+        if request.isConnected { return "Account verified through Composio. Choose sources separately for your Daily Summary." }
+        if request.alreadyAllowed { return "This repository is already allowed by your recently verified connection." }
+        if request.service == .whatsapp { return "Open local chat setup. Personal WhatsApp uses local sharing rather than Composio Business." }
+        if request.service == .linkedin { return "Connect your own basic profile through Composio. Feed, inbox and posting are unavailable." }
+        if ![IntegrationID.github, .gmail, .outlook, .notion, .slack, .googleCalendar].contains(request.service) {
+            return "Detected an active browser tab. Review this app’s supported setup and read permissions."
+        }
+        return "Detected an active browser tab. Review Composio sign-in before granting access."
+    }
+    var body: some View {
+        VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.small) {
+            HStack(alignment: .center, spacing: SuzzmeTheme.Spacing.small) {
+                Image("Integration-" + request.service.rawValue.replacingOccurrences(of: "([a-z])([A-Z])", with: "$1-$2", options: .regularExpression).lowercased())
+                    .resizable().scaledToFit()
+                    .frame(width: SuzzmeTheme.Spacing.extraLarge, height: SuzzmeTheme.Spacing.extraLarge)
+                    .accessibilityHidden(true)
+                VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.xxs) {
+                    Text(request.isConnected ? "\(request.serviceName) connected" : request.alreadyAllowed ? "Repository already allowed" : "Connect \(request.serviceName) to Suzzme?")
+                        .font(.headline).foregroundStyle(.white).fixedSize(horizontal: false, vertical: true)
+                    Text(detail).font(.caption).foregroundStyle(.white.opacity(0.72))
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+            if !dynamicTypeSize.isAccessibilitySize {
+                HStack(spacing: SuzzmeTheme.Spacing.xs) {
+                    ForEach(hints, id: \.self) { hint in
+                        Text(hint).font(.caption).foregroundStyle(.white.opacity(0.85))
+                            .padding(.horizontal, SuzzmeTheme.Spacing.small)
+                            .padding(.vertical, SuzzmeTheme.Spacing.xxs)
+                            .background(.white.opacity(0.08), in: Capsule())
+                    }
+                }.accessibilityHidden(true)
+            }
+            HStack(spacing: SuzzmeTheme.Spacing.xs) {
+                if request.isConnected || request.alreadyAllowed {
+                    Button("Dismiss", systemImage: "xmark") { onDecision?(.later) }
+                        .accessibilityIdentifier("suzzme-github-request-already-allowed")
+                        .keyboardShortcut(.cancelAction)
+                } else {
+                    Button("No", systemImage: "xmark") { onDecision?(.decline) }
+                        .accessibilityIdentifier("suzzme-github-request-no")
+                    Button("Not now", systemImage: "clock") { onDecision?(.later) }
+                        .accessibilityIdentifier("suzzme-github-request-later")
+                        .keyboardShortcut(.cancelAction)
+                    Spacer(minLength: 0)
+                    Button("Connect", systemImage: "link") { onDecision?(.connect) }
+                        .buttonStyle(.borderedProminent)
+                        .tint(SuzzmeTheme.controlAccent)
+                        .accessibilityIdentifier("suzzme-github-request-yes")
+                        .keyboardShortcut(.defaultAction)
+                }
+            }
+            .buttonStyle(.bordered).tint(.white)
+            .controlSize(.large)
+            .frame(minHeight: SuzzmeTheme.Layout.touchTarget)
+        }
+    }
+}
 
 private final class MacAssistantPanel: NSPanel {
     var onEscape: (() -> Void)?
@@ -740,48 +818,9 @@ struct MacAssistantNotchSurface: View {
                     .padding(.bottom, 14)
                 }
                 if let connectionRequest {
-                    VStack(alignment: .leading, spacing: 8) {
-                        Label("\(connectionRequest.serviceName) connection request", systemImage: "puzzlepiece.extension")
-                            .font(.caption.weight(.semibold)).foregroundStyle(.white.opacity(0.82))
-                        Text(connectionRequest.alreadyAllowed ? "Repository already allowed" : "Connect \(connectionRequest.serviceName) to Suzzme?")
-                            .font(.headline).foregroundStyle(.white)
-                        Text(connectionRequest.alreadyAllowed
-                             ? "\(connectionRequest.repository ?? "This repository") is allowed by your recently verified GitHub connection. This request did not read repository content."
-                             : (connectionRequest.repository.map { "Detected \($0). Yes opens GitHub setup with this repository prefilled. Suzzme reads nothing until you choose access and verify it." }
-                                ?? "Detected an active \(connectionRequest.serviceName) tab. Yes opens its connection setup. Suzzme has not read the page or signed in.") )
-                            .font(.caption).foregroundStyle(.white.opacity(0.72))
-                            .fixedSize(horizontal: false, vertical: true)
-                        HStack(spacing: 8) {
-                            if connectionRequest.alreadyAllowed {
-                                Button { onConnectionDecision?(.later) } label: {
-                                    Text("Done").frame(minHeight: SuzzmeTheme.Layout.touchTarget)
-                                }
-                                    .accessibilityIdentifier("suzzme-github-request-already-allowed")
-                                    .keyboardShortcut(.defaultAction)
-                            } else {
-                            Button { onConnectionDecision?(.decline) } label: {
-                                Text("No").frame(minHeight: SuzzmeTheme.Layout.touchTarget)
-                            }
-                                .accessibilityIdentifier("suzzme-github-request-no")
-                            Button { onConnectionDecision?(.later) } label: {
-                                Text("Not now").frame(minHeight: SuzzmeTheme.Layout.touchTarget)
-                            }
-                                .accessibilityIdentifier("suzzme-github-request-later")
-                            Spacer(minLength: 0)
-                            Button { onConnectionDecision?(.connect) } label: {
-                                Text("Yes").frame(minHeight: SuzzmeTheme.Layout.touchTarget)
-                            }
-                                .buttonStyle(.borderedProminent)
-                                .tint(colors.primary)
-                                .accessibilityIdentifier("suzzme-github-request-yes")
-                                .keyboardShortcut(.defaultAction)
-                            }
-                        }
-                        .buttonStyle(.bordered)
-                        .tint(.white)
-                    }
-                    .padding(.horizontal, SuzzmeTheme.Spacing.medium)
-                    .padding(.bottom, SuzzmeTheme.Spacing.small)
+                    MacBrowserConnectionCard(request: connectionRequest, onDecision: onConnectionDecision)
+                        .padding(.horizontal, SuzzmeTheme.Spacing.medium)
+                        .padding(.bottom, SuzzmeTheme.Spacing.small)
                 }
             }
         }
@@ -1095,11 +1134,11 @@ enum MacAssistantSurfaceMetrics {
         let activeWidth = max(cutoutWidth + SuzzmeTheme.Spacing.large,
                               min(max(328, cutoutWidth + 148), 380.0))
         if hasDetail {
-            width = activeWidth
+            width = connectionRequest == nil ? activeWidth : max(activeWidth, 560)
             if showsBackground {
                 height = 296
             } else if connectionRequest != nil {
-                height = 292
+                height = 210
             } else if review != nil {
                 height = 248
             } else {

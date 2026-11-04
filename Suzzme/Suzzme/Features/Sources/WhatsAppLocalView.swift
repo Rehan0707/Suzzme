@@ -8,9 +8,22 @@ struct WhatsAppLocalView: View {
     @State private var confirmsDisconnect = false
     @State private var selection: Set<String> = []
     @State private var isSaving = false
+    @AppStorage("suzzme.whatsapp.web.enabled") private var webEnabled = false
 
     var body: some View {
         List {
+            Section("WhatsApp Web") {
+                Toggle("Allow selected browser chats", isOn: $webEnabled)
+                    .onChange(of: webEnabled) { _, enabled in
+                        Task {
+                            await WhatsAppWebAccess.shared.setEnabled(enabled)
+                            await environment.setInformationEnabled(.whatsapp, enabled: enabled)
+                        }
+                    }
+                Text("Pair the Suzzme browser extension, open a chat in WhatsApp Web, then choose Sync this chat. Only visible text is shared locally. Chrome-compatible browsers are supported; Safari requires the WhatsApp for Mac source below. No Composio WhatsApp Business account is needed.")
+                    .font(.caption)
+            }
+
             Section {
                 Text("Choose WhatsApp's shared folder on this Mac. Suzzme then reads only chats you select, summarizes recent messages with Apple Intelligence on this device, and keeps short summaries for your Daily Summary.")
                     .fixedSize(horizontal: false, vertical: true)

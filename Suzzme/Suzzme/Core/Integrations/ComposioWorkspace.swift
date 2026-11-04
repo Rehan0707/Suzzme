@@ -7,6 +7,7 @@ final class ComposioWorkspace {
     private let credentials = IntegrationCredentialStore()
     private let summarySelections: ComposioSummarySelectionStore
     private let onSummarySelectionsRetired: @MainActor (Set<String>) async throws -> Void
+    private let onAccountConnected: @MainActor (ComposioAccount) -> Void
     private var connector: ComposioConnector?
     private var work: Task<Void, Never>?
     private var owner: UUID?
@@ -26,8 +27,10 @@ final class ComposioWorkspace {
     init(
         pipeline: SuzzmeUnderstandingPipeline,
         summarySelections: ComposioSummarySelectionStore = ComposioSummarySelectionStore(),
-        onSummarySelectionsRetired: @escaping @MainActor (Set<String>) async throws -> Void = { _ in }
+        onSummarySelectionsRetired: @escaping @MainActor (Set<String>) async throws -> Void = { _ in },
+        onAccountConnected: @escaping @MainActor (ComposioAccount) -> Void = { _ in }
     ) {
+        self.onAccountConnected = onAccountConnected
         self.pipeline = pipeline
         self.summarySelections = summarySelections
         self.onSummarySelectionsRetired = onSummarySelectionsRetired
@@ -72,17 +75,37 @@ final class ComposioWorkspace {
             guard let connector = self.connector else { throw ComposioError.configuration }
             let pending = try await connector.connect(service: service.id); try Task.checkCancellation()
             self.pending = pending; self.pendingService = service.title
-            self.status = "Open the sign-in page, then enter its confirmation code here."
+            self.status = pending.supportsStatus == true
+                ? "Open the sign-in page, finish there, then return to check sign-in."
+                : "Open the sign-in page, then enter its confirmation code here."
+        }
+    }
+    func checkConnection() {
+        guard let pending, pending.supportsStatus == true, !isWorking else { return }
+        start("Checking sign-in…") {
+            guard let connector = self.connector else { throw ComposioError.configuration }
+            let result = try await connector.connectionStatus(attempt: pending.attempt)
+            try Task.checkCancellation()
+            guard result.state == "ready", let verified = result.account else {
+                self.status = "Sign-in is not complete. Finish in the browser, or enter its confirmation code below."
+                return
+            }
+            try await self.fetchAccounts()
+            guard self.accounts.contains(where: { $0.id == verified.id && $0.service == verified.service && $0.isActive }) else { throw ComposioError.expired }
+            self.pending = nil; self.pendingService = nil
+            self.onAccountConnected(verified)
         }
     }
     func complete(code: String) {
         guard let pending else { return }
         start("Confirming account access…") {
             guard let connector = self.connector else { throw ComposioError.configuration }
-            _ = try await connector.complete(attempt: pending.attempt, code: code.trimmingCharacters(in: .whitespacesAndNewlines))
+            let verified = try await connector.complete(attempt: pending.attempt, code: code.trimmingCharacters(in: .whitespacesAndNewlines))
             try Task.checkCancellation()
             self.pending = nil; self.pendingService = nil
             try await self.fetchAccounts()
+            guard verified.isActive, self.accounts.contains(where: { $0.id == verified.id && $0.service == verified.service && $0.isActive }) else { throw ComposioError.expired }
+            self.onAccountConnected(verified)
         }
     }
     func ask(account: ComposioAccount, resource: String, question: String) {

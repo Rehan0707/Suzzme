@@ -7,7 +7,7 @@ compatibility_flags = ["nodejs_compat"]
 [vars]
 SUZZME_CONNECTOR_URL = "https://suzzme-connector.suzzmeai.workers.dev"
 # Remains setup-required until reviewed provider auth configs and callback exist.
-SUZZME_AUTH_CONFIGS = '{"slack":"ac_ZFadHeq1Ix9k"}'
+SUZZME_AUTH_CONFIGS = '{"slack":"ac_ZFadHeq1Ix9k","gmail":"ac_AIWC_IrW5kYv"}'
 SUZZME_USER_ID = "suzzme-owner"
 SUZZME_CALLBACK_VERIFIER_CONFIGURED = "yes"
 

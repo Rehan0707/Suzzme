@@ -1,0 +1,11 @@
+# Browser connections and local daily summaries
+
+Gmail, Outlook and WhatsApp join the existing authenticated active-tab connection prompts. Detection sends service identity only; No / Not now / Yes remain the existing app-owned presence controls. Chrome-compatible extension only; the supplied Clicky source does not include the Composio behavior in the screenshots.
+
+Email uses Composio account authorization and fixed read-only inbox recipes. Configure `gmail` and/or `outlook` auth configuration IDs in the connector server's `SUZZME_AUTH_CONFIGS`, with Gmail readonly or Microsoft Mail.Read authorization. Deploy the updated connector, sign in through Sources → Composio, select the verified account, then select Include Recent Inbox in Daily Summary. Existing on-device grounded summarization and scheduled intake consume the result. Reads cover bounded previews from the last 24 hours, up to 20 messages, with explicit partial coverage. No full-history or attachment claim.
+
+Personal WhatsApp Web is not supported by Composio's Business toolkit. Enable Allow selected browser chats in WhatsApp settings, pair the signed browser bridge, open a chat, and use Sync this chat for one hour in the extension. An authenticated local bridge receives up to 20 rendered messages; no server or cloud model receives chat text. A one-minute refresh checks only the enabled active visible chat; switching chats pauses capture. Raw excerpts are memory-only, expire at the day boundary, and are processed by the existing on-device WhatsApp source. Reloading Suzzme requires a fresh capture. Browser DOM changes can require adapter updates. Safari uses the existing WhatsApp for Mac source.
+
+Connection and sync availability still depend on actual OAuth, host permissions, signed native bridge pairing and local model readiness. This implementation does not claim that accounts have been connected or that live production data has been received. Backend deployment and end-to-end device verification are pending.
+
+Validation: macOS Debug build passed (code signing disabled). Existing connector/MCP tests: 52 passed. Mail recipe tests: 2 passed. Browser service recognition and JavaScript syntax checks passed. Live OAuth, signed browser delivery and production message ingestion have not been verified.

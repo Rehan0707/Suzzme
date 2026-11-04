@@ -1,24 +1,15 @@
 // App identity is derived from HTTPS hostnames only; no page content is queried.
-const hosts = new Map([
-  ["mail.google.com", "gmail"],
-  ["outlook.office.com", "outlook"],
-  ["outlook.live.com", "outlook"],
-  ["web.whatsapp.com", "whatsapp"],
-  ["github.com", "github"],
-  ["linkedin.com", "linkedin"],
-  ["notion.so", "notion"],
-  ["slack.com", "slack"]
-]);
+import {appCatalog} from "./app-catalog.js";
+const hosts = new Map(appCatalog.map(entry => [entry.host, entry.service]));
 
 export const supportedIntegrationOrigins = [...hosts.keys()].flatMap(domain => [
   `https://${domain}/*`, `https://*.${domain}/*`
 ]);
 
 export function permissionPatternsForIntegration(service) {
-  for (const [domain, id] of hosts) {
-    if (id === service) return [`https://${domain}/*`, `https://*.${domain}/*`];
-  }
-  return [];
+  return appCatalog.filter(entry => entry.service === service).flatMap(({host: domain}) => [
+    `https://${domain}/*`, `https://*.${domain}/*`
+  ]);
 }
 
 export function integrationFromURL(raw) {
@@ -28,9 +19,8 @@ export function integrationFromURL(raw) {
     const url = new URL(raw);
     if (url.protocol !== "https:" || url.username || url.password || (url.port && url.port !== "443")) return undefined;
     const host = url.hostname.toLowerCase();
-    for (const [domain, service] of hosts) {
-      if (host === domain || host.endsWith(`.${domain}`)) return service;
-    }
+    return [...appCatalog].sort((a,b) => b.path.length - a.path.length).find(entry =>
+      (host === entry.host || host.endsWith(`.${entry.host}`)) && url.pathname.startsWith(entry.path))?.service;
   } catch { /* Unsupported browser pages have no integration suggestion. */ }
   return undefined;
 }

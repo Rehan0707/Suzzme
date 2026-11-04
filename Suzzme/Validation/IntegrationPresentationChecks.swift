@@ -6,6 +6,11 @@ import Foundation
         func expect(_ value: Bool, _ message: String) {
             precondition(value, message); passed += 1; print("PASS \(message)")
         }
+        let catalogNames = Set(IntegrationDirectoryItem.catalog.map(\.name))
+        expect(IntegrationDirectoryItem.catalog.count == catalogNames.count, "integration catalog has unique app names")
+        expect(IntegrationDirectoryItem.requestedCatalogNames.count == 64, "requested app set has 64 distinct names")
+        expect(IntegrationDirectoryItem.requestedCatalogNames.isSubset(of: catalogNames), "all 64 requested apps are present in the full catalog")
+        expect(IntegrationDirectoryItem.requestedCatalogCount == 64, "requested app count is derived from catalog contents")
         let github = IntegrationDescriptor.catalog.first { $0.id == .github }!
         let now = Date(timeIntervalSince1970: 1_800_000_000)
         func account(state: IntegrationConnectionState = .ready, verified: Date? = now,
@@ -50,7 +55,12 @@ import Foundation
         for verb in ["create", "delete", "publish", "send", "merge", "update", "edit", "close", "reopen", "write", "remember", "save"] {
             expect(IntegrationConnectionSuggestion.make(question: verb + " " + question, accounts: []) == nil, "\(verb) cannot become connection invitation")
         }
-        expect(IntegrationConnectionSuggestion.make(question: "Explain https://github.com/owner/repo/blob/main/Sources/Test.swift", accounts: []) != nil, "invitation does not pretend ambiguous file ref was retrieved")
+        let fileSuggestion = IntegrationConnectionSuggestion.make(question: "Explain https://github.com/owner/repo/blob/main/Sources/Test.swift", accounts: [])
+        expect(fileSuggestion?.repository == "owner/repo"
+            && fileSuggestion?.resourceURL == "https://github.com/owner/repo/blob/main/Sources/Test.swift",
+            "ambiguous file link offers setup without claiming it was retrieved")
+        let pullRequestSuggestion = IntegrationConnectionSuggestion.make(question: "Review https://github.com/owner/repo/pull/7", accounts: [])
+        expect(pullRequestSuggestion?.repository == "owner/repo", "explicit pull request offers scoped setup")
         print("Integration Presentation: \(passed) passed / 0 failed")
     }
 }

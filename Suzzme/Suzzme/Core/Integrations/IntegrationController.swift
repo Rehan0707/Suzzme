@@ -5,6 +5,26 @@ import Observation
 /// for the duration of connection and are never published as observable state.
 @MainActor @Observable
 final class IntegrationController {
+    struct BrowserConnectionNotice: Identifiable {
+        let id = UUID()
+        let service: IntegrationID
+    }
+    private(set) var browserConnectionNotice: BrowserConnectionNotice?
+    @ObservationIgnored private var browserNoticeTask: Task<Void, Never>?
+    func showVerifiedComposioConnection(service rawService: String, isActive: Bool) {
+        guard isActive, let service = IntegrationID(rawValue: rawService) else { return }
+        browserNoticeTask?.cancel()
+        let notice = BrowserConnectionNotice(service: service)
+        browserConnectionNotice = notice
+        browserNoticeTask = Task { @MainActor [weak self] in
+            do { try await Task.sleep(for: .seconds(12)) } catch { return }
+            self?.dismissBrowserConnectionNotice(id: notice.id)
+        }
+    }
+    func dismissBrowserConnectionNotice(id: UUID) {
+        guard browserConnectionNotice?.id == id else { return }
+        browserConnectionNotice = nil; browserNoticeTask?.cancel()
+    }
     let gateway: IntegrationGateway
     private(set) var accounts: [IntegrationAccount] = []
     private(set) var isBusy = false
@@ -16,7 +36,23 @@ final class IntegrationController {
     @ObservationIgnored private var browserRoutesReady = false
     @ObservationIgnored private var browserResolutionTask: Task<Void, Never>?
     @ObservationIgnored private var browserExpiryTask: Task<Void, Never>?
-    init(gateway: IntegrationGateway = IntegrationGateway()) { self.gateway = gateway }
+    @ObservationIgnored private let promptPreferences: UserDefaults?
+    private static let promptKey = "suzzme.browser.promptSuppressions.v1"
+    init(gateway: IntegrationGateway = IntegrationGateway(), promptPreferences: UserDefaults? = nil) {
+        self.gateway = gateway; self.promptPreferences = promptPreferences
+        let saved = promptPreferences?.dictionary(forKey: Self.promptKey) ?? [:]
+        let dates = saved.reduce(into: [IntegrationID: Date]()) { result, item in
+            guard let service = IntegrationID(rawValue: item.key), let date = item.value as? Date else { return }
+            result[service] = date
+        }
+        browserHandoff = BrowserIntegrationHandoff(suppressions: dates)
+    }
+    func resetBrowserSuggestions() {
+        browserResolutionTask?.cancel(); browserExpiryTask?.cancel()
+        browserHandoff = BrowserIntegrationHandoff()
+        promptPreferences?.removeObject(forKey: Self.promptKey)
+    }
+
 
     func receiveBrowserURL(_ url: URL) {
         guard browserHandoff.receive(url) else {
@@ -49,6 +85,7 @@ final class IntegrationController {
 
     func decideBrowserRequest(id: UUID, decision: BrowserIntegrationHandoff.Decision) {
         _ = browserHandoff.decide(id: id, decision: decision)
+        promptPreferences?.set(Dictionary(uniqueKeysWithValues: browserHandoff.suppressions.map { ($0.key.rawValue, $0.value) }), forKey: Self.promptKey)
         if browserHandoff.request == nil { browserExpiryTask?.cancel() }
     }
 

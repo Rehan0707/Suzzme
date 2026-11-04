@@ -42,11 +42,11 @@ Deploy with Wrangler from this folder only after the owner approves its deployme
 
 This is an owner-operated **single-user** connector bridge for Suzzme. It is not a public multi-tenant account service. It uses Node 24 built-ins with no package installation. AI generation remains in Apple Foundation Models on the device. Selected provider data passes through this server and Composio.
 
-Supported reads are an exact GitHub issue URL, one Slack channel message selected by permalink, and top-level text from one selected Notion page. LinkedIn account reads are disabled. The bridge exposes no generic tool runner, posting, messaging, deletion, browser-cookie extraction or personal WhatsApp Web access. It does not use an LLM. The existing direct integrations and Shared App Context continue independently.
+Supported reads are an exact GitHub issue URL, your own basic LinkedIn OpenID profile, one Slack channel message selected by permalink, and top-level text from one selected Notion page. LinkedIn access is profile-only; feed, inbox, messages, contacts, and publishing are unavailable. The bridge exposes no generic tool runner, posting, messaging, deletion, browser-cookie extraction or personal WhatsApp Web access. It does not use an LLM. The existing direct integrations and Shared App Context continue independently.
 
 ## Owner setup
 
-1. Create your own Composio project and OAuth auth configs for `github`, `slack` and/or `notion`. Review provider scopes before authorization. LinkedIn connect and read requests are rejected before contacting a provider. Use only explicitly shared text/screenshots in the app. Revoke legacy LinkedIn authorizations in the provider and connector dashboard. GitHub OAuth grants may be broader than the bridge's issue-only read policy. Prefer a dedicated test project/account and least available scopes.
+1. Create your own Composio project and OAuth auth configs for the providers you enable, including `linkedin` only if you intend to connect it. For LinkedIn, review the auth config and request only the `openid` and `profile` scopes; Suzzme reads only `/v2/userinfo` fields for the user's basic name. Feed, inbox, messages, contacts and publishing are not supported. Review every provider consent screen. GitHub OAuth grants may be broader than the bridge's issue-only read policy. Prefer a dedicated test project/account and least available scopes.
 2. Deploy this bridge on a host you control behind a TLS reverse proxy. Its public origin must have a valid HTTPS certificate, standard port 443 and no path prefix. Proxy to **127.0.0.1:7079**; never expose the loopback HTTP service directly. Forward `/v1/*` and `/oauth/verify`. Disable proxy access/body/query logging for OAuth and API paths: callback queries contain a temporary authentication secret. Add rate limits at the proxy; cap requests and do not cache responses.
 3. In Composio project settings, set the **OAuth callback verifier URL** to `https://YOUR-HOST/oauth/verify`. The bridge deliberately requires this step. It does not treat an ordinary `status=success` redirect as authorization. Set the confirmation environment flag only after configuring this project setting.
 4. Configure these environment variables in the server's secret manager/service environment. Never commit real values or paste them into chat:
@@ -88,9 +88,15 @@ Run `node --test server.test.mjs` for fictional upstream fixtures and a temporar
 
 The v3.1 REST API manages authorization and account validation. New native reads use hosted MCP sessions with deterministic Proxy Execute; the legacy REST read route remains for older clients. No retired `initiate()` flow or model-discovered unrestricted tools are used.
 
+## LinkedIn profile reads
+
+Add the LinkedIn auth-config ID to `SUZZME_AUTH_CONFIGS` to enable its one-click Composio sign-in. The native client only offers LinkedIn when the authenticated connector reports it as configured. The supported read is the user's own basic profile from `/v2/userinfo`; the server returns the name fields only and does not expose email, feed, inbox, messages, contacts, or publishing. The connector rejects every other LinkedIn resource. No access is granted by opening the sign-in link; the user must approve LinkedIn consent and finish Suzzme's verified confirmation flow.
+
+The Composio OAuth config must be registered and reviewed by the owner. This source change does not update a deployed Worker or establish live OAuth acceptance. Follow the setup checklist, enable only the desired profile scope, then deploy and test with the owner account.
+
 ## Slack message reads
 
-Enable the `slack` auth config in `SUZZME_AUTH_CONFIGS`; existing GitHub/LinkedIn-only configurations remain valid. Review Slack consent scopes and workspace approval requirements. Channel history and channel-type verification need the appropriate history/read permissions; this path does not require message-send, file-download or DM-history permissions. Managed OAuth grants may be broader than the implemented reads; use the least available scopes and follow workspace policy.
+Enable the `slack` auth config in `SUZZME_AUTH_CONFIGS`; existing GitHub- and LinkedIn-only configurations remain valid. Review Slack consent scopes and workspace approval requirements. Channel history and channel-type verification need the appropriate history/read permissions; this path does not require message-send, file-download or DM-history permissions. Managed OAuth grants may be broader than the implemented reads; use the least available scopes and follow workspace policy.
 
 In Suzzme, open the Slack catalog entry, review access and configure the connector. Select the Slack account, paste a top-level channel message permalink and ask a question. The bridge checks Slack's authenticated workspace URL and verifies channel type with `conversations.info`, then requests a one-message timestamp interval and verifies an exact timestamp match. It does not fall back to a neighboring message. A renamed workspace or alias must match the authenticated workspace origin; copy a fresh link if needed.
 
@@ -137,3 +143,11 @@ Dashboard inspection on 20 October 2026 found two-factor authentication enabled,
 [Render deployment instructions](RENDER-DEPLOYMENT.md) and `render.yaml` provide an explicit free-plan first deployment. Run `node prepare-render.mjs` to create the connector-only allowlisted bundle in `../Release/ConnectorServer-render/`; it excludes `.env.local` and all native app files. Nothing is uploaded by this command.
 
 The hosted entry point is `node hosted.mjs`, using Render's assigned port and TLS proxy. Local startup stays loopback-only. A new hosted service without complete configuration exposes GET `/healthz` as `setup-required` and rejects every other route with 503. This lets the owner obtain the HTTPS origin before configuring OAuth verification. With valid configuration, health becomes `ok`, while all account operations retain device authentication and ownership checks. Health is not live-account acceptance. Configuration failures never activate a connection or cause a cloud inference fallback.
+
+## Returning from sign-in (4 November 2026)
+
+`POST /v1/connect` optionally returns `supportsStatus: true` when Composio supplied a connected-account ID. The bridge pins that ID to the expiring connection attempt; the client never chooses it. The authenticated `POST /v1/connection-status` accepts only `{ "attempt": "…" }` and returns either `{ "state": "pending" }` or a verified active account with `state: "ready"`. Ownership, toolkit, reviewed auth config, private account and exact account ID must match. An arbitrary redirect does not complete sign-in. Ready checks are idempotent until the ten-minute attempt expiry, so a failed native account refresh can be retried.
+
+Suzzme checks once on returning to the active scene, or when **Check Sign-in** is pressed. It then refreshes accounts independently before displaying a connected notice. There is no background status polling. Older links without a pinned account still use the existing confirmation-code flow. Code-based completion also enforces the pinned account when one exists.
+
+The existing Cloudflare Worker was updated and its public health endpoint returned `ok`. This verifies deployment/configuration only; it does not prove a working provider authorization or mailbox read.

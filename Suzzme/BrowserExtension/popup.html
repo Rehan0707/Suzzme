@@ -9,11 +9,12 @@
 <body>
   <main>
     <h1>Connect apps with Suzzme</h1>
+    <section><h2>WhatsApp Web · local sync</h2><p>Enable WhatsApp Web in Suzzme first. Share only the open chat’s visible text for on-device summaries. No attachments or full history. Sync pauses when you switch chats and stops after one hour.</p><button id="whatsapp-start">Sync this chat for one hour</button><button id="whatsapp-stop">Stop chat sync</button></section>
     <section aria-labelledby="auto-detection-heading">
       <h2 id="auto-detection-heading">Automatic tab prompts</h2>
       <p id="auto-detection-status" role="status" aria-live="polite">Checking setting…</p>
       <button id="toggle-auto-detection" type="button">Enable automatic tab prompts</button>
-      <p class="detail">When enabled, Suzzme checks only the active HTTPS tab’s app name on LinkedIn, Notion, GitHub, or Slack. It never reads page content. You can turn this off here at any time.</p>
+      <p class="detail">When enabled, Suzzme checks only the active HTTPS tab’s app name on available integration websites, including Google services, project tools, email and chat. Detection never reads page content. You can turn this off here at any time.</p>
     </section>
     <section aria-labelledby="integration-heading">
       <h2 id="integration-heading">Connect the active app</h2>
@@ -33,7 +34,7 @@
       <button id="share-selection" type="button" disabled>Include selected text</button>
       <button id="share-page" type="button" disabled>Include visible page text</button>
     </div>
-    <p class="detail">No page text, messages or credentials are read.</p>
+    <p class="detail">Page content is read only through the separate WhatsApp Web opt-in above.</p>
     <p id="status" role="status" aria-live="polite">Checking browser pairing…</p>
     <details id="pairing-details">
       <summary>Browser pairing</summary>

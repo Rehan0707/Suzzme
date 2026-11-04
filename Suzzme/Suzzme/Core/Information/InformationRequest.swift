@@ -7,7 +7,7 @@ enum InformationRequest {
         let sourceTerms = ["calendar", "reminder", "gmail", "email", "mail", "message", "whatsapp", "chat",
                            "github", "notion", "linear", "slack", "local knowledge", "document", "notes",
                            "google drive", "google docs", "google sheets", "google tasks"]
-        let updateTerms = ["recent", "update", "changed", "change", "today"]
+        let updateTerms = ["recent", "update", "changed", "change"]
         let scopedUpdateRequest = sourceTerms.contains(where: text.contains) && updateTerms.contains(where: text.contains)
         let knownRequest = text.hasPrefix("what changed") || scopedUpdateRequest
             || ["do i have important emails", "do i have important emails?", "show selected gmail headers", "do i have unread emails", "do i have unread emails?"].contains(text)

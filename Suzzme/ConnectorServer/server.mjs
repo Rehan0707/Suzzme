@@ -3,17 +3,20 @@ import { Buffer } from 'node:buffer';
 import { randomBytes, timingSafeEqual } from 'node:crypto';
 import { pathToFileURL } from 'node:url';
 import { readMailbox } from './mail-read.mjs';
+import { readGoogleCalendar } from './calendar-read.mjs';
 import { readNotion } from './notion-read.mjs';
 import { handleMCP, supportsProtocol } from './mcp.mjs';
 import { createComposioMCP } from './composio-mcp.mjs';
+import { githubDailyActivityText, githubPullRequestParameters, githubQueryParameters, githubTodayWindow } from './github-activity.mjs';
 
 // Owner-operated, single-user bridge. Never embed COMPOSIO_API_KEY in an app.
 const origin = 'https://backend.composio.dev/api/v3.1';
 const services = Object.freeze({
   gmail: { title: 'Gmail', detail: 'Read recent inbox previews from the last 24 hours for on-device summaries.', readable: true },
+  googlecalendar: { title: 'Google Calendar', detail: 'Read primary-calendar event titles and times for the next 48 hours.', readable: true },
   outlook: { title: 'Outlook', detail: 'Read recent inbox previews from the last 24 hours for on-device summaries.', readable: true },
-  github: { title: 'GitHub', detail: 'Read one issue by its exact URL.', readable: true },
-  linkedin: { title: 'LinkedIn', detail: 'Unavailable. Use explicitly shared content in the app.', readable: false },
+  github: { title: 'GitHub', detail: 'Read a selected issue or today’s commits and pull requests from one selected repository.', readable: true },
+  linkedin: { title: 'LinkedIn', detail: 'Read your own basic profile only. Feed, inbox, messages and publishing are unavailable.', readable: true },
   slack: { title: 'Slack', detail: 'Read one channel message by its permalink. Replies and attachments are excluded.', readable: true },
   notion: { title: 'Notion', detail: 'Read top-level text from one selected page. Nested content and files are excluded.', readable: true },
 });
@@ -86,10 +89,13 @@ export function createBridge(config, fetcher = fetch, clock = Date.now) {
     const result = safeAccount(await api('/connected_accounts/' + encodeURIComponent(id)), service);
     requireValue(result.status === 'ACTIVE', 409, 'Reconnect this account before reading.'); return result;
   }
-  async function proxy(selected, endpoint, method = 'GET') {
+  async function proxy(selected, endpoint, method = 'GET', parameters = []) {
+    const providerParameters = [
+      ...parameters,
+      ...(selected.service === 'notion' ? [{ name: 'Notion-Version', value: '2026-03-11', in: 'header' }] : []),
+    ];
     if (selected.mcp) {
-      const response = await hostedMCPRead(selected, endpoint, method, selected.service === 'notion'
-        ? [{ name: 'Notion-Version', value: '2026-03-11', in: 'header' }] : []);
+      const response = await hostedMCPRead(selected, endpoint, method, providerParameters);
       requireValue(response.status !== 429 && response.data?.error !== 'ratelimited', 429,
         'The service rate limit was reached. Wait before trying again.');
       requireValue(response.status >= 200 && response.status < 300, 502, 'The provider refused this read. Check granted permissions.');
@@ -97,7 +103,7 @@ export function createBridge(config, fetcher = fetch, clock = Date.now) {
     }
     const response = await api('/tools/execute/proxy', { connected_account_id: selected.id,
       user_id: config.userID, endpoint, method, ...(method === 'POST' ? { body: {} } : {}),
-      ...(selected.service === 'notion' ? { parameters: [{ name: 'Notion-Version', value: '2026-03-11', in: 'header' }] } : {}) });
+      ...(providerParameters.length ? { parameters: providerParameters } : {}) });
     requireValue(Number(response.status) !== 429 && response.data?.error !== 'ratelimited', 429,
       'The service rate limit was reached. Wait before trying again.');
     requireValue(Number(response.status) >= 200 && Number(response.status) < 300
@@ -138,11 +144,10 @@ export function createBridge(config, fetcher = fetch, clock = Date.now) {
       requireValue(Array.isArray(response.items) && !response.next_cursor, 502, 'Too many accounts. Narrow this connector project.');
       const accounts = response.items.filter(a => Object.hasOwn(config.configs, a?.toolkit?.slug))
         .map(a => safeAccount(a, a.toolkit.slug));
-      return { services: Object.keys(config.configs).filter(id => id !== 'linkedin').map(id => ({ id, ...services[id] })), accounts };
+      return { services: Object.keys(config.configs).map(id => ({ id, ...services[id] })), accounts };
     }
     if (method === 'POST' && path === '/v1/connect') {
       exactKeys(body, ['service']); const service = body.service;
-      requireValue(service !== 'linkedin', 422, 'LinkedIn account access is unavailable. Share selected content in the app.');
       requireValue(Object.hasOwn(config.configs, service));
       requireValue(attempts.size < 8, 429, 'Finish the pending connection first.');
       const response = await api('/connected_accounts/link', { user_id: config.userID,
@@ -150,37 +155,73 @@ export function createBridge(config, fetcher = fetch, clock = Date.now) {
       const url = new URL(response.redirect_url);
       requireValue(url.protocol === 'https:' && url.hostname === 'connect.composio.dev'
         && !url.username && !url.password && (!url.port || url.port === '443'), 502, 'Unexpected authentication host.');
-      const attempt = randomBytes(24).toString('hex'); attempts.set(attempt, { service, expires: expires() });
-      return { attempt, url: url.href };
+      const attempt = randomBytes(24).toString('hex'); attempts.set(attempt, { service, accountID: validID(response.connected_account_id) ? response.connected_account_id : null, expires: expires() });
+      return { attempt, url: url.href, supportsStatus: validID(response.connected_account_id) };
+    }
+    if (method === 'POST' && path === '/v1/connection-status') {
+      exactKeys(body, ['attempt']); const pending = attempts.get(body.attempt);
+      requireValue(pending, 409, 'This connection attempt expired. Start again.');
+      requireValue(pending.accountID, 422, 'Enter the sign-in confirmation code to finish this connection.');
+      const raw = await api('/connected_accounts/' + encodeURIComponent(pending.accountID));
+      const selected = safeAccount(raw, pending.service);
+      requireValue(selected.id === pending.accountID, 403, 'The connected account does not match this attempt.');
+      if (selected.status !== 'ACTIVE') {
+        requireValue(['INITIATED', 'INITIALIZING'].includes(raw.status) && !raw.is_disabled, 409, 'This connection is no longer available. Connect again.');
+        return { state: 'pending' };
+      }
+      return { state: 'ready', account: selected };
     }
     if (method === 'POST' && path === '/v1/complete') {
       exactKeys(body, ['attempt', 'code']); const pending = attempts.get(body.attempt); const callback = codes.get(body.code);
       requireValue(pending && callback, 409, 'This connection code expired. Start again.');
       attempts.delete(body.attempt); codes.delete(body.code);
       const result = await api('/connected_accounts/complete_auth', { user_id: config.userID, session_uri: callback.uri });
-      requireValue(result.toolkit_slug === pending.service, 403, 'The connected app does not match this request.');
+      requireValue(result.toolkit_slug === pending.service && (!pending.accountID || result.connected_account_id === pending.accountID), 403, 'The connected app does not match this request.');
       return account(result.connected_account_id, pending.service);
     }
     if (method === 'POST' && path === '/v1/read') {
-      exactKeys(body, ['accountID', 'service', 'resource']);
-      requireValue(body.service !== 'linkedin', 422, 'LinkedIn account access is unavailable. Share selected content in the app.');
+      exactKeys(body, ['accountID', 'service', 'resource', 'now', 'timeZone']);
       requireValue(typeof body.resource === 'string' && body.resource.length <= 512
         && !body.resource.includes(config.apiKey) && !body.resource.includes(config.token), 422,
       'Choose a source link without credential material.');
       const selected = await account(body.accountID, body.service);
       selected.mcp = hostedMCP;
-      let endpoint; let source; let recipe; let slackTimestamp; let notionText;
+      requireValue((body.now === undefined && body.timeZone === undefined) || body.service === 'github',
+        400, 'Date and timezone context are supported only for GitHub activity reads.');
+      let endpoint; let source; let recipe; let slackTimestamp; let notionText; let githubText;
       if (['gmail', 'outlook'].includes(body.service)) {
         notionText = await readMailbox(body.service, body.resource, endpoint => proxy(selected, endpoint), requireValue, clock());
         source = body.resource; recipe = 'notion-page';
+      } else if (body.service === 'googlecalendar') {
+        notionText = await readGoogleCalendar(body.resource, endpoint => proxy(selected, endpoint), requireValue, clock());
+        source = body.resource; recipe = 'google-calendar';
       } else if (body.service === 'notion') {
         notionText = await readNotion(body.resource, endpoint => proxy(selected, endpoint), requireValue);
         source = body.resource; recipe = 'notion-page';
       } else if (body.service === 'github') {
         requireValue(typeof body.resource === 'string' && body.resource.length <= 512);
-        const match = /^https:\/\/github\.com\/([A-Za-z0-9_-]{1,39})\/([A-Za-z0-9_.-]{1,100})\/issues\/([1-9][0-9]{0,9})$/.exec(body.resource);
-        requireValue(match && !['.', '..'].includes(match[2]), 400, 'Enter an exact GitHub issue URL without a query or fragment.');
-        endpoint = `/repos/${match[1]}/${match[2]}/issues/${match[3]}`; source = body.resource; recipe = 'issue';
+        const repository = /^https:\/\/github\.com\/([A-Za-z0-9_-]{1,39})\/([A-Za-z0-9_.-]{1,100})$/.exec(body.resource);
+        const issue = /^https:\/\/github\.com\/([A-Za-z0-9_-]{1,39})\/([A-Za-z0-9_.-]{1,100})\/issues\/([1-9][0-9]{0,9})$/.exec(body.resource);
+        const validRepository = repository && !['.', '..'].includes(repository[2]);
+        const validIssue = issue && !['.', '..'].includes(issue[2]);
+        requireValue(validRepository || validIssue, 400,
+          'Enter a selected GitHub repository link or an exact issue URL without a query or fragment.');
+        source = body.resource;
+        if (validRepository) {
+          requireValue(typeof body.now === 'string' && typeof body.timeZone === 'string', 422,
+            'Refresh the GitHub activity selection with the device’s current date and timezone.');
+          const window = githubTodayWindow(body.now, body.timeZone, clock());
+          requireValue(window, 422, 'The GitHub activity date or timezone is invalid or stale.');
+          const slug = `${repository[1]}/${repository[2]}`;
+          const commitResult = await proxy(selected, `/repos/${slug}/commits`, 'GET', githubQueryParameters(window));
+          const pullResult = await proxy(selected, `/repos/${slug}/pulls`, 'GET', githubPullRequestParameters());
+          githubText = githubDailyActivityText({ owner: repository[1], repository: repository[2], window,
+            commits: commitResult, pullRequests: pullResult });
+          requireValue(typeof githubText === 'string', 502, 'GitHub returned an unexpected activity format.');
+          recipe = 'github-activity';
+        } else {
+          endpoint = `/repos/${issue[1]}/${issue[2]}/issues/${issue[3]}`; recipe = 'issue';
+        }
       } else if (body.service === 'slack') {
         requireValue(typeof body.resource === 'string' && body.resource.length <= 512);
         const match = /^https:\/\/([a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.slack\.com)\/archives\/(C[A-Z0-9]{8,31})\/p([1-9][0-9]{9})([0-9]{6})(?:\?[^#]+)?$/.exec(body.resource);
@@ -209,13 +250,16 @@ export function createBridge(config, fetcher = fetch, clock = Date.now) {
         endpoint = 'https://slack.com/api/conversations.history?' + query;
         source = body.resource; recipe = 'slack-message';
       } else {
-        requireValue(body.service === 'linkedin' && body.resource === '', 400, 'This read only supports your own LinkedIn profile.');
+        requireValue(body.service === 'linkedin' && body.resource === 'profile', 400, 'This read only supports your own LinkedIn profile.');
         endpoint = '/v2/userinfo'; source = 'LinkedIn · own basic profile'; recipe = 'profile';
       }
-      const data = recipe === 'notion-page' ? null : await proxy(selected, endpoint);
+      const data = ['notion-page', 'google-calendar', 'github-activity'].includes(recipe)
+        ? null : await proxy(selected, endpoint);
       let text;
-      if (recipe === 'notion-page') {
+      if (recipe === 'notion-page' || recipe === 'google-calendar') {
         text = notionText;
+      } else if (recipe === 'github-activity') {
+        text = githubText;
       } else if (recipe === 'slack-message') {
         requireValue(data.ok === true && Array.isArray(data.messages) && data.messages.length === 1,
           422, 'Slack could not return this single message. Check channel access and choose a top-level message.');

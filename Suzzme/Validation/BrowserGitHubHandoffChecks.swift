@@ -86,6 +86,17 @@ import Foundation
         check(handoff.takeSetup(now: now)?.repository == "owner/repo", "explicit setup URL remains setup-only")
         _ = handoff.receive(requestURL, now: now.addingTimeInterval(61))
         check(!handoff.receive(URL(string: "suzzme://browser/github?repository=bad")!, now: now.addingTimeInterval(61)) && handoff.request == nil, "invalid delivery clears pending request")
+        var suppressed = BrowserIntegrationHandoff()
+        _ = suppressed.receive(requestURL, now: now)
+        let suppressionID = suppressed.request!.id
+        suppressed.resolve(id: suppressionID, accounts: [], now: now)
+        _ = suppressed.decide(id: suppressionID, decision: .no, now: now)
+        var restored = BrowserIntegrationHandoff(suppressions: suppressed.suppressions, now: now.addingTimeInterval(60))
+        check(!restored.receive(requestURL, now: now.addingTimeInterval(60)), "No survives a restored app session")
+        restored = BrowserIntegrationHandoff(suppressions: suppressed.suppressions, now: now.addingTimeInterval(31 * 86400))
+        check(restored.receive(requestURL, now: now.addingTimeInterval(31 * 86400)), "expired restored No permits a new invitation")
+        restored = BrowserIntegrationHandoff(suppressions: [.github: now.addingTimeInterval(90 * 86400)], now: now)
+        check(restored.receive(requestURL, now: now), "malformed future preference cannot suppress forever")
         print("GitHub Browser Handoff Swift: \(passed) passed / 0 failed (no provider calls)")
     }
 }

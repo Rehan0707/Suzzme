@@ -653,20 +653,21 @@ actor ProactiveIntelligenceEngine {
             let formatter = DateFormatter(); formatter.dateStyle = .none; formatter.timeStyle = .short
             let dateFormatter = DateFormatter(); dateFormatter.dateStyle = .medium; dateFormatter.timeStyle = .none
             parts.append(contentsOf: items.prefix(5).map { item in
-                guard let time = item.effectiveTime else { return item.summary }
+                let summary = InformationSummaryPresentation.displayTitle(item.summary)
+                guard let time = item.effectiveTime else { return summary }
                 let isToday = Calendar.current.isDate(time, inSameDayAs: now)
                 switch item.kind {
                 case .schedule, .scheduleChange:
                     if item.isAllDay == true {
                         let day = isToday ? "Today" : "On \(dateFormatter.string(from: time))"
-                        return "\(day), \(item.summary) is an all-day event."
+                        return "\(day), \(summary) is an all-day event."
                     }
                     let day = isToday ? "At" : "On \(dateFormatter.string(from: time)), at"
-                    return "\(day) \(formatter.string(from: time)), \(item.summary)"
+                    return "\(day) \(formatter.string(from: time)), \(summary)"
                 case .deadline, .reminder, .commitment:
-                    return "By \(ProactiveDatePresentation.label(time, isAllDay: false, relativeTo: now)), \(item.summary)"
+                    return "By \(ProactiveDatePresentation.label(time, isAllDay: false, relativeTo: now)), \(summary)"
                 case .cancellation, .information:
-                    return item.summary
+                    return summary
                 }
             })
         }

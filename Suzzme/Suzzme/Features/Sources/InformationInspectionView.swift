@@ -68,7 +68,13 @@ struct InformationInspectionView: View {
                 VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.xs) {
                     Label(event.source.title, systemImage: symbol(for: event.source))
                         .font(.caption.weight(.semibold)).foregroundStyle(SuzzmeTheme.textSecondary)
-                    Text(event.summary).font(.headline)
+                    Text(ComposioGitHubDailyActivity.displayTitle(event.summary)).font(.headline)
+                    if let sourceLink = ComposioGitHubDailyActivity.linkURL(in: event.summary) {
+                        Link(destination: sourceLink) {
+                            Label("Open on GitHub", systemImage: "arrow.up.right.square")
+                                .font(.footnote)
+                        }
+                    }
                     Text("Observed \(event.observedAt.formatted(date: .abbreviated, time: .shortened))")
                         .font(.caption).foregroundStyle(SuzzmeTheme.textSecondary)
                     if let date = event.effectiveAt {

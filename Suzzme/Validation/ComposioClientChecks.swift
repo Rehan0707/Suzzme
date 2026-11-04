@@ -33,14 +33,16 @@ private final class ConnectorFixtureProtocol: URLProtocol, @unchecked Sendable {
                 if method == "initialize" {
                     result = ["protocolVersion": fault == "version" ? "unknown" : "2025-11-25", "capabilities": ["tools": [:]]]
                 } else if method == "tools/list" {
-                    let names = ["suzzme_read_github_issue", "suzzme_read_slack_message", "suzzme_read_notion_page"]
+                    let names = ["suzzme_read_github_issue", "suzzme_read_linkedin_profile", "suzzme_read_slack_message", "suzzme_read_notion_page"]
                     var listing: [String: Any] = ["tools": names.map { name in
                         ["name": fault == "unknown-tool" ? "COMPOSIO_MULTI_EXECUTE_TOOL" : name,
                          "annotations": ["readOnlyHint": fault != "writable", "destructiveHint": false],
                          "inputSchema": ["type": "object", "additionalProperties": fault == "schema",
                             "required": ["accountID", "resource"], "properties": [
                                 "accountID": ["type": "string", "minLength": 1, "maxLength": 160],
-                                "resource": ["type": "string", "minLength": 1, "maxLength": 512]]]] as [String: Any]
+                                "resource": ["type": "string", "minLength": 1, "maxLength": 512],
+                                "now": ["type": "string", "maxLength": 64],
+                                "timeZone": ["type": "string", "maxLength": 128]]]] as [String: Any]
                     }]
                     if fault == "pagination" { listing["nextCursor"] = "more" }
                     result = listing
@@ -82,17 +84,45 @@ private final class ConnectorFixtureProtocol: URLProtocol, @unchecked Sendable {
         try await rejects("reject short credential") { _ = try ComposioConfiguration(address: "https://connector.example.com", token: "short") }
         let config = try ComposioConfiguration(address: "https://connector.example.com/", token: token)
         try check(config.address == "https://connector.example.com", "canonical origin")
+        try check(ComposioSummaryPolicy.canonicalURL("https://github.com/Owner/Repo", service: "github") == "https://github.com/owner/repo"
+            && ComposioSummaryPolicy.isGitHubRepositoryResource("https://github.com/owner/repo")
+            && ComposioSummaryPolicy.githubRepositorySlug("https://github.com/owner/repo") == "owner/repo",
+            "GitHub repository URL is an explicit daily-activity scope")
         let settings = URLSessionConfiguration.ephemeral; settings.protocolClasses = [ConnectorFixtureProtocol.self]
         let session = URLSession(configuration: settings); defer { session.invalidateAndCancel() }
         let client = ComposioConnector(configuration: config, session: session)
-        let linkedIn = ComposioAccount(id: "legacy_linkedin", service: "linkedin", status: "ACTIVE")
-        try await rejects("LinkedIn connection blocked before network") { _ = try await client.connect(service: "linkedin") }
-        try await rejects("LinkedIn retrieval blocked before network") { _ = try await client.read(account: linkedIn, resource: "profile") }
-        try check(ConnectorFixtureProtocol.state.withLock { $0.requests.isEmpty }, "excluded provider sends no requests")
-        try ConnectorFixtureProtocol.configure(["services": [["id": "linkedin", "title": "LinkedIn", "detail": "Legacy profile", "readable": true]],
+        let linkedIn = ComposioAccount(id: "ca_linkedin", service: "linkedin", status: "ACTIVE")
+        try ConnectorFixtureProtocol.configure(["services": [["id": "linkedin", "title": "LinkedIn", "detail": "Basic profile only", "readable": true]],
             "accounts": [["id": linkedIn.id, "service": "linkedin", "status": "ACTIVE"]]])
-        let legacy = try await client.accounts()
-        try check(legacy.services.isEmpty && legacy.accounts.first?.id == linkedIn.id, "legacy account retained for revoke without offering connection")
+        let linkedInAccounts = try await client.accounts()
+        try check(linkedInAccounts.services.first?.id == "linkedin" && linkedInAccounts.accounts.first?.isActive == true,
+            "configured LinkedIn service and verified account are visible")
+        try ConnectorFixtureProtocol.configure(["attempt": String(repeating: "a", count: 48), "url": "https://connect.composio.dev/link/linkedin"])
+        try check(try await client.connect(service: "linkedin").url.host == "connect.composio.dev", "LinkedIn authorization link accepted")
+        let connectionAttempt = String(repeating: "a", count: 48)
+        try ConnectorFixtureProtocol.configure(["state": "pending"])
+        try check(try await client.connectionStatus(attempt: connectionAttempt).account == nil, "unfinished sign-in stays pending")
+        let statusRequest = ConnectorFixtureProtocol.state.withLock { $0.requests[0] }
+        let statusBody = try JSONSerialization.jsonObject(with: statusRequest.httpBody!) as! [String: String]
+        try check(statusRequest.url?.path == "/v1/connection-status" && statusBody == ["attempt": connectionAttempt],
+            "sign-in check sends only the server-issued attempt")
+        try ConnectorFixtureProtocol.configure(["state": "ready", "account": ["id": linkedIn.id, "service": "linkedin", "status": "ACTIVE"]])
+        try check(try await client.connectionStatus(attempt: connectionAttempt).account?.id == linkedIn.id, "active sign-in account is decoded")
+        for response: [String: Any] in [
+            ["state": "unknown"], ["state": "ready"],
+            ["state": "pending", "account": ["id": linkedIn.id, "service": "linkedin", "status": "ACTIVE"]],
+            ["state": "ready", "account": ["id": linkedIn.id, "service": "linkedin", "status": "EXPIRED"]],
+            ["state": "ready", "account": ["id": linkedIn.id, "service": "unknown", "status": "ACTIVE"]],
+            ["state": "ready", "account": ["id": "", "service": "linkedin", "status": "ACTIVE"]]
+        ] {
+            try ConnectorFixtureProtocol.configure(response)
+            try await rejects("invalid sign-in status cannot confirm a connection") { _ = try await client.connectionStatus(attempt: connectionAttempt) }
+        }
+        try await rejects("invalid sign-in attempt rejected before transport") { _ = try await client.connectionStatus(attempt: "invalid") }
+        try ConnectorFixtureProtocol.configure(["text": "Name: Fixture Person", "source": "LinkedIn · own basic profile",
+            "service": "linkedin", "accountID": linkedIn.id, "fetchedAt": "2026-10-19T16:00:00Z"])
+        try check(try await client.read(account: linkedIn, resource: "profile").text == "Name: Fixture Person",
+            "LinkedIn profile read is bound to its verified account")
         let account = ComposioAccount(id: "ca_fixture", service: "github", status: "ACTIVE")
         let resource = "https://github.com/owner/repo/issues/42"
         try ConnectorFixtureProtocol.configure(["services": [["id": "github", "title": "GitHub", "detail": "Issue reads", "readable": true]],
@@ -106,7 +136,7 @@ private final class ConnectorFixtureProtocol: URLProtocol, @unchecked Sendable {
         try ConnectorFixtureProtocol.configure(["services": [["id": "slack", "title": "Slack", "detail": "One channel message", "readable": true]],
             "accounts": [["id": "ca_slack", "service": "slack", "status": "ACTIVE"]]])
         let slackAccounts = try await client.accounts()
-        try check(slackAccounts.accounts.first?.serviceTitle == "Slack", "Slack is recognized without a LinkedIn label")
+        try check(slackAccounts.accounts.first?.serviceTitle == "Slack", "Slack account label is recognized")
         let slack = ComposioAccount(id: "ca_slack", service: "slack", status: "ACTIVE")
         let slackResource = "https://fixture.slack.com/archives/C0123456789/p1760000000000123"
         try ConnectorFixtureProtocol.configure(["text": "Meet in Studio Cedar.", "source": slackResource,
@@ -153,6 +183,30 @@ private final class ConnectorFixtureProtocol: URLProtocol, @unchecked Sendable {
         try check(callParams?["name"] as? String == "suzzme_read_github_issue"
             && callParams?["arguments"] as? [String: String] == ["accountID": account.id, "resource": resource],
             "MCP call contains only selected account and resource, never owner or project key")
+        let repositoryResource = "https://github.com/owner/repo"
+        let activityText = #"{"kind":"github-daily-activity","repository":"owner/repo","localDate":"2026-11-04","timeZone":"Asia/Kolkata","truncated":false,"commits":[{"sha":"abcdef0123456789abcdef0123456789abcdef01","message":"Fix daily summary","url":"https://github.com/owner/repo/commit/abcdef0","committedAt":"2026-11-04T00:30:00Z"}],"pullRequests":[{"number":27,"title":"Add daily activity","state":"closed","merged":true,"url":"https://github.com/owner/repo/pull/27","activityAt":"2026-11-04T11:00:00Z"}]}"#
+        let activity = ComposioGitHubDailyActivity.decode(activityText, selectedResource: repositoryResource)
+        try check(activity?.commits.count == 1 && activity?.pullRequests.first?.merged == true,
+            "bounded GitHub daily activity validates against the selected repository and local day")
+        try check(ComposioGitHubDailyActivity.decode(activityText, selectedResource: "https://github.com/other/repo") == nil,
+            "GitHub activity from another repository is rejected")
+        let commitTitle = "GitHub commit: Fix daily summary · https://github.com/owner/repo/commit/abcdef0"
+        try check(ComposioGitHubDailyActivity.linkURL(in: commitTitle)?.absoluteString == "https://github.com/owner/repo/commit/abcdef0"
+            && ComposioGitHubDailyActivity.displayTitle(commitTitle) == "GitHub commit: Fix daily summary",
+            "summary links stay direct while narration uses clean titles")
+        try ConnectorFixtureProtocol.configure(["text": activityText, "source": repositoryResource,
+            "service": "github", "accountID": account.id, "fetchedAt": "2026-11-04T12:00:00Z"])
+        try check(try await client.read(account: account, resource: repositoryResource).source == repositoryResource,
+            "selected GitHub repository is read through the safe Composio MCP tool")
+        let repositoryRPCs = ConnectorFixtureProtocol.state.withLock { $0.requests.compactMap(\.httpBody) }
+        let repositoryCall = try JSONSerialization.jsonObject(with: repositoryRPCs.last!) as! [String: Any]
+        let repositoryArguments = (repositoryCall["params"] as! [String: Any])["arguments"] as! [String: String]
+        let deviceDate = ISO8601DateFormatter()
+        deviceDate.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        try check(repositoryArguments["accountID"] == account.id && repositoryArguments["resource"] == repositoryResource
+            && repositoryArguments["timeZone"] == TimeZone.current.identifier
+            && deviceDate.date(from: repositoryArguments["now"] ?? "") != nil,
+            "repository read sends only selected scope with fresh device date and timezone")
         for fault in ["version", "id", "notification", "unknown-tool", "writable", "schema", "pagination", "content", "tool-error"] {
             try ConnectorFixtureProtocol.configure(excerpt)
             ConnectorFixtureProtocol.state.withLock { $0.fault = fault }
@@ -163,7 +217,7 @@ private final class ConnectorFixtureProtocol: URLProtocol, @unchecked Sendable {
                     "invalid MCP \(fault) stops before execution")
             }
         }
-        for (key, value) in [("accountID", "ca_foreign"), ("service", "linkedin"), ("source", "https://evil.example"), ("text", "api_key: secret"), ("text", token), ("text", String(repeating: "a", count: 4501)), ("fetchedAt", "not-a-date")] {
+        for (key, value) in [("accountID", "ca_foreign"), ("service", "outlook"), ("source", "https://evil.example"), ("text", "api_key: secret"), ("text", token), ("text", String(repeating: "a", count: 4501)), ("fetchedAt", "not-a-date")] {
             var invalid = excerpt; invalid[key] = value; try ConnectorFixtureProtocol.configure(invalid)
             try await rejects("reject invalid connected excerpt \(key)") { _ = try await client.read(account: account, resource: resource) }
         }

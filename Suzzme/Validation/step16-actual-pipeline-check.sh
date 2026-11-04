@@ -39,10 +39,13 @@ xcrun swiftc -swift-version 6 -parse-as-library -framework SwiftData -framework 
   Suzzme/Core/Actions/EventKitCapabilities.swift \
   Suzzme/Core/Actions/ActionMutation.swift \
   Suzzme/Core/Actions/SettingsCapability.swift \
-  Suzzme/DesignSystem/Theme/SuzzmeTheme.swift \
+  Suzzme/DesignSystem/Theme/SuzzmeTheme.swift Suzzme/DesignSystem/Components/SuzzmeMascotArtwork.swift \
   Suzzme/Core/Invocation/SuzzmePresenceTheme.swift \
   Suzzme/Core/Invocation/AssistantPresentation.swift \
   Suzzme/Core/Voice/VoiceTranscriptFinalizer.swift \
+  Suzzme/Core/Voice/SuzzmeAssemblyAITranscription.swift \
+  Suzzme/Core/Voice/SuzzmePCM16AudioConverter.swift \
+  Validation/VoiceTestCloudStub.swift \
   Suzzme/Core/Voice/VoiceSessionController.swift \
   Suzzme/Platform/Shared/ProactiveNotificationDelivery.swift \
   Validation/Step16ActualPipelineChecks.swift -o "$output/Step16ActualPipelineChecks"

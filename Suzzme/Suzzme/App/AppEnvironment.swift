@@ -69,6 +69,8 @@ final class AppEnvironment {
             onSummarySelectionsRetired: { [weak self] accountIDs in
                 guard let self else { throw CancellationError() }
                 try await self.composioSummarySelectionsRetired(accountIDs)
+            }, onAccountConnected: { [weak self] account in
+                self?.integrations.showVerifiedComposioConnection(service: account.service, isActive: account.isActive)
             })
     }
     private(set) var sourcePermissions: [SuzzmeContextSourceKind: SuzzmePermissionState] = [:]
@@ -163,7 +165,7 @@ final class AppEnvironment {
         let permissions = self.permissions
         let gmailAccount = self.gmailAccount
         let integrationGateway = IntegrationGateway(google: gmailAccount, customMCP: CustomMCPClient())
-        self.integrations = IntegrationController(gateway: integrationGateway)
+        self.integrations = IntegrationController(gateway: integrationGateway, promptPreferences: .standard)
         let watchedLinkStore = WatchedLinkStore(fileURL: watchedLinkURL)
         self.watchedLinkStore = watchedLinkStore
         let information = informationStore.map { store in
@@ -382,6 +384,7 @@ final class AppEnvironment {
         }
         do {
             try await information.setEnabled(source, enabled: enabled)
+            if !enabled, source == .whatsapp { try await information.removeObjects(source: .whatsapp, prefix: "web:") }
             if !enabled { await core.clearSession(); try await clearProactiveAndSharedContent(); proactiveSnapshot = nil }
             await inspectInformation()
             if enabled { await refreshInformation(force: true, source: source) }

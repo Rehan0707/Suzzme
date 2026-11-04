@@ -1,4 +1,15 @@
 import Foundation
+
+/// Presentation only: keep a bounded GitHub activity URL out of narration.
+/// Opening or reading a resource still requires the connector's URL policy.
+enum InformationSummaryPresentation {
+    static func displayTitle(_ title: String) -> String {
+        guard let suffix = title.range(
+            of: #" · https://github\.com/[A-Za-z0-9_-]{1,39}/[A-Za-z0-9_.-]{1,100}/(?:commit/[0-9a-f]{7}|pull/[1-9][0-9]{0,9})$"#,
+            options: .regularExpression) else { return title }
+        return String(title[..<suffix.lowerBound]).trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+}
 import CryptoKit
 
 enum InformationSourceID: String, Codable, CaseIterable, Sendable, Identifiable {

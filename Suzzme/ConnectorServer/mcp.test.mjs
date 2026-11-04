@@ -92,9 +92,40 @@ test('notifications never execute tools; invalid JSON-RPC envelopes fail without
   }
   assert.equal(calls.length, 0);
 });
-test('all configured providers have distinct read tools; excluded providers never appear', async () => {
+test('configured providers expose distinct reviewed read tools', async () => {
   const response = await handleMCP(rpc('tools/list'), ['github', 'slack', 'notion', 'linkedin'], () => assert.fail());
-  assert.deepEqual(response.result.tools.map(t => t.name), ['suzzme_read_github_issue', 'suzzme_read_slack_message', 'suzzme_read_notion_page']);
+  assert.deepEqual(response.result.tools.map(t => t.name), ['suzzme_read_github_issue', 'suzzme_read_linkedin_profile',
+    'suzzme_read_slack_message', 'suzzme_read_notion_page']);
+  const calendar = await handleMCP(rpc('tools/list'), ['googlecalendar'], () => assert.fail());
+  assert.deepEqual(calendar.result.tools.map(t => t.name), ['suzzme_read_google_calendar']);
+});
+test('LinkedIn profile tool binds its read to the selected account', async () => {
+  let received;
+  const response = await handleMCP(rpc('tools/call', { name: 'suzzme_read_linkedin_profile',
+    arguments: { accountID: 'ca_linkedin', resource: 'profile' } }), ['linkedin'], args => {
+    received = args; return { text: 'Name: Fixture', source: 'LinkedIn · own basic profile', service: 'linkedin',
+      accountID: 'ca_linkedin', fetchedAt: '2026-11-03T00:00:00Z' };
+  });
+  assert.equal(response.result.isError, false);
+  assert.deepEqual(received, { accountID: 'ca_linkedin', resource: 'profile', service: 'linkedin' });
+});
+test('GitHub activity tool forwards paired device date and timezone only with the selected repository', async () => {
+  let received;
+  const args = { accountID: 'ca_fixture', resource: 'https://github.com/owner/repo',
+    now: '2026-11-04T12:00:00.000Z', timeZone: 'Asia/Kolkata' };
+  const response = await handleMCP(rpc('tools/call', { name: 'suzzme_read_github_issue', arguments: args }), ['github'], value => {
+    received = value; return { text: '{}', source: args.resource, service: 'github', accountID: args.accountID,
+      fetchedAt: args.now };
+  });
+  assert.equal(response.result.isError, false);
+  assert.deepEqual(received, { ...args, service: 'github' });
+  for (const argumentsValue of [{ ...args, timeZone: undefined }, { ...args, now: undefined }]) {
+    const invalid = { ...argumentsValue };
+    for (const key of Object.keys(invalid)) if (invalid[key] === undefined) delete invalid[key];
+    const rejected = await handleMCP(rpc('tools/call', { name: 'suzzme_read_github_issue', arguments: invalid }), ['github'],
+      () => assert.fail('Invalid timezone context must not reach the read'));
+    assert.equal(rejected.error.code, -32602);
+  }
 });
 test('MCP HTTP requires device authentication, rejects browser origins and implements notification 202 and GET 405', async () => {
   const { bridge } = fixture(); const server = serverFor(bridge);

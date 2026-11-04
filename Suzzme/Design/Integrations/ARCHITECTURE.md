@@ -230,4 +230,12 @@ The synthetic SDK harness exercises the actual official Client JSON-RPC handshak
 
 A fixed Linear GraphQL read connector is now part of the implementation scope. It stores the personal API key in Keychain, sends it only to `https://api.linear.app/graphql`, and exposes fixed viewer and issue queries. Each account allowlists at most 32 issue identifiers; issue text is request-scoped and bounded. Linear comments, team-wide search, and all mutations remain unavailable. The connection form directs the user to make a key with Read permission and selected teams.
 
-This amendment records code scope only. Build validation, live Linear account verification, and runtime acceptance remain pending. Authenticated LinkedIn and Google Docs access remain unimplemented until their OAuth app settings and intended data scope are ready. WhatsApp chat access is out of scope.
+This amendment records code scope only. Build validation, live Linear account verification, and runtime acceptance remain pending. Google Docs access remains unimplemented until its OAuth app settings and intended data scope are ready. WhatsApp chat access is out of scope.
+
+## 3 November 2026 catalog and LinkedIn amendment
+
+The Sources → Integrations catalog now exposes the 64 named apps requested for the HeyClicky-style catalog, alongside existing Suzzme entries. Search, category grouping, brand marks, and truthful status labels remain in place. Catalog-only services do not gain fake authorization; Composio services appear as available only when the configured backend reports them, and ready active accounts are shown as connected.
+
+LinkedIn can use the existing Composio authorization lifecycle when an owner-configured `linkedin` auth config is present. The supported capability is the user's own basic OpenID profile only (`/v2/userinfo`, name fields); feed, inbox, messages, contacts, and publishing remain unavailable. The UI starts the backend-issued secure authorization link after the user selects LinkedIn, opens that link in the browser, and retains Suzzme's separate confirmation-code and verified-account flow. Profile reads are request-scoped; LinkedIn is excluded from Daily Summary.
+
+This source amendment does not change a deployed connector's environment or prove an OAuth config exists there. Enabling LinkedIn still requires the owner to confirm the Composio auth config and its `openid`/`profile` scopes, deploy the backend update, authorize the account, then perform live read/disconnect acceptance. Synthetic software tests are not provider acceptance.

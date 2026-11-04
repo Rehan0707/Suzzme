@@ -1,9 +1,9 @@
 import Foundation
 
 struct ComposioService: Decodable, Identifiable, Sendable {
-    static let connectableIDs: Set<String> = ["github", "slack", "notion", "gmail", "outlook"]
-    // Legacy account records remain visible for revocation. LinkedIn cannot connect or read.
-    static let supportedIDs: Set<String> = ["github", "linkedin", "slack", "notion", "gmail", "outlook"]
+    static let connectableIDs: Set<String> = ["github", "linkedin", "slack", "notion", "gmail", "outlook", "googlecalendar"]
+    // Keep every ID aligned with a server-owned, bounded read recipe.
+    static let supportedIDs: Set<String> = ["github", "linkedin", "slack", "notion", "gmail", "outlook", "googlecalendar"]
     let id: String
     let title: String
     let detail: String
@@ -17,6 +17,7 @@ struct ComposioAccount: Decodable, Identifiable, Sendable {
     var serviceTitle: String {
         switch service {
         case "gmail": "Gmail"
+        case "googlecalendar": "Google Calendar"
         case "outlook": "Outlook"
         case "github": "GitHub"
         case "linkedin": "LinkedIn"
@@ -33,6 +34,11 @@ struct ComposioAccounts: Decodable, Sendable {
 struct ComposioConnection: Decodable, Sendable {
     let attempt: String
     let url: URL
+    var supportsStatus: Bool? = nil
+}
+struct ComposioConnectionStatus: Decodable, Sendable {
+    let state: String
+    let account: ComposioAccount?
 }
 struct ComposioExcerpt: Decodable, Sendable {
     let text: String
@@ -81,6 +87,7 @@ struct ComposioSummarySelection: Codable, Sendable, Equatable {
 /// Explicit, device-only recurring-read scope. The accepted URLs deliberately
 /// match the bridge's fixed GitHub issue, Slack message, and Notion page recipes.
 enum ComposioSummaryPolicy {
+    static let googleCalendarResource = "https://calendar.google.com/calendar/u/0/r"
     static let maximumResourcesPerAccount = 4
     static let maximumSelectedResources = 8
     static let maximumAccounts = 16
@@ -94,6 +101,18 @@ enum ComposioSummaryPolicy {
         return urls.sorted()
     }
 
+    static func isGitHubRepositoryResource(_ value: String) -> Bool {
+        guard canonicalURL(value, service: "github") != nil,
+              let components = URLComponents(string: value),
+              components.percentEncodedPath.split(separator: "/").count == 2 else { return false }
+        return true
+    }
+
+    static func githubRepositorySlug(_ value: String) -> String? {
+        guard isGitHubRepositoryResource(value), let canonical = canonicalURL(value, service: "github") else { return nil }
+        return String(canonical.dropFirst("https://github.com/".count))
+    }
+
     static func canonicalURL(_ value: String, service: String) -> String? {
         let value = value.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !value.isEmpty, value.utf8.count <= 512,
@@ -104,12 +123,18 @@ enum ComposioSummaryPolicy {
 
         switch service {
         case "gmail": return value == "https://mail.google.com/mail/u/0/" ? value : nil
+        case "googlecalendar": return value == "https://calendar.google.com/calendar/u/0/r" ? value : nil
         case "outlook": return value == "https://outlook.office.com/mail/" ? value : nil
         case "github":
             guard components.host?.lowercased() == "github.com", components.query == nil,
-                  let match = value.firstMatch(#"^https://github\.com/([A-Za-z0-9_-]{1,39})/([A-Za-z0-9_.-]{1,100})/issues/([1-9][0-9]{0,9})$"#),
-                  match.count == 4, match[2] != ".", match[2] != ".." else { return nil }
-            return "https://github.com/\(match[1])/\(match[2])/issues/\(match[3])"
+                  let repository = value.firstMatch(#"^https://github\.com/([A-Za-z0-9_-]{1,39})/([A-Za-z0-9_.-]{1,100})$"#),
+                  repository.count == 3, repository[2] != ".", repository[2] != ".." else {
+                guard components.host?.lowercased() == "github.com", components.query == nil,
+                      let issue = value.firstMatch(#"^https://github\.com/([A-Za-z0-9_-]{1,39})/([A-Za-z0-9_.-]{1,100})/issues/([1-9][0-9]{0,9})$"#),
+                      issue.count == 4, issue[2] != ".", issue[2] != ".." else { return nil }
+                return "https://github.com/\(issue[1])/\(issue[2])/issues/\(issue[3])"
+            }
+            return "https://github.com/\(repository[1].lowercased())/\(repository[2].lowercased())"
 
         case "notion":
             guard components.query == nil,
@@ -141,6 +166,99 @@ enum ComposioSummaryPolicy {
         }
     }
 
+}
+
+/// Small, validated device-side projection returned for one explicitly selected
+/// repository. Raw commit messages never become persistent source records.
+struct ComposioGitHubDailyActivity: Decodable, Sendable {
+    struct Commit: Decodable, Sendable {
+        let sha: String
+        let message: String
+        let url: String
+        let committedAt: String
+    }
+    struct PullRequest: Decodable, Sendable {
+        let number: Int
+        let title: String
+        let state: String
+        let merged: Bool
+        let url: String
+        let activityAt: String
+    }
+    let kind: String
+    let repository: String
+    let localDate: String
+    let timeZone: String
+    let truncated: Bool
+    let commits: [Commit]
+    let pullRequests: [PullRequest]
+
+    static func decode(_ text: String, selectedResource: String) -> Self? {
+        guard text.utf8.count <= 4_500,
+              let value = try? JSONDecoder().decode(Self.self, from: Data(text.utf8)),
+              value.kind == "github-daily-activity",
+              let repository = ComposioSummaryPolicy.githubRepositorySlug(selectedResource),
+              value.repository.lowercased() == repository.lowercased(),
+              value.localDate.range(of: #"^[0-9]{4}-[0-9]{2}-[0-9]{2}$"#, options: .regularExpression) != nil,
+              let zone = TimeZone(identifier: value.timeZone), zone.identifier == value.timeZone,
+              value.commits.count <= 4, value.pullRequests.count <= 4 else { return nil }
+        var calendar = Calendar(identifier: .gregorian); calendar.timeZone = zone
+        let dateParts = value.localDate.split(separator: "-").compactMap { Int($0) }
+        guard dateParts.count == 3, let day = calendar.date(from: DateComponents(year: dateParts[0], month: dateParts[1], day: dateParts[2])) else { return nil }
+        let components = calendar.dateComponents([.year, .month, .day], from: day)
+        guard components.year == dateParts[0], components.month == dateParts[1], components.day == dateParts[2] else { return nil }
+        let formatter = DateFormatter(); formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.calendar = calendar; formatter.timeZone = zone; formatter.dateFormat = "yyyy-MM-dd"
+        func timestamp(_ raw: String) -> Date? {
+            let iso = ISO8601DateFormatter()
+            return iso.date(from: raw) ?? { iso.formatOptions = [.withInternetDateTime, .withFractionalSeconds]; return iso.date(from: raw) }()
+        }
+        func isToday(_ raw: String) -> Bool {
+            guard let date = timestamp(raw) else { return false }
+            return formatter.string(from: date) == value.localDate
+        }
+        let commitIDs = value.commits.map(\.sha)
+        let pullIDs = value.pullRequests.map(\.number)
+        guard Set(commitIDs).count == commitIDs.count, Set(pullIDs).count == pullIDs.count,
+              value.commits.allSatisfy({ commit in
+                  commit.sha.range(of: #"^[0-9a-fA-F]{40}$"#, options: .regularExpression) != nil
+                    && !commit.message.isEmpty && commit.message.utf8.count <= 240
+                    && !commit.message.contains("\0") && !commit.message.contains("\n") && !commit.message.contains("\r")
+                    && commit.url == "https://github.com/\(repository)/commit/\(commit.sha.prefix(7).lowercased())"
+                    && isToday(commit.committedAt)
+              }),
+              value.pullRequests.allSatisfy({ pull in
+                  pull.number > 0 && !pull.title.isEmpty && pull.title.utf8.count <= 240
+                    && !pull.title.contains("\0") && !pull.title.contains("\n") && !pull.title.contains("\r")
+                    && ["open", "closed"].contains(pull.state) && pull.url == "https://github.com/\(repository)/pull/\(pull.number)"
+                    && isToday(pull.activityAt)
+              }) else { return nil }
+        return value
+    }
+
+    static func linkURL(in title: String) -> URL? {
+        guard let match = title.firstMatch(#"(https://github\.com/[A-Za-z0-9_-]{1,39}/[A-Za-z0-9_.-]{1,100}/(?:commit/[0-9a-f]{7}|pull/[1-9][0-9]{0,9}))$"#),
+              match.count == 2,
+              let components = URLComponents(string: match[1]), components.host?.lowercased() == "github.com" else { return nil }
+        let path = components.percentEncodedPath.split(separator: "/").map(String.init)
+        guard path.count == 4,
+              ComposioSummaryPolicy.isGitHubRepositoryResource("https://github.com/\(path[0])/\(path[1])"),
+              path.dropFirst(2).joined(separator: "/").range(of: #"^(?:commit/[0-9a-f]{7}|pull/[1-9][0-9]{0,9})$"#, options: .regularExpression) != nil else { return nil }
+        return URL(string: match[1])
+    }
+
+    static func displayTitle(_ title: String) -> String {
+        guard let link = linkURL(in: title)?.absoluteString,
+              let suffix = title.range(of: " · \(link)", options: .backwards) else { return title }
+        return String(title[..<suffix.lowerBound]).trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    func timestamp(for raw: String) -> Date? {
+        let formatter = ISO8601DateFormatter()
+        if let date = formatter.date(from: raw) { return date }
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        return formatter.date(from: raw)
+    }
 }
 
 private extension String {
@@ -248,6 +366,17 @@ actor ComposioConnector {
               result.attempt.count == 48 else { throw ComposioError.invalidResponse }
         return result
     }
+    func connectionStatus(attempt: String) async throws -> ComposioConnectionStatus {
+        guard attempt.count == 48, attempt.allSatisfy(\.isHexDigit) else { throw ComposioError.invalidResponse }
+        let result: ComposioConnectionStatus = try await request("/v1/connection-status", body: ["attempt": attempt])
+        guard ["pending", "ready"].contains(result.state),
+              result.state == "ready" ? result.account?.isActive == true : result.account == nil else { throw ComposioError.invalidResponse }
+        if let account = result.account {
+            guard ComposioService.connectableIDs.contains(account.service), !account.id.isEmpty,
+                  account.id.count <= 160 else { throw ComposioError.invalidResponse }
+        }
+        return result
+    }
     func complete(attempt: String, code: String) async throws -> ComposioAccount {
         try await request("/v1/complete", body: ["attempt": attempt, "code": code])
     }
@@ -263,8 +392,14 @@ actor ComposioConnector {
               Set(discovery.tools.map(\.name)).count == discovery.tools.count,
               discovery.tools.allSatisfy({ Self.toolNames.values.contains($0.name) }),
               let tool = discovery.tools.first(where: { $0.name == name }), tool.isSupported else { throw ComposioError.invalidResponse }
-        let reply: MCPReadResult = try await rpc("tools/call", params: MCPCallParameters(name: name,
-            arguments: ["accountID": account.id, "resource": resource]))
+        var arguments = ["accountID": account.id, "resource": resource]
+        if account.service == "github", ComposioSummaryPolicy.isGitHubRepositoryResource(resource) {
+            let formatter = ISO8601DateFormatter()
+            formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+            arguments["now"] = formatter.string(from: .now)
+            arguments["timeZone"] = TimeZone.current.identifier
+        }
+        let reply: MCPReadResult = try await rpc("tools/call", params: MCPCallParameters(name: name, arguments: arguments))
         if reply.isError == true { throw Self.responseError(reply.structuredContent?.error?.status ?? 502) }
         guard let result = reply.structuredContent?.excerpt,
               reply.content.count == 1, reply.content[0].type == "text",
@@ -286,7 +421,7 @@ actor ComposioConnector {
         let formatter = ISO8601DateFormatter(); formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
         return formatter.date(from: value)
     }
-    private static let toolNames = ["gmail": "suzzme_read_gmail_inbox", "outlook": "suzzme_read_outlook_inbox", "github": "suzzme_read_github_issue", "slack": "suzzme_read_slack_message", "notion": "suzzme_read_notion_page"]
+    private static let toolNames = ["gmail": "suzzme_read_gmail_inbox", "googlecalendar": "suzzme_read_google_calendar", "outlook": "suzzme_read_outlook_inbox", "github": "suzzme_read_github_issue", "linkedin": "suzzme_read_linkedin_profile", "slack": "suzzme_read_slack_message", "notion": "suzzme_read_notion_page"]
     private struct MCPEmpty: Codable, Sendable { }
     private struct MCPRequest<Parameters: Encodable & Sendable>: Encodable, Sendable {
         let jsonrpc = "2.0"
@@ -328,10 +463,12 @@ actor ComposioConnector {
                 annotations?.readOnlyHint == true && annotations?.destructiveHint == false
                     && inputSchema.type == "object" && !inputSchema.additionalProperties
                     && inputSchema.required.count == 2 && Set(inputSchema.required) == ["accountID", "resource"]
-                    && Set(inputSchema.properties.keys) == ["accountID", "resource"]
-                    && inputSchema.properties.values.allSatisfy { $0.type == "string" && $0.minLength == 1 }
+                    && Set(inputSchema.properties.keys) == ["accountID", "resource", "now", "timeZone"]
+                    && ["accountID", "resource"].allSatisfy { inputSchema.properties[$0]?.type == "string" && inputSchema.properties[$0]?.minLength == 1 }
                     && inputSchema.properties["accountID"]?.maxLength == 160
                     && inputSchema.properties["resource"]?.maxLength == 512
+                    && inputSchema.properties["now"]?.type == "string" && inputSchema.properties["now"]?.maxLength == 64
+                    && inputSchema.properties["timeZone"]?.type == "string" && inputSchema.properties["timeZone"]?.maxLength == 128
             }
         }
         let tools: [Tool]

@@ -13,7 +13,7 @@ sources=( \
  Suzzme/Core/Actions/ActionPolicy.swift Suzzme/Core/Actions/ActionMutation.swift \
  Suzzme/Core/Connectors/AppleContextSources.swift Suzzme/Core/Connectors/AppleContextPermissions.swift \
  Suzzme/Core/Actions/EventKitCapabilities.swift Suzzme/Core/Actions/ActionExecutionCoordinator.swift Suzzme/Core/Actions/SettingsCapability.swift \
- Suzzme/DesignSystem/Theme/SuzzmeTheme.swift Suzzme/Core/Invocation/SuzzmePresenceTheme.swift Suzzme/Core/Invocation/AssistantPresentation.swift \
+ Suzzme/DesignSystem/Theme/SuzzmeTheme.swift Suzzme/DesignSystem/Components/SuzzmeMascotArtwork.swift Suzzme/Core/Invocation/SuzzmePresenceTheme.swift Suzzme/Core/Invocation/AssistantPresentation.swift \
  Suzzme/Core/Intelligence/IntelligenceCapability.swift Suzzme/Core/Context/ScreenContext.swift Suzzme/Core/Context/ScreenContextPolicy.swift \
  Suzzme/Core/Intelligence/IntelligenceService.swift Suzzme/Core/Intelligence/BasicIntelligenceService.swift \
  Suzzme/Core/Intelligence/SuzzmeUnderstandingPipeline.swift Suzzme/Core/Intelligence/IntelligenceRouter.swift \
@@ -28,6 +28,7 @@ sources=( \
  Suzzme/Core/Integrations/GoogleProviderScopeStore.swift Suzzme/Core/Integrations/ProviderReadClient.swift \
  Suzzme/Core/Integrations/IntegrationTransportSecurity.swift Suzzme/Core/Integrations/LinearIntegrationClient.swift \
  Suzzme/Core/Integrations/IntegrationInformationSource.swift \
+ Suzzme/Core/Integrations/ComposioConnector.swift \
  Validation/Step8StoreDouble.swift Validation/NotionCoreChecks.swift )
 # Compile an exact temporary snapshot so simultaneous app builds or unrelated
 # editor saves cannot alter compiler inputs halfway through this acceptance run.

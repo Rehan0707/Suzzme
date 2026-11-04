@@ -164,7 +164,7 @@ actor BrowserBridgeEngine {
                 chatID = chat; chatText = text; service = "whatsapp"
                 contexts[contextKey] = (version, task, now.addingTimeInterval(180))
             } else if method == "github.connection" || method == "integration.connection" {
-                let allowedServices: Set<String> = ["github", "linkedin", "notion", "slack", "gmail", "outlook", "whatsapp"]
+                let allowedServices = Set(BrowserAppCatalog.entries.map(\.service))
                 if method == "github.connection" {
                 guard keys(payload, ["contextID", "contextVersion", "capturedAt", "repository"]),
                       let time = payload["capturedAt"] as? Double, time.isFinite, time <= now.timeIntervalSince1970, now.timeIntervalSince1970 - time <= 30,

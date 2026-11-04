@@ -8,12 +8,14 @@ struct ProactivePreferences {
     var dailyBriefingEnabled = true
     var briefingHour = 0
     var briefingMinute = 0
+    var timeZoneIdentifier = TimeZone.current.identifier
 }
 
 @MainActor @Observable final class AppEnvironment {
     var proactivePreferences = ProactivePreferences()
     let scheduledBriefing: ScheduledBriefingEngine
     private(set) var loadReturned = false
+    private(set) var companionScheduleRefreshes = 0
     @ObservationIgnored private let load: @MainActor () async -> Void
 
     init(engine: ScheduledBriefingEngine, load: @escaping @MainActor () async -> Void = {}) {
@@ -25,6 +27,7 @@ struct ProactivePreferences {
         await load()
         loadReturned = true
     }
+    func refreshCompanionSchedule() async { companionScheduleRefreshes += 1 }
 }
 
 @MainActor private final class LifecycleClock {

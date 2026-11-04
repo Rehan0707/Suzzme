@@ -156,18 +156,24 @@ struct IntegrationSafetyChecks {
         check(IntegrationAccountPolicy.maximumAccounts == 16,
               "the accepted sixteen-account bound is retained")
         let directory = IntegrationDirectoryItem.catalog
-        check(directory.count == 121 && Set(directory.map(\.id)).count == directory.count,
-              "the complete directory has unique, stable entries")
-        check(Set(directory.filter { $0.availability == .connectable }.compactMap(\.integrationID)) == implemented.subtracting([.customMCP]),
-              "every connectable directory item has exactly one implemented read adapter")
+        check(directory.count == 132 && Set(directory.map(\.name)).count == directory.count
+              && Set(directory.map(\.id)).count == directory.count
+              && IntegrationDirectoryItem.requestedCatalogCount == 64,
+              "the complete directory includes 132 unique apps and all 64 requested entries")
+        let composioIDs: Set<String> = ["github", "linkedin", "slack", "outlook", "gmail"]
+        let nativeConnectables = directory.filter {
+            $0.availability == .connectable && !composioIDs.contains($0.id)
+        }
+        check(Set(nativeConnectables.compactMap(\.integrationID)) == implemented.subtracting([.customMCP, .github]),
+              "native connectable entries each have an implemented read adapter")
         check(directory.filter { $0.availability == .listedOnly }.allSatisfy { $0.integrationID == nil },
               "catalog-only entries cannot route to an executable connector")
         check(directory.first { $0.id == "whatsapp" }?.availability == .limited
               && directory.first { $0.id == "whatsapp" }?.integrationID == nil,
               "WhatsApp exposes only its limited Mac local source, not a provider-account connector")
-        check(directory.first { $0.id == "slack" }?.availability == .limited
-              && directory.first { $0.id == "slack" }?.integrationID == nil,
-              "Slack routes to optional Composio setup without granting direct credentials or connected status")
+        check(directory.first { $0.id == "slack" }?.availability == .connectable
+              && directory.first { $0.id == "slack" }?.integrationID == .slack,
+              "Slack routes through optional Composio setup without claiming connected status")
         check(!IntegrationAccountPolicy.permitsAdding(to: (0..<16).map { account("limit-\($0)") })
               && IntegrationAccountPolicy.permitsAdding(to: (0..<15).map { account("limit-\($0)") }),
               "connection policy enforces the exact storage boundary")

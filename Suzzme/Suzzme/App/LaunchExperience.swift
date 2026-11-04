@@ -2,6 +2,7 @@ import SwiftUI
 import FirebaseAuth
 #if os(macOS)
 import AppKit
+import AVFoundation
 #endif
 
 struct SplashView: View {
@@ -26,6 +27,11 @@ struct OnboardingView: View {
     @State private var intelligenceCapability: IntelligenceCapability?
     @State private var showsGmailSetup = false
     @State private var selectedSummaryTime = Calendar.current.date(bySettingHour: 8, minute: 0, second: 0, of: .now) ?? .now
+    #if os(macOS)
+    @AppStorage("suzzme.onboardingMusic.enabled") private var onboardingMusicEnabled = true
+    @State private var onboardingMusicPlayer: AVAudioPlayer?
+    @State private var onboardingMusicFadeTask: Task<Void, Never>?
+    #endif
     private let pages = OnboardingPage.pages
 
     var body: some View {
@@ -53,13 +59,15 @@ struct OnboardingView: View {
         .suzzmeSelectionFeedback(trigger: step)
         .sheet(isPresented: $showsGmailSetup) {
             NavigationStack {
-                ScrollView { GmailConnectionView().padding(SuzzmeTheme.Spacing.large) }
-                    .navigationTitle("Gmail")
+                ComposioIntegrationsView(initialServiceID: "gmail")
                     .toolbar { Button("Done") { showsGmailSetup = false } }
             }
-            .frame(minWidth: 480, minHeight: 400)
+            .frame(minWidth: 560, minHeight: 500)
         }
         .onAppear {
+            #if os(macOS)
+            startOnboardingMusicIfNeeded()
+            #endif
             var calendar = Calendar.current
             calendar.timeZone = TimeZone(identifier: environment.proactivePreferences.timeZoneIdentifier) ?? .current
             selectedSummaryTime = calendar.date(bySettingHour: environment.proactivePreferences.briefingHour,
@@ -76,6 +84,13 @@ struct OnboardingView: View {
                     .replacingOccurrences(of: "-", with: " ")
             }
         }
+        #if os(macOS)
+        .onChange(of: onboardingMusicEnabled) { _, isEnabled in
+            if isEnabled { startOnboardingMusicIfNeeded() }
+            else { stopOnboardingMusic() }
+        }
+        .onDisappear { stopOnboardingMusic() }
+        #endif
         .task(id: step) {
             guard pages[step].kind == .availability else { return }
             let capability = await environment.intelligenceCapability()
@@ -91,6 +106,17 @@ struct OnboardingView: View {
                 Text("Suzzme").font(.headline)
             }
             Spacer()
+            #if os(macOS)
+            Button {
+                onboardingMusicEnabled.toggle()
+            } label: {
+                Label(onboardingMusicEnabled ? "Mute music" : "Play music",
+                      systemImage: onboardingMusicEnabled ? "speaker.wave.2" : "speaker.slash")
+            }
+            .buttonStyle(.plain)
+            .foregroundStyle(SuzzmeTheme.textSecondary)
+            .accessibilityLabel(onboardingMusicEnabled ? "Mute onboarding music" : "Play onboarding music")
+            #endif
             Text("\(step + 1) of \(pages.count)")
                 .font(.caption.weight(.medium))
                 .foregroundStyle(SuzzmeTheme.textSecondary)
@@ -375,6 +401,49 @@ struct OnboardingView: View {
             }
         }
     }
+
+    #if os(macOS)
+    private func startOnboardingMusicIfNeeded() {
+        guard onboardingMusicEnabled,
+              onboardingMusicPlayer == nil,
+              let musicURL = Bundle.main.url(forResource: "ff", withExtension: "mp3") else { return }
+
+        do {
+            let player = try AVAudioPlayer(contentsOf: musicURL)
+            player.volume = 0.15
+            player.numberOfLoops = 0
+            player.prepareToPlay()
+            guard player.play() else { return }
+            onboardingMusicPlayer = player
+
+            onboardingMusicFadeTask?.cancel()
+            onboardingMusicFadeTask = Task { @MainActor in
+                do {
+                    try await Task.sleep(for: .seconds(90))
+                    guard onboardingMusicPlayer === player else { return }
+                    player.setVolume(0, fadeDuration: 3)
+                    try await Task.sleep(for: .seconds(3))
+                } catch {
+                    return
+                }
+                player.stop()
+                if onboardingMusicPlayer === player {
+                    onboardingMusicPlayer = nil
+                    onboardingMusicFadeTask = nil
+                }
+            }
+        } catch {
+            // Onboarding remains usable if an optional music resource cannot play.
+        }
+    }
+
+    private func stopOnboardingMusic() {
+        onboardingMusicFadeTask?.cancel()
+        onboardingMusicFadeTask = nil
+        onboardingMusicPlayer?.stop()
+        onboardingMusicPlayer = nil
+    }
+    #endif
 
     private func saveSummarySchedule() async {
         var calendar = Calendar.current

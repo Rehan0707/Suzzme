@@ -3,7 +3,7 @@ import { constants } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { pathToFileURL } from 'node:url';
 
-export const deploymentFiles = Object.freeze(['server.mjs', 'mcp.mjs', 'mcp.test.mjs', 'composio-mcp.mjs', 'composio-mcp.test.mjs', 'notion-read.mjs', 'hosted.mjs', 'package.json',
+export const deploymentFiles = Object.freeze(['connection-status.test.mjs', 'mail-read.mjs', 'mail-read.test.mjs', 'calendar-read.mjs', 'calendar-read.test.mjs', 'github-activity.mjs', 'github-activity.test.mjs', 'server.mjs', 'mcp.mjs', 'mcp.test.mjs', 'composio-mcp.mjs', 'composio-mcp.test.mjs', 'notion-read.mjs', 'hosted.mjs', 'package.json',
   'setup.mjs', 'setup.test.mjs', 'server.test.mjs', 'deployment.test.mjs', 'worker.mjs', 'worker.test.mjs', 'prepare-render.mjs',
   '.env.example', 'check-config.mjs', 'render.yaml', 'README.md', 'RENDER-DEPLOYMENT.md']);
 export async function prepareDeployment(destination) {

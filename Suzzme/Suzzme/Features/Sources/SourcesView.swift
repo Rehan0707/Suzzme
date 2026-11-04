@@ -49,9 +49,9 @@ private struct SourcesListView: View {
             }
             Section("Connected accounts and shared text") {
                 NavigationLink {
-                    List { Section { GmailConnectionView() } }.suzzmeReadableList().navigationTitle("Gmail")
+                    ComposioIntegrationsView(initialServiceID: "gmail")
                 } label: {
-                    overview(symbol: "envelope", title: "Gmail", purpose: "Selected inbox · Optional on-device message summaries", status: environment.gmailAccount.isConnected ? "Account connected" : environment.gmailAccount.isConfigured ? "Not connected" : "Unavailable in this build", health: health(for: .gmail))
+                    overview(symbol: "envelope", title: "Gmail", purpose: "Composio · bounded recent inbox previews", status: "Manage Composio connection", health: health(for: .connectedApps))
                 }
                 NavigationLink {
                     List { SelectedMessageImportView() }.suzzmeReadableList().navigationTitle("Shared messages")
@@ -272,8 +272,30 @@ private extension InformationHealthState {
 /// A connected account is only marked included when its separate summary opt-in is active.
 private struct MacKnowledgeSourcesView: View {
     @Environment(AppEnvironment.self) private var environment
+    @Environment(\.openURL) private var openURL
+    @Environment(\.scenePhase) private var scenePhase
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @State private var googleAccountID: String?
+    @State private var composioWorkspace: ComposioWorkspace?
+    @State private var openedAuthorizationAttempt: String?
+    @State private var connectionCode = ""
+    @State private var showsConnectionCode = false
+    private let composioGmailResource = "https://mail.google.com/mail/u/0/"
+    private let composioCalendarResource = "https://calendar.google.com/calendar/u/0/r"
+    @State private var catalogSearch = ""
+
+    private var catalogColumns: [GridItem] {
+        [GridItem(dynamicTypeSize.isAccessibilitySize ? .flexible() : .adaptive(minimum: 210),
+                  spacing: SuzzmeTheme.Spacing.small)]
+    }
+    private var visibleCatalogItems: [IntegrationDirectoryItem] {
+        let query = catalogSearch.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !query.isEmpty else { return IntegrationDirectoryItem.catalog }
+        return IntegrationDirectoryItem.catalog.filter {
+            $0.name.localizedCaseInsensitiveContains(query)
+                || $0.section.title.localizedCaseInsensitiveContains(query)
+        }
+    }
 
     private var columns: [GridItem] {
         [GridItem(dynamicTypeSize.isAccessibilitySize ? .flexible() : .adaptive(minimum: 340),
@@ -301,15 +323,22 @@ private struct MacKnowledgeSourcesView: View {
             $0.service == service && $0.state == .ready && !$0.summaryResourceURLs.isEmpty
         }
     }
-    private func gmailStatus() -> String {
-        guard environment.gmailAccount.isConfigured else { return "Google OAuth setup required" }
-        guard environment.gmailAccount.isConnected else { return "Connect Google account" }
-        guard let selection = environment.gmailAccount.gmailSelection() else { return "Choose inbox scope" }
-        guard selection.includeBodies, environment.gmailAccount.hasBodyAccess else {
-            return "Connected · headers only; summaries need separate permission"
-        }
-        return included(.gmail) ? "Included in Daily Summary" : "Connected · updates off"
+    private func composioIncluded(_ service: String, resource: String) -> Bool {
+        guard included(.connectedApps), let account = composioWorkspace?.accounts.first(where: { $0.service == service && $0.isActive }) else { return false }
+        return composioWorkspace?.summaryResources(for: account.id).contains(resource) == true
     }
+    private func composioStatus(_ service: String, resource: String) -> String {
+        guard let workspace = composioWorkspace else { return "Checking Composio" }
+        guard workspace.configured else { return "Configure Composio connector" }
+        if workspace.services.isEmpty {
+            return workspace.error == nil ? "Checking Composio" : "Connector unavailable"
+        }
+        guard workspace.services.contains(where: { $0.id == service }) else { return "Auth config required" }
+        guard let account = workspace.accounts.first(where: { $0.service == service && $0.isActive }) else { return "Connect in browser" }
+        return workspace.summaryResources(for: account.id).contains(resource) && included(.connectedApps)
+            ? "Included in Daily Summary" : "Connected · updates off"
+    }
+    private func gmailStatus() -> String { composioStatus("gmail", resource: composioGmailResource) }
     private func googleStatus(_ service: IntegrationID) -> String {
         guard let accountID = googleAccountID else {
             return environment.gmailAccount.isConfigured ? "Connect Google account" : "Google OAuth setup required"
@@ -345,141 +374,95 @@ private struct MacKnowledgeSourcesView: View {
 
     var body: some View {
         SuzzmePage(contentWidth: SuzzmeTheme.Layout.workspaceWidth) {
-            VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.xs) {
-                HStack(alignment: .firstTextBaseline) {
-                    Text("Knowledge Sources")
-                        .font(.largeTitle.weight(.semibold))
-                        .accessibilityAddTraits(.isHeader)
-                    Spacer()
-                    Button("Refresh", systemImage: "arrow.clockwise") {
-                        Task { await refreshStatus() }
+            HStack(alignment: .firstTextBaseline, spacing: SuzzmeTheme.Spacing.small) {
+                Text("Knowledge Sources")
+                    .font(.largeTitle.weight(.semibold))
+                    .accessibilityAddTraits(.isHeader)
+                Spacer(minLength: SuzzmeTheme.Spacing.small)
+                Text("\(IntegrationDirectoryItem.catalog.count) apps")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(SuzzmeTheme.textSecondary)
+                    .accessibilityIdentifier("suzzme-sources-app-count")
+            }
+
+            HStack(spacing: SuzzmeTheme.Spacing.small) {
+                Image(systemName: "magnifyingglass")
+                    .foregroundStyle(SuzzmeTheme.textSecondary)
+                    .accessibilityHidden(true)
+                TextField("Search apps", text: $catalogSearch)
+                    .textFieldStyle(.plain)
+                    .accessibilityLabel("Search apps")
+                    .accessibilityIdentifier("suzzme-sources-search")
+                if !catalogSearch.isEmpty {
+                    Button { catalogSearch = "" } label: {
+                        Image(systemName: "xmark.circle.fill")
+                            .foregroundStyle(SuzzmeTheme.textSecondary)
                     }
-                    .buttonStyle(.borderless)
-                    .help("Refresh source status")
-                }
-                Text("The context Suzzme learns from, every day.")
-                    .font(.body).foregroundStyle(SuzzmeTheme.textSecondary)
-                Text("Connect sources, then choose what your Daily Summary can include.")
-                    .font(.subheadline).foregroundStyle(SuzzmeTheme.textSecondary)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-
-            HStack(spacing: SuzzmeTheme.Spacing.medium) {
-                NavigationLink {
-                    GoogleAccountSourcesView()
-                } label: {
-                    Label("Google account", systemImage: "person.crop.circle.badge.checkmark")
-                }
-                NavigationLink {
-                    ComposioIntegrationsView()
-                } label: {
-                    Label("Connect apps", systemImage: "app.connected.to.app.below.fill")
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("Clear search")
                 }
             }
-            .buttonStyle(.bordered)
+            .padding(.horizontal, SuzzmeTheme.Spacing.medium)
             .frame(minHeight: SuzzmeTheme.Layout.touchTarget)
+            .suzzmeGlassControlSurface(cornerRadius: SuzzmeTheme.Radius.control,
+                                       tint: SuzzmeTheme.intelligencePrimary.opacity(0.1))
 
-            sourceGroup("Email & calendar", note: "Each tile shows live setup and summary status. Connectors marked unavailable are catalog references, not working integrations.") {
-                sourceLink("Gmail", symbol: "envelope.fill", detail: "Recent inbox headers · optional on-device message summaries", included: environment.gmailAccount.isConnected && environment.gmailAccount.hasBodyAccess && environment.gmailAccount.gmailSelection()?.includeBodies == true && included(.gmail),
-                           status: gmailStatus()) {
-                    List { Section { GmailConnectionView() } }.suzzmeReadableList().navigationTitle("Gmail")
+            if let workspace = composioWorkspace, let pending = workspace.pending {
+                HStack(spacing: SuzzmeTheme.Spacing.small) {
+                    Text("Finish \(workspace.pendingService ?? "app") sign-in in your browser.")
+                    Spacer(minLength: SuzzmeTheme.Spacing.xs)
+                    if pending.supportsStatus == true {
+                        Button("Check sign-in") { workspace.checkConnection() }
+                    } else {
+                        Button("Enter code") { showsConnectionCode = true }
+                    }
+                    Button("Cancel", role: .cancel) { workspace.disappear() }
                 }
-                sourceLink("Google Calendar", symbol: "calendar", detail: "One verified calendar selected by its ID", included: googleIncluded(.googleCalendar),
-                           status: googleStatus(.googleCalendar)) {
-                    if let recipe = ProviderReadRecipe.find(.googleCalendar) { GoogleProviderConnectionView(recipe: recipe) }
-                }
-                unavailable("Outlook Mail", symbol: "envelope", detail: "Account connector not available")
-                unavailable("Outlook Calendar", symbol: "calendar", detail: "Account connector not available")
-                unavailable("Apple Mail", symbol: "envelope.badge.shield.half.filled", detail: "Mailbox intake not available")
-                sourceLink("Apple Calendar", symbol: "calendar.badge.clock", detail: "Events you allow on this Mac",
-                           included: localAccess(.calendar) && included(.calendar), status: !localAccess(.calendar) ? "Permission needed" : included(.calendar) ? "Included in Daily Summary" : "Connected · updates off") {
-                    LocalSourceDetail(kind: .calendar)
-                }
+                .font(.subheadline)
+                .padding(SuzzmeTheme.Spacing.small)
+                .suzzmeGlassControlSurface(cornerRadius: SuzzmeTheme.Radius.control)
             }
-
-            sourceGroup("Your conversations", note: "WhatsApp reads only chats you choose on this Mac. Shared messages use only text you explicitly import.") {
-                sourceLink("Shared messages", symbol: "message.fill", detail: "Manual import only · no Messages database access",
-                           included: included(.messages), status: environment.informationEvents.contains(where: { $0.source == .messages }) ? (included(.messages) ? "Shared text · included" : "Shared text · updates off") : "Share or import text") {
-                    List { Section { SelectedMessageImportView() } }.suzzmeReadableList().navigationTitle("Shared messages")
-                }
-                sourceLink("WhatsApp", symbol: "bubble.left.fill", detail: "Selected local Mac chats · on-device summaries only",
-                           included: included(.whatsapp) && !environment.selectedWhatsAppChats.isEmpty,
-                           status: !environment.whatsAppFolderConnected ? "Choose WhatsApp folder" : environment.selectedWhatsAppChats.isEmpty ? "Folder connected · choose chats" : included(.whatsapp) ? "\(environment.selectedWhatsAppChats.count) chats · included" : "\(environment.selectedWhatsAppChats.count) chats · updates off") {
-                    WhatsAppLocalView()
-                }
-                unavailable("iMessage", symbol: "bubble.right.fill", detail: "Automatic chat reads not available")
+            if let error = composioWorkspace?.error {
+                Label(error, systemImage: "exclamationmark.circle")
+                    .font(.footnote).foregroundStyle(SuzzmeTheme.warning)
             }
 
-            sourceGroup("More of your world", note: "Connected apps contribute only when you select summary resources. Other connections can still answer your direct questions.", compact: true) {
-                sourceLink("GitHub", symbol: "chevron.left.forwardslash.chevron.right", detail: "Authorized repository reads · summary needs separate resource selection",
-                           included: connectedSummary(.github), status: integrationStatus(.github)) {
-                    IntegrationsView()
-                }
-                sourceLink("Notion", symbol: "doc.text", detail: "Authorized page reads · summary needs separate resource selection",
-                           included: connectedSummary(.notion), status: integrationStatus(.notion)) {
-                    IntegrationsView()
-                }
-                sourceLink("Linear", symbol: "checklist", detail: "Read-only selected issue context",
-                           included: connectedSummary(.linear), status: integrationStatus(.linear)) {
-                    IntegrationsView()
-                }
-                googleSource("Google Drive", service: .googleDrive, symbol: "externaldrive", detail: "One verified file ID")
-                googleSource("Google Docs", service: .googleDocs, symbol: "doc.text", detail: "One verified document ID")
-                googleSource("Google Sheets", service: .googleSheets, symbol: "tablecells", detail: "One verified sheet range")
-                googleSource("Google Tasks", service: .googleTasks, symbol: "checkmark.circle", detail: "One verified task list")
-                sourceLink("Slack", symbol: "number", detail: "Selected channel messages · summary requires separate consent",
-                           included: connectedSummary(.slack), status: integrationStatus(.slack)) {
-                    ComposioIntegrationsView(initialServiceID: "slack")
-                }
-                unavailable("Figma", symbol: "paintbrush.pointed", detail: "Catalog-only here · no working read connector")
-                sourceLink("Local Knowledge", symbol: "books.vertical", detail: "Selected text, Markdown, and one-time folder imports",
-                           included: !environment.localKnowledge.notes.isEmpty && included(.localKnowledge),
-                           status: environment.localKnowledge.notes.isEmpty ? "Import notes first" : included(.localKnowledge) ? "Included today" : "Available · not included") { LocalKnowledgeView() }
-                unavailable("Apple Notes", symbol: "note.text", detail: "Notes database access not available")
-                unavailable("Granola", symbol: "waveform", detail: "Meeting-note connector not available")
-            }
-
-            sourceGroup("On this Mac", note: "Calendar and Reminders can be checked again when the Daily Summary runs. Contacts are used only for direct questions.", compact: true) {
-                sourceLink("Reminders", symbol: "checklist", detail: "Open work and due dates",
-                           included: localAccess(.reminders) && included(.reminders), status: localAccess(.reminders) ? (included(.reminders) ? "Included" : "Updates off") : "Access needed") {
-                    LocalSourceDetail(kind: .reminders)
-                }
-                sourceLink("Watched Links", symbol: "link", detail: "Selected pages", included: false,
-                           status: "Checking paused") { WatchedLinksView() }
-            }
-
-            VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.small) {
-                SuzzmeSectionHeader(title: "Summarize your day")
-                Text("Suzzme checks enabled, authorized sources at your preferred time while this Mac is awake and the app is running. It records the result in Background Tasks.")
-                    .font(.subheadline).foregroundStyle(SuzzmeTheme.textSecondary)
-                    .fixedSize(horizontal: false, vertical: true)
-                ViewThatFits(in: .horizontal) {
-                    HStack(spacing: SuzzmeTheme.Spacing.small) { summaryActions }
-                        .fixedSize(horizontal: true, vertical: false)
-                    VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.small) { summaryActions }
-                }
-                .controlSize(.large)
-                NavigationLink { InformationInspectionView() } label: {
-                    Label("Review and clear recent source updates", systemImage: "clock.arrow.circlepath")
-                        .frame(minHeight: SuzzmeTheme.Layout.touchTarget)
-                }
-                .buttonStyle(.borderless)
-                if let error = environment.informationError {
-                    Text(error).font(.footnote).foregroundStyle(SuzzmeTheme.textSecondary)
+            if visibleCatalogItems.isEmpty {
+                Text("No apps found")
+                    .font(.headline)
+                    .foregroundStyle(SuzzmeTheme.textSecondary)
+                    .frame(maxWidth: .infinity, minHeight: 120)
+            } else {
+                LazyVGrid(columns: catalogColumns, alignment: .leading,
+                          spacing: SuzzmeTheme.Spacing.small) {
+                    ForEach(visibleCatalogItems) { item in
+                        catalogAppCard(item)
+                    }
                 }
             }
-            HStack(spacing: SuzzmeTheme.Spacing.xs) {
-                Image(systemName: "shield.lefthalf.filled")
-                Text("Private by design. You control what Suzzme can use.")
-            }
-            .font(.caption)
-            .foregroundStyle(SuzzmeTheme.textTertiary)
-            .frame(maxWidth: .infinity)
-            .padding(.top, SuzzmeTheme.Spacing.medium)
         }
         .navigationTitle("Knowledge Sources")
         .task { await environment.restoreGmailSignIn(); await refreshStatus() }
         .refreshable { await refreshStatus() }
+        .onChange(of: composioWorkspace?.pending?.attempt) { _, _ in
+            guard let pending = composioWorkspace?.pending, openedAuthorizationAttempt != pending.attempt else { return }
+            openedAuthorizationAttempt = pending.attempt
+            openURL(pending.url)
+        }
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active, composioWorkspace?.pending?.supportsStatus == true {
+                composioWorkspace?.checkConnection()
+            } else if phase == .active, composioWorkspace?.pending != nil {
+                showsConnectionCode = true
+            }
+        }
+        .alert("Finish connecting \(composioWorkspace?.pendingService ?? "app")", isPresented: $showsConnectionCode) {
+            TextField("Confirmation code", text: $connectionCode)
+            Button("Verify") { composioWorkspace?.complete(code: connectionCode); connectionCode = "" }
+            Button("Cancel", role: .cancel) { composioWorkspace?.disappear(); connectionCode = "" }
+        } message: {
+            Text("Enter the code shown in your browser after sign-in.")
+        }
     }
 
     private func refreshStatus() async {
@@ -487,8 +470,162 @@ private struct MacKnowledgeSourcesView: View {
         await environment.localKnowledge.load()
         googleAccountID = await environment.gmailAccount.googleIdentity()
         await environment.integrations.load()
+        let workspace = environment.makeComposioWorkspace()
+        await workspace.load()
+        composioWorkspace = workspace
         await environment.refreshSourcePermissions()
         await environment.inspectInformation()
+    }
+
+    private func serviceAvailable(_ id: String) -> Bool {
+        composioWorkspace?.services.contains(where: { $0.id == id }) == true
+    }
+
+    private func composioServiceID(for item: IntegrationDirectoryItem) -> String? {
+        switch item.id {
+        case "github", "linkedin", "slack", "notion", "gmail", "outlook": item.id
+        case "google-calendar": "googlecalendar"
+        default: nil
+        }
+    }
+
+    private func catalogAppCard(_ item: IntegrationDirectoryItem) -> some View {
+        let connected: Bool
+        if item.id == "whatsapp" {
+            connected = environment.whatsAppFolderConnected
+        } else if let service = composioServiceID(for: item) {
+            connected = composioWorkspace?.accounts.contains { $0.service == service && $0.isActive } == true
+        } else if let service = item.integrationID,
+                  let recipe = ProviderReadRecipe.find(service), recipe.googleScope != nil {
+            connected = environment.gmailAccount.hasGoogleAccess(service)
+        } else if let service = item.integrationID {
+            connected = environment.integrations.accounts.contains { $0.service == service && $0.state == .ready }
+        } else {
+            connected = false
+        }
+
+        return HStack(spacing: SuzzmeTheme.Spacing.small) {
+            catalogAppIcon(item)
+            Text(item.name)
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(SuzzmeTheme.textPrimary)
+                .lineLimit(2)
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            catalogConnectControl(item, connected: connected)
+        }
+        .padding(.horizontal, SuzzmeTheme.Spacing.small)
+        .padding(.vertical, SuzzmeTheme.Spacing.xs)
+        .frame(maxWidth: .infinity, minHeight: 58, alignment: .leading)
+        .background(SuzzmeTheme.pageBackground, in: RoundedRectangle(cornerRadius: SuzzmeTheme.Radius.control))
+        .overlay(RoundedRectangle(cornerRadius: SuzzmeTheme.Radius.control)
+            .strokeBorder(SuzzmeTheme.separator, lineWidth: SuzzmeTheme.hairline))
+        .accessibilityElement(children: .contain)
+    }
+
+    @ViewBuilder private func catalogConnectControl(_ item: IntegrationDirectoryItem, connected: Bool) -> some View {
+        if let service = composioServiceID(for: item) {
+            if let workspace = composioWorkspace,
+               let provider = workspace.services.first(where: { $0.id == service }), !connected {
+                Button { workspace.connect(provider) } label: { catalogConnectLabel(connected: false) }
+                    .buttonStyle(.plain)
+                    .disabled(workspace.isWorking || workspace.pending != nil)
+                    .accessibilityLabel("Connect \(item.name) with Composio")
+            } else {
+                NavigationLink {
+                    ComposioIntegrationsView(initialServiceID: service, workspace: composioWorkspace)
+                } label: { catalogConnectLabel(connected: connected) }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(connected ? "Manage \(item.name) connection" : "Connect \(item.name) with Composio")
+            }
+        } else if item.id == "whatsapp" {
+            NavigationLink { WhatsAppLocalView() } label: { catalogConnectLabel(connected: connected) }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Open WhatsApp source settings")
+        } else if let service = item.integrationID,
+                  let recipe = ProviderReadRecipe.find(service) {
+            NavigationLink {
+                if recipe.googleScope != nil { GoogleProviderConnectionView(recipe: recipe) }
+                else { ProviderConnectionView(recipe: recipe) }
+            } label: { catalogConnectLabel(connected: connected) }
+                .buttonStyle(.plain)
+                .accessibilityLabel(connected ? "Manage \(item.name) connection" : "Connect \(item.name)")
+        } else if let service = item.integrationID,
+                  let descriptor = IntegrationDescriptor.catalog.first(where: { $0.id == service }) {
+            NavigationLink { IntegrationDetailView(descriptor: descriptor) } label: { catalogConnectLabel(connected: connected) }
+                .buttonStyle(.plain)
+                .accessibilityLabel(connected ? "Manage \(item.name) connection" : "Connect \(item.name)")
+        } else {
+            NavigationLink { ComposioIntegrationsView(initialServiceID: item.id) } label: {
+                catalogConnectLabel(connected: false)
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Connect \(item.name) with Composio")
+            .help("Opens Composio setup for this app. A connector-side authorization may be required.")
+        }
+    }
+
+    private func catalogConnectLabel(connected: Bool) -> some View {
+        HStack(spacing: SuzzmeTheme.Spacing.xxs) {
+            Image(systemName: connected ? "checkmark" : "plus")
+                .font(.caption.weight(.bold))
+                .accessibilityHidden(true)
+            if !connected { Text("Connect").font(.caption.weight(.semibold)) }
+        }
+        .foregroundStyle(connected ? SuzzmeTheme.success : SuzzmeTheme.textPrimary)
+        .padding(.horizontal, SuzzmeTheme.Spacing.small)
+        .frame(minHeight: 32)
+        .background(SuzzmeTheme.controlFill, in: Capsule())
+        .contentShape(Capsule())
+    }
+
+    private func catalogAppIcon(_ item: IntegrationDirectoryItem) -> some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: SuzzmeTheme.Radius.control)
+                .fill(IntegrationBrandMark.assets[item.name] == nil ? catalogAccent(for: item.section) : .white)
+            if IntegrationBrandMark.assets[item.name] != nil {
+                IntegrationBrandMark(name: item.name, symbol: item.symbol)
+            } else {
+                Text(item.monogram)
+                    .font(.system(size: item.monogram.count > 2 ? 9 : 12, weight: .bold, design: .rounded))
+                    .foregroundStyle(.white)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.6)
+            }
+        }
+        .frame(width: 34, height: 34)
+        .accessibilityHidden(true)
+    }
+
+    private func catalogAccent(for section: IntegrationDirectorySection) -> Color {
+        switch section {
+        case .development: Color(red: 0.28, green: 0.34, blue: 0.46)
+        case .productivity: Color(red: 0.20, green: 0.48, blue: 0.75)
+        case .projects: Color(red: 0.48, green: 0.35, blue: 0.82)
+        case .communication: Color(red: 0.18, green: 0.55, blue: 0.72)
+        case .business: Color(red: 0.86, green: 0.40, blue: 0.24)
+        case .marketing: Color(red: 0.82, green: 0.29, blue: 0.40)
+        case .analytics: Color(red: 0.25, green: 0.47, blue: 0.74)
+        case .finance: Color(red: 0.20, green: 0.58, blue: 0.42)
+        case .scheduling: Color(red: 0.29, green: 0.43, blue: 0.76)
+        case .design: Color(red: 0.62, green: 0.32, blue: 0.73)
+        }
+    }
+
+    private func browserSource(_ title: String, symbol: String, service: String, detail: String, resource: String) -> some View {
+        Button {
+            guard let workspace = composioWorkspace,
+                  let provider = workspace.services.first(where: { $0.id == service }),
+                  !workspace.isWorking, workspace.pending == nil else { return }
+            workspace.connect(provider)
+        } label: {
+            tile(title, symbol: symbol, detail: detail,
+                 included: !resource.isEmpty && composioIncluded(service, resource: resource),
+                 status: composioStatus(service, resource: resource), available: true)
+        }
+        .buttonStyle(.plain)
+        .disabled(composioWorkspace?.isWorking == true || composioWorkspace?.pending != nil)
+        .accessibilityHint("Opens \(title) sign-in in your browser")
     }
 
     @ViewBuilder private var summaryActions: some View {
@@ -520,7 +657,7 @@ private struct MacKnowledgeSourcesView: View {
                 .font(.caption).foregroundStyle(SuzzmeTheme.textSecondary)
                 .fixedSize(horizontal: false, vertical: true)
         }
-        .padding(.top, SuzzmeTheme.Spacing.large)
+        .padding(.top, SuzzmeTheme.Spacing.xs)
     }
 
     private func sourceLink<Destination: View>(_ title: String, symbol: String, detail: String,
@@ -545,8 +682,7 @@ private struct MacKnowledgeSourcesView: View {
     }
 
     private func tile(_ title: String, symbol: String, detail: String, included: Bool, status: String, available: Bool) -> some View {
-        VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.xs) {
-            HStack(spacing: SuzzmeTheme.Spacing.small) {
+        HStack(spacing: SuzzmeTheme.Spacing.small) {
                 Group {
                     if title == "GitHub" || title == "Notion" {
                         ZStack {
@@ -563,37 +699,37 @@ private struct MacKnowledgeSourcesView: View {
                 }
                 .frame(width: SuzzmeTheme.Spacing.large, height: SuzzmeTheme.Spacing.large)
                 .accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.xxs) {
                 Text(title)
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(available ? SuzzmeTheme.textPrimary : SuzzmeTheme.textSecondary)
-                    .lineLimit(1)
-                Spacer(minLength: 0)
-                Image(systemName: included ? "checkmark" : available ? "plus" : "minus")
-                    .font(.caption.weight(.medium))
-                    .foregroundStyle(included ? SuzzmeTheme.success : SuzzmeTheme.textSecondary)
-                    .accessibilityHidden(true)
+                    .font(.body.weight(.semibold))
+                    .foregroundStyle(SuzzmeTheme.textPrimary)
+                    .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 2)
+                if title == "WhatsApp" || title == "Shared messages" || !available {
+                    Text(available ? status : "Unavailable")
+                        .font(.caption).foregroundStyle(SuzzmeTheme.textSecondary)
+                        .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 2)
+                }
             }
-            Text(detail)
-                .font(.caption).foregroundStyle(SuzzmeTheme.textSecondary)
-                .lineLimit(2).fixedSize(horizontal: false, vertical: true)
-            Text(status)
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(included ? SuzzmeTheme.success : available ? SuzzmeTheme.textPrimary : SuzzmeTheme.textTertiary)
-                .lineLimit(2).fixedSize(horizontal: false, vertical: true)
+            Spacer(minLength: SuzzmeTheme.Spacing.xxs)
+            Image(systemName: included ? "checkmark" : available ? "plus" : "minus")
+                .font(.body.weight(.medium))
+                .foregroundStyle(included ? SuzzmeTheme.success : SuzzmeTheme.textSecondary)
+                .accessibilityHidden(true)
         }
-        .padding(SuzzmeTheme.Spacing.medium)
-        .frame(maxWidth: .infinity, minHeight: 88, alignment: .leading)
-        .suzzmeContentSurface(cornerRadius: SuzzmeTheme.Radius.largeSurface,
-                              tint: available ? (included ? SuzzmeTheme.success : SuzzmeTheme.controlAccent) : SuzzmeTheme.textSecondary)
-        .overlay(RoundedRectangle(cornerRadius: SuzzmeTheme.Radius.largeSurface)
-            .strokeBorder(included ? SuzzmeTheme.success.opacity(0.55) : available ? SuzzmeTheme.controlAccent.opacity(0.24) : SuzzmeTheme.separator,
+        .padding(.horizontal, SuzzmeTheme.Spacing.medium)
+        .padding(.vertical, SuzzmeTheme.Spacing.small)
+        .frame(maxWidth: .infinity, minHeight: SuzzmeTheme.Layout.touchTarget + SuzzmeTheme.Spacing.small, alignment: .leading)
+        .background(included ? SuzzmeTheme.success.opacity(0.08) : SuzzmeTheme.pageBackground,
+                    in: RoundedRectangle(cornerRadius: SuzzmeTheme.Radius.hero))
+        .overlay(RoundedRectangle(cornerRadius: SuzzmeTheme.Radius.hero)
+            .strokeBorder(included ? SuzzmeTheme.success.opacity(0.5) : SuzzmeTheme.separator,
                           lineWidth: SuzzmeTheme.hairline))
-        .contentShape(RoundedRectangle(cornerRadius: SuzzmeTheme.Radius.largeSurface))
-        .opacity(available ? 1 : 0.68)
+        .contentShape(RoundedRectangle(cornerRadius: SuzzmeTheme.Radius.hero))
         .help("\(title): \(status). \(detail)")
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("\(title), \(status). \(detail)")
     }
+
 }
 
 #Preview("Knowledge Sources · Mac") {

@@ -5,5 +5,5 @@ output=$(mktemp -d)
 trap 'rm -rf "$output"' EXIT
 xcrun swiftc -swift-version 6 -parse-as-library -module-cache-path "$output/module-cache" \
  Suzzme/Core/Integrations/IntegrationModels.swift Suzzme/Core/Integrations/ProviderReadRecipe.swift Suzzme/Core/Integrations/GoogleProviderRecipes.swift Suzzme/Core/Integrations/IntegrationResource.swift \
- Suzzme/Core/Integrations/IntegrationConnectionSuggestion.swift Validation/IntegrationPresentationChecks.swift -o "$output/checks"
+ Suzzme/Core/Integrations/IntegrationDirectory.swift Suzzme/Core/Integrations/IntegrationConnectionSuggestion.swift Validation/IntegrationPresentationChecks.swift -o "$output/checks"
 "$output/checks"

@@ -9,7 +9,7 @@ const active = (service = 'github') => ({ id: 'ca_test', user_id: config.userID,
   auth_config: { id: config.configs[service] }, status: 'ACTIVE', experimental: { account_type: 'PRIVATE' } });
 const json = body => new Response(JSON.stringify(body), { headers: { 'Content-Type': 'application/json' } });
 function setup(options = {}) {
-  const calls = []; let getCount = 0; let now = 1000;
+  const calls = []; let getCount = 0; let now = options.clock ?? 1000;
   const bridge = createBridge(config, async (url, request) => {
     const path = new URL(url).pathname; const body = request.body ? JSON.parse(request.body) : null;
     calls.push({ url, request, body });
@@ -22,6 +22,8 @@ function setup(options = {}) {
     }
     if (path.endsWith('/connected_accounts')) return json({ items: options.items || [active()], ...options.list });
     if (path.endsWith('/proxy') && options.notion) return options.notion(body, calls);
+    if (path.endsWith('/proxy') && body.endpoint === '/repos/owner/repo/commits') return json({ status: 200, data: options.commits ?? [] });
+    if (path.endsWith('/proxy') && body.endpoint === '/repos/owner/repo/pulls') return json({ status: 200, data: options.pullRequests ?? [] });
     if (path.endsWith('/proxy') && body.endpoint === 'https://slack.com/api/auth.test') {
       return json({ status: 200, data: options.identity || { ok: true, url: 'https://fixture.slack.com/' } });
     }
@@ -45,6 +47,36 @@ test('server startup requires explicit verifier configuration and strong device 
   assert.throws(() => configuration(env));
   assert.equal(configuration({ ...env, SUZZME_CALLBACK_VERIFIER_CONFIGURED: 'yes' }).userID, config.userID);
   assert.throws(() => configuration({ ...env, SUZZME_CALLBACK_VERIFIER_CONFIGURED: 'yes', SUZZME_DEVICE_TOKEN: 'weak' }));
+});
+
+test('Google Calendar connects only with its configured toolkit and reads a bounded primary-calendar window', async () => {
+  const calendarConfig = { ...config, configs: { googlecalendar: 'ac_googlecalendar' } };
+  const calls = [];
+  const bridge = createBridge(calendarConfig, async (url, request) => {
+    const path = new URL(url).pathname;
+    const body = request.body ? JSON.parse(request.body) : null;
+    calls.push({ url, body });
+    if (path.endsWith('/link')) return json({ redirect_url: 'https://connect.composio.dev/link/calendar' });
+    if (path.endsWith('/connected_accounts/ca_calendar')) return json({ id: 'ca_calendar', user_id: config.userID,
+      toolkit: { slug: 'googlecalendar' }, auth_config: { id: 'ac_googlecalendar' }, status: 'ACTIVE' });
+    if (path.endsWith('/proxy')) return json({ status: 200, data: { items: [{ id: 'event_1', summary: 'Design review',
+      status: 'confirmed', start: { dateTime: '2026-11-04T15:00:00Z' }, end: { dateTime: '2026-11-04T15:30:00Z' } }] } });
+    assert.fail('Unexpected calendar API request: ' + path);
+  }, () => Date.parse('2026-11-04T12:00:00.000Z'));
+  const connection = await bridge.route('POST', '/v1/connect', { service: 'googlecalendar' }, authorization);
+  assert.equal(connection.url, 'https://connect.composio.dev/link/calendar');
+  assert.equal(calls[0].body.auth_config_id, 'ac_googlecalendar');
+  const resource = 'https://calendar.google.com/calendar/u/0/r';
+  const result = await bridge.route('POST', '/v1/read', { service: 'googlecalendar', accountID: 'ca_calendar', resource }, authorization);
+  assert.equal(result.service, 'googlecalendar'); assert.equal(result.accountID, 'ca_calendar'); assert.equal(result.source, resource);
+  assert.match(result.text, /Event: Design review/);
+  const request = calls[2].body;
+  assert.equal(new URL(request.endpoint).pathname, '/calendar/v3/calendars/primary/events');
+  assert.deepEqual(Object.fromEntries(new URL(request.endpoint).searchParams), {
+    timeMin: '2026-11-04T12:00:00.000Z', timeMax: '2026-11-06T12:00:00.000Z', maxResults: '30',
+    singleEvents: 'true', orderBy: 'startTime', fields: 'items(id,summary,start,end,status),nextPageToken' });
+  assert.equal(request.method, 'GET');
+  assert.equal(JSON.stringify(result).includes('description'), false);
 });
 const slackResource = 'https://fixture.slack.com/archives/C0123456789/p1760000000000123';
 const slackMessage = { type: 'message', ts: '1760000000.000123', text: 'The rehearsal is in Studio Cedar.' };
@@ -256,6 +288,52 @@ test('GitHub exact source maps to a fixed GET proxy, then account is rechecked',
   assert.equal(calls[1].body.method, 'GET'); assert.equal(calls[1].body.user_id, config.userID);
   assert.equal(calls.length, 3); assert.equal(result.source, resource); assert.match(result.text, /Studio Cedar/);
 });
+test('GitHub repository selection reads bounded local-day commits and pull requests with original links', async () => {
+  const now = Date.parse('2026-11-04T12:00:00.000Z');
+  const { bridge, calls } = setup({ clock: now,
+    commits: [
+      { sha: 'abcdef0123456789abcdef0123456789abcdef01', commit: { message: 'Ship the daily summary\nDetails', committer: { date: '2026-11-04T00:30:00Z' } } },
+      { sha: '1111111123456789abcdef0123456789abcdef01', commit: { message: 'Prior local day', committer: { date: '2026-11-03T17:30:00Z' } } },
+    ],
+    pullRequests: [
+      { number: 27, title: 'Add GitHub source', state: 'open', merged_at: null,
+        created_at: '2026-11-04T09:00:00Z', updated_at: '2026-11-04T11:30:00Z', closed_at: null },
+      { number: 26, title: 'Yesterday', state: 'closed', merged_at: null,
+        created_at: '2026-11-03T10:00:00Z', updated_at: '2026-11-03T11:30:00Z', closed_at: '2026-11-03T11:30:00Z' },
+    ] });
+  const resource = 'https://github.com/owner/repo';
+  const result = await bridge.route('POST', '/v1/read', { service: 'github', accountID: 'ca_test', resource,
+    now: '2026-11-04T12:00:00.000Z', timeZone: 'Asia/Kolkata' }, authorization);
+  const activity = JSON.parse(result.text);
+  assert.equal(result.source, resource); assert.equal(activity.localDate, '2026-11-04');
+  assert.equal(activity.repository, 'owner/repo'); assert.equal(activity.commits.length, 1);
+  assert.equal(activity.pullRequests.length, 1); assert.equal(activity.commits[0].message, 'Ship the daily summary');
+  assert.equal(activity.commits[0].url, 'https://github.com/owner/repo/commit/abcdef0');
+  assert.equal(activity.pullRequests[0].url, 'https://github.com/owner/repo/pull/27');
+  assert.equal(calls[1].body.endpoint, '/repos/owner/repo/commits');
+  assert.deepEqual(calls[1].body.parameters, [
+    { name: 'since', value: '2026-11-03T18:30:00.000Z', in: 'query' },
+    { name: 'until', value: '2026-11-04T18:30:00.000Z', in: 'query' },
+    { name: 'per_page', value: '100', in: 'query' },
+  ]);
+  assert.deepEqual(calls[2].body.parameters, [
+    { name: 'state', value: 'all', in: 'query' }, { name: 'sort', value: 'updated', in: 'query' },
+    { name: 'direction', value: 'desc', in: 'query' }, { name: 'per_page', value: '100', in: 'query' },
+  ]);
+  assert.equal(calls.length, 4); // selected account is rechecked after both reads.
+});
+
+test('GitHub repository activity requires a fresh device date and valid timezone', async () => {
+  const now = Date.parse('2026-11-04T12:00:00Z');
+  for (const extra of [{}, { now: '2026-11-03T12:00:00Z', timeZone: 'Asia/Kolkata' },
+    { now: '2026-11-04T12:00:00Z', timeZone: 'Not/AZone' }]) {
+    const { bridge, calls } = setup({ clock: now });
+    await rejected(() => bridge.route('POST', '/v1/read', { service: 'github', accountID: 'ca_test',
+      resource: 'https://github.com/owner/repo', ...extra }, authorization), 422);
+    assert.equal(calls.length, 1);
+  }
+});
+
 test('arbitrary URL, traversal, query, fragment and injected operation are rejected', async () => {
   for (const resource of ['https://evil.com/owner/repo/issues/1', 'https://github.com/owner/../issues/1', 'https://github.com/owner/repo/issues/1?x=y', 'https://github.com/owner/repo/issues/1#x', 'https://github.com/owner/repo/pull/1']) {
     const { bridge, calls } = setup();
@@ -273,11 +351,20 @@ test('expired, foreign and revoked-during-read accounts cannot provide excerpts'
     await assert.rejects(() => bridge.route('POST', '/v1/read', { service: 'github', accountID: 'ca_test', resource: 'https://github.com/o/r/issues/1' }, authorization));
   }
 });
-test('LinkedIn connect and read are blocked before any provider request', async () => {
-  const { bridge, calls } = setup({ service: 'linkedin' });
-  await rejected(() => bridge.route('POST', '/v1/connect', { service: 'linkedin' }, authorization), 422);
-  await rejected(() => bridge.route('POST', '/v1/read', { service: 'linkedin', accountID: 'ca_test', resource: '' }, authorization), 422);
-  assert.equal(calls.length, 0);
+test('LinkedIn connects through its configured auth and reads only the basic profile', async () => {
+  const { bridge, calls } = setup({ service: 'linkedin',
+    proxy: json({ status: 200, data: { name: 'Fixture Person', given_name: 'Fixture', email: 'private@example.com' } }) });
+  const linkedInAccounts = await bridge.route('GET', '/v1/accounts', {}, authorization);
+  assert.equal(linkedInAccounts.services.find(service => service.id === 'linkedin').readable, true);
+  const connection = await bridge.route('POST', '/v1/connect', { service: 'linkedin' }, authorization);
+  assert.equal(calls.find(call => call.url.endsWith('/connected_accounts/link')).body.auth_config_id, 'ac_linkedin');
+  const result = await bridge.route('POST', '/v1/read',
+    { service: 'linkedin', accountID: 'ca_test', resource: 'profile' }, authorization);
+  assert.equal(result.source, 'LinkedIn · own basic profile');
+  assert.match(result.text, /Name: Fixture Person/);
+  assert.equal(result.text.includes('private@example.com'), false);
+  assert.equal(calls.some(call => call.body?.endpoint === '/v2/userinfo'), true);
+  assert.equal(new URL(connection.url).host, 'connect.composio.dev');
 });
 test('oversized source, embedded credentials and provider errors are withheld', async () => {
   for (const options of [{ text: 'a'.repeat(4501) }, { text: config.apiKey }, { proxy: json({ status: 403, data: {} }) },

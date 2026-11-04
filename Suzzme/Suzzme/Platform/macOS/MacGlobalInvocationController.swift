@@ -10,6 +10,7 @@ final class MacGlobalInvocationController {
     private let environment: AppEnvironment
     private let panel = MacAssistantPanelController()
     private let monitor = MacInvocationShortcutMonitor()
+    let browserDiscovery = MacBrowserAppDiscovery()
     private let guidance = MacGuidanceOverlay()
     private let cursorCompanion: MacCursorCompanion
     private var running = false
@@ -45,6 +46,14 @@ final class MacGlobalInvocationController {
         guard !running else { return }
         running = true
         observationGeneration = UUID()
+        browserDiscovery.start(receive: { [weak self] url in
+            self?.environment.integrations.receiveBrowserURL(url)
+            return self?.environment.integrations.browserHandoff.request?.id
+        }, retire: { [weak self] id in
+            guard let self, self.environment.integrations.browserHandoff.request?.id == id,
+                  self.environment.integrations.browserHandoff.phase == .review else { return }
+            self.environment.integrations.clearBrowserHandoff()
+        })
         installLifecycleObservers()
         observeEnvironment()
     }
@@ -58,6 +67,7 @@ final class MacGlobalInvocationController {
         environment.voice.cancel()
         let ownedEnvironment = environment
         Task { await ownedEnvironment.dismissInteraction(requestID) }
+        browserDiscovery.stop()
         monitor.stop()
         removeNotchReleaseMonitors()
         heldToken = nil
@@ -323,10 +333,11 @@ final class MacGlobalInvocationController {
         let scheduledNotice = environment.presenceState == .idle && environment.presentedResponse == nil
             ? environment.scheduledBriefingNoticeID : nil
         let handoff = environment.integrations.browserHandoff
+        let connectionNotice = environment.integrations.browserConnectionNotice
         let browserRequest = environment.presenceState == .idle && [.review, .alreadyAllowed].contains(handoff.phase)
             ? handoff.request.flatMap { request in request.isCurrent()
                 ? MacBrowserConnectionRequest(service: request.service, repository: request.repository, id: request.id, alreadyAllowed: handoff.phase == .alreadyAllowed) : nil }
-            : nil
+            : environment.presenceState == .idle ? connectionNotice.map { MacBrowserConnectionRequest(service: $0.service, repository: nil, id: $0.id, isConnected: true) } : nil
         let action = environment.presentedAction
         let owner = environment.presentedActionOwner
         let consentID = environment.screenConsentRequestID
@@ -376,6 +387,10 @@ final class MacGlobalInvocationController {
             },
             onConnectionDecision: { [weak self] decision in
                 guard let self, self.running, let browserRequest else { return }
+                if browserRequest.isConnected {
+                    self.environment.integrations.dismissBrowserConnectionNotice(id: browserRequest.id)
+                    self.updatePanel(); return
+                }
                 let handoffDecision: BrowserIntegrationHandoff.Decision
                 switch decision {
                 case .decline: handoffDecision = .no

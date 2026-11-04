@@ -35,6 +35,7 @@ sources = [
     "Suzzme/Core/Integrations/ProviderReadRecipe.swift",
     "Suzzme/Core/Integrations/GoogleProviderRecipes.swift",
     "Suzzme/DesignSystem/Theme/SuzzmeTheme.swift",
+    "Suzzme/DesignSystem/Components/SuzzmeGlassSurface.swift",
     "PresenceShared/SuzzmeCharacterArtwork.swift",
     "Suzzme/DesignSystem/Components/SuzzmeMascotArtwork.swift",
     "Suzzme/DesignSystem/Components/SuzzmeMascot.swift",

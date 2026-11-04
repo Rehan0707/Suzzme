@@ -51,6 +51,7 @@ with tempfile.TemporaryDirectory(prefix="suzzme-shortcut-monitor-") as directory
                "-module-cache-path", str(output / "ModuleCache"), "-framework", "SwiftUI",
                "-framework", "CoreGraphics",
                str(project / "Suzzme/Core/Models/SuzzmeAssistantState.swift"),
+               str(project / "Suzzme/DesignSystem/Components/SuzzmeMascotArtwork.swift"),
                str(project / "Suzzme/Core/Invocation/SuzzmePresenceTheme.swift"),
                str(project / "Suzzme/Core/Invocation/AssistantPresentation.swift"),
                str(combined), "-o", str(output / "GlobalShortcutMonitorChecks")]

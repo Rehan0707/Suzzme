@@ -1,3 +1,4 @@
+import {appCatalog} from "./app-catalog.js";
 import {inspectActiveIntegration, supportedIntegrationOrigins} from "./integration-connection.js";
 import {inspectActiveRepository} from "./github-connection.js";
 
@@ -6,6 +7,9 @@ const buttons = [...document.querySelectorAll("button")].filter(button => button
 const autoDetectionButton = document.querySelector("#toggle-auto-detection");
 const autoDetectionStatus = document.querySelector("#auto-detection-status");
 const serviceNames = {gmail: "Gmail", outlook: "Outlook", whatsapp: "WhatsApp", github: "GitHub", linkedin: "LinkedIn", notion: "Notion", slack: "Slack"};
+for (const {service} of appCatalog) {
+  serviceNames[service] ??= service.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/^./, letter => letter.toUpperCase());
+}
 function show(message) { status.textContent = message; }
 async function perform(message) {
   buttons.forEach(button => { button.disabled = true; });
@@ -124,3 +128,6 @@ async function recognizeIntegration() {
   } catch { integrationStatus.textContent = "This tab’s app identity is unavailable. Open the extension on a supported HTTPS app tab."; }
 }
 await Promise.all([refreshAutoDetection(), recognizeIntegration(), recognizeRepository(), perform({method: "status"})]);
+
+document.querySelector('#whatsapp-start').addEventListener('click', () => perform({method:'whatsapp.start'}));
+document.querySelector('#whatsapp-stop').addEventListener('click', () => perform({method:'whatsapp.stop'}));

@@ -42,7 +42,7 @@ struct GoogleConnectedInformationSource: InformationSource {
         guard attempts > 0 else { throw InformationError.authorizationRequired }
         // Empty successful reads are factual. Total failures are not healthy empty.
         if observations.isEmpty, !complete { throw InformationError.unavailable }
-        return .init(observations: Array(observations.prefix(InformationLimits.intake)), complete: false,
+        return .init(observations: Array(observations.prefix(InformationLimits.intake)), complete: complete,
                      window: .init(start: now.addingTimeInterval(-86400), end: now.addingTimeInterval(2 * 86400)))
     }
     func permits(_ event: InformationEvent, now: Date) async -> Bool {

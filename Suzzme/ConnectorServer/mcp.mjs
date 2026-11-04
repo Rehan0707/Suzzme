@@ -4,8 +4,10 @@ export const protocolVersion = '2025-11-25';
 const versions = new Set([protocolVersion, '2025-06-18', '2025-03-26']);
 const recipes = Object.freeze({
   gmail: ['suzzme_read_gmail_inbox', 'Read recent Gmail inbox previews'],
+  googlecalendar: ['suzzme_read_google_calendar', 'Read primary Google Calendar event titles and times'],
   outlook: ['suzzme_read_outlook_inbox', 'Read recent Outlook inbox previews'],
-  github: ['suzzme_read_github_issue', 'Read one selected GitHub issue'],
+  github: ['suzzme_read_github_issue', 'Read one selected issue or today’s commits and pull requests from one selected repository'],
+  linkedin: ['suzzme_read_linkedin_profile', 'Read your own basic LinkedIn profile only'],
   slack: ['suzzme_read_slack_message', 'Read one selected Slack channel message'],
   notion: ['suzzme_read_notion_page', 'Read top-level text from one selected Notion page'],
 });
@@ -40,16 +42,21 @@ export async function handleMCP(message, configuredServices, read) {
     return result({ tools: enabled.map(([, [name, description]]) => ({ name, description,
       inputSchema: { type: 'object', additionalProperties: false, required: ['accountID', 'resource'],
         properties: { accountID: { type: 'string', minLength: 1, maxLength: 160 },
-          resource: { type: 'string', minLength: 1, maxLength: 512 } } },
+          resource: { type: 'string', minLength: 1, maxLength: 512 },
+          now: { type: 'string', minLength: 1, maxLength: 64 },
+          timeZone: { type: 'string', minLength: 1, maxLength: 128 } } },
       annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true },
     })) });
   }
   if (message.method !== 'tools/call') return fault(id, -32601, 'Unsupported MCP method.');
   const recipe = enabled.find(([, [name]]) => name === params.name);
   if (!keys(params, ['name', 'arguments', '_meta']) || !recipe
-    || !keys(params.arguments, ['accountID', 'resource'])
+    || !keys(params.arguments, ['accountID', 'resource', 'now', 'timeZone'])
     || typeof params.arguments.accountID !== 'string' || !/^[A-Za-z0-9_-]{1,160}$/.test(params.arguments.accountID)
-    || typeof params.arguments.resource !== 'string' || !params.arguments.resource.length || params.arguments.resource.length > 512) {
+    || typeof params.arguments.resource !== 'string' || !params.arguments.resource.length || params.arguments.resource.length > 512
+    || (params.arguments.now !== undefined && (typeof params.arguments.now !== 'string' || params.arguments.now.length > 64))
+    || (params.arguments.timeZone !== undefined && (typeof params.arguments.timeZone !== 'string' || params.arguments.timeZone.length > 128))
+    || (params.arguments.now === undefined) !== (params.arguments.timeZone === undefined)) {
     return fault(id, -32602, 'Choose a supported read tool, account and source link.');
   }
   try {

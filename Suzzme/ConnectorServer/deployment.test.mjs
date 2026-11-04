@@ -64,6 +64,12 @@ test('deployment export copies only reviewed source and refuses destination merg
     assert.equal(names.some(name => name.endsWith('.pending')), false);
     assert.equal(Object.keys(files).length, deploymentFiles.length);
     assert.equal(JSON.parse(await readFile(new URL('manifest.json', target), 'utf8')).secretFilesIncluded, false);
+    for (const name of names.filter(name => name.endsWith('.mjs'))) {
+      const source = await readFile(new URL(name, target), 'utf8');
+      for (const match of source.matchAll(/from ['"]\.\/([^'"]+)['"]/g)) {
+        assert.ok(names.includes(match[1]), `${name} requires missing deployment file ${match[1]}`);
+      }
+    }
     await assert.rejects(() => prepareDeployment(target), error => error.code === 'EEXIST');
   } finally { await rm(dir, { recursive: true, force: true }); }
 });

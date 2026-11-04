@@ -185,12 +185,22 @@ actor ComposioInformationSource: InformationSource {
                 do {
                     let excerpt = try await connector.read(account: account, resource: url)
                     try Task.checkCancellation()
-                    guard let observation = try await self.observation(excerpt, accountID: accountID,
-                        selection: selection, url: url, now: now) else {
-                        complete = false
-                        continue
+                    if selection.service == "github", ComposioSummaryPolicy.isGitHubRepositoryResource(url) {
+                        guard let activity = ComposioGitHubDailyActivity.decode(excerpt.text, selectedResource: url) else {
+                            complete = false
+                            continue
+                        }
+                        observations.append(contentsOf: Self.githubObservations(activity, accountID: accountID,
+                            selection: selection, resource: url))
+                        if activity.truncated { complete = false }
+                    } else {
+                        guard let observation = try await self.observation(excerpt, accountID: accountID,
+                            selection: selection, url: url, now: now) else {
+                            complete = false
+                            continue
+                        }
+                        observations.append(observation)
                     }
-                    observations.append(observation)
                     successful = true
                 } catch is CancellationError { throw CancellationError() }
                 catch { complete = false }
@@ -206,22 +216,72 @@ actor ComposioInformationSource: InformationSource {
 
     func permits(_ event: InformationEvent, now: Date) async -> Bool {
         let parts = event.externalID.split(separator: ":", omittingEmptySubsequences: false).map(String.init)
-        guard parts.count == 4, parts[0] == "composio",
+        guard (parts.count == 4 || parts.count == 5), parts[0] == "composio",
               let generation = UUID(uuidString: parts[2]),
-              parts[3].range(of: #"^[0-9a-f]{64}$"#, options: .regularExpression) != nil,
+              parts.dropFirst(3).allSatisfy({ $0.range(of: #"^[0-9a-f]{64}$"#, options: .regularExpression) != nil }),
               let selected = try? await selections.load(),
               let selection = selected[parts[1]], selection.generation == generation,
               let connector = try? await connector(),
               let accounts = try? await currentAccounts(using: connector, forceRefresh: false),
               accounts.contains(where: { $0.id == parts[1] && $0.service == selection.service && $0.isActive }) else { return false }
-        return selection.urls.contains { Self.externalID(accountID: parts[1], selection: selection, url: $0) == event.externalID }
+        let matchingResources = selection.urls.filter { Self.digest($0) == parts[3] }
+        guard !matchingResources.isEmpty else { return false }
+        if parts.count == 4 {
+            return matchingResources.contains { Self.externalID(accountID: parts[1], selection: selection, url: $0) == event.externalID }
+        }
+        guard selection.service == "github",
+              let repositoryResource = matchingResources.first(where: ComposioSummaryPolicy.isGitHubRepositoryResource),
+              let itemURL = ComposioGitHubDailyActivity.linkURL(in: event.title)?.absoluteString,
+              Self.digest(itemURL) == parts[4],
+              ComposioSummaryPolicy.githubRepositorySlug(repositoryResource) == Self.githubRepositorySlug(forItemURL: itemURL) else { return false }
+        return true
     }
 
     static func prefix(accountID: String) -> String { "composio:" + accountID + ":" }
 
-    static func externalID(accountID: String, selection: ComposioSummarySelection, url: String) -> String {
-        let digest = SHA256.hash(data: Data(url.utf8)).map { String(format: "%02x", $0) }.joined()
-        return "composio:\(accountID):\(selection.generation.uuidString):\(digest)"
+    static func externalID(accountID: String, selection: ComposioSummarySelection, url: String, itemURL: String? = nil) -> String {
+        let base = "composio:\(accountID):\(selection.generation.uuidString):\(digest(url))"
+        return itemURL.map { base + ":" + digest($0) } ?? base
+    }
+
+    private static func digest(_ value: String) -> String {
+        SHA256.hash(data: Data(value.utf8)).map { String(format: "%02x", $0) }.joined()
+    }
+
+    private static func githubRepositorySlug(forItemURL value: String) -> String? {
+        guard let components = URLComponents(string: value), components.host?.lowercased() == "github.com" else { return nil }
+        let path = components.percentEncodedPath.split(separator: "/").map(String.init)
+        guard path.count == 4,
+              ComposioSummaryPolicy.isGitHubRepositoryResource("https://github.com/\(path[0])/\(path[1])") else { return nil }
+        return "\(path[0])/\(path[1])"
+    }
+
+    private static func githubObservations(
+        _ activity: ComposioGitHubDailyActivity,
+        accountID: String,
+        selection: ComposioSummarySelection,
+        resource: String
+    ) -> [InformationObservation] {
+        func make(_ label: String, _ detail: String, _ itemURL: String, _ rawDate: String,
+                  completed: Bool) -> InformationObservation? {
+            guard let date = activity.timestamp(for: rawDate),
+                  ComposioGitHubDailyActivity.linkURL(in: "\(label)\(detail) · \(itemURL)")?.absoluteString == itemURL else { return nil }
+            let linkSuffix = " · \(itemURL)"
+            let display = String((label + detail).prefix(max(1, 240 - linkSuffix.count))) + linkSuffix
+            return .init(externalID: externalID(accountID: accountID, selection: selection, url: resource, itemURL: itemURL),
+                         title: display, entities: ["composio", "github", "\(activity.repository)", label.contains("commit") ? "commit" : "pull request"],
+                         modifiedAt: date, effectiveAt: date, state: completed ? .completed : .active,
+                         kindHint: .generalUpdate)
+        }
+        let commits = activity.commits.compactMap { commit in
+            make("GitHub commit: ", commit.message, commit.url, commit.committedAt, completed: false)
+        }
+        let pulls = activity.pullRequests.compactMap { pull in
+            let state = pull.merged ? "merged" : pull.state
+            return make("GitHub pull request #\(pull.number) (\(state)): ", pull.title, pull.url,
+                        pull.activityAt, completed: pull.state == "closed" || pull.merged)
+        }
+        return (commits + pulls).sorted { $0.modifiedAt < $1.modifiedAt }
     }
 
     private func connector() async throws -> ComposioConnector? {
@@ -271,6 +331,12 @@ actor ComposioInformationSource: InformationSource {
         case "gmail", "outlook":
             guard let summary = try await summarize(excerpt.text), let compact = Self.safeSummary(summary) else { return nil }
             title = "\(excerpt.service == "gmail" ? "Gmail" : "Outlook") inbox: \(compact)"
+            modifiedAt = now
+            effectiveAt = now
+
+        case "googlecalendar":
+            guard let compact = Self.safeSummary(excerpt.text) else { return nil }
+            title = "Google Calendar: \(compact)"
             modifiedAt = now
             effectiveAt = now
 

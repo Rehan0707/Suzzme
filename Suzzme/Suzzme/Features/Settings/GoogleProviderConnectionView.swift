@@ -137,14 +137,20 @@ struct GoogleAccountSourcesView: View {
             }
             Section("Email") {
                 NavigationLink("Gmail") {
-                    List { Section { GmailConnectionView() } }
-                        .suzzmeReadableList().navigationTitle("Gmail")
+                    ComposioIntegrationsView(initialServiceID: "gmail")
                 }
             }
             Section("Google services") {
                 ForEach(ProviderReadRecipe.googleCatalog, id: \.id) { recipe in
-                    NavigationLink { GoogleProviderConnectionView(recipe: recipe) } label: {
-                        LabeledContent(recipe.name, value: environment.gmailAccount.hasGoogleAccess(recipe.id) ? "Access granted" : "Connect")
+                    NavigationLink {
+                        if recipe.id == .googleCalendar {
+                            ComposioIntegrationsView(initialServiceID: "googlecalendar")
+                        } else {
+                            GoogleProviderConnectionView(recipe: recipe)
+                        }
+                    } label: {
+                        LabeledContent(recipe.name, value: recipe.id == .googleCalendar
+                            ? "Composio" : environment.gmailAccount.hasGoogleAccess(recipe.id) ? "Access granted" : "Connect")
                     }
                 }
             }

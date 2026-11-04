@@ -63,10 +63,11 @@ import SwiftUI
                 try png.write(to: directory.appendingPathComponent("\(mode)-hover.png"))
             }
         }
+        for service in [IntegrationID.gmail, .slack, .github] {
         for hasNotch in [true, false] {
             for alreadyAllowed in [false, true] {
                 for mode in ["Light", "Dark", "LargeType"] {
-                    let request = MacGitHubConnectionRequest(service: .github, repository: "long-owner-name/long-repository-name", id: UUID(), alreadyAllowed: alreadyAllowed)
+                    let request = MacGitHubConnectionRequest(service: service, repository: service == .github ? "long-owner-name/long-repository-name" : nil, id: UUID(), alreadyAllowed: alreadyAllowed && service == .github, isConnected: alreadyAllowed && service != .github)
                     let size = MacAssistantSurfaceMetrics.size(state: .idle, signal: .none, notchWidth: 180, review: nil, response: nil, connectionRequest: request, notchHeight: hasNotch ? 32 : 0)
                     let content = MacAssistantNotchSurface(state: .idle, theme: .suzzmePurple, animation: .minimal, signal: .none, hasNotch: hasNotch, notchWidth: 180, notchHeight: hasNotch ? 32 : 0, connectionRequest: request, onConnectionDecision: { _ in }, onCancel: {}, onInvoke: {})
                         .frame(width: size.width, height: size.height)
@@ -77,10 +78,11 @@ import SwiftUI
                     let renderer = ImageRenderer(content: content)
                     renderer.scale = 2
                     if let image = renderer.nsImage, let data = image.tiffRepresentation, let bitmap = NSBitmapImageRep(data: data), let png = bitmap.representation(using: .png, properties: [:]) {
-                        try png.write(to: directory.appendingPathComponent("GitHub-\(hasNotch ? "Notch" : "Fallback")-\(alreadyAllowed ? "Allowed" : "Request")-\(mode).png"))
+                        try png.write(to: directory.appendingPathComponent("\(service.rawValue)-\(hasNotch ? "Notch" : "Fallback")-\(alreadyAllowed ? "Allowed" : "Request")-\(mode).png"))
                     }
                 }
             }
+        }
         }
     }
 }

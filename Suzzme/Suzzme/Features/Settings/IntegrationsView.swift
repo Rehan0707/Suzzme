@@ -1,12 +1,14 @@
 import SwiftUI
 
 private enum IntegrationSetupSheet: Identifiable {
+    case provider(IntegrationID)
     case direct(IntegrationID)
     case whatsapp
     case composio(IntegrationID)
     case sharedLinkedIn
     var id: String {
         switch self {
+        case .provider(let service): "provider-\(service.rawValue)"
         case .direct(let service): "direct-\(service.rawValue)"
         case .whatsapp: "whatsapp"
         case .composio(let service): "composio-\(service.rawValue)"
@@ -22,8 +24,9 @@ struct IntegrationsView: View {
     @Environment(AppEnvironment.self) private var environment
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var search = ""
-    @State private var showsCatalog = false
+    @State private var showsCatalog = true
     @State private var showsDataFlow = false
+    @State private var composioWorkspace: ComposioWorkspace?
     @State private var setupSheet: IntegrationSetupSheet?
     @State private var suggestedGitHubRepository = ""
     private var controller: IntegrationController { environment.integrations }
@@ -61,6 +64,9 @@ struct IntegrationsView: View {
             VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.xs) {
                 Text("Apps and integrations")
                     .font(.title.weight(.semibold)).accessibilityAddTraits(.isHeader)
+                Text("\(IntegrationDirectoryItem.catalog.count) apps · \(IntegrationDirectoryItem.requestedCatalogCount) requested apps included")
+                    .font(.subheadline.weight(.medium))
+                    .accessibilityIdentifier("suzzme-integration-app-count")
                 Text("Choose a connection and review its access. Status reflects what is available in this build.")
                     .foregroundStyle(SuzzmeTheme.textSecondary).fixedSize(horizontal: false, vertical: true)
             }
@@ -98,6 +104,10 @@ struct IntegrationsView: View {
                     Label("Connect accounts with Composio", systemImage: "app.connected.to.app.below.fill")
                         .frame(minHeight: SuzzmeTheme.Layout.touchTarget)
                 }.buttonStyle(.borderless)
+                NavigationLink { ConnectionHealthView() } label: {
+                    Label("Connection Health", systemImage: "checkmark.shield")
+                        .frame(minHeight: SuzzmeTheme.Layout.touchTarget)
+                }.buttonStyle(.borderless)
                 NavigationLink { SharedAppContextView() } label: {
                     Label("Ask about shared app content", systemImage: "text.viewfinder")
                         .frame(minHeight: SuzzmeTheme.Layout.touchTarget)
@@ -109,7 +119,7 @@ struct IntegrationsView: View {
                     .accessibilityHint("Shows reference entries that cannot connect in this build. Search always includes them.")
                 #if os(macOS)
                 NavigationLink { BrowserPairingView() } label: {
-                    Label("Browser pairing", systemImage: "link.badge.plus")
+                    Label("Browser suggestions", systemImage: "link.badge.plus")
                         .frame(minHeight: SuzzmeTheme.Layout.touchTarget)
                 }
                 .buttonStyle(.borderless)
@@ -191,6 +201,17 @@ struct IntegrationsView: View {
         .navigationTitle("Integrations")
         .sheet(item: $setupSheet, onDismiss: { suggestedGitHubRepository = ""; openBrowserSetupIfNeeded() }) { sheet in
             switch sheet {
+            case .provider(let service):
+                if let recipe = ProviderReadRecipe.find(service) {
+                    NavigationStack {
+                        Group {
+                            if recipe.googleScope != nil { GoogleProviderConnectionView(recipe: recipe) }
+                            else { ProviderConnectionView(recipe: recipe) }
+                        }.toolbar {
+                            ToolbarItem(placement: .confirmationAction) { Button("Done") { setupSheet = nil } }
+                        }
+                    }
+                }
             case .direct(let service):
                 if service == .notion { NotionConnectionSheet().environment(environment) }
                 else if service == .linear { LinearConnectionSheet().environment(environment) }
@@ -213,12 +234,32 @@ struct IntegrationsView: View {
                 Text("Connect WhatsApp Web on your Mac.")
                 #endif
             case .composio(let service):
-                ComposioIntegrationsView(initialServiceID: service.rawValue).environment(environment)
+                ComposioIntegrationsView(initialServiceID: service == .googleCalendar ? "googlecalendar" : service.rawValue).environment(environment)
             }
         }
-        .task { openBrowserSetupIfNeeded(); await controller.load(); await environment.refreshSourcePermissions() }
+        .task {
+            openBrowserSetupIfNeeded()
+            await controller.load()
+            await loadComposioStatus()
+            await environment.refreshSourcePermissions()
+        }
         .onChange(of: controller.browserHandoff.request?.id) { _, _ in openBrowserSetupIfNeeded() }
         .onChange(of: controller.browserHandoff.phase) { _, _ in openBrowserSetupIfNeeded() }
+    }
+
+    private func loadComposioStatus() async {
+        let workspace = environment.makeComposioWorkspace()
+        await workspace.load()
+        guard !Task.isCancelled else { return }
+        composioWorkspace = workspace
+    }
+
+    private func composioServiceID(for item: IntegrationDirectoryItem) -> String? {
+        switch item.id {
+        case "github", "linkedin", "slack", "outlook", "gmail": item.id
+        case "google-calendar": "googlecalendar"
+        default: nil
+        }
     }
 
     private func openBrowserSetupIfNeeded() {
@@ -228,15 +269,19 @@ struct IntegrationsView: View {
         case .github:
             setupSheet = .composio(.github)
         case .notion:
-            setupSheet = .direct(.notion)
+            setupSheet = .composio(.notion)
         case .linkedin:
-            setupSheet = .sharedLinkedIn
+            setupSheet = .composio(.linkedin)
         case .slack, .gmail, .outlook:
             setupSheet = .composio(request.service)
         case .whatsapp:
             setupSheet = .whatsapp
+        case .linear:
+            setupSheet = .direct(.linear)
+        case .googleCalendar:
+            setupSheet = .composio(.googleCalendar)
         default:
-            break
+            if ProviderReadRecipe.find(request.service) != nil { setupSheet = .provider(request.service) }
         }
     }
 
@@ -246,9 +291,9 @@ struct IntegrationsView: View {
         let action = action(for: item)
         switch item.availability {
         case .connectable:
-            if item.integrationID == .github {
-                NavigationLink { ComposioIntegrationsView(initialServiceID: "github") } label: {
-                    IntegrationDirectoryCard(item: item, status: "Composio · issue reads", action: "Connect")
+            if let service = composioServiceID(for: item) {
+                NavigationLink { ComposioIntegrationsView(initialServiceID: service, workspace: composioWorkspace) } label: {
+                    IntegrationDirectoryCard(item: item, status: status, action: action)
                 }.buttonStyle(.plain)
             } else if item.integrationID == .notion {
                 NavigationLink { NotionIntegrationOptions() } label: {
@@ -323,8 +368,17 @@ struct IntegrationsView: View {
         case .managedGoogle:
             return environment.gmailAccount.isConnected ? "Connected" : environment.gmailAccount.isConfigured ? "Sign-in required" : "Setup required"
         case .connectable:
-            guard let service = item.integrationID else { return "Not configured" }
-            if service == .github { return "Composio · issue reads" }
+            if let service = composioServiceID(for: item) {
+                guard let workspace = composioWorkspace else { return "Checking connection" }
+                guard workspace.configured else { return "Setup required" }
+                if workspace.isWorking && workspace.services.isEmpty { return "Checking connection" }
+                guard workspace.services.contains(where: { $0.id == service }) else {
+                    return workspace.error == nil ? "Setup required" : "Unavailable"
+                }
+                return workspace.accounts.contains(where: { $0.service == service && $0.isActive })
+                    ? "Connected" : "Available to connect"
+            }
+            guard let service = item.integrationID else { return "Setup required" }
             let accounts = controller.accounts.filter { $0.service == service }
             if let recipe = ProviderReadRecipe.find(service), recipe.googleScope != nil {
                 return environment.gmailAccount.hasGoogleAccess(service) ? "Read access granted" : environment.gmailAccount.isConfigured ? "Sign-in required" : "Setup required"
@@ -344,8 +398,12 @@ struct IntegrationsView: View {
             return "Share an excerpt"
         case .managedGoogle: return environment.gmailAccount.isConfigured ? "Manage" : "Setup"
         case .connectable:
-            if item.integrationID == .github { return "Connect with Composio" }
-            guard let service = item.integrationID else { return "Unavailable" }
+            if let service = composioServiceID(for: item) {
+                guard let workspace = composioWorkspace, workspace.configured else { return "Configure Composio" }
+                guard workspace.services.contains(where: { $0.id == service }) else { return "Setup required" }
+                return workspace.accounts.contains(where: { $0.service == service && $0.isActive }) ? "Manage" : "Connect"
+            }
+            guard let service = item.integrationID else { return "Setup required" }
             if service == .notion { return "Choose access" }
             if let recipe = ProviderReadRecipe.find(service), recipe.googleScope != nil {
                 if !environment.gmailAccount.isConfigured { return "Setup" }
@@ -488,7 +546,7 @@ private struct IntegrationDataFlowCard: View {
             Divider()
             row(
                 title: "Source access",
-                detail: "Calendar and Reminders use local permissions. Connected services fetch selected data over the internet. Optional Composio connections pass selected source data through your connector server and Composio, for supported connected services. LinkedIn uses only explicitly shared content. Shared app content is processed locally. WhatsApp inbox access is not used.",
+                detail: "Calendar and Reminders use local permissions. Connected services fetch selected data over the internet. Optional Composio connections pass selected source data through your connector server and Composio, for supported connected services. LinkedIn is limited to your own basic profile when its provider setup is enabled; feed and inbox access are unavailable. Shared app content is processed locally. WhatsApp inbox access is not used.",
                 symbol: "network"
             )
         }

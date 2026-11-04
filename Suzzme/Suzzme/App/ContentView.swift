@@ -400,16 +400,30 @@ private struct IOSBrowserIntegrationInvitation: View {
         case .github:
             ComposioIntegrationsView(initialServiceID: "github").environment(environment)
         case .notion:
-            NotionConnectionSheet().environment(environment)
+            ComposioIntegrationsView(initialServiceID: "notion").environment(environment)
         case .linkedin:
             ComposioIntegrationsView(initialServiceID: "linkedin").environment(environment)
         case .slack, .gmail, .outlook:
             ComposioIntegrationsView(initialServiceID: route.service.rawValue).environment(environment)
         case .whatsapp:
+            #if os(macOS)
             WhatsAppLocalView().environment(environment)
+            #else
+            ContentUnavailableView("Connect WhatsApp on your Mac", systemImage: "desktopcomputer",
+                                   description: Text("Choose WhatsApp chats in Suzzme on your Mac. This iPhone receives the Daily Summary you choose to share."))
+            #endif
+        case .linear:
+            LinearConnectionSheet().environment(environment)
+        case .googleCalendar:
+            ComposioIntegrationsView(initialServiceID: "googlecalendar").environment(environment)
         default:
+            if let recipe = ProviderReadRecipe.find(route.service) {
+                if recipe.googleScope != nil { GoogleProviderConnectionView(recipe: recipe).environment(environment) }
+                else { ProviderConnectionView(recipe: recipe).environment(environment) }
+            } else {
             ContentUnavailableView("Connection unavailable", systemImage: "puzzlepiece.extension",
                                    description: Text("This app connection is not enabled in the current build."))
+            }
         }
     }
 

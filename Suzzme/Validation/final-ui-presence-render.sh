@@ -22,7 +22,7 @@ cp Suzzme/Assets.xcassets/Contents.json "$assets/Contents.json"
 for asset in Canvas.colorset Surface.colorset AccentColor.colorset PurpleWash.colorset; do
     cp -R "Suzzme/Assets.xcassets/$asset" "$assets/"
 done
-for asset in Suzzme/Assets.xcassets/SuzzmeMascot*.imageset; do
+for asset in Suzzme/Assets.xcassets/SuzzmeMascot*.imageset Suzzme/Assets.xcassets/Integration-*.imageset; do
     cp -R "$asset" "$assets/"
 done
 cp Suzzme/Resources/MascotAnimations/*.gif "$resources/"

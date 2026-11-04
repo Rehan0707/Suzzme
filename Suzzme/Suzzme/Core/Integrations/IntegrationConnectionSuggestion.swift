@@ -21,13 +21,13 @@ struct BrowserIntegrationRoute: Equatable, Sendable {
         self.repository = repository
     }
 
-    static let browserConnectableServices: Set<IntegrationID> = [.github, .linkedin, .notion, .slack, .gmail, .outlook, .whatsapp]
+    static let browserConnectableServices: Set<IntegrationID> = Set(ProviderReadRecipe.catalog.map(\.id)).union([.github, .linkedin, .notion, .linear, .slack, .gmail, .outlook, .whatsapp])
 
     static func parse(_ url: URL) -> Self? {
         guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
               components.scheme?.lowercased() == "suzzme", components.user == nil,
               components.password == nil, components.port == nil, components.fragment == nil,
-              components.queryItems?.allSatisfy({ $0.value != nil }) == true else { return nil }
+              (components.queryItems ?? []).allSatisfy({ $0.value != nil }) else { return nil }
         let action: Action
         switch components.host?.lowercased() {
         case "browser": action = .requestConnection
@@ -36,7 +36,7 @@ struct BrowserIntegrationRoute: Equatable, Sendable {
         }
         let rawService = String(components.path.dropFirst()).lowercased()
         guard components.path == "/" + rawService,
-              let service = IntegrationID(rawValue: rawService),
+              let service = IntegrationID.allCases.first(where: { $0.rawValue.lowercased() == rawService }),
               browserConnectableServices.contains(service) else { return nil }
         if service == .github, let queryItems = components.queryItems, !queryItems.isEmpty {
             guard queryItems.count == 1,
@@ -71,8 +71,8 @@ struct BrowserIntegrationRoute: Equatable, Sendable {
         var components = URLComponents()
         components.scheme = "suzzme"
         components.host = action == .requestConnection ? "browser" : "integrations"
-        components.path = "/" + service.rawValue
-        if let repository { components.queryItems = [URLQueryItem(name: "repository", value: repository)] }
+        components.path = "/" + service.rawValue.lowercased()
+        if let repository { components.queryItems = [URLQueryItem(name: "repository", value: repository.lowercased())] }
         return components.url
     }
 
@@ -96,7 +96,7 @@ struct IntegrationConnectionSuggestion: Equatable, Sendable {
         let urls = question.split(whereSeparator: \.isWhitespace).filter { $0.hasPrefix("https://") }
         guard urls.count == 1, let raw = urls.first,
               let resource = IntegrationResourceResolver.resolve(url: String(raw)), resource.serviceID == .github,
-              resource.kind == .githubIssue,
+              resource.kind == .githubIssue || resource.kind == .githubPullRequest || resource.kind == .githubFile,
               let owner = resource.attributes.owner, let name = resource.attributes.repository else { return nil }
         if let selected = try? IntegrationAccountResolver.resolve(accounts: accounts, selected: nil),
            IntegrationRepositoryPolicy.permits(repo: owner + "/" + name, account: selected) { return nil }
@@ -140,6 +140,11 @@ struct BrowserIntegrationHandoff: Sendable {
     private(set) var phase: Phase = .queued
     private var recent: [(route: BrowserIntegrationRoute, date: Date)] = []
     private var dismissedUntil: [IntegrationID: Date] = [:]
+    init(suppressions: [IntegrationID: Date] = [:], now: Date = .now) {
+        dismissedUntil = suppressions.filter { $0.value > now && $0.value <= now.addingTimeInterval(30 * 86_400) }
+    }
+    var suppressions: [IntegrationID: Date] { dismissedUntil }
+
 
     @discardableResult mutating func receive(_ url: URL, now: Date = .now) -> Bool {
         guard let route = BrowserIntegrationRoute.parse(url) else { clear(); return false }
@@ -180,7 +185,11 @@ struct BrowserIntegrationHandoff: Sendable {
             dismissedUntil[request.service] = now.addingTimeInterval(3_600)
             clear()
         case .yes:
-            dismissedUntil[request.service] = now.addingTimeInterval(86_400)
+            // A scoped GitHub review must not hide other repositories. The
+            // route replay guard still suppresses repeat delivery of this one.
+            if request.service != .github || request.repository == nil {
+                dismissedUntil[request.service] = now.addingTimeInterval(86_400)
+            }
             if phase == .review { phase = .setup } else { clear() }
         }
         return true

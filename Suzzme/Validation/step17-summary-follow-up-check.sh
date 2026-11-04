@@ -10,6 +10,7 @@ xcrun swiftc -swift-version 6 -parse-as-library -module-cache-path "$summary_fol
   Suzzme/Core/Models/ExtractedSuzzmeItem.swift \
   Suzzme/Core/Models/DailyBriefing.swift \
   Suzzme/Core/Models/SuzzmeAssistantState.swift \
+  Suzzme/DesignSystem/Components/SuzzmeMascotArtwork.swift \
   Suzzme/DesignSystem/Theme/SuzzmeTheme.swift \
   Suzzme/Core/Invocation/SuzzmePresenceTheme.swift \
   Suzzme/Core/Invocation/AssistantPresentation.swift \

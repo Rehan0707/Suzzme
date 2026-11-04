@@ -37,7 +37,7 @@ xcrun swiftc -swift-version 6 -parse-as-library -framework SwiftData -framework 
   Suzzme/Core/Actions/EventKitCapabilities.swift \
   Suzzme/Core/Actions/ActionMutation.swift \
   Suzzme/Core/Actions/SettingsCapability.swift \
-  Suzzme/DesignSystem/Theme/SuzzmeTheme.swift \
+  Suzzme/DesignSystem/Theme/SuzzmeTheme.swift Suzzme/DesignSystem/Components/SuzzmeMascotArtwork.swift \
   Suzzme/Core/Invocation/SuzzmePresenceTheme.swift \
   Suzzme/Core/Invocation/AssistantPresentation.swift \
   Suzzme/Core/Voice/VoiceTranscriptFinalizer.swift \

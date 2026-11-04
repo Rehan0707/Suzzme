@@ -10,7 +10,7 @@ xcrun swiftc -swift-version 6 -parse-as-library -module-cache-path "$step21_inte
   Suzzme/Core/Models/ExtractedSuzzmeItem.swift \
   Suzzme/Core/Models/DailyBriefing.swift \
   Suzzme/Core/Models/SuzzmeAssistantState.swift \
-  Suzzme/DesignSystem/Theme/SuzzmeTheme.swift \
+  Suzzme/DesignSystem/Theme/SuzzmeTheme.swift Suzzme/DesignSystem/Components/SuzzmeMascotArtwork.swift \
   Suzzme/Core/Invocation/SuzzmePresenceTheme.swift \
   Suzzme/Core/Invocation/AssistantPresentation.swift \
   Suzzme/Core/Persistence/StoredSuzzmeItem.swift \

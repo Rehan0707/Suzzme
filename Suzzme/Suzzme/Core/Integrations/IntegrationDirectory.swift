@@ -41,8 +41,8 @@ struct IntegrationDirectoryItem: Identifiable {
             .replacingOccurrences(of: ".", with: "-")
         if id == "slack" {
             return Self(id: id, name: name, section: section, symbol: "number", monogram: mark, brand: id,
-                summary: "Read one channel message through your Composio connector. Replies and attachments are excluded.",
-                integrationID: nil, availability: .limited)
+                summary: "Read one selected channel message through your Composio connection. Replies and attachments are excluded.",
+                integrationID: .slack, availability: .connectable)
         }
         if let recipe = ProviderReadRecipe.catalog.first(where: { $0.name == name }) {
             return Self(id: id, name: name, section: section, symbol: "network", monogram: mark, brand: id,
@@ -58,8 +58,9 @@ struct IntegrationDirectoryItem: Identifiable {
         .init(id: "github", name: "GitHub", section: .development, symbol: "chevron.left.forwardslash.chevron.right", monogram: "GH", brand: "github", summary: "Read-only access to repositories you allow.", integrationID: .github, availability: .connectable),
         .init(id: "notion", name: "Notion", section: .productivity, symbol: "doc.text", monogram: "N", brand: "notion", summary: "Read-only access to pages you allow.", integrationID: .notion, availability: .connectable),
         .init(id: "linear", name: "Linear", section: .projects, symbol: "circle.circle", monogram: "L", brand: "linear", summary: "Read-only access to issues you allow.", integrationID: .linear, availability: .connectable),
-        .init(id: "gmail", name: "Gmail", section: .communication, symbol: "envelope.fill", monogram: "M", brand: "gmail", summary: "Selected inbox headers or on-device message summaries for your Daily Summary.", integrationID: nil, availability: .managedGoogle),
-        .init(id: "linkedin", name: "LinkedIn", section: .communication, symbol: "person.crop.square", monogram: "in", brand: "linkedin", summary: "Understand only text or screenshots you explicitly share. No connected account access.", integrationID: .linkedin, availability: .limited),
+        .init(id: "gmail", name: "Gmail", section: .communication, symbol: "envelope.fill", monogram: "M", brand: "gmail", summary: "Connect through Composio for bounded recent inbox previews and on-device answers.", integrationID: .gmail, availability: .connectable),
+        .init(id: "linkedin", name: "LinkedIn", section: .communication, symbol: "person.crop.square", monogram: "in", brand: "linkedin", summary: "Connect with Composio to read your own basic profile only. Feed, inbox, messages, and posting are unavailable.", integrationID: .linkedin, availability: .connectable),
+        .init(id: "outlook", name: "Outlook", section: .productivity, symbol: "envelope", monogram: "O", brand: "outlook", summary: "Connect with Composio for selected inbox previews. Full threads and attachments are excluded.", integrationID: .outlook, availability: .connectable),
         .init(id: "whatsapp", name: "WhatsApp", section: .communication, symbol: "message", monogram: "W", brand: "whatsapp", summary: "Summarize selected chats synced to WhatsApp for Mac on this device. iPhone receives the prepared Daily Summary.", integrationID: nil, availability: .limited)
     ]
 
@@ -80,6 +81,7 @@ struct IntegrationDirectoryItem: Identifiable {
         listed("ClickUp", .projects, "C"),
         listed("Confluence", .productivity, "C"),
         listed("Contentful", .design, "C"),
+        listed("Convex", .development, "CV"),
         listed("Crowdin", .design, "C"),
         listed("Dart", .development, "D"),
         listed("Daytona", .development, "D"),
@@ -100,12 +102,17 @@ struct IntegrationDirectoryItem: Identifiable {
         listed("GitLab", .development, "G"),
         listed("Gong", .business, "G"),
         listed("Google Ads", .marketing, "A"),
+        listed("Google Admin", .business, "GA"),
         listed("Google Analytics", .analytics, "A"),
         listed("Google BigQuery", .analytics, "BQ"),
         listed("Google Calendar", .scheduling, "31"),
+        listed("Google Chat", .communication, "C"),
         listed("Google Classroom", .productivity, "C"),
+        listed("Google Cloud Vision", .analytics, "CV"),
+        listed("Google Contacts", .productivity, "C"),
         listed("Google Docs", .productivity, "D"),
         listed("Google Drive", .productivity, "△"),
+        listed("Google Forms", .productivity, "F"),
         listed("Google Maps", .productivity, "M"),
         listed("Google Meet", .scheduling, "M"),
         listed("Google Photos", .productivity, "P"),
@@ -132,14 +139,15 @@ struct IntegrationDirectoryItem: Identifiable {
         listed("NotebookLM", .productivity, "N"),
         listed("Omnisend", .marketing, "O"),
         listed("OneDrive", .productivity, "☁"),
-        listed("Outlook", .productivity, "O"),
         listed("PagerDuty", .development, "P"),
         listed("Pinterest", .marketing, "P"),
         listed("Pinterest Ads", .marketing, "P"),
+        listed("PostHog", .analytics, "PH"),
         listed("Prisma", .development, "P"),
         listed("Productboard", .projects, "P"),
         listed("Pushbullet", .productivity, "P"),
         listed("QuickBooks", .finance, "qb"),
+        listed("Reddit", .communication, "R"),
         listed("Reddit Ads", .marketing, "R"),
         listed("Roam", .communication, "R"),
         listed("Salesforce", .business, "S"),
@@ -161,13 +169,16 @@ struct IntegrationDirectoryItem: Identifiable {
         listed("Timely", .scheduling, "T"),
         listed("Todoist", .productivity, "≋"),
         listed("Trello", .projects, "T"),
-        listed("Twitch", .marketing, "T"),
+        listed("Telegram", .communication, "T"),
+        listed("TikTok", .marketing, "♪"),
+        listed("Twitter", .marketing, "X"),
         listed("Typeform", .productivity, "T"),
         listed("WakaTime", .development, "W"),
         listed("Webex", .scheduling, "W"),
         listed("Wrike", .projects, "W"),
         listed("Yandex", .productivity, "Y"),
         listed("YNAB", .finance, "Y"),
+        listed("WhatsApp Business", .communication, "W"),
         listed("YouTube", .marketing, "▶"),
         listed("Zendesk", .business, "Z"),
         listed("Zeplin", .design, "Z"),
@@ -183,6 +194,79 @@ struct IntegrationDirectoryItem: Identifiable {
 
     static let catalog = (liveConnections + referenceCatalog).sorted {
         $0.name.localizedStandardCompare($1.name) == .orderedAscending
+    }
+
+    /// The 64-app integration set requested for parity with HeyClicky's catalog.
+    /// These names are counted against the full directory rather than assumed enabled.
+    static let requestedCatalogNames: Set<String> = Set("""
+    Airtable
+    Asana
+    Attio
+    Box
+    Cal.com
+    Calendly
+    Canva
+    ClickUp
+    Confluence
+    Contentful
+    Convex
+    Discord
+    Dropbox
+    Facebook
+    Figma
+    GitHub
+    GitLab
+    Gmail
+    Google Admin
+    Google Analytics
+    Google Chat
+    Google Classroom
+    Google Cloud Vision
+    Google Maps
+    Google Search Console
+    Google Ads
+    Google BigQuery
+    Google Calendar
+    Google Contacts
+    Google Docs
+    Google Drive
+    Google Forms
+    Google Meet
+    Google Photos
+    Google Sheets
+    Google Slides
+    Google Tasks
+    HubSpot
+    Instagram
+    Jira
+    Kit
+    Linear
+    LinkedIn
+    Miro
+    Notion
+    OneDrive
+    Outlook
+    PostHog
+    Reddit
+    Salesforce
+    Sentry
+    Shopify
+    Slack
+    Stack Exchange
+    Stripe
+    Telegram
+    TikTok
+    Todoist
+    Trello
+    Twitter
+    Typeform
+    WhatsApp Business
+    YouTube
+    Zendesk
+    """.split(whereSeparator: \.isNewline).map(String.init))
+
+    static var requestedCatalogCount: Int {
+        catalog.filter { requestedCatalogNames.contains($0.name) }.count
     }
 }
 

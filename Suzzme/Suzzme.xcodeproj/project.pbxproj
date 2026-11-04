@@ -301,6 +301,7 @@
 				"$(SRCROOT)/BrowserNativeHost/BrowserBroker.swift",
 				"$(SRCROOT)/Suzzme/Core/BrowserBridge/BrowserBridgeIPC.swift",
 				"$(SRCROOT)/Suzzme/Core/BrowserBridge/BrowserBridgeEngine.swift",
+				"$(SRCROOT)/Suzzme/Core/BrowserBridge/BrowserAppCatalog.swift",
 				"$(SRCROOT)/Suzzme/Core/BrowserBridge/NativeMessagingFrame.swift",
 				"$(SUZZME_BROWSER_CONFIG)",
 			);

@@ -1,3 +1,4 @@
+import {readOpenWhatsAppChat} from "./whatsapp-read.js";
 import {
   PROTOCOL_VERSION, NATIVE_HOST, MAX_VERSION, CONTEXT_TTL_SECONDS, byteLength, boundedJSON,
   isUUID, isExtensionID, validSecret, validateContext, sanitizePageURL, validateNativeResponse,
@@ -66,7 +67,7 @@ async function pairingCredential() {
   return pairing;
 }
 async function authenticatedRequest(method, payload, taskID) {
-  if (!["context.submit", "context.invalidate", "github.connection", "integration.connection"].includes(method) || !isUUID(taskID)) {
+  if (!["whatsapp.sync", "context.submit", "context.invalidate", "github.connection", "integration.connection"].includes(method) || !isUUID(taskID)) {
     throw new BrowserBridgeError("Unsupported browser request.");
   }
   const pairing = await pairingCredential();
@@ -332,7 +333,7 @@ chrome.runtime.onMessage.addListener((message, sender, reply) => {
   }
   const valid = requireKeys(message, ["method", "detected"]) && message.method === "github.request"
     || requireKeys(message, ["method", "service"]) && message.method === "integration.request"
-    || requireKeys(message, ["method"]) && ["status", "forget"].includes(message.method)
+    || requireKeys(message, ["method"]) && ["status", "forget", "whatsapp.start", "whatsapp.stop"].includes(message.method)
     || requireKeys(message, ["method", "mode"]) && message.method === "capture" && ["url", "selection", "page"].includes(message.mode)
     || requireKeys(message, ["method", "pairingToken"]) && message.method === "pair" && typeof message.pairingToken === "string";
   if (!valid) { reply({ok: false, message: "Unsupported browser request."}); return false; }
@@ -342,7 +343,9 @@ chrome.runtime.onMessage.addListener((message, sender, reply) => {
     try {
       await accessReady;
       let result;
-      if (message.method === "github.request") result = await requestRepository(message.detected);
+      if (message.method === "whatsapp.start") result = await startWhatsApp();
+      else if (message.method === "whatsapp.stop") { await chrome.storage.session.remove("whatsappChat"); result = "Browser chat syncing stopped. Turn off WhatsApp Web in Suzzme to remove local summaries."; }
+      else if (message.method === "github.request") result = await requestRepository(message.detected);
       else if (message.method === "integration.request") result = await requestIntegration(message.service);
       else if (message.method === "pair") result = await pair(message.pairingToken);
       else if (message.method === "capture") result = await capture(message.mode);
@@ -361,4 +364,34 @@ chrome.runtime.onMessage.addListener((message, sender, reply) => {
     } finally { activeCaptureIdentity = undefined; busy = false; }
   })();
   return true;
+});
+
+async function captureWhatsApp(tabID) {
+  const tab = await chrome.tabs.get(tabID);
+  if (!tab.active || tab.incognito || new URL(tab.url).origin !== 'https://web.whatsapp.com') return null;
+  const [result] = await chrome.scripting.executeScript({target: {tabId: tabID}, func: readOpenWhatsAppChat});
+  return result?.result;
+}
+async function startWhatsApp() {
+  const [tab] = await chrome.tabs.query({active: true, lastFocusedWindow: true});
+  const chat = tab && await captureWhatsApp(tab.id);
+  if (!chat) throw new BrowserBridgeError('Open a WhatsApp Web chat with visible text first.');
+  const record = {tabID: tab.id, name: chat.name, chatID: crypto.randomUUID(), expires: Date.now() + 3600000};
+  await sendWhatsApp(record, chat.text);
+  await chrome.storage.session.set({whatsappChat: record});
+  await chrome.alarms.create('whatsapp-sync', {periodInMinutes: 1});
+  return 'Selected chat is syncing locally for one hour while visible. Switching chats pauses syncing. Only visible text is included.';
+}
+async function sendWhatsApp(record, text) {
+  await authenticatedRequest('whatsapp.sync', {contextID: crypto.randomUUID(), contextVersion: 1,
+    capturedAt: Date.now()/1000, chatID: record.chatID, text}, crypto.randomUUID());
+}
+chrome.alarms.onAlarm.addListener(async alarm => {
+  if (alarm.name !== 'whatsapp-sync' || busy) return;
+  const {whatsappChat: record} = await chrome.storage.session.get('whatsappChat');
+  if (!record || record.expires < Date.now()) { await chrome.storage.session.remove('whatsappChat'); return; }
+  busy = true;
+  try { const chat = await captureWhatsApp(record.tabID); if (chat?.name === record.name) await sendWhatsApp(record, chat.text); }
+  catch { /* No fabricated success; native source health reflects accepted snapshots. */ }
+  finally { busy = false; }
 });

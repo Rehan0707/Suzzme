@@ -129,7 +129,6 @@ Suzzme only accesses what you explicitly allow:
 * [`Suzzme/ConnectorServer/`](Suzzme/ConnectorServer/) — MCP server connecting Slack, Notion, and GitHub.
 * [`Suzzme/BrowserExtension/`](Suzzme/BrowserExtension/) — Chrome extension bridge for web context.
 * [`voice-gateway/`](voice-gateway/) — Cloudflare Worker proxy for speech synthesis and transcription.
-* [`landing-page/`](landing-page/) — High-craft product landing page with interactive 8:00 AM simulator.
 * [`dynamic-island-lab/`](dynamic-island-lab/) — Interactive browser prototype for Dynamic Island animations.
 * [`docs/`](docs/) — Architecture guides, design documentation, and technical deep-dives.
 

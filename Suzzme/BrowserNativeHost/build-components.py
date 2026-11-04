@@ -19,7 +19,7 @@ config_path = os.environ.get('SUZZME_BROWSER_CONFIG')
 config = json.loads(Path(config_path).read_text()) if config_path else {'teamID': '', 'appGroup': '', 'extensionIDs': []}
 # The shipping app revalidates syntax AND its actual code signature before use.
 (resources / 'BrowserBridge.json').write_text(json.dumps(config, indent=2) + '\n')
-shared = [root / 'Suzzme/Core/BrowserBridge' / p for p in ['BrowserBridgeEngine.swift', 'BrowserBridgeIPC.swift', 'NativeMessagingFrame.swift']]
+shared = [root / 'Suzzme/Core/BrowserBridge' / p for p in ['BrowserAppCatalog.swift', 'BrowserBridgeEngine.swift', 'BrowserBridgeIPC.swift', 'NativeMessagingFrame.swift']]
 temporary = Path(os.environ['SCRIPT_OUTPUT_FILE_4'])
 temporary.mkdir(parents=True, exist_ok=True)
 module_cache = Path(os.environ['TMPDIR']) / 'SuzzmeBrowserModuleCache'

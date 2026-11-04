@@ -2,12 +2,33 @@
 import SwiftUI
 
 struct BrowserPairingView: View {
+    @Environment(MacGlobalInvocationController.self) private var invocation
     @Environment(AppEnvironment.self) private var environment
     @State private var selectedExtension = ""
     @State private var isBusy = false
     private var bridge: MacBrowserBridgeController { environment.browserBridge }
     var body: some View {
         Form {
+            Section("Native browser detection") {
+                Toggle("Suggest connections from active browser tabs", isOn: Binding(
+                    get: { invocation.browserDiscovery.enabled },
+                    set: { invocation.browserDiscovery.setEnabled($0) }))
+                Text("Safari, Chrome, Brave, Edge and Arc. Requires Accessibility permission. Suzzme observes window and tab events and reads only the document URL, including in private windows if the browser exposes it. It discards the path after recognizing the app. Disable this switch to stop detection.")
+                    .font(.footnote).foregroundStyle(SuzzmeTheme.textSecondary)
+                Text(invocation.browserDiscovery.status).font(.footnote)
+                Button("Check Access") { invocation.browserDiscovery.refresh() }
+                Button("Open Accessibility Settings") {
+                    if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility") { NSWorkspace.shared.open(url) }
+                }
+                Button("Reset dismissed app suggestions") { environment.integrations.resetBrowserSuggestions() }
+                    .help("Allows previously declined or snoozed apps to offer setup again.")
+            }
+
+            Section("Automatic connection suggestions") {
+                Text("Open Gmail, Outlook, GitHub, Notion, Slack, LinkedIn or WhatsApp in Chrome. When paired, Suzzme can offer a connection from its notch panel using only the active tab’s app name.")
+                Text("Setup: install the Suzzme App Connections extension, enable and pair the helper below, then turn on Automatic tab prompts in the extension. No declines an app for 30 days; Not now snoozes it for an hour, including after restarting Suzzme. Connect opens setup without granting account access.")
+                    .font(.footnote).foregroundStyle(SuzzmeTheme.textSecondary)
+            }
             Section("Chrome on this Mac") {
                 Text(bridge.status).foregroundStyle(SuzzmeTheme.textSecondary)
                 Text("Pairing lets this Chrome extension send a supported app name or GitHub repository slug to Suzzme. Active-tab prompts are off until you enable them and grant the listed site permissions in the extension. It cannot read page content, provider accounts, or authorize connections. Safari is not supported by this extension.")
@@ -44,7 +65,7 @@ struct BrowserPairingView: View {
             }
         }
         .formStyle(.grouped)
-        .navigationTitle("Browser pairing")
+        .navigationTitle("Browser suggestions")
         .task { bridge.prepare(integrations: environment.integrations) }
     }
     private func run(_ operation: @escaping @MainActor () async -> Void) {

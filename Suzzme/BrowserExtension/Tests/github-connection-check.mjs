@@ -32,7 +32,7 @@ check(await inspectActiveRepository(browser) === undefined, 'ambiguous tab fails
 const source = await readFile(new URL('../github-connection.js', import.meta.url), 'utf8');
 check(!/tabs\.on|setInterval|executeScript|sendNativeMessage|\.storage\.|document\.|\.title\b/.test(source), 'feature has no monitoring, DOM, title, storage or native-messaging access');
 const manifest = JSON.parse(await readFile(new URL('../manifest.json', import.meta.url)));
-assert.deepEqual([...manifest.permissions].sort(), ['activeTab','nativeMessaging','storage'].sort()); passed++;
+assert.deepEqual([...manifest.permissions].sort(), ['activeTab','nativeMessaging','storage','scripting','alarms'].sort()); passed++;
 check(!manifest.host_permissions && !manifest.content_scripts, 'no expanded page permissions');
 console.log(`GitHub Browser Handoff JS: ${passed} passed / 0 failed (test double; browser installation unverified)`);
 
@@ -42,7 +42,7 @@ class Element {
   addEventListener(name, handler) { this.listeners[name] = handler; }
   setAttribute(name, value) { this[name] = value; }
 }
-const elements = Object.fromEntries(['toggle-auto-detection','auto-detection-status','request-integration','integration-status','status','share-url','share-selection','share-page','pairing-form','pairing-code','forget-pairing','request-github','github-status'].map(id => [id, new Element(id)]));
+const elements = Object.fromEntries(['whatsapp-start','whatsapp-stop','toggle-auto-detection','auto-detection-status','request-integration','integration-status','status','share-url','share-selection','share-page','pairing-form','pairing-code','forget-pairing','request-github','github-status'].map(id => [id, new Element(id)]));
 globalThis.document = {querySelector(selector) { return elements[selector.slice(1)]; }, querySelectorAll() { return Object.values(elements).filter(element => ['share-url','share-selection','share-page','forget-pairing','request-github'].includes(element.id)); }};
 tabs = [{id: 7, windowId: 2, incognito: false, status: 'complete', url: 'https://github.com/owner/repo'}];
 let nativeRequests = 0;

@@ -360,7 +360,7 @@ struct Step12RecoveryChecks {
         }
         check(bounded, "100 real summary/Today preparations and cancellations remain bounded")
         let disk = try JSONSerialization.jsonObject(with: Data(contentsOf: url)) as! [String: Any]
-        check((disk["briefings"] as? [Any])?.count == 3, "100 generations persist only three summaries")
+        check((disk["briefings"] as? [Any])?.count == 1, "100 same-day generations replace one daily summary")
         let reopened = ProactiveIntelligenceStore(fileURL: url)
         check(try await reopened.preferences().briefingMinute == 39, "repeated settings updates survive restart")
         let tomorrow = try await reopened.current(now: now.addingTimeInterval(86400))
