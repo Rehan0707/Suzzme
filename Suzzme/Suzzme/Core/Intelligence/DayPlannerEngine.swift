@@ -1,16 +1,5 @@
 import Foundation
 
-/// "The One Thing" — the single most impactful priority for the day synthesized across
-/// all on-device sources (Notes, Messages, Mail, WhatsApp, Calendar, Reminders).
-struct DailyFocusObjective: Codable, Sendable, Equatable {
-    let title: String
-    let reason: String
-    let source: String
-    let recommendedBlockMinutes: Int
-    let urgency: String
-    let actionItem: String
-}
-
 /// Structured focus block proposal for the user's day plan.
 struct ProposedFocusBlock: Identifiable, Sendable, Equatable {
     let id: UUID

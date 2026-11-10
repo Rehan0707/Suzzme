@@ -1512,6 +1512,13 @@ final class AppEnvironment {
         }
     }
 
+    var currentPrimaryObjective: DailyFocusObjective? {
+        let entries = proactiveSnapshot?.dailyContext?.entries ?? []
+        guard !entries.isEmpty else { return nil }
+        let timeline = DayPlannerEngine.analyze(entries: entries, now: .now)
+        return timeline.primaryObjective
+    }
+
     func startFocusSession(for block: ProposedFocusBlock) {
         let now = Date.now
         let duration = TimeInterval(block.durationMinutes * 60)
@@ -1526,20 +1533,51 @@ final class AppEnvironment {
         )
     }
 
+    func startFocusSession(for objective: DailyFocusObjective, durationMinutes: Int = 25) {
+        let now = Date.now
+        let duration = TimeInterval(durationMinutes * 60)
+        let end = now.addingTimeInterval(duration)
+        activeFocusActivity = MacFocusActivity(
+            id: UUID(),
+            title: objective.title,
+            targetTasks: [objective.reason],
+            startDate: now,
+            endDate: end,
+            isPaused: false
+        )
+    }
+
     func stopFocusSession() {
         activeFocusActivity = nil
     }
 
     func extendFocusSession(minutes: Int = 5) {
         guard let current = activeFocusActivity else { return }
+        let baseEnd = current.isPaused ? (current.pausedRemainingSeconds.map { Date.now.addingTimeInterval($0) } ?? current.endDate) : current.endDate
         activeFocusActivity = MacFocusActivity(
             id: current.id,
             title: current.title,
             targetTasks: current.targetTasks,
             startDate: current.startDate,
-            endDate: current.endDate.addingTimeInterval(TimeInterval(minutes * 60)),
-            isPaused: current.isPaused
+            endDate: baseEnd.addingTimeInterval(TimeInterval(minutes * 60)),
+            isPaused: current.isPaused,
+            pausedRemainingSeconds: current.isPaused ? (current.remainingSeconds + TimeInterval(minutes * 60)) : nil
         )
+    }
+
+    func togglePauseFocusSession() {
+        guard let current = activeFocusActivity else { return }
+        if current.isPaused {
+            activeFocusActivity = current.resumed()
+        } else {
+            activeFocusActivity = current.paused()
+        }
+    }
+
+    func playBriefingFromNotch() {
+        Task { @MainActor in
+            await speakCurrentBriefing(executiveMode: true)
+        }
     }
 
     /// Explicit recovery resets preferences too; never invoked automatically.

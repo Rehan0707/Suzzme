@@ -1,5 +1,31 @@
 import Foundation
 
+/// Represents "The One Thing" - the single highest-impact priority synthesized for the day.
+public struct DailyFocusObjective: Codable, Sendable, Equatable {
+    public let title: String
+    public let reason: String
+    public let source: String
+    public let recommendedBlockMinutes: Int
+    public let urgency: String
+    public let actionItem: String
+
+    public init(
+        title: String,
+        reason: String,
+        source: String,
+        recommendedBlockMinutes: Int = 25,
+        urgency: String = "normal",
+        actionItem: String = ""
+    ) {
+        self.title = title
+        self.reason = reason
+        self.source = source
+        self.recommendedBlockMinutes = recommendedBlockMinutes
+        self.urgency = urgency
+        self.actionItem = actionItem
+    }
+}
+
 /// Represents an ongoing focus session surfaced across Suzzme's macOS Notch Island and system surfaces.
 public struct MacFocusActivity: Identifiable, Equatable, Sendable {
     public let id: UUID
@@ -8,6 +34,7 @@ public struct MacFocusActivity: Identifiable, Equatable, Sendable {
     public let startDate: Date
     public let endDate: Date
     public let isPaused: Bool
+    public let pausedRemainingSeconds: TimeInterval?
 
     public init(
         id: UUID = UUID(),
@@ -15,7 +42,8 @@ public struct MacFocusActivity: Identifiable, Equatable, Sendable {
         targetTasks: [String] = [],
         startDate: Date = .now,
         endDate: Date,
-        isPaused: Bool = false
+        isPaused: Bool = false,
+        pausedRemainingSeconds: TimeInterval? = nil
     ) {
         self.id = id
         self.title = title
@@ -23,6 +51,7 @@ public struct MacFocusActivity: Identifiable, Equatable, Sendable {
         self.startDate = startDate
         self.endDate = endDate
         self.isPaused = isPaused
+        self.pausedRemainingSeconds = pausedRemainingSeconds
     }
 
     public var durationMinutes: Int {
@@ -30,7 +59,10 @@ public struct MacFocusActivity: Identifiable, Equatable, Sendable {
     }
 
     public var remainingSeconds: TimeInterval {
-        max(0, endDate.timeIntervalSince(Date.now))
+        if isPaused, let pausedRemainingSeconds {
+            return max(0, pausedRemainingSeconds)
+        }
+        return max(0, endDate.timeIntervalSince(Date.now))
     }
 
     public var remainingDescription: String {
@@ -57,8 +89,35 @@ public struct MacFocusActivity: Identifiable, Equatable, Sendable {
     public var progress: Double {
         let total = endDate.timeIntervalSince(startDate)
         guard total > 0 else { return 1.0 }
-        let elapsed = Date.now.timeIntervalSince(startDate)
+        let remaining = remainingSeconds
+        let elapsed = max(0, total - remaining)
         return min(max(elapsed / total, 0.0), 1.0)
+    }
+
+    public func paused() -> MacFocusActivity {
+        MacFocusActivity(
+            id: id,
+            title: title,
+            targetTasks: targetTasks,
+            startDate: startDate,
+            endDate: endDate,
+            isPaused: true,
+            pausedRemainingSeconds: remainingSeconds
+        )
+    }
+
+    public func resumed() -> MacFocusActivity {
+        let remaining = remainingSeconds
+        let now = Date.now
+        return MacFocusActivity(
+            id: id,
+            title: title,
+            targetTasks: targetTasks,
+            startDate: startDate,
+            endDate: now.addingTimeInterval(remaining),
+            isPaused: false,
+            pausedRemainingSeconds: nil
+        )
     }
 }
 

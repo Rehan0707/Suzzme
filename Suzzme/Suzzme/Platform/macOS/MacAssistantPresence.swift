@@ -137,6 +137,7 @@ final class MacAssistantPanelController {
         let interactionID: UUID?
         let backgroundActivity: ScheduledBriefingActivity?
         let focusActivity: MacFocusActivity?
+        let primaryObjective: DailyFocusObjective?
         let isHovered: Bool
     }
     private var renderedIdentity: PresentationIdentity?
@@ -173,12 +174,16 @@ final class MacAssistantPanelController {
     private var currentFocusStop: (() -> Void)?
     private var currentFocusExtend: (() -> Void)?
     private var currentOpenFocusPlan: (() -> Void)?
+    private var currentPrimaryObjective: DailyFocusObjective?
+    private var currentStartFocusObjective: ((DailyFocusObjective) -> Void)?
+    private var currentPlayBriefing: (() -> Void)?
+    private var currentFocusTogglePause: (() -> Void)?
 
     init(observesPointer: Bool = true) {
         self.observesPointer = observesPointer
     }
 
-    func update(state: SuzzmeAssistantState, theme: SuzzmePresenceTheme, animation: SuzzmePresenceAnimation, signal: SuzzmeProactivePresenceSignal = .none, review: SuzzmePresenceReview? = nil, connectionRequest: MacGitHubConnectionRequest? = nil, response: String? = nil, audioLevel: Double = 0, speechProgress: Double = 0, interactionID: UUID? = nil, contextLabels: [String] = [], backgroundActivity: ScheduledBriefingActivity? = nil, focusActivity: MacFocusActivity? = nil, onConfirmation: ((Bool) -> Void)? = nil, onConnectionDecision: ((MacGitHubConnectionDecision) -> Void)? = nil, onBackgroundStop: ((UUID) -> Void)? = nil, onOpenBackgroundTasks: (() -> Void)? = nil, onOpenDailySummary: (() -> Void)? = nil, onFocusExtend: (() -> Void)? = nil, onFocusStop: (() -> Void)? = nil, onOpenFocusPlan: (() -> Void)? = nil, onCancel: @escaping () -> Void, onFinish: @escaping () -> Void = {}, onInvoke: @escaping () -> Void, onPushToTalkPress: (() -> Void)? = nil, onPushToTalkRelease: (() -> Void)? = nil) {
+    func update(state: SuzzmeAssistantState, theme: SuzzmePresenceTheme, animation: SuzzmePresenceAnimation, signal: SuzzmeProactivePresenceSignal = .none, review: SuzzmePresenceReview? = nil, connectionRequest: MacGitHubConnectionRequest? = nil, response: String? = nil, audioLevel: Double = 0, speechProgress: Double = 0, interactionID: UUID? = nil, contextLabels: [String] = [], backgroundActivity: ScheduledBriefingActivity? = nil, focusActivity: MacFocusActivity? = nil, primaryObjective: DailyFocusObjective? = nil, onConfirmation: ((Bool) -> Void)? = nil, onConnectionDecision: ((MacGitHubConnectionDecision) -> Void)? = nil, onBackgroundStop: ((UUID) -> Void)? = nil, onOpenBackgroundTasks: (() -> Void)? = nil, onOpenDailySummary: (() -> Void)? = nil, onFocusExtend: (() -> Void)? = nil, onFocusStop: (() -> Void)? = nil, onOpenFocusPlan: (() -> Void)? = nil, onStartFocusObjective: ((DailyFocusObjective) -> Void)? = nil, onPlayBriefing: (() -> Void)? = nil, onFocusTogglePause: (() -> Void)? = nil, onCancel: @escaping () -> Void, onFinish: @escaping () -> Void = {}, onInvoke: @escaping () -> Void, onPushToTalkPress: (() -> Void)? = nil, onPushToTalkRelease: (() -> Void)? = nil) {
         // Completion can return the core to idle before the UI reading deadline.
         // Keep only the current environment-owned answer through that deadline.
         currentResponse = [.idle, .understanding, .speaking, .success, .error].contains(state) ? response : nil
@@ -207,6 +212,10 @@ final class MacAssistantPanelController {
         currentFocusStop = onFocusStop
         currentFocusExtend = onFocusExtend
         currentOpenFocusPlan = onOpenFocusPlan
+        currentPrimaryObjective = primaryObjective
+        currentStartFocusObjective = onStartFocusObjective
+        currentPlayBriefing = onPlayBriefing
+        currentFocusTogglePause = onFocusTogglePause
         if state != .idle || signal != .none || currentResponse != nil
             || currentReview != nil || connectionRequest != nil || (backgroundActivity != nil && focusActivity == nil) {
             pointerHovering = false
@@ -243,6 +252,10 @@ final class MacAssistantPanelController {
         currentBackgroundStop = nil
         currentOpenBackgroundTasks = nil
         currentOpenDailySummary = nil
+        currentPrimaryObjective = nil
+        currentStartFocusObjective = nil
+        currentPlayBriefing = nil
+        currentFocusTogglePause = nil
         displayOwnership.reset()
     }
 
@@ -434,6 +447,7 @@ final class MacAssistantPanelController {
             && currentSignal == .none && currentResponse == nil
             && currentReview == nil && currentConnectionRequest == nil
             && (backgroundActivity == nil || focusActivity != nil))
+        let primaryObjective = backgroundActivity == nil && focusActivity == nil ? currentPrimaryObjective : nil
         let size = MacAssistantSurfaceMetrics.size(
             state: currentState,
             signal: currentSignal,
@@ -445,7 +459,8 @@ final class MacAssistantPanelController {
             contextLabels: backgroundActivity == nil && focusActivity == nil ? currentContextLabels : [],
             backgroundActivity: backgroundActivity,
             focusActivity: focusActivity,
-            isHovered: isHovered
+            isHovered: isHovered,
+            primaryObjective: primaryObjective
         )
         let panel = panel ?? makePanel()
         self.panel = panel
@@ -456,7 +471,7 @@ final class MacAssistantPanelController {
             ?? "Suzzme. \(presentation.title)"
         )
         panel.level = hasNotch ? .statusBar : .floating
-        let identity = PresentationIdentity(state: currentState, theme: currentTheme, animation: currentAnimation, signal: currentSignal, hasNotch: hasNotch, notchWidth: notchWidth, notchHeight: notchHeight, review: currentReview, connectionRequest: currentConnectionRequest, response: currentResponse, contextLabels: backgroundActivity == nil && focusActivity == nil ? currentContextLabels : [], interactionID: currentInteractionID, backgroundActivity: backgroundActivity, focusActivity: focusActivity, isHovered: isHovered)
+        let identity = PresentationIdentity(state: currentState, theme: currentTheme, animation: currentAnimation, signal: currentSignal, hasNotch: hasNotch, notchWidth: notchWidth, notchHeight: notchHeight, review: currentReview, connectionRequest: currentConnectionRequest, response: currentResponse, contextLabels: backgroundActivity == nil && focusActivity == nil ? currentContextLabels : [], interactionID: currentInteractionID, backgroundActivity: backgroundActivity, focusActivity: focusActivity, primaryObjective: primaryObjective, isHovered: isHovered)
         let retainsDismissedAnswer = currentState == .idle && currentResponse != nil
             && suppressedIdentity?.response == currentResponse
             && suppressedIdentity?.signal == currentSignal
@@ -486,6 +501,7 @@ final class MacAssistantPanelController {
                 signal: currentSignal, hasNotch: hasNotch, notchWidth: notchWidth, notchHeight: notchHeight, isHovered: isHovered, review: currentReview, connectionRequest: currentConnectionRequest, response: currentResponse, audioLevel: currentAudioLevel, speechProgress: currentSpeechProgress, contextLabels: identity.contextLabels,
                 backgroundActivity: backgroundActivity,
                 focusActivity: focusActivity,
+                primaryObjective: identity.primaryObjective,
                 onConfirmation: currentConfirmation,
                 onConnectionDecision: currentConnectionDecision,
                 onBackgroundStop: { [weak self] id in
@@ -506,6 +522,9 @@ final class MacAssistantPanelController {
                 onOpenFocusPlan: { [weak self] in self?.currentOpenFocusPlan?() },
                 onToggleExpand: { [weak self] in self?.toggleFocusExpansion() },
                 onHoverChanged: { [weak self] in self?.setHovered($0) },
+                onStartFocusObjective: { [weak self] obj in self?.currentStartFocusObjective?(obj) },
+                onPlayBriefing: { [weak self] in self?.currentPlayBriefing?() },
+                onFocusTogglePause: { [weak self] in self?.currentFocusTogglePause?() },
                 onCancel: { [weak self] in self?.currentCancel?() },
                 onFinish: { [weak self] in self?.currentFinish?() },
                 onInvoke: { [weak self] in self?.currentInvoke?() },
@@ -572,7 +591,8 @@ final class MacAssistantPanelController {
         }
         let radii = MacAssistantSurfaceMetrics.cornerRadii(state: identity.state, signal: identity.signal,
                                                          hasDetail: identity.review != nil || identity.connectionRequest != nil || identity.response != nil || identity.backgroundActivity != nil,
-                                                         hasFocus: identity.focusActivity != nil)
+                                                         hasFocus: identity.focusActivity != nil,
+                                                         isHovered: identity.isHovered)
         let shape = SuzzmeNotchSurfaceShape(attached: identity.hasNotch, neckWidth: identity.notchWidth,
                                            topCornerRadius: radii.top, bottomCornerRadius: radii.bottom)
         if identity.focusActivity != nil {
@@ -731,6 +751,7 @@ struct MacAssistantNotchSurface: View {
     var contextLabels: [String] = []
     var backgroundActivity: ScheduledBriefingActivity?
     var focusActivity: MacFocusActivity?
+    var primaryObjective: DailyFocusObjective? = nil
     var onConfirmation: ((Bool) -> Void)?
     var onConnectionDecision: ((MacGitHubConnectionDecision) -> Void)?
     var onBackgroundStop: ((UUID) -> Void)?
@@ -741,6 +762,9 @@ struct MacAssistantNotchSurface: View {
     var onOpenFocusPlan: (() -> Void)?
     var onToggleExpand: (() -> Void)?
     var onHoverChanged: ((Bool) -> Void)?
+    var onStartFocusObjective: ((DailyFocusObjective) -> Void)? = nil
+    var onPlayBriefing: (() -> Void)? = nil
+    var onFocusTogglePause: (() -> Void)? = nil
     let onCancel: () -> Void
     var onFinish: () -> Void = {}
     let onInvoke: () -> Void
@@ -766,7 +790,8 @@ struct MacAssistantNotchSurface: View {
         let radii = MacAssistantSurfaceMetrics.cornerRadii(
             state: state, signal: signal,
             hasDetail: review != nil || connectionRequest != nil || response != nil || visibleBackgroundActivity != nil,
-            hasFocus: hasFocus
+            hasFocus: hasFocus,
+            isHovered: isHovered
         )
         let shape = SuzzmeNotchSurfaceShape(
             attached: hasNotch, neckWidth: notchWidth,
@@ -814,6 +839,7 @@ struct MacAssistantNotchSurface: View {
                     notchHeight: notchHeight,
                     onToggleExpand: { onToggleExpand?() },
                     onHoverChanged: { onHoverChanged?($0) },
+                    onTogglePause: { onFocusTogglePause?() },
                     onExtend: { onFocusExtend?() },
                     onStop: { onFocusStop?() },
                     onOpenPlan: { onOpenFocusPlan?() }
@@ -955,52 +981,125 @@ struct MacAssistantNotchSurface: View {
     }
 
     private var hoverControls: some View {
-        HStack(spacing: SuzzmeTheme.Spacing.small) {
-            Button(action: onInvoke) {
-                HStack(spacing: SuzzmeTheme.Spacing.xs) {
-                    SuzzmeMascot(state: .idle, size: 32, animation: .minimal)
-                        .accessibilityHidden(true)
-                    Text("Talk")
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(.white)
-                }
-                .frame(minHeight: SuzzmeTheme.Layout.touchTarget)
-                .padding(.horizontal, SuzzmeTheme.Spacing.small)
-                .background(.white.opacity(0.10), in: Capsule())
-            }
-            .buttonStyle(.plain)
-            .keyboardShortcut(.defaultAction)
-            .accessibilityIdentifier("suzzme-notch-talk")
-            .accessibilityLabel("Talk to Suzzme")
-            .help("Click to start talking")
-
-            if let onOpenDailySummary {
-                Button(action: onOpenDailySummary) {
-                    HStack(spacing: SuzzmeTheme.Spacing.xs) {
-                        Image(systemName: "sun.max.fill")
-                            .foregroundStyle(.yellow)
-                        Text("Briefing")
-                            .font(.subheadline.weight(.semibold))
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(spacing: SuzzmeTheme.Spacing.xs) {
+                Button(action: onInvoke) {
+                    HStack(spacing: 4) {
+                        SuzzmeMascot(state: .idle, size: 22, animation: .minimal)
+                            .accessibilityHidden(true)
+                        Text("Talk")
+                            .font(.caption.weight(.semibold))
                             .foregroundStyle(.white)
                     }
-                    .frame(minHeight: SuzzmeTheme.Layout.touchTarget)
-                    .padding(.horizontal, SuzzmeTheme.Spacing.small)
-                    .background(.white.opacity(0.10), in: Capsule())
+                    .frame(minHeight: 28)
+                    .padding(.horizontal, 8)
+                    .background(.white.opacity(0.12), in: Capsule())
                 }
                 .buttonStyle(.plain)
-                .accessibilityIdentifier("suzzme-notch-briefing")
-                .accessibilityLabel("Open Daily Briefing")
-                .help("Open Today's Focus & Daily Briefing")
+                .keyboardShortcut(.defaultAction)
+                .accessibilityIdentifier("suzzme-notch-talk")
+                .accessibilityLabel("Talk to Suzzme")
+                .help("Click to start talking")
+
+                if let onPlayBriefing {
+                    Button(action: onPlayBriefing) {
+                        HStack(spacing: 4) {
+                            Image(systemName: "waveform")
+                                .font(.caption2)
+                                .foregroundStyle(SuzzmeTheme.intelligencePrimary)
+                            Text("Briefing")
+                                .font(.caption.weight(.semibold))
+                                .foregroundStyle(.white)
+                        }
+                        .frame(minHeight: 28)
+                        .padding(.horizontal, 8)
+                        .background(.white.opacity(0.12), in: Capsule())
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityIdentifier("suzzme-notch-play-briefing")
+                    .accessibilityLabel("Play Morning Briefing")
+                    .help("Listen to executive morning briefing with natural voice")
+                }
+
+                if let onOpenDailySummary {
+                    Button(action: onOpenDailySummary) {
+                        HStack(spacing: 4) {
+                            Image(systemName: "sun.max.fill")
+                                .font(.caption2)
+                                .foregroundStyle(.yellow)
+                            Text("Plan")
+                                .font(.caption.weight(.semibold))
+                                .foregroundStyle(.white)
+                        }
+                        .frame(minHeight: 28)
+                        .padding(.horizontal, 8)
+                        .background(.white.opacity(0.12), in: Capsule())
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityIdentifier("suzzme-notch-briefing")
+                    .accessibilityLabel("Open Daily Briefing and Focus Plan")
+                    .help("Open Today's Focus & Daily Briefing")
+                }
+
+                if let onPushToTalkPress, let onPushToTalkRelease {
+                    Spacer(minLength: 0)
+                    MacNotchHoldToTalkControl(onPress: onPushToTalkPress,
+                        onRelease: onPushToTalkRelease, onAccessibleActivate: onInvoke)
+                }
             }
 
-            if let onPushToTalkPress, let onPushToTalkRelease {
-                Spacer(minLength: 0)
-                MacNotchHoldToTalkControl(onPress: onPushToTalkPress,
-                    onRelease: onPushToTalkRelease, onAccessibleActivate: onInvoke)
+            if let objective = primaryObjective {
+                HStack(spacing: 6) {
+                    Image(systemName: "star.fill")
+                        .font(.caption2)
+                        .foregroundStyle(.yellow)
+                        .accessibilityHidden(true)
+
+                    VStack(alignment: .leading, spacing: 0) {
+                        HStack(spacing: 4) {
+                            Text("THE ONE THING")
+                                .font(.system(size: 9, weight: .bold))
+                                .foregroundStyle(SuzzmeTheme.intelligencePrimary)
+                            Text("· \(objective.source)")
+                                .font(.system(size: 9, weight: .medium))
+                                .foregroundStyle(.white.opacity(0.60))
+                        }
+                        Text(objective.title)
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(.white)
+                            .lineLimit(1)
+                    }
+
+                    Spacer(minLength: 4)
+
+                    if let onStartFocusObjective {
+                        Button {
+                            onStartFocusObjective(objective)
+                        } label: {
+                            HStack(spacing: 3) {
+                                Image(systemName: "sparkles")
+                                    .font(.caption2)
+                                Text("Focus 25m")
+                                    .font(.caption2.weight(.bold))
+                            }
+                            .foregroundStyle(.white)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(SuzzmeTheme.intelligencePrimary, in: Capsule())
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityIdentifier("suzzme-notch-start-focus")
+                        .accessibilityLabel("Start 25-minute focus on \(objective.title)")
+                    }
+                }
+                .padding(.horizontal, 8)
+                .padding(.vertical, 4)
+                .background(.white.opacity(0.08), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
             }
         }
-        .padding(.horizontal, SuzzmeTheme.Spacing.medium)
-        .frame(maxWidth: .infinity, minHeight: 54)
+        .padding(.horizontal, SuzzmeTheme.Spacing.small)
+        .padding(.vertical, 6)
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     private var contextChips: some View {
@@ -1229,10 +1328,12 @@ private struct SuzzmeNotchEdgeTrace: View {
 }
 
 enum MacAssistantSurfaceMetrics {
-    static func cornerRadii(state: SuzzmeAssistantState, signal: SuzzmeProactivePresenceSignal, hasDetail: Bool, hasFocus: Bool = false) -> (top: CGFloat, bottom: CGFloat) {
+    static func cornerRadii(state: SuzzmeAssistantState, signal: SuzzmeProactivePresenceSignal, hasDetail: Bool, hasFocus: Bool = false, isHovered: Bool = false) -> (top: CGFloat, bottom: CGFloat) {
         if hasDetail { return (12, 22) }
         if hasFocus { return (10, 18) }
-        if state == .idle && signal == .none { return (6, 12) }
+        if state == .idle && signal == .none {
+            return isHovered ? (10, 18) : (6, 12)
+        }
         return (8, 18)
     }
 
@@ -1240,14 +1341,15 @@ enum MacAssistantSurfaceMetrics {
         state: SuzzmeAssistantState,
         signal: SuzzmeProactivePresenceSignal,
         notchWidth: CGFloat,
-        review: SuzzmePresenceReview?,
-        response: String?,
+        review: SuzzmePresenceReview? = nil,
+        response: String? = nil,
         connectionRequest: MacGitHubConnectionRequest? = nil,
         notchHeight: CGFloat = 0,
         contextLabels: [String] = [],
         backgroundActivity: ScheduledBriefingActivity? = nil,
         focusActivity: MacFocusActivity? = nil,
-        isHovered: Bool = false
+        isHovered: Bool = false,
+        primaryObjective: DailyFocusObjective? = nil
     ) -> CGSize {
         let showsFocus = state == .idle && review == nil && response == nil && connectionRequest == nil && backgroundActivity == nil && focusActivity != nil
         let showsBackground = state == .idle && review == nil && response == nil && connectionRequest == nil && backgroundActivity != nil && !showsFocus
@@ -1281,8 +1383,14 @@ enum MacAssistantSurfaceMetrics {
                 height = min(344, max(200, ceil(textHeight) + 172))
             }
         } else if compactIdle {
-            width = isHovered ? max(340, cutoutWidth + 144) : max(196, cutoutWidth + 12)
-            height = isHovered ? 62 : 8
+            if isHovered {
+                let hasObjective = primaryObjective != nil
+                width = hasObjective ? max(400, cutoutWidth + 180) : max(340, cutoutWidth + 144)
+                height = hasObjective ? 84 : 54
+            } else {
+                width = max(196, cutoutWidth + 12)
+                height = 8
+            }
         } else if state == .idle {
             width = activeWidth
             height = 78

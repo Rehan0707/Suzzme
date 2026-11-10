@@ -184,7 +184,35 @@ struct AppleNativeSourcesChecks {
         expect(meetingPlan.primaryObjective?.title.contains("Client Architecture Review") == true,
                "The One Thing falls back to high-impact meeting preparation when no tasks pending")
 
-        print("All Apple Native Source & Milestone 2 checks passed: \(passed) / 0 failed")
+        // 9. Milestone 3: Mac Notch Focus Island & Sentient Dynamic Presence
+        let focusStart = now
+        let focusEnd = now.addingTimeInterval(1500) // 25 minutes
+        let focusSession = MacFocusActivity(
+            title: "Write Q4 Roadmap",
+            targetTasks: ["Draft technical specs", "Review team commitments"],
+            startDate: focusStart,
+            endDate: focusEnd,
+            isPaused: false
+        )
+        expect(focusSession.durationMinutes == 25, "MacFocusActivity calculates 25-minute focus session")
+        expect(focusSession.remainingSeconds > 1400 && focusSession.remainingSeconds <= 1500,
+               "MacFocusActivity reports remaining countdown accurately")
+        expect(!focusSession.isPaused, "Focus session starts in active running state")
+
+        // Pause focus session
+        let pausedSession = focusSession.paused()
+        expect(pausedSession.isPaused, "MacFocusActivity successfully pauses focus session")
+        expect(pausedSession.pausedRemainingSeconds != nil, "MacFocusActivity freezes remaining countdown on pause")
+        let frozenRemaining = pausedSession.remainingSeconds
+
+        // Resume focus session
+        let resumedSession = pausedSession.resumed()
+        expect(!resumedSession.isPaused, "MacFocusActivity successfully resumes focus session")
+        expect(resumedSession.pausedRemainingSeconds == nil, "MacFocusActivity clears paused snapshot upon resumption")
+        expect(abs(resumedSession.remainingSeconds - frozenRemaining) < 2.0,
+               "MacFocusActivity preserves remaining seconds upon resumption")
+
+        print("All Apple Native Source, Milestone 2 & Milestone 3 checks passed: \(passed) / 0 failed")
     }
 
     private static func compressDeflate(_ src: Data) -> Data? {

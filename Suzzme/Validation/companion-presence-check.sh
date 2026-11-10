@@ -22,6 +22,8 @@ xcrun swiftc -disable-sandbox -swift-version 6 -whole-module-optimization -parse
  Suzzme/Core/Background/ScheduledBriefingModels.swift \
  Suzzme/Core/Background/ScheduledBriefingActivity.swift \
  Suzzme/Platform/macOS/MacBackgroundPreparationView.swift \
+ Suzzme/Core/Intelligence/MacFocusActivity.swift \
+ Suzzme/Platform/macOS/MacNotchFocusView.swift \
  Suzzme/Platform/macOS/MacAssistantPresence.swift \
  Validation/CompanionPresenceChecks.swift -o "$output/CompanionPresenceChecks"
 "$output/CompanionPresenceChecks"

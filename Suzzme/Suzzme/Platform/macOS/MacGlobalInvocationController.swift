@@ -382,6 +382,7 @@ final class MacGlobalInvocationController {
         }
         let backgroundActivity = backgroundActivityForPresentation()
         let focusActivity = focusActivityForPresentation()
+        let primaryObjective = environment.presenceState == .idle && focusActivity == nil ? environment.currentPrimaryObjective : nil
         panel.update(
             state: environment.presenceState,
             theme: environment.invocation.presenceTheme,
@@ -402,6 +403,7 @@ final class MacGlobalInvocationController {
             } ?? [],
             backgroundActivity: backgroundActivity,
             focusActivity: focusActivity,
+            primaryObjective: primaryObjective,
             onConfirmation: { [weak self] confirmed in
                 guard let self, self.running else { return }
                 let generation = self.observationGeneration
@@ -444,8 +446,7 @@ final class MacGlobalInvocationController {
                 self.openBackgroundDestination?(.backgroundTasks)
             },
             onOpenDailySummary: { [weak self] in
-                guard let self, let current = self.backgroundActivityForPresentation(),
-                      current.id == backgroundActivity?.id, current.canOpenSummary else { return }
+                guard let self, self.running else { return }
                 self.panel.hideCurrentPresentation()
                 self.openBackgroundDestination?(.briefing)
             },
@@ -462,6 +463,21 @@ final class MacGlobalInvocationController {
             onOpenFocusPlan: { [weak self] in
                 guard let self, self.running else { return }
                 self.openBackgroundDestination?(.briefing)
+                self.updatePanel()
+            },
+            onStartFocusObjective: { [weak self] objective in
+                guard let self, self.running else { return }
+                self.environment.startFocusSession(for: objective)
+                self.updatePanel()
+            },
+            onPlayBriefing: { [weak self] in
+                guard let self, self.running else { return }
+                self.environment.playBriefingFromNotch()
+                self.updatePanel()
+            },
+            onFocusTogglePause: { [weak self] in
+                guard let self, self.running else { return }
+                self.environment.togglePauseFocusSession()
                 self.updatePanel()
             },
             onCancel: { [weak self] in self?.monitor.resetPressedState(); self?.cancel() },

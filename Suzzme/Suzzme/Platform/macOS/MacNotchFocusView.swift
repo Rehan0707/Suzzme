@@ -11,6 +11,7 @@ struct MacNotchFocusView: View {
     var notchHeight: CGFloat = 0
     var onToggleExpand: (() -> Void)? = nil
     var onHoverChanged: ((Bool) -> Void)? = nil
+    var onTogglePause: (() -> Void)? = nil
     let onExtend: () -> Void
     let onStop: () -> Void
     let onOpenPlan: () -> Void
@@ -54,9 +55,9 @@ struct MacNotchFocusView: View {
 
                     HStack(spacing: 4) {
                         Circle()
-                            .fill(SuzzmeTheme.intelligencePrimary)
+                            .fill(activity.isPaused ? SuzzmeTheme.warning : SuzzmeTheme.intelligencePrimary)
                             .frame(width: 5, height: 5)
-                        Text(activity.remainingDescription)
+                        Text(activity.isPaused ? "Paused · \(activity.remainingDescription)" : activity.remainingDescription)
                             .font(.caption2.weight(.medium))
                             .foregroundStyle(.white.opacity(0.80))
                     }
@@ -70,7 +71,7 @@ struct MacNotchFocusView: View {
                         .stroke(.white.opacity(0.15), lineWidth: 2.5)
                     Circle()
                         .trim(from: 0, to: CGFloat(activity.progress))
-                        .stroke(SuzzmeTheme.intelligencePrimary, style: StrokeStyle(lineWidth: 2.5, lineCap: .round))
+                        .stroke(activity.isPaused ? SuzzmeTheme.warning : SuzzmeTheme.intelligencePrimary, style: StrokeStyle(lineWidth: 2.5, lineCap: .round))
                         .rotationEffect(.degrees(-90))
                 }
                 .frame(width: 16, height: 16)
@@ -91,11 +92,15 @@ struct MacNotchFocusView: View {
             // Header: Status tag & Digital Timer
             HStack(alignment: .center) {
                 HStack(spacing: SuzzmeTheme.Spacing.xs) {
-                    SuzzmeFace(state: .understanding, color: SuzzmeTheme.intelligencePrimary, animation: .gentle)
-                        .frame(width: 20, height: 20)
-                    Text("Focus Session")
+                    SuzzmeFace(
+                        state: activity.isPaused ? .idle : .understanding,
+                        color: activity.isPaused ? SuzzmeTheme.warning : SuzzmeTheme.intelligencePrimary,
+                        animation: activity.isPaused ? .minimal : .gentle
+                    )
+                    .frame(width: 20, height: 20)
+                    Text(activity.isPaused ? "Focus Paused" : "Focus Session")
                         .font(.caption2.weight(.bold))
-                        .foregroundStyle(SuzzmeTheme.intelligencePrimary)
+                        .foregroundStyle(activity.isPaused ? SuzzmeTheme.warning : SuzzmeTheme.intelligencePrimary)
                         .textCase(.uppercase)
                 }
 
@@ -165,6 +170,17 @@ struct MacNotchFocusView: View {
                 .tint(.white)
                 .accessibilityIdentifier("suzzme-notch-focus-extend")
                 .accessibilityHint("Adds 5 minutes to this focus window")
+
+                if let onTogglePause {
+                    Button(action: onTogglePause) {
+                        Label(activity.isPaused ? "Resume" : "Pause", systemImage: activity.isPaused ? "play.fill" : "pause.fill")
+                            .font(.caption)
+                    }
+                    .buttonStyle(.bordered)
+                    .tint(activity.isPaused ? SuzzmeTheme.intelligencePrimary : .white)
+                    .accessibilityIdentifier("suzzme-notch-focus-pause")
+                    .accessibilityHint(activity.isPaused ? "Resumes focus countdown" : "Pauses focus countdown")
+                }
 
                 Spacer()
 
