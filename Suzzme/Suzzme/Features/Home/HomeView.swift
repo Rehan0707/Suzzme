@@ -278,6 +278,9 @@ struct HomeView: View {
             homeLink("Daily Summary", symbol: "text.alignleft",
                      message: summary?.narration ?? "A little perspective on your day, when you need it.",
                      destination: .briefing, note: summary?.isPartial == true ? "Some sources couldn’t be checked" : nil)
+            homeLink("Plan My Day", symbol: "calendar.badge.clock",
+                     message: "Timeline and proposed focus time for today.",
+                     destination: .briefing)
           }
         }
         .frame(maxWidth: .infinity, alignment: .leading)

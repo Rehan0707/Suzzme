@@ -113,6 +113,7 @@ struct InformationInspectionView: View {
         switch source {
         case .calendar: "calendar"
         case .reminders: "checklist"
+        case .mail: "envelope.fill"
         case .gmail: "envelope"
         case .messages: "message"
         case .whatsapp: "bubble.left.fill"

@@ -41,7 +41,7 @@ struct IntegrationDirectoryItem: Identifiable {
             .replacingOccurrences(of: ".", with: "-")
         if id == "slack" {
             return Self(id: id, name: name, section: section, symbol: "number", monogram: mark, brand: id,
-                summary: "Read one selected channel message through your Composio connection. Replies and attachments are excluded.",
+                summary: "Connect with Slack personal token or Composio for selected channel messages and updates.",
                 integrationID: .slack, availability: .connectable)
         }
         if let recipe = ProviderReadRecipe.catalog.first(where: { $0.name == name }) {
@@ -49,16 +49,18 @@ struct IntegrationDirectoryItem: Identifiable {
                         summary: "Read authorized \(name) information with a verified account and explicit scope.",
                         integrationID: recipe.id, availability: .connectable)
         }
+        let directID = IntegrationID(rawValue: id)
         return Self(id: id, name: name, section: section, symbol: "app.fill", monogram: mark,
-                    brand: id, summary: id == "whatsapp" ? "Reference only. WhatsApp chat access is not available in Suzzme." : "Listed in the reference catalog. Suzzme does not connect to this app in this build.",
-                    integrationID: nil, availability: .listedOnly)
+                    brand: id, summary: "Connect \(name) using a Personal Access Token or Composio Connect.",
+                    integrationID: directID, availability: .connectable)
     }
 
     private static let liveConnections: [Self] = [
+        .init(id: "apple-mail", name: "Apple Mail", section: .communication, symbol: "envelope.fill", monogram: "AM", brand: "apple-mail", summary: "Native read-only inbox access on this Mac. Zero server proxy.", integrationID: nil, availability: .connectable),
+        .init(id: "gmail", name: "Gmail", section: .communication, symbol: "envelope.fill", monogram: "M", brand: "gmail", summary: "Direct Google OAuth integration with on-device parsing and Keychain storage.", integrationID: .gmail, availability: .connectable),
         .init(id: "github", name: "GitHub", section: .development, symbol: "chevron.left.forwardslash.chevron.right", monogram: "GH", brand: "github", summary: "Read-only access to repositories you allow.", integrationID: .github, availability: .connectable),
         .init(id: "notion", name: "Notion", section: .productivity, symbol: "doc.text", monogram: "N", brand: "notion", summary: "Read-only access to pages you allow.", integrationID: .notion, availability: .connectable),
         .init(id: "linear", name: "Linear", section: .projects, symbol: "circle.circle", monogram: "L", brand: "linear", summary: "Read-only access to issues you allow.", integrationID: .linear, availability: .connectable),
-        .init(id: "gmail", name: "Gmail", section: .communication, symbol: "envelope.fill", monogram: "M", brand: "gmail", summary: "Connect through Composio for bounded recent inbox previews and on-device answers.", integrationID: .gmail, availability: .connectable),
         .init(id: "linkedin", name: "LinkedIn", section: .communication, symbol: "person.crop.square", monogram: "in", brand: "linkedin", summary: "Connect with Composio to read your own basic profile only. Feed, inbox, messages, and posting are unavailable.", integrationID: .linkedin, availability: .connectable),
         .init(id: "outlook", name: "Outlook", section: .productivity, symbol: "envelope", monogram: "O", brand: "outlook", summary: "Connect with Composio for selected inbox previews. Full threads and attachments are excluded.", integrationID: .outlook, availability: .connectable),
         .init(id: "whatsapp", name: "WhatsApp", section: .communication, symbol: "message", monogram: "W", brand: "whatsapp", summary: "Summarize selected chats synced to WhatsApp for Mac on this device. iPhone receives the prepared Daily Summary.", integrationID: nil, availability: .limited)
@@ -194,6 +196,33 @@ struct IntegrationDirectoryItem: Identifiable {
 
     static let catalog = (liveConnections + referenceCatalog).sorted {
         $0.name.localizedStandardCompare($1.name) == .orderedAscending
+    }
+
+    /// Essential and most popular integrations featured prominently at the top of the Knowledge Sources view.
+    static let featuredAppIDs: [String] = [
+        "apple-mail",
+        "gmail",
+        "google-calendar",
+        "whatsapp",
+        "slack",
+        "notion",
+        "github",
+        "linear",
+        "figma",
+        "google-drive",
+        "airtable",
+        "asana",
+        "discord",
+        "jira",
+        "zoom",
+        "dropbox",
+        "outlook"
+    ]
+
+    static var featuredCatalog: [IntegrationDirectoryItem] {
+        featuredAppIDs.compactMap { id in
+            catalog.first(where: { $0.id == id })
+        }
     }
 
     /// The 64-app integration set requested for parity with HeyClicky's catalog.

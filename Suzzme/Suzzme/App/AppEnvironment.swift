@@ -108,6 +108,8 @@ final class AppEnvironment {
     #endif
     private(set) var lastVoiceResponse: SuzzmeCoreResponse?
     private(set) var lastVoiceResponseRevision = UUID()
+    var scheduledFocusBlockIDs: Set<UUID> = []
+    var activeFocusActivity: MacFocusActivity?
     private let itemStore: SuzzmeItemStore?
     private let memoryStore: LongTermMemoryStore?
     private(set) var briefing: DailyBriefing?
@@ -189,6 +191,7 @@ final class AppEnvironment {
                 ])
             ]
             #if os(macOS)
+            sources.append(AppleMailSource())
             sources.append(LocalKnowledgeInformationSource(engine: localKnowledgeEngine))
             sources.append(WhatsAppLocalSource(access: WhatsAppLocalAccess.shared, understanding: understandingPipeline))
             #endif
@@ -231,6 +234,14 @@ final class AppEnvironment {
         } catch is CancellationError { }
         catch { informationError = "Updates could not be saved. Please try again." }
     }
+
+    #if os(macOS)
+    func setupAppleMailSource() async {
+        do {
+            try await information?.setEnabled(.mail, enabled: true)
+        } catch { }
+    }
+    #endif
 
     func restoreGmailSignIn() async {
         await gmailAccount.restorePreviousSignIn()
@@ -373,6 +384,26 @@ final class AppEnvironment {
             await inspectInformation()
         } catch {
             whatsAppError = "WhatsApp access was removed. Some local summaries could not be deleted; retry cleanup."
+        }
+    }
+
+    /// Sync a WhatsApp Web chat or excerpt directly into today's active context.
+    @discardableResult
+    func syncWhatsAppWebChat(name: String, text: String) async -> Bool {
+        guard await WhatsAppWebAccess.shared.addWebChat(name: name, text: text) != nil else {
+            whatsAppError = "Chat text is empty or could not be processed."
+            return false
+        }
+        do {
+            try await information?.setEnabled(.whatsapp, enabled: true)
+            whatsAppError = nil
+            await inspectInformation()
+            await refreshInformation(force: true, source: .whatsapp)
+            await prepareProactiveBriefing(showActivity: false)
+            return true
+        } catch {
+            whatsAppError = "Failed to sync WhatsApp chat into Daily Summary."
+            return false
         }
     }
     #endif
@@ -1259,6 +1290,7 @@ final class AppEnvironment {
     func loadProactiveState() async {
         guard proactive != nil else { return }
         #if os(macOS)
+        await setupAppleMailSource()
         if let uid = CompanionSummaryStore.currentUser?.uid, CompanionSummarySharing.needsRemoval(for: uid) {
             await removeSharedCompanionSummary()
         }
@@ -1382,11 +1414,17 @@ final class AppEnvironment {
         await loadCompanionSummary()
         readCompanionSummaryAloud()
         #else
+        if voice.isSpeaking || voice.isPreparingSpeech {
+            voice.stopSpeech()
+            return
+        }
         guard !isPreparingBriefing else { return }
         let owner = activeAssistantRequestID
         let voiceOwner = voice.sessionID
         guard !Task.isCancelled, ownsSummaryPresentation(requestID: owner, voiceSessionID: voiceOwner) else { return }
-        await prepareProactiveBriefing(showActivity: true)
+        if proactiveSnapshot?.briefing == nil || proactiveSnapshot?.briefing?.deliveryState == .stale {
+            await prepareProactiveBriefing(showActivity: true)
+        }
         guard !Task.isCancelled, ownsSummaryPresentation(requestID: owner, voiceSessionID: voiceOwner),
               let briefing = proactiveSnapshot?.briefing,
               briefing.deliveryState != .stale,
@@ -1428,6 +1466,54 @@ final class AppEnvironment {
             proactiveSnapshot = nil
             proactiveError = "That opportunity couldn’t be dismissed."
         }
+    }
+
+    func scheduleFocusBlock(_ block: ProposedFocusBlock) async -> Bool {
+        do {
+            if sourcePermissions[.calendar] != .authorized {
+                await requestSourcePermission(.calendar)
+            }
+            let result = try await core.scheduleFocusBlock(title: block.title, start: block.startDate, end: block.endDate)
+            if result.status == .success {
+                scheduledFocusBlockIDs.insert(block.id)
+                await refreshInformation(force: true, source: .calendar)
+                await prepareProactiveBriefing(showActivity: false)
+                return true
+            }
+            return false
+        } catch {
+            return false
+        }
+    }
+
+    func startFocusSession(for block: ProposedFocusBlock) {
+        let now = Date.now
+        let duration = TimeInterval(block.durationMinutes * 60)
+        let end = now.addingTimeInterval(duration)
+        activeFocusActivity = MacFocusActivity(
+            id: block.id,
+            title: block.title,
+            targetTasks: block.suggestedTasks,
+            startDate: now,
+            endDate: end,
+            isPaused: false
+        )
+    }
+
+    func stopFocusSession() {
+        activeFocusActivity = nil
+    }
+
+    func extendFocusSession(minutes: Int = 5) {
+        guard let current = activeFocusActivity else { return }
+        activeFocusActivity = MacFocusActivity(
+            id: current.id,
+            title: current.title,
+            targetTasks: current.targetTasks,
+            startDate: current.startDate,
+            endDate: current.endDate.addingTimeInterval(TimeInterval(minutes * 60)),
+            isPaused: current.isPaused
+        )
     }
 
     /// Explicit recovery resets preferences too; never invoked automatically.

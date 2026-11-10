@@ -52,7 +52,17 @@ actor IntelligenceRouter {
             return .init(text: "We were discussing your earlier screen: \(screenUnderstanding.answer) I can’t generate a reliable explanation on this device right now. Describe the issue or ask about the current screen again.", route: .localContext, intent: .question, extractedItems: [])
         }
         if SuzzmeQuestionIntent.isGeneralExplanation(query) {
-            if let answer = try await pipeline.answerQuestion(question: query, facts: "", conversation: Self.conversationText(conversation, now: referenceDate)) {
+            let activeAppFacts: String
+            #if os(macOS)
+            if let appContext = SuzzmeAppSkillContext.contextForFrontmostApplication() {
+                activeAppFacts = appContext.promptFragment
+            } else {
+                activeAppFacts = ""
+            }
+            #else
+            activeAppFacts = ""
+            #endif
+            if let answer = try await pipeline.answerQuestion(question: query, facts: activeAppFacts, conversation: Self.conversationText(conversation, now: referenceDate)) {
                 return .init(text: answer, route: .onDeviceIntelligence, intent: .question, extractedItems: [])
             }
             return .init(text: "On-device answers are unavailable right now. I can still help with the local information you share in Sources.", route: .localContext, intent: .question, extractedItems: [])
@@ -192,6 +202,14 @@ actor IntelligenceRouter {
             || lower.contains("what matters tomorrow")
             || lower.contains("daily summary")
             || lower.contains("summarize my day")
+            || lower.contains("summarize the day")
+            || lower.contains("summarize past 12")
+            || lower.contains("past 12 hrs")
+            || lower.contains("past 12 hours")
+            || lower.contains("last 12 hrs")
+            || lower.contains("last 12 hours")
+            || lower.contains("plan the further things")
+            || lower.contains("plan my day")
             || lower.contains("tell me about my day")
     }
 
@@ -200,6 +218,8 @@ actor IntelligenceRouter {
         let useful = context.filter {
             $0.intent == .event || $0.intent == .reminder || $0.intent == .task || $0.intent == .deadline
                 || $0.metadata["source"] == "proactive-briefing"
+                || $0.metadata["source"] == "connectedApps"
+                || $0.metadata["authoritySource"] == "connectedApps"
         }.filter { item in
             let key = item.metadata["fingerprint"] ?? "\(item.sourceIdentifier)|\(item.content.lowercased())"
             return seen.insert(key).inserted
@@ -213,8 +233,66 @@ actor IntelligenceRouter {
             let period = request.lowercased().contains("tomorrow") ? "tomorrow" : "for today"
             return .init(text: "I couldn’t find an event, deadline, or unfinished reminder \(period) in the context available to me.", route: .localContext, intent: .question, extractedItems: [])
         }
+        let now = Date.now
+        let past12Hours = now.addingTimeInterval(-12 * 3600)
+        let pastItems = useful.filter { item in
+            guard let date = effectiveDate(item) else { return false }
+            return date >= past12Hours && date <= now
+        }
+        let planItems = useful.filter { item in
+            guard let date = effectiveDate(item) else { return true }
+            return date > now
+        }
+
         let details = useful.prefix(5).map(dayDescription).joined(separator: " ")
-        let opening = request.lowercased().contains("tomorrow") ? "Here’s what matters tomorrow." : "Here’s your day."
+        let opening: String
+        let req = request.lowercased()
+
+        let planEntries = useful.map { item -> DailyContextEntry in
+            DailyContextEntry(
+                id: item.sourceIdentifier,
+                kind: item.intent == .event ? .schedule : item.intent == .task || item.intent == .reminder ? .reminder : .information,
+                title: item.metadata["title"] ?? item.content,
+                summary: item.content,
+                source: item.metadata["source"] ?? "calendar",
+                sourceReference: item.sourceIdentifier,
+                effectiveAt: effectiveDate(item),
+                effectiveUntil: item.metadata["end"].flatMap { ISO8601DateFormatter().date(from: $0) },
+                entities: [],
+                sensitivity: .personal,
+                freshness: .current,
+                state: .active,
+                confidence: 1,
+                mayBeDurableCandidate: false
+            )
+        }
+        let timeline = DayPlannerEngine.analyze(entries: planEntries, now: now)
+        let focusProposal = timeline.proposedFocusBlocks.first.map { block in
+            "Recommended focus window: \(block.windowDescription) for deep work on active commitments."
+        }
+
+        if req.contains("focus") || (req.contains("plan") && !req.contains("past 12") && !req.contains("12 hr")) {
+            if let proposal = focusProposal {
+                opening = "Here is your plan for today: \(proposal)"
+            } else {
+                opening = planItems.isEmpty
+                    ? "Looking ahead, your schedule is open with no further events today."
+                    : "Planning ahead: " + planItems.prefix(3).map(dayDescription).joined(separator: " ")
+            }
+        } else if req.contains("past 12") || req.contains("12 hr") || req.contains("plan") {
+            let pastText = pastItems.isEmpty
+                ? "Over the past 12 hours, there were no new urgent updates."
+                : "In the past 12 hours: " + pastItems.prefix(3).map(dayDescription).joined(separator: " ")
+            let basePlan = planItems.isEmpty
+                ? "Looking ahead, no further events are scheduled today."
+                : "Planning ahead: " + planItems.prefix(3).map(dayDescription).joined(separator: " ")
+            let fullPlan = focusProposal != nil ? "\(basePlan) \(focusProposal!)" : basePlan
+            opening = "\(pastText) \(fullPlan)"
+        } else if req.contains("tomorrow") {
+            opening = "Here’s what matters tomorrow."
+        } else {
+            opening = "Here’s your day."
+        }
         let summary = try await pipeline.summarizeGroundedFacts(details)
         let route: SuzzmeRoute = summary.usedOnDeviceModel ? .onDeviceIntelligence : .localContext
         return .init(text: "\(opening) \(summary.text)", route: route, intent: .question, extractedItems: [])

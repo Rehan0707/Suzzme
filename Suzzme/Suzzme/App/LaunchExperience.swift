@@ -59,7 +59,7 @@ struct OnboardingView: View {
         .suzzmeSelectionFeedback(trigger: step)
         .sheet(isPresented: $showsGmailSetup) {
             NavigationStack {
-                ComposioIntegrationsView(initialServiceID: "gmail")
+                GmailConnectionView()
                     .toolbar { Button("Done") { showsGmailSetup = false } }
             }
             .frame(minWidth: 560, minHeight: 500)
@@ -260,10 +260,10 @@ struct OnboardingView: View {
                     appleAppIcon(bundleID: "com.apple.mail", fallback: "envelope")
                     VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.xxs) {
                         Text("Apple Mail").font(.headline)
-                        Text("Apple Mail access is not available yet.").font(.caption).foregroundStyle(SuzzmeTheme.textSecondary)
+                        Text("Read-only inbox access on this Mac.").font(.caption).foregroundStyle(SuzzmeTheme.textSecondary)
                     }
                     Spacer()
-                    Text("Unavailable").font(.caption).foregroundStyle(SuzzmeTheme.textSecondary)
+                    Text("Ready").font(.caption.weight(.medium)).foregroundStyle(SuzzmeTheme.success)
                 }.frame(minHeight: SuzzmeTheme.Layout.touchTarget)
                 HStack(spacing: SuzzmeTheme.Spacing.small) {
                     Image(systemName: "envelope").frame(width: 32).accessibilityHidden(true)

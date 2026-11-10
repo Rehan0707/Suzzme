@@ -488,6 +488,22 @@ actor SuzzmeCore {
 
     func clearSession() async { settingsFollowUp = nil; await memory.clear() }
 
+    func scheduleFocusBlock(title: String, start: Date, end: Date) async throws -> SuzzmeCapabilityResult {
+        let requestID = UUID()
+        await actionCoordinator.begin(requestID: requestID)
+        let plan = SuzzmeActionPlan(
+            requestID: requestID,
+            capability: .calendar,
+            operation: .create,
+            payload: .calendar(SuzzmeCalendarAction(title: title, startDate: start, endDate: end)),
+            risk: .consequentialWrite,
+            requiresConfirmation: true
+        )
+        let proposed = try await actionCoordinator.propose(plan)
+        let result = try await actionCoordinator.confirm(actionID: proposed.id, requestID: requestID)
+        return result
+    }
+
     func proactivePreferences() async throws -> ProactivePreferences {
         guard let proactive else { throw ProactiveError.invalidState }
         return try await proactive.preferences()
@@ -537,6 +553,14 @@ actor SuzzmeCore {
             || lower.contains("what matters today")
             || lower.contains("daily summary")
             || lower.contains("summarize my day")
+            || lower.contains("summarize the day")
+            || lower.contains("summarize past 12")
+            || lower.contains("past 12 hrs")
+            || lower.contains("past 12 hours")
+            || lower.contains("last 12 hrs")
+            || lower.contains("last 12 hours")
+            || lower.contains("plan the further things")
+            || lower.contains("plan my day")
             || lower.contains("tell me about my day")
     }
 

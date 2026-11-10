@@ -3,7 +3,7 @@ import Foundation
 enum IntegrationID: String, Codable, CaseIterable, Sendable, Identifiable {
     case gmail, whatsapp, github, linkedin, notion, linear, slack, googleDocs, googleCalendar, customMCP
     case airtable, asana, clickUp, contentful, eventbrite, figma, gitlab, harvest, moneybird, pushbullet, todoist, typeform, wakatime, ynab
-    case dropbox, outlook, oneDrive, excel, microsoftTeams, sharePoint
+    case dropbox, outlook, oneDrive, excel, microsoftTeams, sharePoint, jira, discord, zoom
     case googleDrive, googleClassroom, googleMeet, googleSheets, googleSlides, googleTasks, googleSearchConsole, googleAnalytics, googleBigQuery, googlePhotos
     var id: String { rawValue }
 }
