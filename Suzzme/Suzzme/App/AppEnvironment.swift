@@ -180,7 +180,6 @@ final class AppEnvironment {
                         let result = try await understandingPipeline.summarizeImportantEmail(text)
                         return GmailBodySummary(text: result.text, usedOnDeviceModel: result.usedOnDeviceModel)
                     }),
-                UserSelectedMessageSource(),
                 WatchedWebInformationSource(store: watchedLinkStore),
                 IntegrationInformationSource(gateway: integrationGateway, supplementals: [
                     GoogleConnectedInformationSource(account: gmailAccount),
@@ -192,8 +191,12 @@ final class AppEnvironment {
             ]
             #if os(macOS)
             sources.append(AppleMailSource())
+            sources.append(AppleNotesSource())
+            sources.append(AppleMessagesSource())
             sources.append(LocalKnowledgeInformationSource(engine: localKnowledgeEngine))
             sources.append(WhatsAppLocalSource(access: WhatsAppLocalAccess.shared, understanding: understandingPipeline))
+            #else
+            sources.append(UserSelectedMessageSource())
             #endif
             return InformationEngine(registry: InformationSourceRegistry(sources), store: store)
         }
@@ -239,6 +242,18 @@ final class AppEnvironment {
     func setupAppleMailSource() async {
         do {
             try await information?.setEnabled(.mail, enabled: true)
+        } catch { }
+    }
+
+    func setupAppleNotesSource() async {
+        do {
+            try await information?.setEnabled(.notes, enabled: true)
+        } catch { }
+    }
+
+    func setupAppleMessagesSource() async {
+        do {
+            try await information?.setEnabled(.messages, enabled: true)
         } catch { }
     }
     #endif
@@ -1291,6 +1306,8 @@ final class AppEnvironment {
         guard proactive != nil else { return }
         #if os(macOS)
         await setupAppleMailSource()
+        await setupAppleNotesSource()
+        await setupAppleMessagesSource()
         if let uid = CompanionSummaryStore.currentUser?.uid, CompanionSummarySharing.needsRemoval(for: uid) {
             await removeSharedCompanionSummary()
         }

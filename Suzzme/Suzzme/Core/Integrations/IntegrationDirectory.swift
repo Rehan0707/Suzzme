@@ -57,6 +57,8 @@ struct IntegrationDirectoryItem: Identifiable {
 
     private static let liveConnections: [Self] = [
         .init(id: "apple-mail", name: "Apple Mail", section: .communication, symbol: "envelope.fill", monogram: "AM", brand: "apple-mail", summary: "Native read-only inbox access on this Mac. Zero server proxy.", integrationID: nil, availability: .connectable),
+        .init(id: "apple-notes", name: "Apple Notes", section: .productivity, symbol: "note.text", monogram: "AN", brand: "apple-notes", summary: "Native on-device Apple Notes reader. Summarizes recent notes and action items locally.", integrationID: nil, availability: .connectable),
+        .init(id: "apple-messages", name: "Apple Messages", section: .communication, symbol: "message.fill", monogram: "AM", brand: "apple-messages", summary: "Native on-device iMessage reader with contact resolution and conversation triage.", integrationID: nil, availability: .connectable),
         .init(id: "gmail", name: "Gmail", section: .communication, symbol: "envelope.fill", monogram: "M", brand: "gmail", summary: "Direct Google OAuth integration with on-device parsing and Keychain storage.", integrationID: .gmail, availability: .connectable),
         .init(id: "github", name: "GitHub", section: .development, symbol: "chevron.left.forwardslash.chevron.right", monogram: "GH", brand: "github", summary: "Read-only access to repositories you allow.", integrationID: .github, availability: .connectable),
         .init(id: "notion", name: "Notion", section: .productivity, symbol: "doc.text", monogram: "N", brand: "notion", summary: "Read-only access to pages you allow.", integrationID: .notion, availability: .connectable),
@@ -200,6 +202,8 @@ struct IntegrationDirectoryItem: Identifiable {
 
     /// Essential and most popular integrations featured prominently at the top of the Knowledge Sources view.
     static let featuredAppIDs: [String] = [
+        "apple-notes",
+        "apple-messages",
         "apple-mail",
         "gmail",
         "google-calendar",

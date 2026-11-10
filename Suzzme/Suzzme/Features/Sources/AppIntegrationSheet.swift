@@ -264,6 +264,8 @@ struct AppIntegrationSheet: View {
         if item.id == "whatsapp" { return environment.whatsAppFolderConnected }
         if item.id == "gmail" { return environment.gmailAccount.isConnected }
         if item.id == "apple-mail" || item.id == "mail" { return true }
+        if item.id == "apple-notes" || item.id == "notes" { return true }
+        if item.id == "apple-messages" || item.id == "messages" || item.id == "imessage" { return true }
         if connectedAccount != nil { return true }
         if let service = item.integrationID, let recipe = ProviderReadRecipe.find(service), recipe.googleScope != nil {
             return environment.gmailAccount.hasGoogleAccess(service)
@@ -272,7 +274,7 @@ struct AppIntegrationSheet: View {
     }
 
     private var isAppleNative: Bool {
-        ["apple-notes", "apple-reminders", "apple-calendar", "apple-mail", "mail", "spotify", "imessage"].contains(item.id)
+        ["apple-notes", "apple-reminders", "apple-calendar", "apple-mail", "mail", "spotify", "imessage", "apple-messages"].contains(item.id)
     }
 
     private var isGoogleService: Bool {
@@ -296,6 +298,10 @@ struct AppIntegrationSheet: View {
                         gmailSection
                     } else if item.id == "apple-mail" || item.id == "mail" {
                         appleMailSection
+                    } else if item.id == "apple-notes" || item.id == "notes" {
+                        appleNotesSection
+                    } else if item.id == "apple-messages" || item.id == "messages" || item.id == "imessage" {
+                        appleMessagesSection
                     } else if isConnected {
                         connectedStateSection
                     } else if isAppleNative {
@@ -707,6 +713,90 @@ struct AppIntegrationSheet: View {
                         Task {
                             await environment.setInformationEnabled(.mail, enabled: true)
                             await environment.refreshInformation(force: true, source: .mail)
+                            await environment.prepareProactiveBriefing(showActivity: true)
+                        }
+                    }
+                    .buttonStyle(.bordered)
+                }
+                .padding(.top, SuzzmeTheme.Spacing.xs)
+            }
+        }
+    }
+
+    // MARK: - Apple Notes Section
+    private var appleNotesSection: some View {
+        VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.medium) {
+            HStack(spacing: 12) {
+                Image(systemName: "note.text")
+                    .font(.title2)
+                    .foregroundStyle(SuzzmeTheme.intelligencePrimary)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Apple Notes on macOS")
+                        .font(.headline)
+                    Text("On-device NoteStore reader with gunzip and protobuf decoding.")
+                        .font(.caption)
+                        .foregroundStyle(SuzzmeTheme.textSecondary)
+                }
+            }
+            .padding()
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(SuzzmeTheme.controlFill, in: RoundedRectangle(cornerRadius: 12))
+
+            VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.small) {
+                Text("Suzzme reads recent notes, checklists, and scratchpads from Apple Notes on this Mac to extract commitments, project updates, and meeting notes for your Daily Summary.")
+                    .font(.subheadline)
+                    .foregroundStyle(SuzzmeTheme.textSecondary)
+
+                HStack {
+                    Label("Status: Active on this Mac", systemImage: "checkmark.circle.fill")
+                        .foregroundStyle(SuzzmeTheme.success)
+                    Spacer()
+                    Button("Sync Notes Now") {
+                        Task {
+                            await environment.setInformationEnabled(.notes, enabled: true)
+                            await environment.refreshInformation(force: true, source: .notes)
+                            await environment.prepareProactiveBriefing(showActivity: true)
+                        }
+                    }
+                    .buttonStyle(.bordered)
+                }
+                .padding(.top, SuzzmeTheme.Spacing.xs)
+            }
+        }
+    }
+
+    // MARK: - Apple Messages Section
+    private var appleMessagesSection: some View {
+        VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.medium) {
+            HStack(spacing: 12) {
+                Image(systemName: "message.fill")
+                    .font(.title2)
+                    .foregroundStyle(SuzzmeTheme.intelligencePrimary)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Apple Messages on macOS")
+                        .font(.headline)
+                    Text("On-device iMessage database reader with typedstream decoding.")
+                        .font(.caption)
+                        .foregroundStyle(SuzzmeTheme.textSecondary)
+                }
+            }
+            .padding()
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(SuzzmeTheme.controlFill, in: RoundedRectangle(cornerRadius: 12))
+
+            VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.small) {
+                Text("Suzzme safely queries recent iMessage and SMS conversations from chat.db on this Mac to identify active agreements, answers, and commitments in your daily overview.")
+                    .font(.subheadline)
+                    .foregroundStyle(SuzzmeTheme.textSecondary)
+
+                HStack {
+                    Label("Status: Active on this Mac", systemImage: "checkmark.circle.fill")
+                        .foregroundStyle(SuzzmeTheme.success)
+                    Spacer()
+                    Button("Sync Messages Now") {
+                        Task {
+                            await environment.setInformationEnabled(.messages, enabled: true)
+                            await environment.refreshInformation(force: true, source: .messages)
                             await environment.prepareProactiveBriefing(showActivity: true)
                         }
                     }

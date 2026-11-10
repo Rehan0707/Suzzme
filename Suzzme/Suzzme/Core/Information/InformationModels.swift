@@ -13,7 +13,7 @@ enum InformationSummaryPresentation {
 import CryptoKit
 
 enum InformationSourceID: String, Codable, CaseIterable, Sendable, Identifiable {
-    case calendar, reminders, mail, gmail, messages, whatsapp, watchedWeb, connectedApps, localKnowledge
+    case calendar, reminders, mail, gmail, messages, whatsapp, watchedWeb, connectedApps, localKnowledge, notes
     var id: String { rawValue }
     var title: String {
         switch self {
@@ -26,6 +26,7 @@ enum InformationSourceID: String, Codable, CaseIterable, Sendable, Identifiable 
         case .localKnowledge: "Local Knowledge"
         case .calendar: "Calendar"
         case .reminders: "Reminders"
+        case .notes: "Apple Notes"
         }
     }
 }

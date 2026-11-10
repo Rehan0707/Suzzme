@@ -54,17 +54,30 @@ private struct SourcesListView: View {
                 } label: {
                     overview(symbol: "envelope.fill", title: "Apple Mail", purpose: "On-device inbox sync · Zero server proxy", status: "Active on this Mac", health: health(for: .mail))
                 }
+                NavigationLink {
+                    AppIntegrationSheet(item: .init(id: "apple-notes", name: "Apple Notes", section: .productivity, symbol: "note.text", monogram: "AN", brand: "apple-notes", summary: "Native on-device Apple Notes reader. Summarizes recent notes and action items locally.", integrationID: nil, availability: .connectable))
+                } label: {
+                    overview(symbol: "note.text", title: "Apple Notes", purpose: "On-device notes sync · Zero server proxy", status: "Active on this Mac", health: health(for: .notes))
+                }
                 #endif
                 NavigationLink {
                     GmailConnectionView()
                 } label: {
                     overview(symbol: "envelope", title: "Gmail", purpose: "Google OAuth · bounded recent inbox previews", status: environment.gmailAccount.isConnected ? "Connected" : "Connect with Google", health: health(for: .gmail))
                 }
+                #if os(macOS)
+                NavigationLink {
+                    AppIntegrationSheet(item: .init(id: "apple-messages", name: "Apple Messages", section: .communication, symbol: "message.fill", monogram: "AM", brand: "apple-messages", summary: "Native on-device iMessage reader with contact resolution and conversation triage.", integrationID: nil, availability: .connectable))
+                } label: {
+                    overview(symbol: "message.fill", title: "Apple Messages", purpose: "Native iMessage sync · Zero server proxy", status: "Active on this Mac", health: health(for: .messages))
+                }
+                #else
                 NavigationLink {
                     List { SelectedMessageImportView() }.suzzmeReadableList().navigationTitle("Shared messages")
                 } label: {
                     overview(symbol: "message", title: "Shared messages", purpose: "Messages and exported chats · Only text you share", status: "Manual sharing", health: health(for: .messages))
                 }
+                #endif
             }
             Section("App integrations") {
                 NavigationLink { SharedAppContextView() } label: {
@@ -529,6 +542,8 @@ private struct MacKnowledgeSourcesView: View {
     private func refreshStatus() async {
         #if os(macOS)
         await environment.setupAppleMailSource()
+        await environment.setupAppleNotesSource()
+        await environment.setupAppleMessagesSource()
         #endif
         await environment.loadWhatsAppChats()
         await environment.localKnowledge.load()
@@ -559,6 +574,10 @@ private struct MacKnowledgeSourcesView: View {
             connected = environment.whatsAppFolderConnected
         } else if item.id == "apple-mail" || item.id == "mail" {
             connected = health(.mail)?.enabled == true
+        } else if item.id == "apple-notes" || item.id == "notes" {
+            connected = health(.notes)?.enabled == true
+        } else if item.id == "apple-messages" || item.id == "messages" || item.id == "imessage" {
+            connected = health(.messages)?.enabled == true
         } else if item.id == "gmail" {
             connected = environment.gmailAccount.isConnected || composioWorkspace?.accounts.contains { $0.service == "gmail" && $0.isActive } == true
         } else if item.id == "github" {

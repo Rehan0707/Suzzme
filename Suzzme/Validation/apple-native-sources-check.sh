@@ -1,0 +1,59 @@
+#!/bin/zsh
+set -eu
+cd "${0:A:h}/.."
+output=$(mktemp -d)
+trap 'rm -rf "$output"' EXIT
+
+xcrun swiftc -swift-version 6 -parse-as-library -framework SwiftData -framework SwiftUI -framework EventKit -framework Contacts -lcompression -lsqlite3 \
+  Suzzme/Core/Models/SuzzmeItem.swift \
+  Suzzme/Core/Models/ExtractedSuzzmeItem.swift \
+  Suzzme/Core/Models/DailyBriefing.swift \
+  Suzzme/Core/Models/SuzzmeAssistantState.swift \
+  Suzzme/DesignSystem/Theme/SuzzmeTheme.swift Suzzme/DesignSystem/Components/SuzzmeMascotArtwork.swift \
+  Suzzme/Core/Invocation/SuzzmePresenceTheme.swift \
+  Suzzme/Core/Invocation/AssistantPresentation.swift \
+  Suzzme/Core/Persistence/StoredSuzzmeItem.swift \
+  Suzzme/Core/Persistence/RecoverableJSONFile.swift \
+  Suzzme/Core/Context/SuzzmeContextItem.swift \
+  Suzzme/Core/Context/SuzzmeContextQuery.swift \
+  Suzzme/Core/Context/ContextEngine.swift \
+  Suzzme/Core/Privacy/PrivacyEngine.swift \
+  Suzzme/Core/Memory/SessionMemoryEngine.swift \
+  Suzzme/Core/Actions/SuzzmeAction.swift \
+  Suzzme/Core/Actions/CapabilityActionModels.swift \
+  Suzzme/Core/Actions/ActionPlanner.swift \
+  Suzzme/Core/Actions/ActionPolicy.swift \
+  Suzzme/Core/Actions/ActionMutation.swift \
+  Suzzme/Core/Connectors/AppleContextSources.swift \
+  Suzzme/Core/Connectors/AppleContextPermissions.swift \
+  Suzzme/Core/Actions/EventKitCapabilities.swift \
+  Suzzme/Core/Actions/ActionExecutionCoordinator.swift \
+  Validation/Step8StoreDouble.swift \
+  Suzzme/Core/Actions/SettingsCapability.swift \
+  Suzzme/Core/Intelligence/IntelligenceCapability.swift \
+  Suzzme/Core/Context/ScreenContext.swift \
+  Suzzme/Core/Context/ScreenContextPolicy.swift \
+  Suzzme/Core/Intelligence/IntelligenceService.swift \
+  Suzzme/Core/Intelligence/BasicIntelligenceService.swift \
+  Suzzme/Core/Intelligence/AppleIntelligenceService.swift \
+  Suzzme/Core/Intelligence/SuzzmeUnderstandingPipeline.swift \
+  Suzzme/Core/Intelligence/IntelligenceRouter.swift \
+  Suzzme/Core/Intelligence/DayPlannerEngine.swift \
+  Suzzme/Core/Intelligence/SuzzmeAppSkillContext.swift \
+  Suzzme/Core/LongTermMemory/LongTermMemoryModels.swift \
+  Suzzme/Core/LongTermMemory/LongTermMemoryStore.swift \
+  Suzzme/Core/LongTermMemory/LongTermMemoryEngine.swift \
+  Suzzme/Core/Information/InformationModels.swift \
+  Suzzme/Core/Information/SuzzmeSQLiteDB.swift \
+  Suzzme/Core/Information/AppleNotesSource.swift \
+  Suzzme/Core/Information/AppleMessagesSource.swift \
+  Suzzme/Core/Information/InformationStore.swift \
+  Suzzme/Core/Information/InformationEngine.swift \
+  Suzzme/Core/Information/InformationRequest.swift \
+  Suzzme/Core/Proactive/ProactiveModels.swift \
+  Suzzme/Core/Proactive/ProactiveIntelligenceStore.swift \
+  Suzzme/Core/Proactive/ProactiveIntelligenceEngine.swift \
+  Suzzme/Core/Intelligence/SuzzmeCore.swift \
+  Validation/AppleNativeSourcesChecks.swift -o "$output/AppleNativeSourcesChecks"
+
+"$output/AppleNativeSourcesChecks"

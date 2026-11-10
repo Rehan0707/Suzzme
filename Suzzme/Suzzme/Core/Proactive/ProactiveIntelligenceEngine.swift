@@ -46,9 +46,9 @@ actor ProactiveIntelligenceEngine {
 
     func current(now: Date = .now) async throws -> ProactiveSnapshot {
         let cached = try await revalidateWatchedContent(try await store.current(now: now), now: now)
-        let references = Set((cached.dailyContext?.entries ?? []).filter { ["connectedApps", "gmail", "whatsapp", "mail"].contains($0.source) }.map(\.sourceReference))
+        let references = Set((cached.dailyContext?.entries ?? []).filter { ["connectedApps", "gmail", "whatsapp", "mail", "notes", "messages"].contains($0.source) }.map(\.sourceReference))
         if !references.isEmpty {
-            let permitted = Set((try await information?.retrieve(.init(sources: [.connectedApps, .watchedWeb, .gmail, .whatsapp, .mail], limit: InformationLimits.records), now: now) ?? []).map(\.externalID))
+            let permitted = Set((try await information?.retrieve(.init(sources: [.connectedApps, .watchedWeb, .gmail, .whatsapp, .mail, .notes, .messages], limit: InformationLimits.records), now: now) ?? []).map(\.externalID))
             if !references.isSubset(of: permitted) {
                 try await store.clearProactiveContent()
                 return try await store.current(now: now)
@@ -69,9 +69,9 @@ actor ProactiveIntelligenceEngine {
             let snapshot = ProactiveSnapshot(generatedAt: briefing.createdAt, briefing: briefing, opportunities: [], timeCriticalItems: [], dailyContext: nil)
             guard try await revalidateWatchedContent(snapshot, now: now).briefing != nil else { continue }
             let protectedItems = briefing.items.filter { item in
-                !Set(item.sourceEvidence).isDisjoint(with: ["gmail", "whatsapp", "connectedApps", "mail"])
+                !Set(item.sourceEvidence).isDisjoint(with: ["gmail", "whatsapp", "connectedApps", "mail", "notes", "messages"])
             }
-            let events = try await information?.retrieveHistorical(.init(sources: [.connectedApps, .gmail, .whatsapp, .mail], limit: InformationLimits.records), asOf: briefing.createdAt, now: now) ?? []
+            let events = try await information?.retrieveHistorical(.init(sources: [.connectedApps, .gmail, .whatsapp, .mail, .notes, .messages], limit: InformationLimits.records), asOf: briefing.createdAt, now: now) ?? []
             let permitted = Set(events.map(\.fingerprint))
             guard protectedItems.allSatisfy({ permitted.contains($0.candidateID) }) else { continue }
             result.append(briefing)
