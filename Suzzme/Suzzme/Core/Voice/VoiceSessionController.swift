@@ -783,7 +783,7 @@ final class VoiceSessionController: NSObject {
         guard !spoken.isEmpty else { finishReadableResponse(then: .success); return }
         activeBriefingID = id
         stateAfterSpeech = .success
-        startSpeechOutput(spoken, preview: false, useNatural: true)
+        startSpeechOutput(spoken, preview: false, useNatural: true, style: deliveryStyle)
     }
 
     private func finishReadableResponse(then state: SuzzmeAssistantState) {

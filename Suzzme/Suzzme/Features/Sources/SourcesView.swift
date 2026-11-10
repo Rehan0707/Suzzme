@@ -48,10 +48,17 @@ private struct SourcesListView: View {
                 }
             }
             Section("Connected accounts and shared text") {
+                #if os(macOS)
                 NavigationLink {
-                    ComposioIntegrationsView(initialServiceID: "gmail")
+                    AppIntegrationSheet(item: .init(id: "apple-mail", name: "Apple Mail", section: .communication, symbol: "envelope.fill", monogram: "AM", brand: "apple-mail", summary: "Native read-only inbox access on this Mac. Zero server proxy.", integrationID: nil, availability: .connectable))
                 } label: {
-                    overview(symbol: "envelope", title: "Gmail", purpose: "Composio · bounded recent inbox previews", status: "Manage Composio connection", health: health(for: .connectedApps))
+                    overview(symbol: "envelope.fill", title: "Apple Mail", purpose: "On-device inbox sync · Zero server proxy", status: "Active on this Mac", health: health(for: .mail))
+                }
+                #endif
+                NavigationLink {
+                    GmailConnectionView()
+                } label: {
+                    overview(symbol: "envelope", title: "Gmail", purpose: "Google OAuth · bounded recent inbox previews", status: environment.gmailAccount.isConnected ? "Connected" : "Connect with Google", health: health(for: .gmail))
                 }
                 NavigationLink {
                     List { SelectedMessageImportView() }.suzzmeReadableList().navigationTitle("Shared messages")
@@ -280,6 +287,7 @@ private struct MacKnowledgeSourcesView: View {
     @State private var openedAuthorizationAttempt: String?
     @State private var connectionCode = ""
     @State private var showsConnectionCode = false
+    @State private var selectedIntegrationItem: IntegrationDirectoryItem?
     private let composioGmailResource = "https://mail.google.com/mail/u/0/"
     private let composioCalendarResource = "https://calendar.google.com/calendar/u/0/r"
     @State private var catalogSearch = ""
@@ -427,17 +435,66 @@ private struct MacKnowledgeSourcesView: View {
                     .font(.footnote).foregroundStyle(SuzzmeTheme.warning)
             }
 
-            if visibleCatalogItems.isEmpty {
-                Text("No apps found")
-                    .font(.headline)
-                    .foregroundStyle(SuzzmeTheme.textSecondary)
-                    .frame(maxWidth: .infinity, minHeight: 120)
-            } else {
-                LazyVGrid(columns: catalogColumns, alignment: .leading,
-                          spacing: SuzzmeTheme.Spacing.small) {
-                    ForEach(visibleCatalogItems) { item in
-                        catalogAppCard(item)
+            if !catalogSearch.isEmpty {
+                if visibleCatalogItems.isEmpty {
+                    VStack(spacing: SuzzmeTheme.Spacing.small) {
+                        Image(systemName: "magnifyingglass")
+                            .font(.largeTitle)
+                            .foregroundStyle(SuzzmeTheme.textSecondary)
+                        Text("No apps found")
+                            .font(.headline)
+                            .foregroundStyle(SuzzmeTheme.textPrimary)
+                        Text("No integrations matched \"\(catalogSearch)\"")
+                            .font(.subheadline)
+                            .foregroundStyle(SuzzmeTheme.textSecondary)
                     }
+                    .frame(maxWidth: .infinity, minHeight: 160)
+                } else {
+                    VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.small) {
+                        Text("Search Results (\(visibleCatalogItems.count))")
+                            .font(.title3.weight(.semibold))
+                            .foregroundStyle(SuzzmeTheme.textPrimary)
+                        LazyVGrid(columns: catalogColumns, alignment: .leading,
+                                  spacing: SuzzmeTheme.Spacing.small) {
+                            ForEach(visibleCatalogItems) { item in
+                                catalogAppCard(item)
+                            }
+                        }
+                    }
+                }
+            } else {
+                VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.small) {
+                    Text("Popular")
+                        .font(.title3.weight(.semibold))
+                        .foregroundStyle(SuzzmeTheme.textPrimary)
+
+                    LazyVGrid(columns: catalogColumns, alignment: .leading,
+                              spacing: SuzzmeTheme.Spacing.small) {
+                        ForEach(IntegrationDirectoryItem.featuredCatalog) { item in
+                            catalogAppCard(item)
+                        }
+                    }
+                    .accessibilityIdentifier("suzzme-sources-popular-grid")
+                }
+
+                VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.small) {
+                    HStack(alignment: .firstTextBaseline) {
+                        Text("All Apps")
+                            .font(.title3.weight(.semibold))
+                            .foregroundStyle(SuzzmeTheme.textPrimary)
+                        Spacer()
+                        Text("\(IntegrationDirectoryItem.catalog.count) apps")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(SuzzmeTheme.textSecondary)
+                    }
+
+                    LazyVGrid(columns: catalogColumns, alignment: .leading,
+                              spacing: SuzzmeTheme.Spacing.small) {
+                        ForEach(IntegrationDirectoryItem.catalog) { item in
+                            catalogAppCard(item)
+                        }
+                    }
+                    .accessibilityIdentifier("suzzme-sources-all-grid")
                 }
             }
         }
@@ -463,9 +520,16 @@ private struct MacKnowledgeSourcesView: View {
         } message: {
             Text("Enter the code shown in your browser after sign-in.")
         }
+        .sheet(item: $selectedIntegrationItem) { item in
+            AppIntegrationSheet(item: item)
+                .environment(environment)
+        }
     }
 
     private func refreshStatus() async {
+        #if os(macOS)
+        await environment.setupAppleMailSource()
+        #endif
         await environment.loadWhatsAppChats()
         await environment.localKnowledge.load()
         googleAccountID = await environment.gmailAccount.googleIdentity()
@@ -483,7 +547,7 @@ private struct MacKnowledgeSourcesView: View {
 
     private func composioServiceID(for item: IntegrationDirectoryItem) -> String? {
         switch item.id {
-        case "github", "linkedin", "slack", "notion", "gmail", "outlook": item.id
+        case "linkedin", "slack", "gmail", "outlook": item.id
         case "google-calendar": "googlecalendar"
         default: nil
         }
@@ -493,76 +557,46 @@ private struct MacKnowledgeSourcesView: View {
         let connected: Bool
         if item.id == "whatsapp" {
             connected = environment.whatsAppFolderConnected
-        } else if let service = composioServiceID(for: item) {
-            connected = composioWorkspace?.accounts.contains { $0.service == service && $0.isActive } == true
+        } else if item.id == "github" {
+            connected = environment.integrations.accounts.contains { $0.service == .github && $0.state == .ready }
+        } else if item.id == "notion" {
+            connected = environment.integrations.accounts.contains { $0.service == .notion && $0.state == .ready }
+        } else if item.id == "linear" {
+            connected = environment.integrations.accounts.contains { $0.service == .linear && $0.state == .ready }
         } else if let service = item.integrationID,
                   let recipe = ProviderReadRecipe.find(service), recipe.googleScope != nil {
             connected = environment.gmailAccount.hasGoogleAccess(service)
         } else if let service = item.integrationID {
             connected = environment.integrations.accounts.contains { $0.service == service && $0.state == .ready }
+        } else if let service = composioServiceID(for: item) {
+            connected = composioWorkspace?.accounts.contains { $0.service == service && $0.isActive } == true
         } else {
             connected = false
         }
 
-        return HStack(spacing: SuzzmeTheme.Spacing.small) {
-            catalogAppIcon(item)
-            Text(item.name)
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(SuzzmeTheme.textPrimary)
-                .lineLimit(2)
-                .fixedSize(horizontal: false, vertical: true)
-                .frame(maxWidth: .infinity, alignment: .leading)
-            catalogConnectControl(item, connected: connected)
+        return Button {
+            selectedIntegrationItem = item
+        } label: {
+            HStack(spacing: SuzzmeTheme.Spacing.small) {
+                catalogAppIcon(item)
+                Text(item.name)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(SuzzmeTheme.textPrimary)
+                    .lineLimit(2)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                catalogConnectLabel(connected: connected)
+            }
+            .padding(.horizontal, SuzzmeTheme.Spacing.small)
+            .padding(.vertical, SuzzmeTheme.Spacing.xs)
+            .frame(maxWidth: .infinity, minHeight: 58, alignment: .leading)
+            .background(SuzzmeTheme.pageBackground, in: RoundedRectangle(cornerRadius: SuzzmeTheme.Radius.control))
+            .overlay(RoundedRectangle(cornerRadius: SuzzmeTheme.Radius.control)
+                .strokeBorder(SuzzmeTheme.separator, lineWidth: SuzzmeTheme.hairline))
         }
-        .padding(.horizontal, SuzzmeTheme.Spacing.small)
-        .padding(.vertical, SuzzmeTheme.Spacing.xs)
-        .frame(maxWidth: .infinity, minHeight: 58, alignment: .leading)
-        .background(SuzzmeTheme.pageBackground, in: RoundedRectangle(cornerRadius: SuzzmeTheme.Radius.control))
-        .overlay(RoundedRectangle(cornerRadius: SuzzmeTheme.Radius.control)
-            .strokeBorder(SuzzmeTheme.separator, lineWidth: SuzzmeTheme.hairline))
+        .buttonStyle(.plain)
         .accessibilityElement(children: .contain)
-    }
-
-    @ViewBuilder private func catalogConnectControl(_ item: IntegrationDirectoryItem, connected: Bool) -> some View {
-        if let service = composioServiceID(for: item) {
-            if let workspace = composioWorkspace,
-               let provider = workspace.services.first(where: { $0.id == service }), !connected {
-                Button { workspace.connect(provider) } label: { catalogConnectLabel(connected: false) }
-                    .buttonStyle(.plain)
-                    .disabled(workspace.isWorking || workspace.pending != nil)
-                    .accessibilityLabel("Connect \(item.name) with Composio")
-            } else {
-                NavigationLink {
-                    ComposioIntegrationsView(initialServiceID: service, workspace: composioWorkspace)
-                } label: { catalogConnectLabel(connected: connected) }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel(connected ? "Manage \(item.name) connection" : "Connect \(item.name) with Composio")
-            }
-        } else if item.id == "whatsapp" {
-            NavigationLink { WhatsAppLocalView() } label: { catalogConnectLabel(connected: connected) }
-                .buttonStyle(.plain)
-                .accessibilityLabel("Open WhatsApp source settings")
-        } else if let service = item.integrationID,
-                  let recipe = ProviderReadRecipe.find(service) {
-            NavigationLink {
-                if recipe.googleScope != nil { GoogleProviderConnectionView(recipe: recipe) }
-                else { ProviderConnectionView(recipe: recipe) }
-            } label: { catalogConnectLabel(connected: connected) }
-                .buttonStyle(.plain)
-                .accessibilityLabel(connected ? "Manage \(item.name) connection" : "Connect \(item.name)")
-        } else if let service = item.integrationID,
-                  let descriptor = IntegrationDescriptor.catalog.first(where: { $0.id == service }) {
-            NavigationLink { IntegrationDetailView(descriptor: descriptor) } label: { catalogConnectLabel(connected: connected) }
-                .buttonStyle(.plain)
-                .accessibilityLabel(connected ? "Manage \(item.name) connection" : "Connect \(item.name)")
-        } else {
-            NavigationLink { ComposioIntegrationsView(initialServiceID: item.id) } label: {
-                catalogConnectLabel(connected: false)
-            }
-            .buttonStyle(.plain)
-            .accessibilityLabel("Connect \(item.name) with Composio")
-            .help("Opens Composio setup for this app. A connector-side authorization may be required.")
-        }
+        .accessibilityLabel("\(item.name), \(connected ? "connected" : "ready to connect")")
     }
 
     private func catalogConnectLabel(connected: Bool) -> some View {

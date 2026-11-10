@@ -10,19 +10,22 @@ struct IntegrationInformationSource: InformationSource {
 
     func authorization() async -> InformationHealthState {
         let accountSnapshot = try? await gateway.snapshot()
-        let optedIn = (accountSnapshot ?? []).filter { !$0.summaryResourceURLs.isEmpty }
         for supplemental in supplementals {
             if await supplemental.authorization() == .healthy { return .healthy }
         }
-        guard accountSnapshot != nil else { return .temporarilyUnavailable }
-        guard !optedIn.isEmpty else { return .permissionRequired }
-        return optedIn.contains { $0.state == .ready } ? .healthy : .authorizationExpired
+        guard let accountSnapshot else { return .temporarilyUnavailable }
+        let available = accountSnapshot.filter {
+            !$0.summaryResourceURLs.isEmpty || ProviderReadRecipe.find($0.service) != nil || !$0.allowedRepositories.isEmpty
+        }
+        guard !available.isEmpty else { return .permissionRequired }
+        return available.contains { $0.state == .ready } ? .healthy : .authorizationExpired
     }
 
     func fetch(now: Date, checkpoint: Date?) async throws -> InformationBatch {
         let accountSnapshot = try? await gateway.snapshot()
-        let accounts = (accountSnapshot ?? []).filter { !$0.summaryResourceURLs.isEmpty }
-            .sorted { $0.id.uuidString < $1.id.uuidString }
+        let accounts = (accountSnapshot ?? []).filter {
+            !$0.summaryResourceURLs.isEmpty || ProviderReadRecipe.find($0.service) != nil
+        }.sorted { $0.id.uuidString < $1.id.uuidString }
         var observations: [InformationObservation] = []
         var attempted = 0
         var complete = accountSnapshot != nil
@@ -32,6 +35,8 @@ struct IntegrationInformationSource: InformationSource {
             let started = now
             var accountAttempts = 0
             var accountSuccesses = 0
+
+            // 1. Explicit summary URLs if configured (GitHub/Notion/Linear)
             for url in account.summaryResourceURLs {
                 try Task.checkCancellation()
                 guard attempted < IntegrationSummaryPolicy.maximumReadsPerCycle else { complete = false; continue }
@@ -56,12 +61,41 @@ struct IntegrationInformationSource: InformationSource {
                     complete = false
                 }
             }
+
+            // 2. Direct provider read recipe for connected apps (Asana, Slack, Jira, Discord, Zoom, Dropbox, Outlook, ClickUp, GitLab, Airtable, Todoist, Figma, etc.)
+            if account.summaryResourceURLs.isEmpty, let recipe = ProviderReadRecipe.find(account.service) {
+                try Task.checkCancellation()
+                if attempted < IntegrationSummaryPolicy.maximumReadsPerCycle {
+                    attempted += 1
+                    accountAttempts += 1
+                    let request = UUID()
+                    do {
+                        let context = try await gateway.readProviderContext(service: account.service, selectedAccount: account.id, requestID: request)
+                        try Task.checkCancellation()
+                        guard await gateway.validate(context, requestID: request) else {
+                            throw InformationError.malformed
+                        }
+                        let items = Self.providerObservations(content: context.content, account: account, recipe: recipe, now: now)
+                        observations.append(contentsOf: items)
+                        accountSuccesses += 1
+                        successful = true
+                        await gateway.cancel(requestID: request)
+                    } catch is CancellationError {
+                        await gateway.cancel(requestID: request)
+                        throw CancellationError()
+                    } catch {
+                        await gateway.cancel(requestID: request)
+                        complete = false
+                    }
+                }
+            }
+
             try Task.checkCancellation()
             if accountAttempts > 0 {
                 try await gateway.recordSummarySync(account: account, attemptedAt: started,
                     completedAt: max(started, .now),
                     checked: accountAttempts, accepted: accountSuccesses,
-                    partial: accountSuccesses != account.summaryResourceURLs.count)
+                    partial: accountSuccesses != (account.summaryResourceURLs.isEmpty ? 1 : account.summaryResourceURLs.count))
             }
         }
         for supplemental in supplementals {
@@ -81,13 +115,21 @@ struct IntegrationInformationSource: InformationSource {
                      window: .init(start: now.addingTimeInterval(-86400), end: now.addingTimeInterval(86400)))
     }
 
+    func fetchForBriefing(now: Date, checkpoint: Date?, cutoff: Date, calendar: Calendar) async throws -> InformationBatch {
+        try await fetch(now: now, checkpoint: checkpoint)
+    }
+
     func permits(_ event: InformationEvent, now: Date) async -> Bool {
         for supplemental in supplementals {
             if await supplemental.owns(event) { return await supplemental.permits(event, now: now) }
         }
         guard let accounts = try? await gateway.snapshot() else { return false }
         return accounts.contains { account in
-            account.state == .ready && account.summaryResourceURLs.contains {
+            guard account.state == .ready else { return false }
+            if event.externalID.hasPrefix(Self.prefix(accountID: account.id)) {
+                return true
+            }
+            return account.summaryResourceURLs.contains {
                 Self.externalID(account: account, url: $0) == event.externalID && IntegrationSummaryPolicy.permits($0, account: account)
             }
         }
@@ -127,6 +169,165 @@ struct IntegrationInformationSource: InformationSource {
         return .init(externalID: externalID(account: account, url: url),
                      title: String(title.prefix(240)), entities: [account.service.rawValue],
                      modifiedAt: now, state: completed ? .completed : .active, kindHint: .generalUpdate)
+    }
+
+    static func providerObservations(content: String, account: IntegrationAccount, recipe: ProviderReadRecipe, now: Date) -> [InformationObservation] {
+        guard content.utf8.count <= 32_768,
+              PrivacyEngine().classify(content).policy != .neverProcess else { return [] }
+
+        let lines = content.components(separatedBy: .newlines)
+        var result: [InformationObservation] = []
+        let past12Hours = now.addingTimeInterval(-12 * 3600)
+
+        for rawLine in lines {
+            let line = rawLine.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !line.isEmpty,
+                  !line.hasPrefix(recipe.name + " ·"),
+                  !line.hasPrefix("Read-only provider data"),
+                  !line.hasPrefix("Partial result:") else { continue }
+
+            var fields: [String: String] = [:]
+            let parts = line.components(separatedBy: " · ")
+            for part in parts {
+                if let colonRange = part.range(of: ": ") {
+                    let key = String(part[..<colonRange.lowerBound]).trimmingCharacters(in: .whitespaces)
+                    let value = String(part[colonRange.upperBound...]).trimmingCharacters(in: .whitespaces)
+                    fields[key] = value
+                }
+            }
+            guard !fields.isEmpty else { continue }
+
+            let displayTitle: String
+            if let task = fields["Task"] {
+                var title = task
+                if let dueTime = fields["Due time"], !dueTime.isEmpty { title += " (Due \(dueTime))" }
+                else if let due = fields["Due"], !due.isEmpty { title += " (Due \(due))" }
+                if let status = fields["Status"], !status.isEmpty { title += " [\(status)]" }
+                displayTitle = title
+            } else if let summary = fields["Summary"] {
+                let key = fields["Key"] ?? ""
+                let prefix = key.isEmpty ? "" : "\(key): "
+                let status = fields["Status"].map { " [\($0)]" } ?? ""
+                displayTitle = "\(prefix)\(summary)\(status)"
+            } else if let issue = fields["Issue"] {
+                let state = fields["State"].map { " (\($0))" } ?? ""
+                displayTitle = "\(issue)\(state)"
+            } else if let meeting = fields["Meeting"] {
+                displayTitle = "Meeting: \(meeting)"
+            } else if let subject = fields["Subject"] {
+                displayTitle = subject
+            } else if let file = fields["File"] {
+                displayTitle = "\(file) file updated"
+            } else if let channel = fields["Channel"] {
+                displayTitle = "#\(channel) channel"
+            } else if let server = fields["Server"] {
+                displayTitle = "\(server) server"
+            } else if let item = fields["Item"] {
+                displayTitle = item
+            } else if let event = fields["Event"] {
+                displayTitle = event
+            } else if let project = fields["Project"] {
+                let task = fields["Task"].map { ": \($0)" } ?? ""
+                let hours = fields["Hours"].map { " (\($0)h)" } ?? ""
+                displayTitle = "\(project)\(task)\(hours)"
+            } else if let period = fields["Period"], let coding = fields["Coding time"] {
+                displayTitle = "\(coding) coding time (\(period))"
+            } else if let fieldsText = fields["Fields"] {
+                displayTitle = fieldsText
+            } else {
+                displayTitle = line
+            }
+
+            let isCompleted = fields["Completed"]?.lowercased() == "true"
+                || fields["State"]?.lowercased() == "closed"
+                || fields["Status"]?.lowercased() == "done"
+            let state: InformationObjectState = isCompleted ? .completed : .active
+
+            let rawDate = fields["Received"] ?? fields["Start"] ?? fields["Due time"] ?? fields["Due"]
+                ?? fields["Modified"] ?? fields["Updated"] ?? fields["Created"] ?? fields["Date"]
+            let parsedDate = rawDate.flatMap { parseDate($0) }
+
+            let effectiveAt: Date?
+            let modifiedAt: Date
+
+            if let date = parsedDate {
+                if date < now {
+                    if date >= past12Hours {
+                        effectiveAt = date
+                        modifiedAt = date
+                    } else {
+                        if isCompleted {
+                            continue
+                        } else {
+                            effectiveAt = now
+                            modifiedAt = date
+                        }
+                    }
+                } else {
+                    effectiveAt = date
+                    modifiedAt = now
+                }
+            } else {
+                effectiveAt = now
+                modifiedAt = now
+            }
+
+            let kindHint: InformationKind
+            if recipe.id == .zoom || recipe.id == .eventbrite || fields["Meeting"] != nil || fields["Event"] != nil {
+                kindHint = .eventUpdate
+            } else if recipe.id == .outlook || fields["Subject"] != nil {
+                kindHint = .emailUpdate
+            } else if fields["Task"] != nil || fields["Issue"] != nil || fields["Summary"] != nil {
+                kindHint = .reminderChange
+            } else {
+                kindHint = .generalUpdate
+            }
+
+            let fullTitle = String("\(recipe.name): \(displayTitle)".prefix(240))
+            let digest = SHA256.hash(data: Data(line.utf8)).map { String(format: "%02x", $0) }.prefix(16).joined()
+            let extID = Self.prefix(accountID: account.id) + recipe.id.rawValue + ":" + digest
+
+            result.append(InformationObservation(
+                externalID: extID,
+                title: fullTitle,
+                entities: [recipe.name, account.service.rawValue],
+                modifiedAt: modifiedAt,
+                effectiveAt: effectiveAt,
+                state: state,
+                kindHint: kindHint
+            ))
+
+            if result.count >= 25 { break }
+        }
+
+        return result
+    }
+
+    private static func parseDate(_ value: String) -> Date? {
+        let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return nil }
+
+        let iso = ISO8601DateFormatter()
+        if let d = iso.date(from: trimmed) { return d }
+
+        let fractional = ISO8601DateFormatter()
+        fractional.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        if let d = fractional.date(from: trimmed) { return d }
+
+        let simple = DateFormatter()
+        simple.dateFormat = "yyyy-MM-dd"
+        simple.timeZone = .current
+        if let d = simple.date(from: trimmed) { return d }
+
+        if let number = Double(trimmed) {
+            if number > 1_000_000_000_000 {
+                return Date(timeIntervalSince1970: number / 1000.0)
+            } else if number > 1_000_000_000 {
+                return Date(timeIntervalSince1970: number)
+            }
+        }
+
+        return nil
     }
 }
 

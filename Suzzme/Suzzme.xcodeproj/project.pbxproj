@@ -237,7 +237,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 2700;
-				LastUpgradeCheck = 2700;
+				LastUpgradeCheck = 2720;
 				TargetAttributes = {
 					5D4622D430596019005D015B = {
 						CreatedOnToolsVersion = 27.0;
@@ -388,6 +388,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = VA9D6XP354;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -411,6 +412,7 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SUZZME_SHARE_APP_GROUP = "";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -451,6 +453,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = VA9D6XP354;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -467,6 +470,7 @@
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SUZZME_SHARE_APP_GROUP = "";
 				SWIFT_COMPILATION_MODE = wholemodule;
 			};
@@ -484,6 +488,7 @@
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = Suzzme/SuzzmeRelease.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = VA9D6XP354;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -505,6 +510,7 @@
 				"GOOGLE_OAUTH_REVERSED_CLIENT_ID[sdk=macosx*]" = "$(GOOGLE_MACOS_REVERSED_CLIENT_ID)";
 				INFOPLIST_FILE = GmailOAuthInfo.plist;
 				"INFOPLIST_FILE[sdk=iphone*]" = "SuzzmeCompanion-iOS-Info.plist";
+				INFOPLIST_KEY_NSAppleEventsUsageDescription = "Suzzme checks recent emails in Apple Mail to summarize your day on this Mac.";
 				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "Suzzme reads your schedule to answer questions and summarize your day. Calendar changes require your confirmation.";
 				INFOPLIST_KEY_NSContactsUsageDescription = "Let Suzzme identify contacts you ask about.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Microphone access lets Suzzme hear you when you choose to speak.";
@@ -567,6 +573,7 @@
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = NO;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = VA9D6XP354;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -588,6 +595,7 @@
 				"GOOGLE_OAUTH_REVERSED_CLIENT_ID[sdk=macosx*]" = "$(GOOGLE_MACOS_REVERSED_CLIENT_ID)";
 				INFOPLIST_FILE = GmailOAuthInfo.plist;
 				"INFOPLIST_FILE[sdk=iphone*]" = "SuzzmeCompanion-iOS-Info.plist";
+				INFOPLIST_KEY_NSAppleEventsUsageDescription = "Suzzme checks recent emails in Apple Mail to summarize your day on this Mac.";
 				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "Suzzme reads your schedule to answer questions and summarize your day. Calendar changes require your confirmation.";
 				INFOPLIST_KEY_NSContactsUsageDescription = "Let Suzzme identify contacts you ask about.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Microphone access lets Suzzme hear you when you choose to speak.";
@@ -702,6 +710,7 @@
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "SuzzmeShareExtension-macOS.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -742,6 +751,7 @@
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "SuzzmeShareExtension-macOS.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;

@@ -46,9 +46,9 @@ actor ProactiveIntelligenceEngine {
 
     func current(now: Date = .now) async throws -> ProactiveSnapshot {
         let cached = try await revalidateWatchedContent(try await store.current(now: now), now: now)
-        let references = Set((cached.dailyContext?.entries ?? []).filter { ["connectedApps", "gmail", "whatsapp"].contains($0.source) }.map(\.sourceReference))
+        let references = Set((cached.dailyContext?.entries ?? []).filter { ["connectedApps", "gmail", "whatsapp", "mail"].contains($0.source) }.map(\.sourceReference))
         if !references.isEmpty {
-            let permitted = Set((try await information?.retrieve(.init(sources: [.connectedApps, .watchedWeb, .gmail, .whatsapp], limit: InformationLimits.records), now: now) ?? []).map(\.externalID))
+            let permitted = Set((try await information?.retrieve(.init(sources: [.connectedApps, .watchedWeb, .gmail, .whatsapp, .mail], limit: InformationLimits.records), now: now) ?? []).map(\.externalID))
             if !references.isSubset(of: permitted) {
                 try await store.clearProactiveContent()
                 return try await store.current(now: now)
@@ -69,9 +69,9 @@ actor ProactiveIntelligenceEngine {
             let snapshot = ProactiveSnapshot(generatedAt: briefing.createdAt, briefing: briefing, opportunities: [], timeCriticalItems: [], dailyContext: nil)
             guard try await revalidateWatchedContent(snapshot, now: now).briefing != nil else { continue }
             let protectedItems = briefing.items.filter { item in
-                !Set(item.sourceEvidence).isDisjoint(with: ["gmail", "whatsapp", "connectedApps"])
+                !Set(item.sourceEvidence).isDisjoint(with: ["gmail", "whatsapp", "connectedApps", "mail"])
             }
-            let events = try await information?.retrieveHistorical(.init(sources: [.connectedApps, .gmail, .whatsapp], limit: InformationLimits.records), asOf: briefing.createdAt, now: now) ?? []
+            let events = try await information?.retrieveHistorical(.init(sources: [.connectedApps, .gmail, .whatsapp, .mail], limit: InformationLimits.records), asOf: briefing.createdAt, now: now) ?? []
             let permitted = Set(events.map(\.fingerprint))
             guard protectedItems.allSatisfy({ permitted.contains($0.candidateID) }) else { continue }
             result.append(briefing)
@@ -292,6 +292,10 @@ actor ProactiveIntelligenceEngine {
         }
         let limitations = health.compactMap { value -> ProactiveHealthLimitation? in
             guard value.enabled, value.state != .healthy || value.limited else { return nil }
+            if value.source == .gmail && value.state == .permissionRequired {
+                // If Gmail has not been connected yet, do not mark the briefing as incomplete
+                return nil
+            }
             if value.state == .healthy && value.limited {
                 return .init(source: value.source.rawValue, message: "Only part of your \(value.source.title.lowercased()) was checked. This summary may be incomplete.")
             }
@@ -363,8 +367,9 @@ actor ProactiveIntelligenceEngine {
     ) -> DailyContextSnapshot {
         let enforceCutoff = cutoff != nil
         let cutoff = min(cutoff ?? now, now)
-        let day = calendar.startOfDay(for: cutoff)
-        let end = calendar.date(byAdding: .day, value: 1, to: day) ?? day.addingTimeInterval(86_400)
+        let past12Hours = cutoff.addingTimeInterval(-12 * 3600)
+        let day = min(calendar.startOfDay(for: cutoff), past12Hours)
+        let end = calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: cutoff)) ?? cutoff.addingTimeInterval(86_400)
         let entries = evaluated
             .filter { candidate, relevance, temporal, _ in
                 if !enforceCutoff {
@@ -436,18 +441,25 @@ actor ProactiveIntelligenceEngine {
 
     private static func belongsToDailyBriefing(_ candidate: ProactiveCandidate,
         relevance: RelevanceDecision, now: Date, calendar: Calendar) -> Bool {
-        let day = calendar.startOfDay(for: now)
-        let end = calendar.date(byAdding: .day, value: 1, to: day) ?? day.addingTimeInterval(86_400)
+        let past12Hours = now.addingTimeInterval(-12 * 3600)
+        let day = min(calendar.startOfDay(for: now), past12Hours)
+        let end = calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: now)) ?? now.addingTimeInterval(86_400)
         guard let effective = candidate.effectiveAt else { return false }
         let historicalCalendar = candidate.source == "calendar" && candidate.kind == .schedule
+        let unreadOrImportantEmail = (candidate.source == "gmail" || candidate.source == "mail") &&
+            (candidate.title.hasPrefix("Important unread email · ") || candidate.title.hasPrefix("Important email · ") || candidate.title.hasPrefix("Unread email · ") || candidate.title.hasPrefix("Email · "))
+        let emailWindowStart = now.addingTimeInterval(-48 * 3600)
         if let updated = candidate.sourceUpdatedAt, updated > now { return false }
-        guard (candidate.freshness != .expired || historicalCalendar), candidate.sourceHealthy,
-              effective >= day, effective < end, effective <= now else { return false }
+        guard (candidate.freshness != .expired || historicalCalendar || unreadOrImportantEmail), candidate.sourceHealthy,
+              (effective >= day || (unreadOrImportantEmail && effective >= emailWindowStart)), effective < end, effective <= now else { return false }
         if candidate.kind == .information && effective > now { return false }
-        if candidate.kind == .information && candidate.source == "gmail" {
-            // This marker is produced only after the on-device model returns
-            // a grounded important or urgent extraction from an allowed body.
-            guard candidate.title.hasPrefix("Important email · ") else { return false }
+        if candidate.kind == .information && (candidate.source == "gmail" || candidate.source == "mail") {
+            let isAllowed = candidate.title.hasPrefix("Important email · ")
+                || candidate.title.hasPrefix("Important unread email · ")
+                || candidate.title.hasPrefix("Unread email · ")
+                || candidate.title.hasPrefix("Unread · ")
+                || candidate.title.hasPrefix("Email · ")
+            guard isAllowed else { return false }
         }
         return relevance.relevance != .irrelevant ||
             [.schedule, .scheduleChange, .cancellation, .deadline, .reminder, .commitment].contains(candidate.kind)
@@ -463,7 +475,7 @@ actor ProactiveIntelligenceEngine {
         if candidate.sourceHealthy { add(.sourceReliability, "It comes from a source Suzzme could check.", candidate.source) }
         if candidate.source == "connectedApps" {
             add(.explicitPreference, "You explicitly selected this resource for Daily Summary.", candidate.sourceReference)
-        } else if candidate.source == "gmail" || candidate.source == "whatsapp" {
+        } else if candidate.source == "gmail" || candidate.source == "mail" || candidate.source == "whatsapp" {
             add(.explicitPreference, "You selected this source for Daily Summary.", candidate.sourceReference)
         }
         switch candidate.kind {
@@ -511,10 +523,14 @@ actor ProactiveIntelligenceEngine {
         if let end = candidate.effectiveUntil, end <= now { return .obsolete }
         guard let date = candidate.effectiveAt else { return .canWait }
         if date < now.addingTimeInterval(-30 * 60) {
-            // A selected inbox or chat is a record of today's activity, even
-            // when its message arrived hours before the summary runs.
-            if candidate.kind == .information, ["gmail", "whatsapp"].contains(candidate.source),
-               calendar.isDate(date, inSameDayAs: now) { return .canWait }
+            // A selected inbox, chat, or connected app is a record of today's activity, even
+            // when its update arrived hours before the summary runs.
+            let past12Hours = now.addingTimeInterval(-12 * 3600)
+            let isUnreadOrUrgentMail = (candidate.source == "gmail" || candidate.source == "mail") &&
+                (candidate.title.hasPrefix("Important unread email · ") || candidate.title.hasPrefix("Important email · ") || candidate.title.hasPrefix("Unread email · ") || candidate.title.hasPrefix("Email · "))
+            let emailCutoff = now.addingTimeInterval(-48 * 3600)
+            if candidate.kind == .information, ["gmail", "whatsapp", "connectedApps", "mail"].contains(candidate.source),
+               (date >= past12Hours || calendar.isDate(date, inSameDayAs: now) || (isUnreadOrUrgentMail && date >= emailCutoff)) { return .canWait }
             // An unfinished due item remains useful after its due time. Past
             // calendar events age out, while overdue work stays actionable.
             if [.reminder, .commitment].contains(candidate.kind), !candidate.isCompleted {
@@ -575,8 +591,9 @@ actor ProactiveIntelligenceEngine {
                 guard (delivery != .ignore || historicalCalendar),
                       belongsToDailyBriefing(candidate, relevance: relevance, now: cutoff, calendar: calendar) else { return false }
             } else if delivery == .ignore { return false }
-            if candidate.kind == .information, ["gmail", "whatsapp"].contains(candidate.source) {
-                guard sourceCounts[candidate.source, default: 0] < 2 else { return false }
+            if candidate.kind == .information, ["gmail", "whatsapp", "connectedApps", "mail"].contains(candidate.source) {
+                let limit = candidate.source == "connectedApps" ? 4 : 3
+                guard sourceCounts[candidate.source, default: 0] < limit else { return false }
                 sourceCounts[candidate.source, default: 0] += 1
             }
             return true
@@ -647,29 +664,59 @@ actor ProactiveIntelligenceEngine {
         var parts = [opening]
         if items.isEmpty {
             parts.append(limitations.isEmpty
-                ? "There isn’t anything new that needs your attention."
+                ? "The past 12 hours have been quiet with no pressing updates. There isn’t anything new that needs your immediate attention."
                 : "I couldn’t confirm everything in your day because a source was unavailable.")
         } else {
             let formatter = DateFormatter(); formatter.dateStyle = .none; formatter.timeStyle = .short
             let dateFormatter = DateFormatter(); dateFormatter.dateStyle = .medium; dateFormatter.timeStyle = .none
-            parts.append(contentsOf: items.prefix(5).map { item in
-                let summary = InformationSummaryPresentation.displayTitle(item.summary)
-                guard let time = item.effectiveTime else { return summary }
-                let isToday = Calendar.current.isDate(time, inSameDayAs: now)
-                switch item.kind {
-                case .schedule, .scheduleChange:
-                    if item.isAllDay == true {
-                        let day = isToday ? "Today" : "On \(dateFormatter.string(from: time))"
-                        return "\(day), \(summary) is an all-day event."
+
+            let past12Hours = now.addingTimeInterval(-12 * 3600)
+            let pastEvents = items.filter { item in
+                guard let t = item.effectiveTime else { return item.kind == .information }
+                return t >= past12Hours && t <= now
+            }
+            let upcomingEvents = items.filter { item in
+                guard let t = item.effectiveTime else { return item.kind != .information }
+                return t > now
+            }
+
+            // 1. Past 12 hours summary
+            if !pastEvents.isEmpty {
+                let pastSummaries = pastEvents.prefix(3).map { item -> String in
+                    let summary = InformationSummaryPresentation.displayTitle(item.summary)
+                    if let t = item.effectiveTime {
+                        return "\(formatter.string(from: t)): \(summary)"
                     }
-                    let day = isToday ? "At" : "On \(dateFormatter.string(from: time)), at"
-                    return "\(day) \(formatter.string(from: time)), \(summary)"
-                case .deadline, .reminder, .commitment:
-                    return "By \(ProactiveDatePresentation.label(time, isAllDay: false, relativeTo: now)), \(summary)"
-                case .cancellation, .information:
                     return summary
-                }
-            })
+                }.joined(separator: "; ")
+                parts.append("Over the past 12 hours: \(pastSummaries).")
+            } else {
+                parts.append("Over the past 12 hours, there were no urgent updates.")
+            }
+
+            // 2. Plan further ahead
+            let planningItems = upcomingEvents.isEmpty ? items.filter { $0.delivery == .timeCritical || $0.kind == .deadline || $0.kind == .reminder || $0.kind == .schedule } : upcomingEvents
+            if !planningItems.isEmpty {
+                let planSummaries = planningItems.prefix(4).map { item -> String in
+                    let summary = InformationSummaryPresentation.displayTitle(item.summary)
+                    guard let time = item.effectiveTime else { return summary }
+                    let isToday = Calendar.current.isDate(time, inSameDayAs: now)
+                    switch item.kind {
+                    case .schedule, .scheduleChange:
+                        if item.isAllDay == true {
+                            let day = isToday ? "Today" : "On \(dateFormatter.string(from: time))"
+                            return "\(day), \(summary) is an all-day event."
+                        }
+                        let day = isToday ? "At" : "On \(dateFormatter.string(from: time)), at"
+                        return "\(day) \(formatter.string(from: time)), \(summary)"
+                    case .deadline, .reminder, .commitment:
+                        return "By \(ProactiveDatePresentation.label(time, isAllDay: false, relativeTo: now)), \(summary)"
+                    case .cancellation, .information:
+                        return summary
+                    }
+                }.joined(separator: "; ")
+                parts.append("Planning ahead: \(planSummaries).")
+            }
         }
         if let limitation = limitations.first { parts.append(limitation) }
         return String(parts.joined(separator: " ").prefix(ProactiveLimits.narrationCharacters))
