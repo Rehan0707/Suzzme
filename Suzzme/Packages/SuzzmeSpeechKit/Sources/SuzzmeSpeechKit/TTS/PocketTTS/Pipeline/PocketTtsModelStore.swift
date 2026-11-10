@@ -78,7 +78,7 @@ public actor PocketTtsModelStore {
         //   flowlm_step         : .all     fp16 3.4ms @ all vs 5.0 @ cpuAndGPU
         //                                   (GPU — NOT ANE; rank-5 scatter blocks ANE)
         //   flow_decoder_fused  : .all     1.09ms, the ONE model that is 100% ANE
-        //   mimi_decoder        : .cpuOnly 6.0ms, faster than GPU + avoids ANE beep
+        //   mimi_decoder        : .cpuAndGPU avoids ANE beep and avoids libBNNS STL exception on newer macOS
         // NOTE: the earlier "flowlm 1.97× on ANE" claim was disproven on-device —
         // only the fused decoder reaches the ANE; the rest are GPU/CPU.
         func config(_ units: MLComputeUnits) -> MLModelConfiguration {
@@ -89,7 +89,7 @@ public actor PocketTtsModelStore {
         let condConfig = config(.all)
         let flowlmConfig = config(.all)
         let flowDecoderConfig = config(.all)
-        let mimiConfig = config(.cpuOnly)
+        let mimiConfig = config(.cpuAndGPU)
 
         let loadStart = Date()
 

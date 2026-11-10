@@ -121,6 +121,7 @@ final class MacAssistantPanelController {
     private var notchEntryRect: NSRect = .null
     private var pointerWasInNotch = false
     private var pointerHovering = false
+    private var isFocusExpanded = false
     private struct PresentationIdentity: Equatable {
         let state: SuzzmeAssistantState
         let theme: SuzzmePresenceTheme
@@ -135,6 +136,7 @@ final class MacAssistantPanelController {
         let contextLabels: [String]
         let interactionID: UUID?
         let backgroundActivity: ScheduledBriefingActivity?
+        let focusActivity: MacFocusActivity?
         let isHovered: Bool
     }
     private var renderedIdentity: PresentationIdentity?
@@ -167,12 +169,16 @@ final class MacAssistantPanelController {
     private var currentBackgroundStop: ((UUID) -> Void)?
     private var currentOpenBackgroundTasks: (() -> Void)?
     private var currentOpenDailySummary: (() -> Void)?
+    private var currentFocusActivity: MacFocusActivity?
+    private var currentFocusStop: (() -> Void)?
+    private var currentFocusExtend: (() -> Void)?
+    private var currentOpenFocusPlan: (() -> Void)?
 
     init(observesPointer: Bool = true) {
         self.observesPointer = observesPointer
     }
 
-    func update(state: SuzzmeAssistantState, theme: SuzzmePresenceTheme, animation: SuzzmePresenceAnimation, signal: SuzzmeProactivePresenceSignal = .none, review: SuzzmePresenceReview? = nil, connectionRequest: MacGitHubConnectionRequest? = nil, response: String? = nil, audioLevel: Double = 0, speechProgress: Double = 0, interactionID: UUID? = nil, contextLabels: [String] = [], backgroundActivity: ScheduledBriefingActivity? = nil, onConfirmation: ((Bool) -> Void)? = nil, onConnectionDecision: ((MacGitHubConnectionDecision) -> Void)? = nil, onBackgroundStop: ((UUID) -> Void)? = nil, onOpenBackgroundTasks: (() -> Void)? = nil, onOpenDailySummary: (() -> Void)? = nil, onCancel: @escaping () -> Void, onFinish: @escaping () -> Void = {}, onInvoke: @escaping () -> Void, onPushToTalkPress: (() -> Void)? = nil, onPushToTalkRelease: (() -> Void)? = nil) {
+    func update(state: SuzzmeAssistantState, theme: SuzzmePresenceTheme, animation: SuzzmePresenceAnimation, signal: SuzzmeProactivePresenceSignal = .none, review: SuzzmePresenceReview? = nil, connectionRequest: MacGitHubConnectionRequest? = nil, response: String? = nil, audioLevel: Double = 0, speechProgress: Double = 0, interactionID: UUID? = nil, contextLabels: [String] = [], backgroundActivity: ScheduledBriefingActivity? = nil, focusActivity: MacFocusActivity? = nil, onConfirmation: ((Bool) -> Void)? = nil, onConnectionDecision: ((MacGitHubConnectionDecision) -> Void)? = nil, onBackgroundStop: ((UUID) -> Void)? = nil, onOpenBackgroundTasks: (() -> Void)? = nil, onOpenDailySummary: (() -> Void)? = nil, onFocusExtend: (() -> Void)? = nil, onFocusStop: (() -> Void)? = nil, onOpenFocusPlan: (() -> Void)? = nil, onCancel: @escaping () -> Void, onFinish: @escaping () -> Void = {}, onInvoke: @escaping () -> Void, onPushToTalkPress: (() -> Void)? = nil, onPushToTalkRelease: (() -> Void)? = nil) {
         // Completion can return the core to idle before the UI reading deadline.
         // Keep only the current environment-owned answer through that deadline.
         currentResponse = [.idle, .understanding, .speaking, .success, .error].contains(state) ? response : nil
@@ -197,9 +203,16 @@ final class MacAssistantPanelController {
         currentBackgroundStop = onBackgroundStop
         currentOpenBackgroundTasks = onOpenBackgroundTasks
         currentOpenDailySummary = onOpenDailySummary
+        currentFocusActivity = focusActivity
+        currentFocusStop = onFocusStop
+        currentFocusExtend = onFocusExtend
+        currentOpenFocusPlan = onOpenFocusPlan
         if state != .idle || signal != .none || currentResponse != nil
-            || currentReview != nil || connectionRequest != nil || backgroundActivity != nil {
+            || currentReview != nil || connectionRequest != nil || (backgroundActivity != nil && focusActivity == nil) {
             pointerHovering = false
+        }
+        if focusActivity == nil {
+            isFocusExpanded = false
         }
         refreshPresentation()
     }
@@ -234,6 +247,11 @@ final class MacAssistantPanelController {
     }
 
     private func escapeCurrentPresentation() {
+        if isFocusExpanded {
+            isFocusExpanded = false
+            refreshPresentation()
+            return
+        }
         // Cancel through the captured owner, never by manufacturing an action
         // or confirming whatever happens to be current after an actor hop.
         if currentConnectionRequest != nil {
@@ -300,13 +318,21 @@ final class MacAssistantPanelController {
     func pointerMoved(to point: NSPoint) {
         updatePointerCapture(to: point)
         let isInside = MacPresencePointerRegion.contains(point, in: notchEntryRect)
-        let quietIdle = currentState == .idle && currentSignal == .none
-            && currentResponse == nil && currentReview == nil
-            && currentConnectionRequest == nil && visibleBackgroundActivity == nil
-        let staysInExpandedSurface = pointerHovering && panel.map {
+        let isInsidePanel = panel.map {
             MacPresencePointerRegion.contains(point, in: $0.frame.insetBy(dx: -4, dy: -4))
         } == true
-        let shouldHover = quietIdle && !notchEntryRect.isNull && (isInside || staysInExpandedSurface)
+        let quietIdle = currentState == .idle && currentSignal == .none
+            && currentResponse == nil && currentReview == nil
+            && currentConnectionRequest == nil && visibleBackgroundActivity == nil && visibleFocusActivity == nil
+        let shouldHover: Bool
+        if visibleFocusActivity != nil {
+            shouldHover = (!notchEntryRect.isNull && isInside) || isInsidePanel
+        } else if quietIdle && !notchEntryRect.isNull {
+            let staysInExpandedSurface = pointerHovering && isInsidePanel
+            shouldHover = isInside || staysInExpandedSurface
+        } else {
+            shouldHover = false
+        }
         if shouldHover != pointerHovering {
             pointerHovering = shouldHover
             if shouldHover {
@@ -316,11 +342,28 @@ final class MacAssistantPanelController {
         }
         defer { pointerWasInNotch = isInside }
         guard isInside, !pointerWasInNotch,
-              Self.autoHideDelay(for: currentState, signal: currentSignal, backgroundActivity: visibleBackgroundActivity) != nil,
+              Self.autoHideDelay(for: currentState, signal: currentSignal, backgroundActivity: visibleBackgroundActivity, focusActivity: visibleFocusActivity) != nil,
               suppressedIdentity != nil || (visibleBackgroundActivity != nil && suppressedBackgroundActivity == visibleBackgroundActivity) else { return }
         suppressedIdentity = nil
         suppressedBackgroundActivity = nil
         renderedIdentity = nil
+        refreshPresentation()
+    }
+
+    func setHovered(_ hovered: Bool) {
+        guard pointerHovering != hovered else { return }
+        pointerHovering = hovered
+        if hovered {
+            NSHapticFeedbackManager.defaultPerformer.perform(.alignment, performanceTime: .now)
+        }
+        refreshPresentation()
+    }
+
+    func toggleFocusExpansion() {
+        isFocusExpanded.toggle()
+        if isFocusExpanded {
+            NSHapticFeedbackManager.defaultPerformer.perform(.alignment, performanceTime: .now)
+        }
         refreshPresentation()
     }
 
@@ -347,6 +390,7 @@ final class MacAssistantPanelController {
     private func refreshPresentation() {
         let presentation = SuzzmeAssistantPresentation.make(for: currentState)
         let backgroundActivity = visibleBackgroundActivity
+        let focusActivity = visibleFocusActivity
         guard currentCancel != nil, currentInvoke != nil else {
             dismiss()
             return
@@ -357,12 +401,12 @@ final class MacAssistantPanelController {
         // monitor is primary. Its entry listener is independent of an answer's
         // owned display, which must remain stable throughout the interaction.
         notchEntryRect = notchScreen.map(Self.notchEntryRect(for:)) ?? .null
-        let hasInteraction = currentState != .idle || currentResponse != nil || currentReview != nil || currentConnectionRequest != nil || currentSignal != .none || backgroundActivity != nil
+        let hasInteraction = currentState != .idle || currentResponse != nil || currentReview != nil || currentConnectionRequest != nil || currentSignal != .none || backgroundActivity != nil || focusActivity != nil
         let preferredNotch = hasInteraction ? nil : notchScreen
         guard let preferred = preferredNotch ?? screens.first(where: { $0.frame.contains(NSEvent.mouseLocation) }) ?? NSApp.keyWindow?.screen ?? NSApp.mainWindow?.screen ?? NSScreen.main ?? screens.first else { return }
         let displayID = displayOwnership.resolve(
-            interactionID: backgroundActivity?.id ?? currentInteractionID,
-            retainsInteraction: currentState != .idle || currentResponse != nil || currentReview != nil || currentConnectionRequest != nil || backgroundActivity != nil,
+            interactionID: backgroundActivity?.id ?? focusActivity?.id ?? currentInteractionID,
+            retainsInteraction: currentState != .idle || currentResponse != nil || currentReview != nil || currentConnectionRequest != nil || backgroundActivity != nil || focusActivity != nil,
             preferredID: Self.displayID(for: preferred),
             availableIDs: Set(screens.map(Self.displayID(for:)))
         )
@@ -372,7 +416,7 @@ final class MacAssistantPanelController {
         // top-center fallback appears only while there is real assistant or
         // proactive activity, avoiding a permanent floating control on Macs
         // without a notch.
-        guard hasNotch || presentation.isVisible || currentSignal != .none || currentResponse != nil || currentConnectionRequest != nil || backgroundActivity != nil else {
+        guard hasNotch || presentation.isVisible || currentSignal != .none || currentResponse != nil || currentConnectionRequest != nil || backgroundActivity != nil || focusActivity != nil else {
             dismiss()
             return
         }
@@ -386,10 +430,10 @@ final class MacAssistantPanelController {
         // Never install a cursor polling loop or another keyboard monitor.
         installMouseMonitors()
         let notchHeight = hasNotch ? screen.safeAreaInsets.top : 0
-        let isHovered = hasNotch && pointerHovering && currentState == .idle
+        let isHovered = (focusActivity != nil && isFocusExpanded) || ((hasNotch || focusActivity != nil) && pointerHovering && currentState == .idle
             && currentSignal == .none && currentResponse == nil
             && currentReview == nil && currentConnectionRequest == nil
-            && backgroundActivity == nil
+            && (backgroundActivity == nil || focusActivity != nil))
         let size = MacAssistantSurfaceMetrics.size(
             state: currentState,
             signal: currentSignal,
@@ -398,16 +442,21 @@ final class MacAssistantPanelController {
             response: currentResponse,
             connectionRequest: currentConnectionRequest,
             notchHeight: notchHeight,
-            contextLabels: backgroundActivity == nil ? currentContextLabels : [],
+            contextLabels: backgroundActivity == nil && focusActivity == nil ? currentContextLabels : [],
             backgroundActivity: backgroundActivity,
+            focusActivity: focusActivity,
             isHovered: isHovered
         )
         let panel = panel ?? makePanel()
         self.panel = panel
         panel.onEscape = { [weak self] in self?.escapeCurrentPresentation() }
-        panel.setAccessibilityLabel(backgroundActivity.map { "Suzzme. Daily Summary. \($0.title)" } ?? "Suzzme. \(presentation.title)")
+        panel.setAccessibilityLabel(
+            focusActivity.map { "Suzzme Focus Session. \($0.title). \($0.remainingDescription)" }
+            ?? backgroundActivity.map { "Suzzme. Daily Summary. \($0.title)" }
+            ?? "Suzzme. \(presentation.title)"
+        )
         panel.level = hasNotch ? .statusBar : .floating
-        let identity = PresentationIdentity(state: currentState, theme: currentTheme, animation: currentAnimation, signal: currentSignal, hasNotch: hasNotch, notchWidth: notchWidth, notchHeight: notchHeight, review: currentReview, connectionRequest: currentConnectionRequest, response: currentResponse, contextLabels: backgroundActivity == nil ? currentContextLabels : [], interactionID: currentInteractionID, backgroundActivity: backgroundActivity, isHovered: isHovered)
+        let identity = PresentationIdentity(state: currentState, theme: currentTheme, animation: currentAnimation, signal: currentSignal, hasNotch: hasNotch, notchWidth: notchWidth, notchHeight: notchHeight, review: currentReview, connectionRequest: currentConnectionRequest, response: currentResponse, contextLabels: backgroundActivity == nil && focusActivity == nil ? currentContextLabels : [], interactionID: currentInteractionID, backgroundActivity: backgroundActivity, focusActivity: focusActivity, isHovered: isHovered)
         let retainsDismissedAnswer = currentState == .idle && currentResponse != nil
             && suppressedIdentity?.response == currentResponse
             && suppressedIdentity?.signal == currentSignal
@@ -436,6 +485,7 @@ final class MacAssistantPanelController {
                 state: currentState, theme: currentTheme, animation: currentAnimation,
                 signal: currentSignal, hasNotch: hasNotch, notchWidth: notchWidth, notchHeight: notchHeight, isHovered: isHovered, review: currentReview, connectionRequest: currentConnectionRequest, response: currentResponse, audioLevel: currentAudioLevel, speechProgress: currentSpeechProgress, contextLabels: identity.contextLabels,
                 backgroundActivity: backgroundActivity,
+                focusActivity: focusActivity,
                 onConfirmation: currentConfirmation,
                 onConnectionDecision: currentConnectionDecision,
                 onBackgroundStop: { [weak self] id in
@@ -451,6 +501,11 @@ final class MacAssistantPanelController {
                     guard let self, self.acceptsBackgroundAction(for: identity) else { return }
                     self.currentOpenDailySummary?()
                 },
+                onFocusExtend: { [weak self] in self?.currentFocusExtend?() },
+                onFocusStop: { [weak self] in self?.currentFocusStop?() },
+                onOpenFocusPlan: { [weak self] in self?.currentOpenFocusPlan?() },
+                onToggleExpand: { [weak self] in self?.toggleFocusExpansion() },
+                onHoverChanged: { [weak self] in self?.setHovered($0) },
                 onCancel: { [weak self] in self?.currentCancel?() },
                 onFinish: { [weak self] in self?.currentFinish?() },
                 onInvoke: { [weak self] in self?.currentInvoke?() },
@@ -467,7 +522,7 @@ final class MacAssistantPanelController {
             renderedAudioLevel = currentAudioLevel
             renderedSpeechProgress = currentSpeechProgress
             if identityChanged, currentConnectionRequest == nil,
-               let delay = Self.autoHideDelay(for: currentState == .idle && currentResponse != nil ? .success : currentState, signal: currentSignal, backgroundActivity: backgroundActivity, isHovered: isHovered) {
+               let delay = Self.autoHideDelay(for: currentState == .idle && currentResponse != nil ? .success : currentState, signal: currentSignal, backgroundActivity: backgroundActivity, focusActivity: focusActivity, isHovered: isHovered) {
                 autoHideTask = Task { @MainActor [weak self] in
                     do { try await Task.sleep(for: .seconds(delay)) }
                     catch { return }
@@ -516,10 +571,15 @@ final class MacAssistantPanelController {
             return
         }
         let radii = MacAssistantSurfaceMetrics.cornerRadii(state: identity.state, signal: identity.signal,
-                                                         hasDetail: identity.review != nil || identity.connectionRequest != nil || identity.response != nil || identity.backgroundActivity != nil)
+                                                         hasDetail: identity.review != nil || identity.connectionRequest != nil || identity.response != nil || identity.backgroundActivity != nil,
+                                                         hasFocus: identity.focusActivity != nil)
         let shape = SuzzmeNotchSurfaceShape(attached: identity.hasNotch, neckWidth: identity.notchWidth,
                                            topCornerRadius: radii.top, bottomCornerRadius: radii.bottom)
-        panel.ignoresMouseEvents = !MacPresencePointerRegion.contains(point, in: panel.frame, shape: shape)
+        if identity.focusActivity != nil {
+            panel.ignoresMouseEvents = false
+        } else {
+            panel.ignoresMouseEvents = !MacPresencePointerRegion.contains(point, in: panel.frame, shape: shape)
+        }
     }
 
     private func acceptsBackgroundAction(for identity: PresentationIdentity) -> Bool {
@@ -540,7 +600,8 @@ final class MacAssistantPanelController {
     private static let collectionBehavior: NSWindow.CollectionBehavior =
         [.canJoinAllSpaces, .stationary, .ignoresCycle, .fullScreenAuxiliary]
 
-    static func autoHideDelay(for state: SuzzmeAssistantState, signal: SuzzmeProactivePresenceSignal, backgroundActivity: ScheduledBriefingActivity? = nil, isHovered: Bool = false) -> Double? {
+    static func autoHideDelay(for state: SuzzmeAssistantState, signal: SuzzmeProactivePresenceSignal, backgroundActivity: ScheduledBriefingActivity? = nil, focusActivity: MacFocusActivity? = nil, isHovered: Bool = false) -> Double? {
+        if focusActivity != nil { return nil }
         if isHovered && state == .idle && signal == .none && backgroundActivity == nil { return nil }
         if state == .idle, backgroundActivity != nil { return 8 }
         return switch state {
@@ -555,6 +616,13 @@ final class MacAssistantPanelController {
         guard currentState == .idle, currentResponse == nil, currentReview == nil,
               currentConnectionRequest == nil, currentInteractionID == nil else { return nil }
         return currentBackgroundActivity
+    }
+
+    private var visibleFocusActivity: MacFocusActivity? {
+        guard currentState == .idle, currentResponse == nil, currentReview == nil,
+              currentConnectionRequest == nil, currentInteractionID == nil,
+              visibleBackgroundActivity == nil else { return nil }
+        return currentFocusActivity
     }
 
     private static func displayID(for screen: NSScreen) -> UInt32 {
@@ -577,6 +645,7 @@ final class MacAssistantPanelController {
         panel.hidesOnDeactivate = false
         panel.collectionBehavior = Self.collectionBehavior
         panel.becomesKeyOnlyIfNeeded = true
+        panel.acceptsMouseMovedEvents = true
         panel.isMovable = false
         return panel
     }
@@ -661,11 +730,17 @@ struct MacAssistantNotchSurface: View {
     var speechProgress: Double = 0
     var contextLabels: [String] = []
     var backgroundActivity: ScheduledBriefingActivity?
+    var focusActivity: MacFocusActivity?
     var onConfirmation: ((Bool) -> Void)?
     var onConnectionDecision: ((MacGitHubConnectionDecision) -> Void)?
     var onBackgroundStop: ((UUID) -> Void)?
     var onOpenBackgroundTasks: (() -> Void)?
     var onOpenDailySummary: (() -> Void)?
+    var onFocusExtend: (() -> Void)?
+    var onFocusStop: (() -> Void)?
+    var onOpenFocusPlan: (() -> Void)?
+    var onToggleExpand: (() -> Void)?
+    var onHoverChanged: ((Bool) -> Void)?
     let onCancel: () -> Void
     var onFinish: () -> Void = {}
     let onInvoke: () -> Void
@@ -679,9 +754,20 @@ struct MacAssistantNotchSurface: View {
 
     private var presentation: SuzzmeAssistantPresentation { .make(for: state) }
 
+    private var visibleFocusActivity: MacFocusActivity? {
+        guard state == .idle, review == nil, connectionRequest == nil, response == nil,
+              visibleBackgroundActivity == nil else { return nil }
+        return focusActivity
+    }
+
     var body: some View {
         let colors = SuzzmePresenceColors.mascot(for: .dark)
-        let radii = MacAssistantSurfaceMetrics.cornerRadii(state: state, signal: signal, hasDetail: review != nil || connectionRequest != nil || response != nil || visibleBackgroundActivity != nil)
+        let hasFocus = visibleFocusActivity != nil
+        let radii = MacAssistantSurfaceMetrics.cornerRadii(
+            state: state, signal: signal,
+            hasDetail: review != nil || connectionRequest != nil || response != nil || visibleBackgroundActivity != nil,
+            hasFocus: hasFocus
+        )
         let shape = SuzzmeNotchSurfaceShape(
             attached: hasNotch, neckWidth: notchWidth,
             topCornerRadius: radii.top, bottomCornerRadius: radii.bottom
@@ -719,7 +805,20 @@ struct MacAssistantNotchSurface: View {
 
     private func surface(colors: SuzzmePresenceColors, shape: SuzzmeNotchSurfaceShape) -> some View {
         VStack(spacing: 8) {
-            if isQuietIdle && hasNotch {
+            if let focus = visibleFocusActivity {
+                MacNotchFocusView(
+                    activity: focus,
+                    isHovered: isHovered,
+                    hasNotch: hasNotch,
+                    notchWidth: notchWidth,
+                    notchHeight: notchHeight,
+                    onToggleExpand: { onToggleExpand?() },
+                    onHoverChanged: { onHoverChanged?($0) },
+                    onExtend: { onFocusExtend?() },
+                    onStop: { onFocusStop?() },
+                    onOpenPlan: { onOpenFocusPlan?() }
+                )
+            } else if isQuietIdle && hasNotch {
                 if isHovered {
                     hoverControls
                 }
@@ -836,7 +935,7 @@ struct MacAssistantNotchSurface: View {
                 secondary: statusAccent ?? colors.secondary,
                 highlight: statusAccent ?? colors.highlight,
                 state: state,
-                isActive: presentation.emphasis != .ambient,
+                isActive: presentation.emphasis != .ambient || visibleFocusActivity != nil,
                 animation: animation
             )
         }
@@ -845,9 +944,14 @@ struct MacAssistantNotchSurface: View {
         .animation(surfaceTransition, value: response != nil)
         .animation(surfaceTransition, value: signal)
         .animation(surfaceTransition, value: visibleBackgroundActivity)
+        .animation(surfaceTransition, value: visibleFocusActivity?.id)
+        .animation(surfaceTransition, value: visibleFocusActivity?.remainingSeconds)
         .environment(\.colorScheme, .dark)
         .accessibilityElement(children: .contain)
-        .accessibilityLabel(isQuietIdle && hasNotch ? "Suzzme. Talk to Suzzme" : (visibleBackgroundActivity.map { "Suzzme. Daily Summary. \($0.title)" } ?? presentation.systemStatus))
+        .accessibilityLabel(
+            visibleFocusActivity.map { "Suzzme Focus Session. \($0.title). \($0.remainingDescription)" }
+            ?? (isQuietIdle && hasNotch ? "Suzzme. Talk to Suzzme" : (visibleBackgroundActivity.map { "Suzzme. Daily Summary. \($0.title)" } ?? presentation.systemStatus))
+        )
     }
 
     private var hoverControls: some View {
@@ -893,7 +997,7 @@ struct MacAssistantNotchSurface: View {
     }
 
     private var surfaceTapInvokes: Bool {
-        guard review == nil, connectionRequest == nil, response == nil, visibleBackgroundActivity == nil else { return false }
+        guard review == nil, connectionRequest == nil, response == nil, visibleBackgroundActivity == nil, visibleFocusActivity == nil else { return false }
         return switch state {
         case .idle, .success, .error: true
         default: false
@@ -902,7 +1006,7 @@ struct MacAssistantNotchSurface: View {
 
     private var isQuietIdle: Bool {
         state == .idle && signal == .none && review == nil
-            && connectionRequest == nil && response == nil && visibleBackgroundActivity == nil
+            && connectionRequest == nil && response == nil && visibleBackgroundActivity == nil && visibleFocusActivity == nil
     }
 
     private var visibleBackgroundActivity: ScheduledBriefingActivity? {
@@ -1105,8 +1209,9 @@ private struct SuzzmeNotchEdgeTrace: View {
 }
 
 enum MacAssistantSurfaceMetrics {
-    static func cornerRadii(state: SuzzmeAssistantState, signal: SuzzmeProactivePresenceSignal, hasDetail: Bool) -> (top: CGFloat, bottom: CGFloat) {
+    static func cornerRadii(state: SuzzmeAssistantState, signal: SuzzmeProactivePresenceSignal, hasDetail: Bool, hasFocus: Bool = false) -> (top: CGFloat, bottom: CGFloat) {
         if hasDetail { return (12, 22) }
+        if hasFocus { return (10, 18) }
         if state == .idle && signal == .none { return (6, 12) }
         return (8, 18)
     }
@@ -1121,11 +1226,13 @@ enum MacAssistantSurfaceMetrics {
         notchHeight: CGFloat = 0,
         contextLabels: [String] = [],
         backgroundActivity: ScheduledBriefingActivity? = nil,
+        focusActivity: MacFocusActivity? = nil,
         isHovered: Bool = false
     ) -> CGSize {
-        let showsBackground = state == .idle && review == nil && response == nil && connectionRequest == nil && backgroundActivity != nil
+        let showsFocus = state == .idle && review == nil && response == nil && connectionRequest == nil && backgroundActivity == nil && focusActivity != nil
+        let showsBackground = state == .idle && review == nil && response == nil && connectionRequest == nil && backgroundActivity != nil && !showsFocus
         let hasDetail = review != nil || response != nil || connectionRequest != nil || showsBackground
-        let compactIdle = state == .idle && signal == .none && !hasDetail
+        let compactIdle = state == .idle && signal == .none && !hasDetail && !showsFocus
         let width: CGFloat
         let height: CGFloat
 
@@ -1133,7 +1240,10 @@ enum MacAssistantSurfaceMetrics {
         let cutoutWidth = notchWidth.isFinite ? max(0, notchWidth) : 0
         let activeWidth = max(cutoutWidth + SuzzmeTheme.Spacing.large,
                               min(max(328, cutoutWidth + 148), 380.0))
-        if hasDetail {
+        if showsFocus {
+            width = isHovered ? max(380, cutoutWidth + 180) : max(320, cutoutWidth + 140)
+            height = isHovered ? 186 : 38
+        } else if hasDetail {
             width = connectionRequest == nil ? activeWidth : max(activeWidth, 560)
             if showsBackground {
                 height = 296

@@ -409,7 +409,13 @@ struct DailyContextView: View {
                 Text(summary.narration).font(.subheadline).foregroundStyle(SuzzmeTheme.textSecondary)
                     .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 3)
                 Button { Task { await environment.speakCurrentBriefing() } } label: {
-                    Label("Listen to your summary", systemImage: "speaker.wave.2")
+                    if environment.voice.isPreparingSpeech {
+                        Label("Preparing voice…", systemImage: "waveform")
+                    } else if environment.voice.isSpeaking {
+                        Label("Stop reading", systemImage: "stop.fill")
+                    } else {
+                        Label("Listen to your summary", systemImage: "speaker.wave.2")
+                    }
                 }.buttonStyle(.plain).frame(minHeight: 44)
             }
         }

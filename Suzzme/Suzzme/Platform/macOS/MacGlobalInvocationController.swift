@@ -20,6 +20,7 @@ final class MacGlobalInvocationController {
     private var startTask: Task<Void, Never>?
     private var finalTranscriptTask: Task<Void, Never>?
     private var briefingTask: Task<Void, Never>?
+    private var focusTimerTask: Task<Void, Never>?
     private var lastFinalizedSessionID: UUID?
     private var lastBriefingRevision: UUID?
     private var configuredShortcut: SuzzmeKeyboardShortcut?
@@ -80,6 +81,8 @@ final class MacGlobalInvocationController {
         finalTranscriptTask = nil
         briefingTask?.cancel()
         briefingTask = nil
+        focusTimerTask?.cancel()
+        focusTimerTask = nil
         panel.dismiss()
         for observer in appObservers { NotificationCenter.default.removeObserver(observer) }
         for observer in workspaceObservers { NSWorkspace.shared.notificationCenter.removeObserver(observer) }
@@ -134,6 +137,19 @@ final class MacGlobalInvocationController {
         )
     }
 
+    private func focusActivityForPresentation() -> MacFocusActivity? {
+        guard running,
+              environment.presenceState == .idle, environment.currentInteractionID == nil,
+              environment.presentedResponse == nil, environment.presentedAction == nil,
+              environment.screenConsentRequestID == nil, !environment.invocation.isActive,
+              environment.proactivePresenceSignal != .timeCritical,
+              heldToken == nil, startTask == nil,
+              !environment.voice.isListening, !environment.voice.isFinalizing,
+              !environment.voice.isSpeaking, !environment.voice.isPreparingSpeech,
+              environment.integrations.browserHandoff.request?.isCurrent() != true else { return nil }
+        return environment.activeFocusActivity
+    }
+
     private func presentBrowserSetupIfNeeded() {
         let handoff = environment.integrations.browserHandoff
         guard handoff.phase == .setup, let request = handoff.request, request.isCurrent(),
@@ -153,6 +169,21 @@ final class MacGlobalInvocationController {
             updateGuidance()
             cursorCompanion.update()
             guidance.setCompanionPresent(cursorCompanion.isPointing)
+            if environment.activeFocusActivity != nil {
+                if focusTimerTask == nil {
+                    focusTimerTask = Task { @MainActor [weak self] in
+                        while !Task.isCancelled {
+                            try? await Task.sleep(for: .seconds(1))
+                            guard let self, self.running, self.environment.activeFocusActivity != nil else { break }
+                            self.updatePanel()
+                        }
+                        self?.focusTimerTask = nil
+                    }
+                }
+            } else {
+                focusTimerTask?.cancel()
+                focusTimerTask = nil
+            }
             if let sessionID = environment.voice.finalizedSessionID,
                environment.voice.finalTranscript != nil, lastFinalizedSessionID != sessionID {
                 lastFinalizedSessionID = sessionID
@@ -350,6 +381,7 @@ final class MacGlobalInvocationController {
                 confirmationLabel: "Allow once", isDestructive: false)
         }
         let backgroundActivity = backgroundActivityForPresentation()
+        let focusActivity = focusActivityForPresentation()
         panel.update(
             state: environment.presenceState,
             theme: environment.invocation.presenceTheme,
@@ -361,7 +393,7 @@ final class MacGlobalInvocationController {
             audioLevel: environment.voice.audioLevel,
             speechProgress: environment.voice.speechProgress,
             interactionID: browserRequest?.id ?? environment.currentInteractionID
-                ?? (backgroundActivity == nil ? scheduledNotice : nil),
+                ?? (backgroundActivity == nil && focusActivity == nil ? scheduledNotice : nil),
             contextLabels: environment.presentedScreenMetadata.map { metadata in
                 guard let requestID = environment.currentInteractionID,
                       metadata.isCurrent(requestID: requestID) else { return [] }
@@ -369,6 +401,7 @@ final class MacGlobalInvocationController {
                 return appName.map { [$0, "Screen"] } ?? ["Screen"]
             } ?? [],
             backgroundActivity: backgroundActivity,
+            focusActivity: focusActivity,
             onConfirmation: { [weak self] confirmed in
                 guard let self, self.running else { return }
                 let generation = self.observationGeneration
@@ -415,6 +448,21 @@ final class MacGlobalInvocationController {
                       current.id == backgroundActivity?.id, current.canOpenSummary else { return }
                 self.panel.hideCurrentPresentation()
                 self.openBackgroundDestination?(.briefing)
+            },
+            onFocusExtend: { [weak self] in
+                guard let self, self.running else { return }
+                self.environment.extendFocusSession(minutes: 5)
+                self.updatePanel()
+            },
+            onFocusStop: { [weak self] in
+                guard let self, self.running else { return }
+                self.environment.stopFocusSession()
+                self.updatePanel()
+            },
+            onOpenFocusPlan: { [weak self] in
+                guard let self, self.running else { return }
+                self.openBackgroundDestination?(.briefing)
+                self.updatePanel()
             },
             onCancel: { [weak self] in self?.monitor.resetPressedState(); self?.cancel() },
             onFinish: { [weak self] in

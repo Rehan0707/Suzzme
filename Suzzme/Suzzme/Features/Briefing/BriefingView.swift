@@ -57,6 +57,14 @@ struct BriefingView: View {
         #if os(macOS)
         .toolbar {
             ToolbarItem(placement: .automatic) {
+                Button {
+                    Task { await environment.prepareProactiveBriefing(showActivity: true) }
+                } label: {
+                    Label("Refresh Daily Summary", systemImage: "arrow.clockwise")
+                }
+                .help("Refresh Daily Summary with latest messages and emails")
+            }
+            ToolbarItem(placement: .automatic) {
                 NavigationLink { BackgroundTasksView() } label: {
                     Label("Background Tasks", systemImage: "clock.arrow.circlepath")
                 }
@@ -112,18 +120,36 @@ struct BriefingView: View {
                     Button {
                         Task { await environment.speakCurrentBriefing() }
                     } label: {
-                        Label("Listen", systemImage: "speaker.wave.2.fill")
+                        if environment.voice.isPreparingSpeech {
+                            Label("Preparing voice…", systemImage: "waveform")
+                        } else if environment.voice.isSpeaking {
+                            Label("Stop reading", systemImage: "stop.fill")
+                        } else {
+                            Label("Listen", systemImage: "speaker.wave.2.fill")
+                        }
                     }
                     .buttonStyle(.borderedProminent)
-                    .tint(SuzzmeTheme.intelligencePrimary)
+                    .tint(environment.voice.isSpeaking ? SuzzmeTheme.warning : SuzzmeTheme.intelligencePrimary)
                     .suzzmeProminentContrast()
-                    .accessibilityLabel("Listen to Daily Summary")
-                    .accessibilityHint("Rechecks current context before speaking")
-                    .disabled(!environment.voice.speaksResponses || !environment.voice.canStartSpeech)
+                    .accessibilityLabel(environment.voice.isSpeaking ? "Stop reading Daily Summary" : "Listen to Daily Summary")
+                    .accessibilityHint("Reads your daily briefing using your configured voice")
+                    .disabled(!environment.voice.speaksResponses || (!environment.voice.canStartSpeech && !environment.voice.isSpeaking && !environment.voice.isPreparingSpeech))
                     Button {
                         Task { _ = await environment.invokeSuzzme() }
                     } label: {
                         Label("Ask about your day", systemImage: "mic")
+                    }
+                    .buttonStyle(.bordered)
+
+                    NavigationLink {
+                        AskSuzzmeView(
+                            initialText: "Plan my day and suggest focus time for today",
+                            focusInput: false,
+                            submitOnAppear: true,
+                            showsDismissButton: true
+                        )
+                    } label: {
+                        Label("Plan My Day", systemImage: "calendar.badge.clock")
                     }
                     .buttonStyle(.bordered)
                 }
@@ -131,14 +157,35 @@ struct BriefingView: View {
                     Text("Spoken responses are off. Turn them on in Voice Settings to listen.")
                         .font(.subheadline).foregroundStyle(SuzzmeTheme.textSecondary)
                     NavigationLink("Open Voice Settings") { VoiceSettingsView() }
+                } else if environment.voice.isSpeaking {
+                    HStack(spacing: SuzzmeTheme.Spacing.xs) {
+                        Image(systemName: "waveform")
+                            .symbolEffect(.variableColor.iterative, options: .repeating)
+                        Text("Reading in \(environment.voice.speechEngine.title) (\(environment.voice.deliveryStyle.title.lowercased()) delivery). Tap Stop to interrupt.")
+                    }
+                    .font(.subheadline).foregroundStyle(SuzzmeTheme.intelligencePrimary)
+                } else if environment.voice.isPreparingSpeech {
+                    HStack(spacing: SuzzmeTheme.Spacing.xs) {
+                        ProgressView()
+                            .scaleEffect(0.7)
+                        Text("Preparing \(environment.voice.speechEngine.title) on this device…")
+                    }
+                    .font(.subheadline).foregroundStyle(SuzzmeTheme.textSecondary)
                 } else if !environment.voice.canStartSpeech {
                     Text("Finish the current voice interaction before listening to your summary.")
                         .font(.subheadline).foregroundStyle(SuzzmeTheme.textSecondary)
                 } else {
-                    Text("You can interrupt the summary with a question.")
+                    Text("Using \(environment.voice.speechEngine.title) (\(environment.voice.deliveryStyle.title.lowercased()) delivery). You can interrupt anytime.")
                         .font(.subheadline).foregroundStyle(SuzzmeTheme.textSecondary)
                 }
             }
+
+            let timeline = DayPlannerEngine.analyze(
+                entries: environment.proactiveSnapshot?.dailyContext?.entries ?? [],
+                now: .now,
+                calendar: .current
+            )
+            DayPlanFocusView(timeline: timeline)
 
             if !briefing.sourceEvidence.isEmpty {
                 VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.small) {
@@ -179,6 +226,8 @@ struct BriefingView: View {
         case "calendar": "Calendar"
         case "reminders": "Reminders"
         case "gmail": "Gmail"
+        case "mail": "Apple Mail"
+        case "whatsapp": "WhatsApp"
         case "messages": "Shared messages"
         case "connectedApps": "Connected apps"
         case "watchedWeb": "Watched Links"
