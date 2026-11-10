@@ -41,6 +41,10 @@ enum BrowserAppCatalog {
         .init(service: "googleBigQuery", host: "console.cloud.google.com", path: "/bigquery"),
         .init(service: "googleSheets", host: "docs.google.com", path: "/spreadsheets/"),
         .init(service: "googleSlides", host: "docs.google.com", path: "/presentation/"),
+        .init(service: "jira", host: "atlassian.net", path: "/"),
+        .init(service: "discord", host: "discord.com", path: "/"),
+        .init(service: "zoom", host: "zoom.us", path: "/"),
+        .init(service: "dropbox", host: "dropbox.com", path: "/"),
     ]
     static func service(for raw: String) -> String? {
         guard raw.utf8.count <= 4096, !raw.contains("\\"),

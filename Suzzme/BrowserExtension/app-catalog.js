@@ -184,5 +184,25 @@ export const appCatalog = [
     "service": "googleSlides",
     "host": "docs.google.com",
     "path": "/presentation/"
+  },
+  {
+    "service": "jira",
+    "host": "atlassian.net",
+    "path": "/"
+  },
+  {
+    "service": "discord",
+    "host": "discord.com",
+    "path": "/"
+  },
+  {
+    "service": "zoom",
+    "host": "zoom.us",
+    "path": "/"
+  },
+  {
+    "service": "dropbox",
+    "host": "dropbox.com",
+    "path": "/"
   }
 ];

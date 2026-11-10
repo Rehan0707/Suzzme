@@ -38,6 +38,8 @@ xcrun swiftc -swift-version 6 -parse-as-library -framework SwiftData -framework 
   Suzzme/Core/Intelligence/AppleIntelligenceService.swift \
   Suzzme/Core/Intelligence/SuzzmeUnderstandingPipeline.swift \
   Suzzme/Core/Intelligence/IntelligenceRouter.swift \
+  Suzzme/Core/Intelligence/DayPlannerEngine.swift \
+  Suzzme/Core/Intelligence/SuzzmeAppSkillContext.swift \
   Suzzme/Core/LongTermMemory/LongTermMemoryModels.swift \
   Suzzme/Core/LongTermMemory/LongTermMemoryStore.swift \
   Suzzme/Core/LongTermMemory/LongTermMemoryEngine.swift \
