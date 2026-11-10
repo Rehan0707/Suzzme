@@ -973,6 +973,26 @@ struct MacAssistantNotchSurface: View {
             .accessibilityIdentifier("suzzme-notch-talk")
             .accessibilityLabel("Talk to Suzzme")
             .help("Click to start talking")
+
+            if let onOpenDailySummary {
+                Button(action: onOpenDailySummary) {
+                    HStack(spacing: SuzzmeTheme.Spacing.xs) {
+                        Image(systemName: "sun.max.fill")
+                            .foregroundStyle(.yellow)
+                        Text("Briefing")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(.white)
+                    }
+                    .frame(minHeight: SuzzmeTheme.Layout.touchTarget)
+                    .padding(.horizontal, SuzzmeTheme.Spacing.small)
+                    .background(.white.opacity(0.10), in: Capsule())
+                }
+                .buttonStyle(.plain)
+                .accessibilityIdentifier("suzzme-notch-briefing")
+                .accessibilityLabel("Open Daily Briefing")
+                .help("Open Today's Focus & Daily Briefing")
+            }
+
             if let onPushToTalkPress, let onPushToTalkRelease {
                 Spacer(minLength: 0)
                 MacNotchHoldToTalkControl(onPress: onPushToTalkPress,

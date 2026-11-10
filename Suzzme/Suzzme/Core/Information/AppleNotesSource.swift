@@ -313,3 +313,4 @@ struct AppleNotesSource: InformationSource {
     }
     #endif
 }
+

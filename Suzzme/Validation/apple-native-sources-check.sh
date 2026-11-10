@@ -57,3 +57,4 @@ xcrun swiftc -swift-version 6 -parse-as-library -framework SwiftData -framework 
   Validation/AppleNativeSourcesChecks.swift -o "$output/AppleNativeSourcesChecks"
 
 "$output/AppleNativeSourcesChecks"
+

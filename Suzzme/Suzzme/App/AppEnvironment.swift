@@ -1426,7 +1426,7 @@ final class AppEnvironment {
         catch { proactiveError = "Daily Summary notifications couldn’t be scheduled. You can still open your summary." }
     }
 
-    func speakCurrentBriefing() async {
+    func speakCurrentBriefing(executiveMode: Bool = true) async {
         #if os(iOS)
         await loadCompanionSummary()
         readCompanionSummaryAloud()
@@ -1444,9 +1444,18 @@ final class AppEnvironment {
         }
         guard !Task.isCancelled, ownsSummaryPresentation(requestID: owner, voiceSessionID: voiceOwner),
               let briefing = proactiveSnapshot?.briefing,
-              briefing.deliveryState != .stale,
-              !briefing.narration.isEmpty else { return }
-        voice.speakBriefing(briefing.narration, id: briefing.id)
+              briefing.deliveryState != .stale else { return }
+
+        let textToSpeak: String
+        let entries = proactiveSnapshot?.dailyContext?.entries ?? []
+        let timeline = DayPlannerEngine.analyze(entries: entries, now: .now)
+        if executiveMode, timeline.primaryObjective != nil {
+            textToSpeak = DayPlannerEngine.executiveBriefingScript(timeline: timeline, profileName: nil, now: .now)
+        } else {
+            textToSpeak = briefing.narration
+        }
+        guard !textToSpeak.isEmpty else { return }
+        voice.speakBriefing(textToSpeak, id: briefing.id)
         #endif
     }
 

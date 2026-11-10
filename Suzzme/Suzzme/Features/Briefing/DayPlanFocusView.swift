@@ -14,6 +14,10 @@ struct DayPlanFocusView: View {
         VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.medium) {
             header
 
+            if let objective = timeline.primaryObjective {
+                oneThingCard(objective)
+            }
+
             if timeline.proposedFocusBlocks.isEmpty {
                 emptyStateCard
             } else {
@@ -44,6 +48,68 @@ struct DayPlanFocusView: View {
             Text("Suzzme mapped your calendar gaps and open commitments to find your best focus time.")
                 .font(.subheadline)
                 .foregroundStyle(SuzzmeTheme.textSecondary)
+        }
+    }
+
+    private func oneThingCard(_ objective: DailyFocusObjective) -> some View {
+        SuzzmeCard {
+            VStack(alignment: .leading, spacing: SuzzmeTheme.Spacing.small) {
+                HStack(alignment: .center) {
+                    HStack(spacing: 5) {
+                        Image(systemName: "star.fill")
+                            .font(.caption2)
+                            .foregroundStyle(.yellow)
+                        Text("The One Thing · Top Priority")
+                            .font(.caption.weight(.bold))
+                            .foregroundStyle(SuzzmeTheme.intelligencePrimary)
+                    }
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background(SuzzmeTheme.intelligencePrimary.opacity(0.12))
+                    .clipShape(Capsule())
+
+                    Spacer()
+
+                    Text(objective.source)
+                        .font(.caption.weight(.medium))
+                        .foregroundStyle(SuzzmeTheme.textSecondary)
+                }
+
+                Text(objective.title)
+                    .font(.title3.weight(.bold))
+                    .foregroundStyle(SuzzmeTheme.textPrimary)
+
+                Text(objective.reason)
+                    .font(.subheadline)
+                    .foregroundStyle(SuzzmeTheme.textSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                HStack(spacing: SuzzmeTheme.Spacing.small) {
+                    if let firstBlock = timeline.proposedFocusBlocks.first {
+                        Button {
+                            environment.startFocusSession(for: firstBlock)
+                        } label: {
+                            Label("Focus on This Now", systemImage: "sparkles")
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .tint(SuzzmeTheme.intelligencePrimary)
+                        .suzzmeProminentContrast()
+                    }
+
+                    NavigationLink {
+                        AskSuzzmeView(
+                            initialText: "Help me accomplish my top priority today: \(objective.title)",
+                            focusInput: false,
+                            submitOnAppear: true,
+                            showsDismissButton: true
+                        )
+                    } label: {
+                        Label("Break Down Steps", systemImage: "list.bullet.clipboard")
+                    }
+                    .buttonStyle(.bordered)
+                }
+                .padding(.top, 2)
+            }
         }
     }
 

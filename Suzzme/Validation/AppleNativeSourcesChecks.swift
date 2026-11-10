@@ -144,7 +144,47 @@ struct AppleNativeSourcesChecks {
         expect(plan.proposedFocusBlocks.contains { $0.title.contains("Prepare Q4 Strategy Document") },
                "DayPlannerEngine schedules focus block targeting notes commitment")
 
-        print("All Apple Native Source checks passed: \(passed) / 0 failed")
+        // 8. "The One Thing" Priority Synthesis & Executive Briefing
+        expect(plan.primaryObjective != nil, "DayPlannerEngine synthesizes primary objective The One Thing")
+        expect(plan.primaryObjective?.title.contains("Prepare Q4 Strategy Document") == true,
+               "The One Thing highlights urgent notes task as top priority")
+        expect(plan.primaryObjective?.source == "Apple Notes",
+               "The One Thing correctly tracks source provenance as Apple Notes")
+
+        let executiveScript = DayPlannerEngine.executiveBriefingScript(timeline: plan, profileName: "Alex", now: now)
+        expect(executiveScript.contains("Alex"), "Executive briefing greets user by profile name")
+        expect(executiveScript.contains("Prepare Q4 Strategy Document"),
+               "Executive briefing articulates The One Thing priority")
+        expect(executiveScript.contains("focus block"),
+               "Executive briefing suggests dedicated focus block")
+        expect(executiveScript.contains("meaningful progress"),
+               "Executive briefing concludes with encouraging closing")
+
+        // Fallback check: key meeting on calendar without pending tasks
+        let cal = Calendar.current
+        let meetingStart = cal.date(byAdding: .hour, value: 2, to: now) ?? now
+        let meetingContext = DailyContextEntry(
+            id: UUID().uuidString,
+            kind: .schedule,
+            title: "Client Architecture Review",
+            summary: "Quarterly technical roadmap review with stakeholders",
+            source: "calendar",
+            sourceReference: "cal:456",
+            effectiveAt: meetingStart,
+            effectiveUntil: meetingStart.addingTimeInterval(3600),
+            entities: ["Client"],
+            sensitivity: .personal,
+            freshness: .current,
+            state: .active,
+            confidence: 1.0,
+            mayBeDurableCandidate: false,
+            isAllDay: false
+        )
+        let meetingPlan = DayPlannerEngine.analyze(entries: [meetingContext], now: now)
+        expect(meetingPlan.primaryObjective?.title.contains("Client Architecture Review") == true,
+               "The One Thing falls back to high-impact meeting preparation when no tasks pending")
+
+        print("All Apple Native Source & Milestone 2 checks passed: \(passed) / 0 failed")
     }
 
     private static func compressDeflate(_ src: Data) -> Data? {

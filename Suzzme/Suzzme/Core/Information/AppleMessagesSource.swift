@@ -250,3 +250,4 @@ struct AppleMessagesSource: InformationSource {
     }
     #endif
 }
+
