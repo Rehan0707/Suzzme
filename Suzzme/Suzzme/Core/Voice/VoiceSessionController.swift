@@ -364,6 +364,9 @@ final class VoiceSessionController: NSObject {
                 && isOrdinaryVoice($0)
         }.sorted {
             if $0.quality != $1.quality { return $0.quality.rawValue > $1.quality.rawValue }
+            let leftIsSiri = $0.identifier.contains("siri.natural")
+            let rightIsSiri = $1.identifier.contains("siri.natural")
+            if leftIsSiri != rightIsSiri { return leftIsSiri }
             let leftRegion = $0.language.lowercased() == localeTag
             let rightRegion = $1.language.lowercased() == localeTag
             if leftRegion != rightRegion { return leftRegion }
@@ -1063,6 +1066,7 @@ final class VoiceSessionController: NSObject {
         value = value.replacingOccurrences(of: #"(?m)^\s*\[ \]\s*"#, with: "Not completed: ", options: .regularExpression)
         value = value.replacingOccurrences(of: "**", with: "").replacingOccurrences(of: "__", with: "").replacingOccurrences(of: "`", with: "")
         value = value.replacingOccurrences(of: #"(?<!\w)[*_]([^*_\n]+)[*_](?!\w)"#, with: "$1", options: .regularExpression)
+        value = value.replacingOccurrences(of: "; ", with: ". ")
         // Native parsing preserves the explicit instant; it never supplies a
         // missing zone/date. Display it using the same local calendar as UI.
         if let timestamps = try? NSRegularExpression(pattern: #"\b\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})\b"#) {

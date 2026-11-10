@@ -557,6 +557,10 @@ private struct MacKnowledgeSourcesView: View {
         let connected: Bool
         if item.id == "whatsapp" {
             connected = environment.whatsAppFolderConnected
+        } else if item.id == "apple-mail" || item.id == "mail" {
+            connected = health(.mail)?.enabled == true
+        } else if item.id == "gmail" {
+            connected = environment.gmailAccount.isConnected || composioWorkspace?.accounts.contains { $0.service == "gmail" && $0.isActive } == true
         } else if item.id == "github" {
             connected = environment.integrations.accounts.contains { $0.service == .github && $0.state == .ready }
         } else if item.id == "notion" {
